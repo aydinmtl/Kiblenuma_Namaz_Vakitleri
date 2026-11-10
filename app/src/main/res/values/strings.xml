@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Namaz Vakitleri</string>
+    <string name="widget_desc">Sıradaki vakit ve kalan süre</string>
+    <string name="notify">Vakit bildirimleri</string>
+    <string name="imsakiye">İmsakiye</string>
+    <string name="qibla">Kıble</string>
+    <string name="search_hint">Ara…</string>
+</resources>

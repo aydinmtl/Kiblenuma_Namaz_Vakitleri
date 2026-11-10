@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="9dp">
+
+    <TextView android:id="@+id/c_date" style="@style/ImsakiyeCell" android:layout_weight="1.7" />
+    <TextView android:id="@+id/c0" style="@style/ImsakiyeCell" />
+    <TextView android:id="@+id/c1" style="@style/ImsakiyeCell" />
+    <TextView android:id="@+id/c2" style="@style/ImsakiyeCell" />
+    <TextView android:id="@+id/c3" style="@style/ImsakiyeCell" />
+    <TextView android:id="@+id/c4" style="@style/ImsakiyeCell" />
+    <TextView android:id="@+id/c5" style="@style/ImsakiyeCell" />
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        style="@style/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Başlık satırı -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card"
+        android:orientation="horizontal"
+        android:paddingVertical="8dp">
+
+        <TextView style="@style/ImsakiyeHead" android:layout_weight="1.7" android:text="Tarih" />
+        <TextView style="@style/ImsakiyeHead" android:text="İmsak" />
+        <TextView style="@style/ImsakiyeHead" android:text="Güneş" />
+        <TextView style="@style/ImsakiyeHead" android:text="Öğle" />
+        <TextView style="@style/ImsakiyeHead" android:text="İkindi" />
+        <TextView style="@style/ImsakiyeHead" android:text="Akşam" />
+        <TextView style="@style/ImsakiyeHead" android:text="Yatsı" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@color/card"
+        android:dividerHeight="1dp" />
+</LinearLayout>
