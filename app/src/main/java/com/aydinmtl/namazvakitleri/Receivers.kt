@@ -39,6 +39,15 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
             }
         }
 
+        // Aile Halkası: akşam vakti girince günün sorusu (açıksa ve bugün henüz cevaplanmadıysa)
+        if (index == MAGHRIB && !reminder && Store.dailyNotify(app) &&
+            AlarmPlan.shouldNotify(false, nowMs, fireMs, atMs) &&
+            Store.dailyDoneDate(app) != at.toLocalDate().toString()
+        ) {
+            val id = QuizDeck.dailyId(QuizBank.all(app).map { it.id }, at.toLocalDate())
+            QuizBank.byId(app, id ?: "")?.let { Notifications.showDailyQuestion(app, it.text) }
+        }
+
         val now = LocalDateTime.now()
         val after = if (fire.isAfter(now)) fire else now
         PrayerWidget.updateAll(app)

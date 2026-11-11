@@ -157,6 +157,17 @@ object QuizDeck {
         return Pair(round, refill.toSet())
     }
 
+    /**
+     * Günün sorusu: aynı gün herkes (ve gün boyu her açılışta) aynı soruyu görür.
+     * Sorular her yıl için sabit bir karışık sıraya dizilir; yılın kaçıncı günüyse o soru seçilir.
+     * Böylece arka arkaya günlerde aynı konudan soru gelmez ve bir yıl içinde tekrar az olur.
+     */
+    fun dailyId(allIds: List<String>, date: java.time.LocalDate): String? {
+        if (allIds.isEmpty()) return null
+        val order = allIds.sorted().shuffled(Random(date.year))
+        return order[(date.dayOfYear - 1) % order.size]
+    }
+
     /** Oyuncu adlarını "Annem, Babam ,Zeynep" gibi bir yazıdan ayırır (en çok 8 kişi). */
     fun parsePlayers(text: String): List<String> =
         text.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }.distinct().take(8)
@@ -234,6 +245,26 @@ object QuizFlags {
             }
             if (note.isNotBlank()) sb.append("\nNot: ").append(note.trim())
             sb.append("\n")
+        }
+        return sb.toString()
+    }
+}
+
+/** Sesli okuma (telefonun kendi Türkçe sesi) için metni hazırlar. */
+object QuizSpeech {
+    /** ✓, ✗, 🌱, ⚑ gibi işaretleri atar; ses motoru bunları "onay işareti" diye okumasın. */
+    fun clean(text: String): String =
+        text.replace(Regex("[^\\p{L}\\p{N}\\p{P}\\s+]"), "")
+            .replace(Regex("[ \\t]+"), " ")
+            .lines().joinToString("\n") { it.trim() }
+            .trim()
+
+    /** Soru ve şıklar: "Soru? Birinci şık: Mekke. İkinci şık: Medine. ..." */
+    fun question(text: String, options: List<String>): String {
+        val names = listOf("Birinci", "İkinci", "Üçüncü", "Dördüncü", "Beşinci", "Altıncı")
+        val sb = StringBuilder(clean(text))
+        options.forEachIndexed { i, o ->
+            sb.append("\n").append(names.getOrElse(i) { "${i + 1}." }).append(" şık: ").append(clean(o)).append(".")
         }
         return sb.toString()
     }

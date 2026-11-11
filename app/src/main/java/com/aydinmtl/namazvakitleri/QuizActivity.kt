@@ -5,17 +5,22 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
+import java.time.LocalDate
+import java.util.Locale
 
 /**
  * Aile Halkası: bilgi yarışması.
@@ -26,6 +31,8 @@ import android.window.OnBackInvokedDispatcher
  * - İstenildiği an kapatılabilir; tekrar girince "kaldığın yerden devam" sorulur.
  * - Bir soru İLK KEZ doğru bilinince aile ağacı büyür; ağaç aşamalarına aile hedefleri bağlanabilir.
  * - Yanlış bilinen sorular "Yanlışlarımı tekrar et" turunda yeniden sorulur.
+ * - Her gün bir "günün sorusu" (ana ekrandan ya da akşam bildiriminden açılır).
+ * - "🔊 Oku": soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
  */
 class QuizActivity : Activity() {
 
@@ -45,6 +52,18 @@ class QuizActivity : Activity() {
     private lateinit var btnFlag: TextView
     private lateinit var btnFlags: Button
     private var currentQuestion: Question? = null
+    private lateinit var btnSpeak: TextView
+    private lateinit var cbDaily: CheckBox
+
+    // Sesli okuma: telefonun kendi metin okuma motoru (ek kütüphane yok). İlk kullanımda açılır.
+    private var tts: TextToSpeech? = null
+    private var ttsReady = false
+    private var pendingSpeech: String? = null
+
+    companion object {
+        /** true ise ekran "günün sorusu" ile açılır (ana ekrandaki düğme ya da bildirim). */
+        const val EXTRA_DAILY = "daily"
+    }
 
     private var session: QuizSession? = null
     private var answered = false
@@ -77,6 +96,8 @@ class QuizActivity : Activity() {
         btnNext = findViewById(R.id.btnNext)
         btnFlag = findViewById(R.id.btnFlag)
         btnFlags = findViewById(R.id.btnFlags)
+        btnSpeak = findViewById(R.id.btnSpeak)
+        cbDaily = findViewById(R.id.cbDaily)
 
         setupLevelButton(R.id.btnEasy, QuizLevel.EASY)
         setupLevelButton(R.id.btnMedium, QuizLevel.MEDIUM)
@@ -87,8 +108,29 @@ class QuizActivity : Activity() {
         btnNext.setOnClickListener { showQuestion() }
         btnFlag.setOnClickListener { currentQuestion?.let { flagQuestion(it) } }
         btnFlags.setOnClickListener { showFlags() }
+        btnSpeak.setOnClickListener { speakCurrent() }
+        findViewById<View>(R.id.btnDailyHome).setOnClickListener { showDaily() }
+        findViewById<View>(R.id.btnResetTree).setOnClickListener { askResetTree() }
+        cbDaily.isChecked = Store.dailyNotify(this)
+        cbDaily.setOnCheckedChangeListener { _, on -> Store.setDailyNotify(this, on) }
 
         showHome()
+        if (intent?.getBooleanExtra(EXTRA_DAILY, false) == true) {
+            askedResume = true // günün sorusu için açıldıysa "devam et" sorusu araya girmesin
+            showDaily()
+        }
+    }
+
+    // Ekran zaten açıkken bildirime dokunulursa buraya gelir.
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.getBooleanExtra(EXTRA_DAILY, false)) showDaily()
+    }
+
+    override fun onDestroy() {
+        tts?.shutdown()
+        tts = null
+        super.onDestroy()
     }
 
     override fun onResume() {
@@ -160,6 +202,9 @@ class QuizActivity : Activity() {
         val flags = Store.quizFlags(this).size
         btnFlags.visibility = if (flags > 0) View.VISIBLE else View.GONE
         btnFlags.text = "İşaretlediğim sorular ($flags)"
+
+        val dailyDone = Store.dailyDoneDate(this) == LocalDate.now().toString()
+        findViewById<Button>(R.id.btnDailyHome).text = if (dailyDone) "💡 Günün sorusu ✓ (bugün cevaplandı)" else "💡 Günün sorusu"
     }
 
     /** Tur başlığı: "Kolay seviye" ya da "Yanlışları tekrar". */
@@ -247,6 +292,7 @@ class QuizActivity : Activity() {
         }
         answered = false
         currentQuestion = q
+        tts?.stop()
         btnFlag.visibility = View.GONE
         showTurn(s)
         tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${s.score}"
@@ -272,6 +318,7 @@ class QuizActivity : Activity() {
             val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             lp.topMargin = (8 * resources.displayMetrics.density).toInt()
             b.layoutParams = lp
+            b.tag = opt // asıl şık metni (cevaptan sonra yazının başına ✓ / ✗ eklenir)
             b.setOnClickListener { answer(q, opt) }
             options.addView(b)
         }
@@ -285,13 +332,23 @@ class QuizActivity : Activity() {
         val ok = chosen == q.correct
         val oldStage = FamilyTree.stageIndex(Store.treePoints(this))
 
-        // Doğru şıkkı yeşil, yanlış seçileni kırmızı göster
+        // Doğru şıkkı yeşil, yanlış seçileni kırmızı göster. Renk ayırt edemeyenler ve ekran
+        // okuyucu (TalkBack) kullananlar için yazının başına da ✓ / ✗ konur.
         for (i in 0 until options.childCount) {
             val b = options.getChildAt(i) as Button
             b.isEnabled = false
-            when (b.text.toString()) {
-                q.correct -> b.setBackgroundResource(R.drawable.opt_correct)
-                chosen -> b.setBackgroundResource(R.drawable.opt_wrong)
+            val opt = b.tag as? String ?: b.text.toString()
+            when (opt) {
+                q.correct -> {
+                    b.setBackgroundResource(R.drawable.opt_correct)
+                    b.text = "✓  $opt"
+                    b.contentDescription = "$opt, doğru cevap"
+                }
+                chosen -> {
+                    b.setBackgroundResource(R.drawable.opt_wrong)
+                    b.text = "✗  $opt"
+                    b.contentDescription = "$opt, senin cevabın, yanlış"
+                }
             }
         }
         tvInfo.text = (if (ok) "✓ Doğru!" else "✗ Doğru cevap: ${q.correct}") +
@@ -321,6 +378,136 @@ class QuizActivity : Activity() {
 
         val newStage = FamilyTree.stageIndex(Store.treePoints(this))
         if (newStage > oldStage) celebrate(newStage)
+    }
+
+    // ---------------- Sesli okuma ----------------
+
+    /** Cevaptan önce soru ve şıkları, cevaptan sonra sonucu ve açıklamayı okur. */
+    private fun speakCurrent() {
+        val q = currentQuestion ?: return
+        val text = if (answered) {
+            QuizSpeech.clean(tvInfo.text.toString())
+        } else {
+            val shown = (0 until options.childCount).map { (options.getChildAt(it).tag as? String).orEmpty() }
+            QuizSpeech.question(q.text, shown)
+        }
+        speak(text)
+    }
+
+    private fun speak(text: String) {
+        val engine = tts
+        if (engine != null && ttsReady) {
+            engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "quiz")
+            return
+        }
+        pendingSpeech = text
+        if (engine != null) return // motor hâlâ açılıyor; hazır olunca okunur
+        tts = TextToSpeech(this) init@{ status ->
+            val t = tts ?: return@init
+            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Locale.forLanguageTag("tr-TR")) else TextToSpeech.LANG_NOT_SUPPORTED
+            if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(
+                    this,
+                    "Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma'dan Türkçe sesi indirebilirsin.",
+                    Toast.LENGTH_LONG,
+                ).show()
+                t.shutdown()
+                tts = null
+                return@init
+            }
+            ttsReady = true
+            pendingSpeech?.let { t.speak(it, TextToSpeech.QUEUE_FLUSH, null, "quiz") }
+            pendingSpeech = null
+        }
+    }
+
+    // ---------------- Günün sorusu ----------------
+
+    /** Bugünün sorusunu açar. Cevap verilince sonuç ve açıklama gösterilir; ilk kez bilinirse ağaç büyür. */
+    private fun showDaily() {
+        val today = LocalDate.now()
+        val id = QuizDeck.dailyId(QuizBank.all(this).map { it.id }, today) ?: return
+        val q = QuizBank.byId(this, id) ?: return
+        val opts = q.options.shuffled()
+        val dp = resources.displayMetrics.density
+
+        // Soru metni ve şıklar tek bir pencerede
+        val box = LinearLayout(this)
+        box.orientation = LinearLayout.VERTICAL
+        box.setPadding((20 * dp).toInt(), (8 * dp).toInt(), (20 * dp).toInt(), 0)
+        val tvQ = TextView(this)
+        tvQ.text = q.text
+        tvQ.textSize = 18f
+        tvQ.setTextColor(getColor(R.color.text))
+        box.addView(tvQ)
+
+        val dialog = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("💡 Günün sorusu")
+            .setView(box)
+            .setNegativeButton("Kapat", null)
+            .setNeutralButton("🔊 Oku", null) // tıklanınca pencere kapanmasın diye aşağıda bağlanıyor
+            .create()
+        for (opt in opts) {
+            val b = Button(this)
+            b.text = opt
+            b.isAllCaps = false
+            b.textSize = 16f
+            b.setTextColor(getColor(R.color.text))
+            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            b.setBackgroundResource(R.drawable.opt_normal)
+            b.stateListAnimator = null
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = (8 * dp).toInt()
+            b.layoutParams = lp
+            b.setOnClickListener {
+                dialog.dismiss()
+                answerDaily(q, opt, today)
+            }
+            box.addView(b)
+        }
+        dialog.setOnShowListener {
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener { speak(QuizSpeech.question(q.text, opts)) }
+        }
+        dialog.setOnDismissListener { tts?.stop() }
+        dialog.show()
+    }
+
+    private fun answerDaily(q: Question, chosen: String, today: LocalDate) {
+        val ok = chosen == q.correct
+        val oldStage = FamilyTree.stageIndex(Store.treePoints(this))
+        val firstTime = ok && Store.markSolved(this, q.id)
+        Store.setWrong(this, q.id, !ok)
+        Store.setDailyDone(this, today)
+        val msg = StringBuilder(if (ok) "✓ Doğru!" else "✗ Doğru cevap: ${q.correct}")
+        if (q.info.isNotEmpty()) msg.append("\n\n").append(q.info)
+        if (q.source.isNotEmpty()) msg.append("\nKaynak: ").append(q.source)
+        if (firstTime) msg.append("\n\n🌱 Ağacımıza +1")
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("Günün sorusu")
+            .setMessage(msg.toString())
+            .setPositiveButton("Tamam") { _, _ ->
+                val newStage = FamilyTree.stageIndex(Store.treePoints(this))
+                if (newStage > oldStage) celebrate(newStage)
+            }
+            .show()
+        showHome()
+    }
+
+    // ---------------- Ağacı sıfırla ----------------
+
+    private fun askResetTree() {
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("Ağaç sıfırlansın mı?")
+            .setMessage(
+                "Ağacımız tohuma döner ve bütün sorular ağacı yeniden büyütebilir. " +
+                    "Hedefler ve yanlışlar listesi silinmez. Bu işlem geri alınamaz.",
+            )
+            .setPositiveButton("Sıfırla") { _, _ ->
+                Store.resetTree(this)
+                showHome()
+            }
+            .setNegativeButton("Vazgeç", null)
+            .show()
     }
 
     // ---------------- "Bu soruda hata var" ----------------
@@ -446,27 +633,38 @@ class QuizActivity : Activity() {
             tv.setPadding(16, 18, 16, 18)
             tv.setOnLongClickListener {
                 AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                    .setTitle("Hedef silinsin mi?")
-                    .setMessage(g.text)
-                    .setPositiveButton("Sil") { _, _ ->
-                        Store.saveGoals(this, Store.goals(this).filterIndexed { j, _ -> j != i })
-                        showHome()
+                    .setTitle(g.text)
+                    .setItems(arrayOf("Düzenle", "Sil")) { _, which ->
+                        if (which == 0) {
+                            addGoal(editIndex = i)
+                        } else {
+                            AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+                                .setTitle("Hedef silinsin mi?")
+                                .setMessage(g.text)
+                                .setPositiveButton("Sil") { _, _ ->
+                                    Store.saveGoals(this, Store.goals(this).filterIndexed { j, _ -> j != i })
+                                    showHome()
+                                }
+                                .setNegativeButton("Vazgeç", null)
+                                .show()
+                        }
                     }
-                    .setNegativeButton("Vazgeç", null)
                     .show()
                 true
             }
             goalList.addView(tv)
         }
         val hint = TextView(this)
-        hint.text = "Silmek için hedefe basılı tut."
+        hint.text = "Düzenlemek ya da silmek için hedefe basılı tut."
         hint.setTextColor(getColor(R.color.muted))
         hint.textSize = 12f
         hint.setPadding(16, 4, 16, 8)
         goalList.addView(hint)
     }
 
-    private fun addGoal() {
+    /** Yeni hedef ekler; [editIndex] verilirse o hedefi düzenler. */
+    private fun addGoal(editIndex: Int? = null) {
+        val editing = editIndex?.let { Store.goals(this).getOrNull(it) }
         val box = LinearLayout(this)
         box.orientation = LinearLayout.VERTICAL
         val pad = (20 * resources.displayMetrics.density).toInt()
@@ -475,6 +673,7 @@ class QuizActivity : Activity() {
         val input = EditText(this)
         input.hint = "Ör: Birlikte dondurma yemeye gidiyoruz"
         input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+        editing?.let { input.setText(it.text) }
         box.addView(input)
 
         val label = TextView(this)
@@ -488,15 +687,23 @@ class QuizActivity : Activity() {
             this, android.R.layout.simple_spinner_dropdown_item,
             stages.map { "${it.name} (${it.minPoints} doğru)" },
         )
+        editing?.let { spinner.setSelection((it.stage - 1).coerceIn(0, stages.size - 1)) }
         box.addView(spinner)
 
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Yeni aile hedefi")
+            .setTitle(if (editing != null) "Hedefi düzenle" else "Yeni aile hedefi")
             .setView(box)
-            .setPositiveButton("Ekle") { _, _ ->
+            .setPositiveButton(if (editing != null) "Kaydet" else "Ekle") { _, _ ->
                 val text = input.text.toString().trim()
                 if (text.isNotEmpty()) {
-                    Store.saveGoals(this, Store.goals(this) + FamilyGoal(text, spinner.selectedItemPosition + 1))
+                    val goal = FamilyGoal(text, spinner.selectedItemPosition + 1)
+                    val list = Store.goals(this)
+                    val updated = if (editIndex != null && editIndex in list.indices) {
+                        list.mapIndexed { j, g -> if (j == editIndex) goal else g }
+                    } else {
+                        list + goal
+                    }
+                    Store.saveGoals(this, updated)
                     showHome()
                 }
             }

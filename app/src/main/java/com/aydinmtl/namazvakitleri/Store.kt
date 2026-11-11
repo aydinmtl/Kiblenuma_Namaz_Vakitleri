@@ -180,6 +180,26 @@ object Store {
         prefs(ctx).edit().putString("quizPlayers", players.joinToString(", ")).apply()
     }
 
+    /**
+     * Ağacı sıfırla: ağaç tohuma döner, bütün sorular yeniden ağacı büyütebilir.
+     * Hedefler, yanlışlar listesi ve oyuncular silinmez.
+     */
+    fun resetTree(ctx: Context) {
+        prefs(ctx).edit().putInt("treePoints", 0).remove("quizSolved").apply()
+    }
+
+    /** Günün sorusu en son hangi gün cevaplandı ("2026-11-11"). */
+    fun dailyDoneDate(ctx: Context): String? = prefs(ctx).getString("dailyDone", null)
+    fun setDailyDone(ctx: Context, date: LocalDate) {
+        prefs(ctx).edit().putString("dailyDone", date.toString()).apply()
+    }
+
+    /** Akşam vakti girince "günün sorusu" bildirimi gönderilsin mi (varsayılan kapalı). */
+    fun dailyNotify(ctx: Context): Boolean = prefs(ctx).getBoolean("dailyNotify", false)
+    fun setDailyNotify(ctx: Context, on: Boolean) {
+        prefs(ctx).edit().putBoolean("dailyNotify", on).apply()
+    }
+
     /** "Bu soruda hata var" diye işaretlenen sorular ve notları (bkz. QuizFlags). */
     fun quizFlags(ctx: Context): Map<String, String> = QuizFlags.fromJson(prefs(ctx).getString("quizFlags", null))
     fun setQuizFlag(ctx: Context, id: String, note: String?) {

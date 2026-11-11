@@ -15,6 +15,7 @@ object Notifications {
     const val CHANNEL_SILENT = "vakit_sessiz" // ezan çalacaksa bildirim sessiz olur
     const val CHANNEL_REMINDER = "hatirlatma" // vakitten önce hatırlatma
     const val CHANNEL_ADHAN = "ezan"          // ezan çalarken görünen "Durdur" bildirimi
+    const val CHANNEL_DAILY = "gunun_sorusu"  // Aile Halkası: günün sorusu (sessiz)
 
     fun createChannel(ctx: Context) {
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
@@ -37,6 +38,14 @@ object Notifications {
             nm.createNotificationChannel(
                 NotificationChannel(CHANNEL_REMINDER, "Vakit hatırlatması", NotificationManager.IMPORTANCE_HIGH).apply {
                     description = "Vakit girmeden önce hatırlatma."
+                },
+            )
+        }
+        if (nm.getNotificationChannel(CHANNEL_DAILY) == null) {
+            nm.createNotificationChannel(
+                NotificationChannel(CHANNEL_DAILY, "Günün sorusu", NotificationManager.IMPORTANCE_LOW).apply {
+                    description = "Aile Halkası: akşam vaktinde günün sorusu (sessiz)."
+                    setSound(null, null)
                 },
             )
         }
@@ -91,5 +100,28 @@ object Notifications {
             .setTimeoutAfter(minutes * 60_000L)
             .build()
         nm.notify(200 + m.index, n)
+    }
+
+    /** Aile Halkası "günün sorusu" bildirimi; dokununca soru açılır. */
+    fun showDailyQuestion(ctx: Context, questionText: String) {
+        if (!canPost(ctx)) return
+        createChannel(ctx)
+        val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
+        val open = PendingIntent.getActivity(
+            ctx, 3,
+            Intent(ctx, QuizActivity::class.java)
+                .putExtra(QuizActivity.EXTRA_DAILY, true)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val n = Notification.Builder(ctx, CHANNEL_DAILY)
+            .setSmallIcon(R.drawable.ic_stat_hilal)
+            .setContentTitle("🌳 Günün sorusu")
+            .setContentText(questionText)
+            .setStyle(Notification.BigTextStyle().bigText(questionText))
+            .setContentIntent(open)
+            .setAutoCancel(true)
+            .build()
+        nm.notify(300, n)
     }
 }
