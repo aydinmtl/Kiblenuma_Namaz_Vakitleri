@@ -27,17 +27,17 @@ jobs:
           ./gradlew assembleRelease --stacktrace
 
       - name: APK'yı adlandır
-        run: cp app/build/outputs/apk/release/app-release.apk NamazVakitleri.apk
+        run: cp app/build/outputs/apk/release/app-release.apk Kiblenuma.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NamazVakitleri-apk
-          path: NamazVakitleri.apk
+          name: Kiblenuma-apk
+          path: Kiblenuma.apk
 
       - name: Sürüm (Release) olarak yayınla
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
-          name: Namaz Vakitleri 1.0.${{ github.run_number }}
-          body: Telefonda bu sayfadan NamazVakitleri.apk dosyasını indirip kur.
-          files: NamazVakitleri.apk
+          name: Kıblenüma 1.0.${{ github.run_number }}
+          body: Telefonda bu sayfadan Kiblenuma.apk dosyasını indirip kur.
+          files: Kiblenuma.apk

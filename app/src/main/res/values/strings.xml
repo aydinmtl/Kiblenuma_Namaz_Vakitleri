@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Namaz Vakitleri</string>
+    <string name="app_name">Kıblenüma</string>
     <string name="widget_desc">Sıradaki vakit, kalan süre ve günün 6 vakti</string>
     <string name="widget_small_desc">Tek satırda sıradaki vakit ve kalan süre</string>
-    <string name="widget_big_label">Namaz Vakitleri (4x2)</string>
-    <string name="widget_small_label">Namaz Vakitleri (4x1)</string>
+    <string name="widget_big_label">Kıblenüma (4x2)</string>
+    <string name="widget_small_label">Kıblenüma (4x1)</string>
     <string name="notify">Vakit bildirimleri</string>
     <string name="imsakiye">İmsakiye</string>
     <string name="qibla">Kıble</string>

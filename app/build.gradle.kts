@@ -12,7 +12,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.aydinmtl.namazvakitleri"
+        applicationId = "com.aydinmtl.kiblenuma"
         minSdk = 26
         targetSdk = 35
         versionCode = runNumber

@@ -1,6 +1,8 @@
-# Namaz Vakitleri
+# Kıblenüma
 
 Reklamsız, ücretsiz ve hiçbir kişisel veri toplamayan Android namaz vakti uygulaması.
+
+*Kıblenüma*: Osmanlıcada "kıble gösteren", kıble yönünü bulmaya yarayan pusula.
 
 ## Özellikler
 
@@ -14,7 +16,7 @@ Reklamsız, ücretsiz ve hiçbir kişisel veri toplamayan Android namaz vakti uy
 ## APK'yı indirme
 
 Her `main` gönderiminde GitHub Actions APK'yı derler ve **Releases** sayfasına koyar.
-Telefonda en son sürümün `NamazVakitleri.apk` dosyasını indir ve kur
+Telefonda en son sürümün `Kiblenuma.apk` dosyasını indir ve kur
 ("Bilinmeyen kaynaklardan yüklemeye izin ver" istenebilir).
 
 ## Kendi bilgisayarında derleme

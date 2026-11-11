@@ -112,7 +112,7 @@ class MosquesActivity : Activity() {
         val c = url.openConnection() as HttpURLConnection
         c.connectTimeout = 15_000
         c.readTimeout = 30_000
-        c.setRequestProperty("User-Agent", "NamazVakitleri-Android/1.0")
+        c.setRequestProperty("User-Agent", "Kiblenuma-Android/1.0")
         val body = try {
             if (c.responseCode != 200) throw IOException("HTTP ${c.responseCode}")
             c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }

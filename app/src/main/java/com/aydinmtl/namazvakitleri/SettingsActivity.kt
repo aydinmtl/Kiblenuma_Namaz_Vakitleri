@@ -145,7 +145,7 @@ class SettingsActivity : Activity() {
         @Suppress("DEPRECATION")
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Exception) { "?" }
         findViewById<TextView>(R.id.tvAbout).text =
-            "Namaz Vakitleri $version\n" +
+            "Kıblenüma $version\n" +
             "Reklamsız ve ücretsiz. Kişisel veri toplamaz.\n" +
             "Diyanet vakitleri ezanvakti.emushaf.net üzerinden alınır. Diğer yöntemler telefonda hesaplanır.\n" +
             "Camiler: © OpenStreetMap katkıcıları."

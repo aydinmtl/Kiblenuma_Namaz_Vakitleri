@@ -84,7 +84,7 @@ object Diyanet {
         c.connectTimeout = 15_000
         c.readTimeout = 20_000
         c.setRequestProperty("Accept", "application/json")
-        c.setRequestProperty("User-Agent", "NamazVakitleri-Android/1.0")
+        c.setRequestProperty("User-Agent", "Kiblenuma-Android/1.0")
         try {
             val code = c.responseCode
             if (code != 200) throw IOException("Sunucu yanıtı: HTTP $code")
