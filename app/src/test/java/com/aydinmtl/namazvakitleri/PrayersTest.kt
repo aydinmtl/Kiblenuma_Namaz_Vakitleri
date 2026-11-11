@@ -77,4 +77,40 @@ class PrayersTest {
         assertEquals("00:00:00", formatDuration(-5))
         assertEquals("25:00:00", formatDuration(90000))
     }
+
+    // ---- Gece yarısını geçen vakitler (kuzey ülkelerinde yaz) ----
+
+    @Test
+    fun gece_yarisini_gecen_yatsi_ertesi_gune_yazilir() {
+        val d = LocalDate.of(2026, 6, 21)
+        val list = listOf(
+            day(d, "02:10", "03:40", "13:10", "17:50", "22:45", "00:20"),
+            day(d.plusDays(1), "02:11", "03:41", "13:10", "17:50", "22:45", "00:21"),
+        )
+        val yatsi = Prayers.dayMoments(list[0])[5]
+        assertEquals(at(d.plusDays(1), "00:20"), yatsi.at)
+        assertEquals(d, yatsi.day) // imsakiyede yine 21 Haziran satırında
+
+        // Akşamdan sonra sıradaki vakit yatsıdır (önceden bugünün 00:20'si sanılıp atlanıyordu)
+        assertEquals("Yatsı", Prayers.next(list, at(d, "23:00"))!!.name)
+        // 00:10'da hâlâ akşam vakti
+        assertEquals("Akşam", Prayers.current(list, at(d.plusDays(1), "00:10"))!!.name)
+        // 00:30'da yatsı girmiş, sıradaki ertesi günün imsakı
+        assertEquals("Yatsı", Prayers.current(list, at(d.plusDays(1), "00:30"))!!.name)
+        assertEquals(at(d.plusDays(1), "02:11"), Prayers.next(list, at(d.plusDays(1), "00:30"))!!.at)
+    }
+
+    @Test
+    fun gece_yarisindan_once_imsak_onceki_gune_yazilir() {
+        val d = LocalDate.of(2026, 6, 21)
+        val imsak = Prayers.dayMoments(day(d, "23:50", "02:50", "13:10", "17:50", "22:45", "23:30"))[0]
+        assertEquals(at(d.minusDays(1), "23:50"), imsak.at)
+        assertEquals(d, imsak.day)
+    }
+
+    @Test
+    fun normal_gunde_tarihler_degismez() {
+        val m = Prayers.dayMoments(days[1])
+        assert(m.all { it.at.toLocalDate() == d1 && it.day == d1 })
+    }
 }

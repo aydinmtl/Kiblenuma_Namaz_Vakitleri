@@ -116,4 +116,18 @@ class PrayerCalcTest {
         assertEquals(CalcMethod.DIYANET, CalcMethod.byId("yok-boyle-yontem"))
         assertEquals(CalcMethod.ISNA, CalcMethod.byId("isna"))
     }
+
+    @Test
+    fun trondheim_yaz_yatsi_gece_yarisini_gecer_ama_sira_bozulmaz() {
+        // Trondheim (Norveç), Haziran: yatsı (yüksek enlem kuralıyla bile) gece yarısını geçer.
+        val zone = ZoneId.of("Europe/Oslo")
+        val days = (0L..6L).map { i ->
+            val date = LocalDate.of(2026, 6, 18).plusDays(i)
+            PrayerDay(date, PrayerCalc.day(date, 63.43, 10.39, zone, CalcMethod.MWL, 1)!!, "")
+        }
+        assertTrue("Yatsı gece yarısını geçmeliydi: ${days[3].times}", days[3].times[5].isBefore(days[3].times[4]))
+        val m = Prayers.moments(days)
+        // Her gün kendi sırasında: imsak, güneş, öğle, ikindi, akşam, yatsı, (ertesi gün) imsak...
+        assertEquals((0 until m.size).map { it % 6 }, m.map { it.index })
+    }
 }
