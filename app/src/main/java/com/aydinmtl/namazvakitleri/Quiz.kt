@@ -5,13 +5,18 @@ import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.random.Random
 
-/** Bir soru. [options] içinde ilk şık her zaman doğru cevaptır; ekranda karıştırılır. */
+/**
+ * Bir soru. [options] içinde ilk şık her zaman doğru cevaptır; ekranda karıştırılır.
+ * [source]: isteğe bağlı kaynak (ayet ya da hadis numarası, ör. "Müslim, Zekât 986").
+ * Cevaptan sonra açıklamanın altında gösterilir.
+ */
 data class Question(
     val id: String,
     val level: String,
     val text: String,
     val options: List<String>,
     val info: String,
+    val source: String = "",
 ) {
     val correct: String get() = options[0]
 }
@@ -34,6 +39,13 @@ object QuizBank {
     fun all(ctx: Context): List<Question> {
         cache?.let { return it }
         val json = ctx.assets.open("sorular.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
+        val out = parse(json)
+        cache = out
+        return out
+    }
+
+    /** sorular.json içeriğini okur. Android'e bağlı değil; testlerde doğrudan kullanılır. */
+    fun parse(json: String): List<Question> {
         val arr = JSONObject(json).getJSONArray("questions")
         val out = ArrayList<Question>()
         for (i in 0 until arr.length()) {
@@ -43,10 +55,10 @@ object QuizBank {
                 Question(
                     o.getString("id"), o.getString("level"), o.getString("q"),
                     (0 until opts.length()).map { opts.getString(it) }, o.optString("info", ""),
+                    o.optString("source", ""),
                 ),
             )
         }
-        cache = out
         return out
     }
 
@@ -192,5 +204,37 @@ data class FamilyGoal(val text: String, val stage: Int) {
         }
 
         fun listToJson(list: List<FamilyGoal>): String = JSONArray(list.map { it.toJson() }).toString()
+    }
+}
+
+/**
+ * "Bu soruda hata var" işaretleri: soru kimliği -> kullanıcının notu (boş olabilir).
+ * Cihazda saklanır; istenirse liste olarak paylaşılır (sunucu yok).
+ */
+object QuizFlags {
+    fun fromJson(s: String?): Map<String, String> = try {
+        val o = JSONObject(s ?: "{}")
+        o.keys().asSequence().associateWith { o.optString(it, "") }
+    } catch (e: Exception) {
+        emptyMap()
+    }
+
+    fun toJson(flags: Map<String, String>): String = JSONObject(flags).toString()
+
+    /** Paylaşılacak metin: her işaretli soru için kimlik, soru, verilen cevap ve not. */
+    fun report(flags: Map<String, String>, bank: List<Question>): String {
+        val sb = StringBuilder("Aile Halkası: hatalı olabilecek sorular\n")
+        for ((id, note) in flags.toSortedMap()) {
+            val q = bank.firstOrNull { it.id == id }
+            sb.append("\n[").append(id).append("] ")
+            if (q == null) {
+                sb.append("(soru artık bankada yok)")
+            } else {
+                sb.append(q.text).append("\nCevap: ").append(q.correct)
+            }
+            if (note.isNotBlank()) sb.append("\nNot: ").append(note.trim())
+            sb.append("\n")
+        }
+        return sb.toString()
     }
 }

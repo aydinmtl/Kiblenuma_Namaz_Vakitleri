@@ -2,6 +2,7 @@ package com.aydinmtl.namazvakitleri
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -41,6 +42,9 @@ class QuizActivity : Activity() {
     private lateinit var options: LinearLayout
     private lateinit var tvInfo: TextView
     private lateinit var btnNext: Button
+    private lateinit var btnFlag: TextView
+    private lateinit var btnFlags: Button
+    private var currentQuestion: Question? = null
 
     private var session: QuizSession? = null
     private var answered = false
@@ -71,6 +75,8 @@ class QuizActivity : Activity() {
         options = findViewById(R.id.options)
         tvInfo = findViewById(R.id.tvInfo)
         btnNext = findViewById(R.id.btnNext)
+        btnFlag = findViewById(R.id.btnFlag)
+        btnFlags = findViewById(R.id.btnFlags)
 
         setupLevelButton(R.id.btnEasy, QuizLevel.EASY)
         setupLevelButton(R.id.btnMedium, QuizLevel.MEDIUM)
@@ -79,6 +85,8 @@ class QuizActivity : Activity() {
         findViewById<View>(R.id.btnAddGoal).setOnClickListener { addGoal() }
         findViewById<View>(R.id.btnClose).setOnClickListener { showHome() }
         btnNext.setOnClickListener { showQuestion() }
+        btnFlag.setOnClickListener { currentQuestion?.let { flagQuestion(it) } }
+        btnFlags.setOnClickListener { showFlags() }
 
         showHome()
     }
@@ -147,6 +155,11 @@ class QuizActivity : Activity() {
         val wrong = reviewIds().size
         btnReview.visibility = if (wrong > 0) View.VISIBLE else View.GONE
         btnReview.text = "Yanlışlarımı tekrar et ($wrong soru)"
+
+        // "Bu soruda hata var" diye işaretlenmiş soru varsa listesini gösteren düğme
+        val flags = Store.quizFlags(this).size
+        btnFlags.visibility = if (flags > 0) View.VISIBLE else View.GONE
+        btnFlags.text = "İşaretlediğim sorular ($flags)"
     }
 
     /** Tur başlığı: "Kolay seviye" ya da "Yanlışları tekrar". */
@@ -233,6 +246,8 @@ class QuizActivity : Activity() {
             return
         }
         answered = false
+        currentQuestion = q
+        btnFlag.visibility = View.GONE
         showTurn(s)
         tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${s.score}"
         bar.max = s.order.size
@@ -279,7 +294,9 @@ class QuizActivity : Activity() {
                 chosen -> b.setBackgroundResource(R.drawable.opt_wrong)
             }
         }
-        tvInfo.text = (if (ok) "✓ Doğru!" else "✗ Doğru cevap: ${q.correct}") + if (q.info.isNotEmpty()) "\n${q.info}" else ""
+        tvInfo.text = (if (ok) "✓ Doğru!" else "✗ Doğru cevap: ${q.correct}") +
+            (if (q.info.isNotEmpty()) "\n${q.info}" else "") +
+            (if (q.source.isNotEmpty()) "\nKaynak: ${q.source}" else "")
         tvInfo.setTextColor(getColor(if (ok) R.color.gold else R.color.text))
         tvInfo.visibility = View.VISIBLE
 
@@ -298,11 +315,67 @@ class QuizActivity : Activity() {
 
         btnNext.text = if (updated.finished) "Sonucu gör ›" else "Sıradaki soru ›"
         btnNext.visibility = View.VISIBLE
+        updateFlagButton(q)
         tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${updated.score}"
         bar.progress = updated.index
 
         val newStage = FamilyTree.stageIndex(Store.treePoints(this))
         if (newStage > oldStage) celebrate(newStage)
+    }
+
+    // ---------------- "Bu soruda hata var" ----------------
+
+    private fun updateFlagButton(q: Question) {
+        btnFlag.text = if (q.id in Store.quizFlags(this)) "⚑ İşaretlendi (kaldırmak için dokun)" else "⚑ Bu soruda hata var"
+        btnFlag.visibility = View.VISIBLE
+    }
+
+    /** Soruyu işaretle (isteğe bağlı not ile) ya da işareti kaldır. Hiçbir yere gönderilmez. */
+    private fun flagQuestion(q: Question) {
+        if (q.id in Store.quizFlags(this)) {
+            Store.setQuizFlag(this, q.id, null)
+            updateFlagButton(q)
+            return
+        }
+        val pad = (20 * resources.displayMetrics.density).toInt()
+        val input = EditText(this)
+        input.hint = "Ne yanlış? (isteğe bağlı)"
+        input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
+            InputType.TYPE_TEXT_FLAG_MULTI_LINE
+        val box = LinearLayout(this)
+        box.setPadding(pad, pad / 2, pad, 0)
+        box.addView(input, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("Bu soruda hata var")
+            .setMessage("Soru telefonunda işaretlenir. Aile Halkası ana sayfasından işaretli soruların listesini paylaşabilirsin.")
+            .setView(box)
+            .setPositiveButton("İşaretle") { _, _ ->
+                Store.setQuizFlag(this, q.id, input.text.toString())
+                updateFlagButton(q)
+            }
+            .setNegativeButton("Vazgeç", null)
+            .show()
+    }
+
+    /** İşaretli soruların listesi: paylaş ya da temizle. */
+    private fun showFlags() {
+        val report = QuizFlags.report(Store.quizFlags(this), QuizBank.all(this))
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("İşaretlediğim sorular")
+            .setMessage(report)
+            .setPositiveButton("Paylaş") { _, _ ->
+                val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, report)
+                startActivity(Intent.createChooser(send, "İşaretli soruları paylaş"))
+            }
+            .setNeutralButton("Listeyi temizle") { _, _ ->
+                AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+                    .setTitle("Bütün işaretler silinsin mi?")
+                    .setPositiveButton("Sil") { _, _ -> Store.clearQuizFlags(this); showHome() }
+                    .setNegativeButton("Vazgeç", null)
+                    .show()
+            }
+            .setNegativeButton("Kapat", null)
+            .show()
     }
 
     /** Sırayla oynanıyorsa sorunun üstünde kimin sırası olduğunu yazar. */

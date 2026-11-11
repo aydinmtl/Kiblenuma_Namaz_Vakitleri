@@ -57,4 +57,4 @@ Ekrana bağlı olmayan mantık JVM birim testleriyle denendi (`app/src/test/`).
 | 9 | AR görüş açısı | **Doğrulandı** → S9 (küçük). |
 | 10 | Ana ekran her saniye hesap | **Doğrulandı** → S2 (önbellek sayesinde küçük). |
 | 11 | Birim testi yok | **Yapıldı:** 46 JVM testi, her PR'da GitHub Actions'ta çalışıyor. |
-| 12 | Soru içeriği hoca kontrolünden geçmedi | Doğru; içerik değiştirilmedi. Aile Halkası önerilerinde ayrıca ele alınacak. |
+| 12 | Soru içeriği hoca kontrolünden geçmedi | İşaretlenen 7 soru Kur'an ve sahih hadis kaynaklarıyla kontrol edildi; cevapların hepsi doğru, açıklamalar düzeltildi ve kaynak (ayet/hadis numarası) eklendi. Kalan sorularda hatalı bulunan, uygulamada "Bu soruda hata var" ile işaretlenip paylaşılabilir. |

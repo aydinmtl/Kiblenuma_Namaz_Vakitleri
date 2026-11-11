@@ -83,6 +83,16 @@
                 android:minHeight="52dp"
                 android:visibility="gone" />
 
+            <!-- "Bu soruda hata var" diye işaretlenen soru varsa görünür -->
+            <Button
+                android:id="@+id/btnFlags"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minHeight="52dp"
+                android:visibility="gone" />
+
             <TextView style="@style/SectionHead" android:text="Aile hedeflerimiz" />
 
             <LinearLayout
@@ -104,7 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
-                android:text="Sorular özgün olarak hazırlanmıştır; açıklamalarda yer yer kaynak ayetler verilmiştir. Fıkıh soruları Hanefi mezhebine göredir."
+                android:text="Sorular özgün olarak hazırlanmıştır. Kaynağı belirtilen sorularda ayet ya da hadis numarası verilmiştir. Fıkıh soruları Hanefi mezhebine göredir. Hatalı bulduğun soruyu cevaptan sonra işaretleyebilirsin."
                 android:textColor="@color/muted"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -198,6 +208,20 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="14dp"
                 android:text="Sıradaki soru ›"
+                android:visibility="gone" />
+
+            <!-- Cevaptan sonra görünür: soruyu hatalı diye işaretle -->
+            <TextView
+                android:id="@+id/btnFlag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:padding="10dp"
+                android:text="⚑ Bu soruda hata var"
+                android:textColor="@color/muted"
+                android:textSize="14sp"
                 android:visibility="gone" />
         </LinearLayout>
     </FrameLayout>
