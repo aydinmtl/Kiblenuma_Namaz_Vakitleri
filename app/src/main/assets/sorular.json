@@ -1,0 +1,1445 @@
+{
+ "version": 1,
+ "questions": [
+  {
+   "id": "k001",
+   "level": "kolay",
+   "q": "Müslümanların kutsal kitabının adı nedir?",
+   "options": [
+    "Kur'an-ı Kerim",
+    "Tevrat",
+    "Zebur",
+    "İncil"
+   ],
+   "info": "Kur'an-ı Kerim, Hz. Muhammed'e (s.a.v.) indirilen son ilahi kitaptır."
+  },
+  {
+   "id": "k002",
+   "level": "kolay",
+   "q": "Kur'an-ı Kerim'in ilk suresi hangisidir?",
+   "options": [
+    "Fâtiha",
+    "Bakara",
+    "İhlâs",
+    "Yâsîn"
+   ],
+   "info": "Mushafta ilk sırada Fâtiha suresi yer alır."
+  },
+  {
+   "id": "k003",
+   "level": "kolay",
+   "q": "Günde kaç vakit namaz kılmak farzdır?",
+   "options": [
+    "5",
+    "3",
+    "4",
+    "6"
+   ],
+   "info": "Sabah, öğle, ikindi, akşam ve yatsı: beş vakit."
+  },
+  {
+   "id": "k004",
+   "level": "kolay",
+   "q": "Büyük tufandan önce Allah'ın emriyle gemi yapan peygamber kimdir?",
+   "options": [
+    "Hz. Nuh",
+    "Hz. Musa",
+    "Hz. Yunus",
+    "Hz. İbrahim"
+   ],
+   "info": "Hz. Nuh, Allah'ın emriyle gemiyi yaptı; inananlar tufandan kurtuldu."
+  },
+  {
+   "id": "k005",
+   "level": "kolay",
+   "q": "Balığın karnında kalıp dua ederek kurtulan peygamber kimdir?",
+   "options": [
+    "Hz. Yunus",
+    "Hz. Nuh",
+    "Hz. Eyyub",
+    "Hz. Yusuf"
+   ],
+   "info": "Hz. Yunus balığın karnında Allah'a dua etti ve kurtuldu (Enbiyâ 87-88)."
+  },
+  {
+   "id": "k006",
+   "level": "kolay",
+   "q": "Ateşe atıldığında ateşin onu yakmadığı peygamber kimdir?",
+   "options": [
+    "Hz. İbrahim",
+    "Hz. Musa",
+    "Hz. İsa",
+    "Hz. Davud"
+   ],
+   "info": "Allah ateşe 'İbrahim'e karşı serin ve esenlik ol' buyurdu (Enbiyâ 69)."
+  },
+  {
+   "id": "k007",
+   "level": "kolay",
+   "q": "Asasını denize vurunca denizin yarıldığı peygamber kimdir?",
+   "options": [
+    "Hz. Musa",
+    "Hz. Nuh",
+    "Hz. Süleyman",
+    "Hz. Harun"
+   ],
+   "info": "Hz. Musa ve İsrailoğulları yarılan denizden geçerek Firavun'dan kurtuldu."
+  },
+  {
+   "id": "k008",
+   "level": "kolay",
+   "q": "Kardeşleri tarafından kuyuya atılan peygamber kimdir?",
+   "options": [
+    "Hz. Yusuf",
+    "Hz. Yakup",
+    "Hz. İsmail",
+    "Hz. Yunus"
+   ],
+   "info": "Hz. Yusuf'un kıssası Yusuf suresinde anlatılır."
+  },
+  {
+   "id": "k009",
+   "level": "kolay",
+   "q": "Ramazan ayında hangi ibadet farzdır?",
+   "options": [
+    "Oruç",
+    "Hac",
+    "Kurban",
+    "Umre"
+   ],
+   "info": "Ramazan ayında oruç tutmak her ergen ve sağlıklı Müslümana farzdır."
+  },
+  {
+   "id": "k010",
+   "level": "kolay",
+   "q": "İlk insan ve ilk peygamber kimdir?",
+   "options": [
+    "Hz. Âdem",
+    "Hz. Nuh",
+    "Hz. İdris",
+    "Hz. Şit"
+   ],
+   "info": "Hz. Âdem hem ilk insan hem de ilk peygamberdir."
+  },
+  {
+   "id": "k011",
+   "level": "kolay",
+   "q": "Peygamber Efendimiz hangi şehirde doğdu?",
+   "options": [
+    "Mekke",
+    "Medine",
+    "Kudüs",
+    "Taif"
+   ],
+   "info": "Hz. Muhammed (s.a.v.) 571 yılında Mekke'de doğdu."
+  },
+  {
+   "id": "k012",
+   "level": "kolay",
+   "q": "Kâbe hangi şehirdedir?",
+   "options": [
+    "Mekke",
+    "Medine",
+    "Kudüs",
+    "Şam"
+   ],
+   "info": "Kâbe, Mekke'deki Mescid-i Haram'ın ortasındadır."
+  },
+  {
+   "id": "k013",
+   "level": "kolay",
+   "q": "Namaz kılmadan önce yapılan temizliğe ne denir?",
+   "options": [
+    "Abdest",
+    "Teyemmüm",
+    "Ezan",
+    "Kamet"
+   ],
+   "info": "Namaz için abdest almak gerekir; su yoksa teyemmüm yapılır."
+  },
+  {
+   "id": "k014",
+   "level": "kolay",
+   "q": "Peygamber Efendimizin annesinin adı nedir?",
+   "options": [
+    "Âmine",
+    "Hatice",
+    "Halime",
+    "Fatıma"
+   ],
+   "info": "Annesi Âmine Hatun'dur; Peygamberimiz altı yaşındayken vefat etmiştir."
+  },
+  {
+   "id": "k015",
+   "level": "kolay",
+   "q": "Peygamber Efendimizin babasının adı nedir?",
+   "options": [
+    "Abdullah",
+    "Ebû Talib",
+    "Abdülmuttalib",
+    "Hamza"
+   ],
+   "info": "Babası Abdullah, Peygamberimiz doğmadan önce vefat etmiştir."
+  },
+  {
+   "id": "k016",
+   "level": "kolay",
+   "q": "Kur'an ayetlerini Peygamberimize getiren melek kimdir?",
+   "options": [
+    "Cebrail",
+    "Mikail",
+    "İsrafil",
+    "Azrail"
+   ],
+   "info": "Vahiy meleği Cebrail'dir (a.s.)."
+  },
+  {
+   "id": "k017",
+   "level": "kolay",
+   "q": "Kurban Bayramı'nda Allah rızası için ne yapılır?",
+   "options": [
+    "Kurban kesilir",
+    "Oruç tutulur",
+    "Fitre verilir",
+    "Teravih kılınır"
+   ],
+   "info": "Gücü yeten Müslümanlar Kurban Bayramı'nda kurban keser."
+  },
+  {
+   "id": "k018",
+   "level": "kolay",
+   "q": "Bir işe başlarken ne söyleriz?",
+   "options": [
+    "Bismillâhirrahmânirrahîm",
+    "Elhamdülillah",
+    "Maşallah",
+    "Sübhanallah"
+   ],
+   "info": "Besmele, 'Rahmân ve Rahîm olan Allah'ın adıyla' demektir."
+  },
+  {
+   "id": "k019",
+   "level": "kolay",
+   "q": "Müslümanlar karşılaştığında birbirine ne der?",
+   "options": [
+    "Esselâmü aleyküm",
+    "Günaydın",
+    "Allah'a emanet ol",
+    "Elhamdülillah"
+   ],
+   "info": "Selam, 'Allah'ın selameti üzerine olsun' anlamına gelir; cevabı 've aleyküm selam'dır."
+  },
+  {
+   "id": "k020",
+   "level": "kolay",
+   "q": "Aşağıdakilerden hangisi güzel ahlaka uygun DEĞİLDİR?",
+   "options": [
+    "Yalan söylemek",
+    "Doğru sözlü olmak",
+    "Büyüklere saygı",
+    "Sözünde durmak"
+   ],
+   "info": "Peygamberimiz doğruluğu emretmiş, yalandan sakındırmıştır."
+  },
+  {
+   "id": "k021",
+   "level": "kolay",
+   "q": "Komşumuz hastalandığında ne yapmak güzel olur?",
+   "options": [
+    "Ziyaret edip halini sormak",
+    "Hiç ilgilenmemek",
+    "Kapısını çalmamak",
+    "Sadece kendi işimize bakmak"
+   ],
+   "info": "Hasta ziyareti Müslümanın Müslüman üzerindeki haklarındandır."
+  },
+  {
+   "id": "k022",
+   "level": "kolay",
+   "q": "Peygamber Efendimiz Mekke'den hangi şehre hicret etti?",
+   "options": [
+    "Medine",
+    "Taif",
+    "Kudüs",
+    "Şam"
+   ],
+   "info": "622 yılında Mekke'den Medine'ye hicret edildi."
+  },
+  {
+   "id": "k023",
+   "level": "kolay",
+   "q": "Kur'an-ı Kerim'de kaç sure vardır?",
+   "options": [
+    "114",
+    "99",
+    "110",
+    "120"
+   ],
+   "info": "Kur'an-ı Kerim 114 sureden oluşur."
+  },
+  {
+   "id": "k024",
+   "level": "kolay",
+   "q": "Hz. Süleyman, Kur'an'da hangi hayvanın konuşmasını duyup tebessüm etti?",
+   "options": [
+    "Karınca",
+    "Arı",
+    "Örümcek",
+    "Kuş"
+   ],
+   "info": "Neml (Karınca) suresinde anlatılır (Neml 18-19)."
+  },
+  {
+   "id": "k025",
+   "level": "kolay",
+   "q": "Hz. Davud'a indirilen kitap hangisidir?",
+   "options": [
+    "Zebur",
+    "Tevrat",
+    "İncil",
+    "Kur'an"
+   ],
+   "info": "Zebur Hz. Davud'a, Tevrat Hz. Musa'ya, İncil Hz. İsa'ya indirildi."
+  },
+  {
+   "id": "k026",
+   "level": "kolay",
+   "q": "Tevrat hangi peygambere indirildi?",
+   "options": [
+    "Hz. Musa",
+    "Hz. İsa",
+    "Hz. Davud",
+    "Hz. İbrahim"
+   ],
+   "info": "Tevrat Hz. Musa'ya indirilen kitaptır."
+  },
+  {
+   "id": "k027",
+   "level": "kolay",
+   "q": "İncil hangi peygambere indirildi?",
+   "options": [
+    "Hz. İsa",
+    "Hz. Musa",
+    "Hz. Davud",
+    "Hz. Yahya"
+   ],
+   "info": "İncil Hz. İsa'ya indirilen kitaptır."
+  },
+  {
+   "id": "k028",
+   "level": "kolay",
+   "q": "Ezan ne için okunur?",
+   "options": [
+    "Namaz vaktinin girdiğini bildirmek için",
+    "Bayramı kutlamak için",
+    "Ramazanın bittiğini söylemek için",
+    "Sadece cuma günleri için"
+   ],
+   "info": "Ezan her vakitte namaza çağrıdır."
+  },
+  {
+   "id": "k029",
+   "level": "kolay",
+   "q": "Babası olmadan dünyaya gelen peygamber kimdir?",
+   "options": [
+    "Hz. İsa",
+    "Hz. Yahya",
+    "Hz. Musa",
+    "Hz. Yusuf"
+   ],
+   "info": "Hz. İsa, Hz. Meryem'den babasız olarak dünyaya geldi."
+  },
+  {
+   "id": "k030",
+   "level": "kolay",
+   "q": "Peygamberimizin kızı ve Hz. Ali'nin eşi kimdir?",
+   "options": [
+    "Hz. Fatıma",
+    "Hz. Ayşe",
+    "Hz. Hatice",
+    "Hz. Zeynep"
+   ],
+   "info": "Hz. Fatıma, Hz. Hasan ve Hz. Hüseyin'in annesidir."
+  },
+  {
+   "id": "k031",
+   "level": "kolay",
+   "q": "Peygamberimizin ilk eşi kimdir?",
+   "options": [
+    "Hz. Hatice",
+    "Hz. Ayşe",
+    "Hz. Hafsa",
+    "Hz. Fatıma"
+   ],
+   "info": "Hz. Hatice aynı zamanda ilk Müslüman olan kişidir."
+  },
+  {
+   "id": "k032",
+   "level": "kolay",
+   "q": "İlk vahiy Peygamberimize hangi mağarada geldi?",
+   "options": [
+    "Hira",
+    "Sevr",
+    "Uhud",
+    "Kehf"
+   ],
+   "info": "İlk vahiy Nur dağındaki Hira mağarasında geldi."
+  },
+  {
+   "id": "k033",
+   "level": "kolay",
+   "q": "İslam'ın şartları kaç tanedir?",
+   "options": [
+    "5",
+    "3",
+    "6",
+    "7"
+   ],
+   "info": "Kelime-i şehadet, namaz, oruç, zekât ve hac."
+  },
+  {
+   "id": "k034",
+   "level": "kolay",
+   "q": "İmanın şartları kaç tanedir?",
+   "options": [
+    "6",
+    "4",
+    "5",
+    "7"
+   ],
+   "info": "Allah'a, meleklere, kitaplara, peygamberlere, ahiret gününe ve kadere iman."
+  },
+  {
+   "id": "k035",
+   "level": "kolay",
+   "q": "İhtiyaç sahibine Allah rızası için yapılan yardıma ne denir?",
+   "options": [
+    "Sadaka",
+    "Vergi",
+    "Borç",
+    "Kira"
+   ],
+   "info": "Sadaka, karşılık beklemeden Allah rızası için yapılan iyiliktir."
+  },
+  {
+   "id": "k036",
+   "level": "kolay",
+   "q": "Yemekten sonra şükür için ne söyleriz?",
+   "options": [
+    "Elhamdülillah",
+    "Bismillah",
+    "Estağfirullah",
+    "İnşallah"
+   ],
+   "info": "'Elhamdülillah' Allah'a hamd olsun demektir."
+  },
+  {
+   "id": "k037",
+   "level": "kolay",
+   "q": "Peygamberimize gençliğinde 'güvenilir kişi' anlamında hangi lakap verilmişti?",
+   "options": [
+    "el-Emîn",
+    "el-Fâruk",
+    "es-Sıddîk",
+    "Seyfullah"
+   ],
+   "info": "Mekkeliler dürüstlüğü sebebiyle ona 'el-Emîn' derdi."
+  },
+  {
+   "id": "k038",
+   "level": "kolay",
+   "q": "Cuma namazı haftanın hangi günü kılınır?",
+   "options": [
+    "Cuma",
+    "Pazartesi",
+    "Perşembe",
+    "Pazar"
+   ],
+   "info": "Cuma namazı cuma günü öğle vaktinde cemaatle kılınır."
+  },
+  {
+   "id": "k039",
+   "level": "kolay",
+   "q": "Hz. Yusuf'un babası olan peygamber kimdir?",
+   "options": [
+    "Hz. Yakup",
+    "Hz. İshak",
+    "Hz. İbrahim",
+    "Hz. İsmail"
+   ],
+   "info": "Hz. Yakup, Hz. Yusuf'un babasıdır."
+  },
+  {
+   "id": "k040",
+   "level": "kolay",
+   "q": "Hz. İbrahim ile birlikte Kâbe'yi inşa eden oğlu kimdir?",
+   "options": [
+    "Hz. İsmail",
+    "Hz. İshak",
+    "Hz. Yakup",
+    "Hz. Lut"
+   ],
+   "info": "Kâbe'nin temellerini Hz. İbrahim ve Hz. İsmail yükseltti (Bakara 127)."
+  },
+  {
+   "id": "o001",
+   "level": "orta",
+   "q": "Mekke'den Medine'ye hicret miladi hangi yılda oldu?",
+   "options": [
+    "622",
+    "610",
+    "630",
+    "632"
+   ],
+   "info": "Hicret 622'de oldu; Hicri takvim bu olayı başlangıç alır."
+  },
+  {
+   "id": "o002",
+   "level": "orta",
+   "q": "Bedir Savaşı hicretin kaçıncı yılında yapıldı?",
+   "options": [
+    "2",
+    "1",
+    "3",
+    "5"
+   ],
+   "info": "Bedir Savaşı hicretin 2. yılında (624) yapıldı."
+  },
+  {
+   "id": "o003",
+   "level": "orta",
+   "q": "Uhud Savaşı hicretin kaçıncı yılında yapıldı?",
+   "options": [
+    "3",
+    "2",
+    "5",
+    "8"
+   ],
+   "info": "Uhud Savaşı hicretin 3. yılında (625) yapıldı."
+  },
+  {
+   "id": "o004",
+   "level": "orta",
+   "q": "Mekke'nin fethi hicretin kaçıncı yılında gerçekleşti?",
+   "options": [
+    "8",
+    "5",
+    "6",
+    "10"
+   ],
+   "info": "Mekke hicretin 8. yılında (630) fethedildi."
+  },
+  {
+   "id": "o005",
+   "level": "orta",
+   "q": "Peygamberimizden sonraki ilk halife kimdir?",
+   "options": [
+    "Hz. Ebûbekir",
+    "Hz. Ömer",
+    "Hz. Osman",
+    "Hz. Ali"
+   ],
+   "info": "Dört halife sırasıyla: Hz. Ebûbekir, Hz. Ömer, Hz. Osman, Hz. Ali."
+  },
+  {
+   "id": "o006",
+   "level": "orta",
+   "q": "İkinci halife kimdir?",
+   "options": [
+    "Hz. Ömer",
+    "Hz. Ebûbekir",
+    "Hz. Osman",
+    "Hz. Ali"
+   ],
+   "info": "Hz. Ömer, Hz. Ebûbekir'den sonra halife oldu."
+  },
+  {
+   "id": "o007",
+   "level": "orta",
+   "q": "Kur'an ayetleri hangi halife döneminde tek bir kitap (mushaf) halinde toplandı?",
+   "options": [
+    "Hz. Ebûbekir",
+    "Hz. Ömer",
+    "Hz. Osman",
+    "Hz. Ali"
+   ],
+   "info": "Yemâme savaşından sonra Hz. Ebûbekir döneminde toplandı; Hz. Osman döneminde çoğaltıldı."
+  },
+  {
+   "id": "o008",
+   "level": "orta",
+   "q": "Mushafın çoğaltılıp merkezlere gönderilmesi hangi halife döneminde oldu?",
+   "options": [
+    "Hz. Osman",
+    "Hz. Ebûbekir",
+    "Hz. Ömer",
+    "Hz. Ali"
+   ],
+   "info": "Hz. Osman döneminde nüshalar çoğaltılarak İslam merkezlerine gönderildi."
+  },
+  {
+   "id": "o009",
+   "level": "orta",
+   "q": "Peygamber Efendimiz hangi yılda vefat etti?",
+   "options": [
+    "632",
+    "622",
+    "630",
+    "640"
+   ],
+   "info": "Peygamberimiz 632 yılında Medine'de vefat etti."
+  },
+  {
+   "id": "o010",
+   "level": "orta",
+   "q": "Kur'an-ı Kerim'in en uzun suresi hangisidir?",
+   "options": [
+    "Bakara",
+    "Âl-i İmrân",
+    "Nisâ",
+    "Yâsîn"
+   ],
+   "info": "Bakara suresi 286 ayettir ve en uzun suredir."
+  },
+  {
+   "id": "o011",
+   "level": "orta",
+   "q": "Kur'an-ı Kerim'in en kısa suresi hangisidir?",
+   "options": [
+    "Kevser",
+    "Fâtiha",
+    "İhlâs",
+    "Felak"
+   ],
+   "info": "Kevser suresi üç kısa ayettir ve en kısa suredir."
+  },
+  {
+   "id": "o012",
+   "level": "orta",
+   "q": "Âyetü'l-Kürsî hangi surededir?",
+   "options": [
+    "Bakara",
+    "Fâtiha",
+    "Yâsîn",
+    "Mülk"
+   ],
+   "info": "Âyetü'l-Kürsî, Bakara suresinin 255. ayetidir."
+  },
+  {
+   "id": "o013",
+   "level": "orta",
+   "q": "İslam'ın ilk müezzini kimdir?",
+   "options": [
+    "Hz. Bilal",
+    "Hz. Ammar",
+    "Hz. Zeyd",
+    "Hz. Hamza"
+   ],
+   "info": "Hz. Bilal-i Habeşî güzel sesiyle ilk ezanı okuyan sahabidir."
+  },
+  {
+   "id": "o014",
+   "level": "orta",
+   "q": "Müslümanların kıblesi Kudüs'ten hangi yöne çevrildi?",
+   "options": [
+    "Kâbe",
+    "Medine",
+    "Taif",
+    "Şam"
+   ],
+   "info": "Hicretten yaklaşık 16-17 ay sonra kıble Kâbe'ye çevrildi (Bakara 144)."
+  },
+  {
+   "id": "o015",
+   "level": "orta",
+   "q": "Ticaret malı ve paranın zekât oranı ne kadardır?",
+   "options": [
+    "Kırkta bir (%2,5)",
+    "Onda bir (%10)",
+    "Yirmide bir (%5)",
+    "Yüzde bir (%1)"
+   ],
+   "info": "Nisap miktarına ulaşan para ve ticaret malında zekât kırkta birdir."
+  },
+  {
+   "id": "o016",
+   "level": "orta",
+   "q": "Hac ibadeti hicri takvimin hangi ayında yapılır?",
+   "options": [
+    "Zilhicce",
+    "Ramazan",
+    "Muharrem",
+    "Şevval"
+   ],
+   "info": "Hac, Zilhicce ayının belirli günlerinde yapılır."
+  },
+  {
+   "id": "o017",
+   "level": "orta",
+   "q": "Ramazan hicri takvimin kaçıncı ayıdır?",
+   "options": [
+    "9.",
+    "1.",
+    "7.",
+    "12."
+   ],
+   "info": "Ramazan hicri yılın dokuzuncu ayıdır."
+  },
+  {
+   "id": "o018",
+   "level": "orta",
+   "q": "Teyemmüm ne zaman yapılır?",
+   "options": [
+    "Su bulunamadığında ya da kullanılamadığında",
+    "Her namazdan önce",
+    "Sadece cuma günleri",
+    "Abdest tazelemek için"
+   ],
+   "info": "Teyemmüm, suyun bulunmadığı veya kullanılamadığı durumlarda abdest yerine geçer."
+  },
+  {
+   "id": "o019",
+   "level": "orta",
+   "q": "Hanefi mezhebine göre abdestin farzları kaç tanedir?",
+   "options": [
+    "4",
+    "3",
+    "5",
+    "6"
+   ],
+   "info": "Yüzü yıkamak, kolları dirseklerle yıkamak, başın dörtte birini meshetmek, ayakları topuklarla yıkamak."
+  },
+  {
+   "id": "o020",
+   "level": "orta",
+   "q": "Sabah namazının farzı kaç rekâttır?",
+   "options": [
+    "2",
+    "3",
+    "4",
+    "1"
+   ],
+   "info": "Sabah namazının farzı 2 rekâttır."
+  },
+  {
+   "id": "o021",
+   "level": "orta",
+   "q": "Akşam namazının farzı kaç rekâttır?",
+   "options": [
+    "3",
+    "2",
+    "4",
+    "5"
+   ],
+   "info": "Akşam namazının farzı 3 rekâttır."
+  },
+  {
+   "id": "o022",
+   "level": "orta",
+   "q": "Peygamberimizi çocukken himaye eden dedesi kimdir?",
+   "options": [
+    "Abdülmuttalib",
+    "Ebû Talib",
+    "Abbas",
+    "Hâşim"
+   ],
+   "info": "Annesinin vefatından sonra dedesi Abdülmuttalib, onun vefatından sonra amcası Ebû Talib baktı."
+  },
+  {
+   "id": "o023",
+   "level": "orta",
+   "q": "Peygamberimizi uzun yıllar koruyan amcası kimdir?",
+   "options": [
+    "Ebû Talib",
+    "Ebû Leheb",
+    "Abbas",
+    "Hamza"
+   ],
+   "info": "Ebû Talib, peygamberliğin ilk yıllarında da onu müşriklere karşı korudu."
+  },
+  {
+   "id": "o024",
+   "level": "orta",
+   "q": "Kur'an'ın indirilmeye başladığı gece hangisidir?",
+   "options": [
+    "Kadir Gecesi",
+    "Berat Gecesi",
+    "Miraç Gecesi",
+    "Regaib Gecesi"
+   ],
+   "info": "Kadr suresi Kur'an'ın Kadir Gecesi'nde indirildiğini bildirir."
+  },
+  {
+   "id": "o025",
+   "level": "orta",
+   "q": "Peygamberimizin Medine'ye varırken yaptırdığı ilk mescit hangisidir?",
+   "options": [
+    "Kuba Mescidi",
+    "Mescid-i Nebevî",
+    "Mescid-i Aksâ",
+    "Mescid-i Haram"
+   ],
+   "info": "Kuba Mescidi, hicret yolculuğunda Medine'ye girmeden önce inşa edildi."
+  },
+  {
+   "id": "o026",
+   "level": "orta",
+   "q": "Hudeybiye Antlaşması hicretin kaçıncı yılında yapıldı?",
+   "options": [
+    "6",
+    "2",
+    "4",
+    "8"
+   ],
+   "info": "Hudeybiye Antlaşması hicretin 6. yılında (628) imzalandı."
+  },
+  {
+   "id": "o027",
+   "level": "orta",
+   "q": "Medineli Müslümanlara ne ad verilir?",
+   "options": [
+    "Ensar",
+    "Muhacir",
+    "Tâbiîn",
+    "Ashâb-ı Suffe"
+   ],
+   "info": "Ensar 'yardım edenler' demektir; Mekke'den göç edenlere ise Muhacir denir."
+  },
+  {
+   "id": "o028",
+   "level": "orta",
+   "q": "Peygamberimizin süt annesi kimdir?",
+   "options": [
+    "Halime",
+    "Âmine",
+    "Hatice",
+    "Ümmü Eymen"
+   ],
+   "info": "Halime-i Sa'diyye, Peygamberimizi çocukken çölde emzirip büyüttü."
+  },
+  {
+   "id": "o029",
+   "level": "orta",
+   "q": "İsrâ olayında Peygamberimiz Mescid-i Haram'dan hangi mescide götürüldü?",
+   "options": [
+    "Mescid-i Aksâ",
+    "Kuba Mescidi",
+    "Mescid-i Nebevî",
+    "Mescid-i Kıbleteyn"
+   ],
+   "info": "İsrâ suresinin ilk ayeti bu geceyi anlatır."
+  },
+  {
+   "id": "o030",
+   "level": "orta",
+   "q": "Kur'an'da adı açıkça geçen tek kadın kimdir?",
+   "options": [
+    "Hz. Meryem",
+    "Hz. Hatice",
+    "Hz. Âsiye",
+    "Hz. Hacer"
+   ],
+   "info": "Hz. Meryem'in adı Kur'an'da geçer; adını taşıyan bir sure de vardır."
+  },
+  {
+   "id": "o031",
+   "level": "orta",
+   "q": "Fil olayında Kâbe'yi yıkmak isteyen ordunun komutanı kimdir?",
+   "options": [
+    "Ebrehe",
+    "Ebû Cehil",
+    "Firavun",
+    "Nemrut"
+   ],
+   "info": "Bu olay Fil suresinde anlatılır; Peygamberimizin doğduğu yıl yaşandı."
+  },
+  {
+   "id": "o032",
+   "level": "orta",
+   "q": "Ashâb-ı Kehf kıssası hangi surede anlatılır?",
+   "options": [
+    "Kehf",
+    "Yusuf",
+    "Meryem",
+    "Rûm"
+   ],
+   "info": "Mağara arkadaşlarının kıssası Kehf suresindedir."
+  },
+  {
+   "id": "o033",
+   "level": "orta",
+   "q": "Hicret yolculuğunda Peygamberimiz ve Hz. Ebûbekir hangi mağaraya saklandı?",
+   "options": [
+    "Sevr",
+    "Hira",
+    "Uhud",
+    "Kuba"
+   ],
+   "info": "Sevr mağarasında üç gün kaldılar."
+  },
+  {
+   "id": "o034",
+   "level": "orta",
+   "q": "Hz. Ömer'e verilen 'hak ile batılı ayıran' anlamındaki lakap hangisidir?",
+   "options": [
+    "Fâruk",
+    "Sıddîk",
+    "Zinnûreyn",
+    "Esedullah"
+   ],
+   "info": "Hz. Ebûbekir'e Sıddîk, Hz. Osman'a Zinnûreyn denir."
+  },
+  {
+   "id": "o035",
+   "level": "orta",
+   "q": "Kur'an-ı Kerim kaç cüzden oluşur?",
+   "options": [
+    "30",
+    "20",
+    "40",
+    "114"
+   ],
+   "info": "Kur'an 30 cüze ayrılır; mukabele genellikle cüz cüz okunur."
+  },
+  {
+   "id": "o036",
+   "level": "orta",
+   "q": "Teravih namazı hangi ayda kılınır?",
+   "options": [
+    "Ramazan",
+    "Şaban",
+    "Recep",
+    "Zilhicce"
+   ],
+   "info": "Teravih, Ramazan gecelerinde yatsıdan sonra kılınan namazdır."
+  },
+  {
+   "id": "o037",
+   "level": "orta",
+   "q": "Hz. Yusuf hangi ülkede yönetici oldu?",
+   "options": [
+    "Mısır",
+    "Yemen",
+    "Irak",
+    "Şam"
+   ],
+   "info": "Hz. Yusuf Mısır'da hazinelerin başına getirildi."
+  },
+  {
+   "id": "o038",
+   "level": "orta",
+   "q": "Hz. Musa'nın peygamber olan kardeşi kimdir?",
+   "options": [
+    "Hz. Harun",
+    "Hz. Yuşa",
+    "Hz. Yahya",
+    "Hz. Zekeriyya"
+   ],
+   "info": "Hz. Harun, Hz. Musa'ya yardımcı olarak gönderildi."
+  },
+  {
+   "id": "o039",
+   "level": "orta",
+   "q": "Fitre (fıtır sadakası) ne zamana kadar verilmelidir?",
+   "options": [
+    "Ramazan Bayramı namazından önce",
+    "Kurban Bayramı'nda",
+    "Hicri yılbaşında",
+    "Hac döneminde"
+   ],
+   "info": "Fitrenin bayram namazından önce, tercihen Ramazan içinde verilmesi gerekir."
+  },
+  {
+   "id": "o040",
+   "level": "orta",
+   "q": "Kâbe'yi tavaf ederken kaç tur atılır?",
+   "options": [
+    "7",
+    "3",
+    "5",
+    "9"
+   ],
+   "info": "Tavaf, Kâbe'nin etrafında yedi şavttan (tur) oluşur."
+  },
+  {
+   "id": "z001",
+   "level": "zor",
+   "q": "İlk inen ayetler hangi surenin başındadır?",
+   "options": [
+    "Alak",
+    "Fâtiha",
+    "Müddessir",
+    "Kalem"
+   ],
+   "info": "'Oku! Yaratan Rabbinin adıyla oku' diye başlayan Alak suresinin ilk 5 ayetidir."
+  },
+  {
+   "id": "z002",
+   "level": "zor",
+   "q": "Hz. Ebûbekir döneminde Kur'an'ı toplama heyetinin başkanı olan vahiy kâtibi kimdir?",
+   "options": [
+    "Zeyd b. Sâbit",
+    "Übey b. Kâ'b",
+    "Abdullah b. Mes'ûd",
+    "Muâz b. Cebel"
+   ],
+   "info": "Zeyd b. Sâbit vahiy kâtiplerindendi ve toplama işini yürüttü."
+  },
+  {
+   "id": "z003",
+   "level": "zor",
+   "q": "Hanefi mezhebinin imamı kimdir?",
+   "options": [
+    "İmam-ı Âzam Ebû Hanîfe",
+    "İmam Şâfiî",
+    "İmam Mâlik",
+    "Ahmed b. Hanbel"
+   ],
+   "info": "Ebû Hanîfe (ö. 767) Kûfe'de yaşadı; Türkiye'de yaygın fıkhi mezhep Hanefîliktir."
+  },
+  {
+   "id": "z004",
+   "level": "zor",
+   "q": "'el-Câmiu's-Sahîh' adlı ünlü hadis kitabının yazarı kimdir?",
+   "options": [
+    "İmam Buhârî",
+    "İmam Müslim",
+    "Tirmizî",
+    "İbn Mâce"
+   ],
+   "info": "Sahîh-i Buhârî, en güvenilir hadis kaynaklarından kabul edilir."
+  },
+  {
+   "id": "z005",
+   "level": "zor",
+   "q": "Cebir biliminin kurucusu sayılan Müslüman matematikçi kimdir?",
+   "options": [
+    "Hârizmî",
+    "İbn Sînâ",
+    "Bîrûnî",
+    "Fârâbî"
+   ],
+   "info": "'Cebir' kelimesi Hârizmî'nin el-Kitâbü'l-Muhtasar fî hisâbi'l-cebr ve'l-mukâbele eserinden gelir."
+  },
+  {
+   "id": "z006",
+   "level": "zor",
+   "q": "'el-Kânûn fi't-tıb' adlı tıp eserinin yazarı kimdir?",
+   "options": [
+    "İbn Sînâ",
+    "Râzî",
+    "İbn Rüşd",
+    "Zehrâvî"
+   ],
+   "info": "Bu eser Avrupa'da yüzyıllarca tıp ders kitabı olarak okutuldu."
+  },
+  {
+   "id": "z007",
+   "level": "zor",
+   "q": "Mimar Sinan'ın 'ustalık eserim' dediği cami hangisidir?",
+   "options": [
+    "Selimiye Camii",
+    "Süleymaniye Camii",
+    "Şehzade Camii",
+    "Sultanahmet Camii"
+   ],
+   "info": "Edirne'deki Selimiye ustalık, Süleymaniye kalfalık, Şehzade çıraklık eseridir."
+  },
+  {
+   "id": "z008",
+   "level": "zor",
+   "q": "Mimar Sinan'ın 'çıraklık eserim' dediği cami hangisidir?",
+   "options": [
+    "Şehzade Camii",
+    "Selimiye Camii",
+    "Süleymaniye Camii",
+    "Mihrimah Sultan Camii"
+   ],
+   "info": "İstanbul'daki Şehzade Camii, Sinan'ın çıraklık eseridir."
+  },
+  {
+   "id": "z009",
+   "level": "zor",
+   "q": "Kudüs'teki Kubbetü's-Sahra'yı yaptıran Emevî halifesi kimdir?",
+   "options": [
+    "Abdülmelik b. Mervân",
+    "Muâviye",
+    "Ömer b. Abdülaziz",
+    "Harun Reşid"
+   ],
+   "info": "Kubbetü's-Sahra 691-692 yıllarında tamamlandı."
+  },
+  {
+   "id": "z010",
+   "level": "zor",
+   "q": "Abbasiler döneminde kurulan ünlü ilim merkezi Beytü'l-Hikme hangi şehirdeydi?",
+   "options": [
+    "Bağdat",
+    "Şam",
+    "Kahire",
+    "Kurtuba"
+   ],
+   "info": "Beytü'l-Hikme'de birçok eser Arapçaya çevrildi ve bilimsel çalışmalar yapıldı."
+  },
+  {
+   "id": "z011",
+   "level": "zor",
+   "q": "İbn Haldûn'un tarih felsefesiyle tanınan ünlü eseri hangisidir?",
+   "options": [
+    "Mukaddime",
+    "Mesnevî",
+    "Siyasetname",
+    "Kutadgu Bilig"
+   ],
+   "info": "Mukaddime, toplum ve tarih üzerine öncü bir eserdir."
+  },
+  {
+   "id": "z012",
+   "level": "zor",
+   "q": "Işık ve görme üzerine 'Kitâbü'l-Menâzır'ı yazan bilgin kimdir?",
+   "options": [
+    "İbnü'l-Heysem",
+    "Hârizmî",
+    "Bîrûnî",
+    "Câbir b. Hayyân"
+   ],
+   "info": "İbnü'l-Heysem optik biliminin öncülerindendir."
+  },
+  {
+   "id": "z013",
+   "level": "zor",
+   "q": "Malazgirt Savaşı hangi yılda yapıldı?",
+   "options": [
+    "1071",
+    "1037",
+    "1176",
+    "1299"
+   ],
+   "info": "Sultan Alparslan komutasındaki Selçuklular Bizans'ı yendi ve Anadolu'nun kapıları açıldı."
+  },
+  {
+   "id": "z014",
+   "level": "zor",
+   "q": "Halifelik Osmanlılara hangi padişah döneminde geçti?",
+   "options": [
+    "Yavuz Sultan Selim",
+    "Fatih Sultan Mehmed",
+    "Kanuni Sultan Süleyman",
+    "II. Bayezid"
+   ],
+   "info": "1517'deki Mısır seferinin ardından halifelik Osmanlılara geçti."
+  },
+  {
+   "id": "z015",
+   "level": "zor",
+   "q": "Türkiye'de yaygın olan itikadi (inanç) mezhep hangisidir?",
+   "options": [
+    "Mâtürîdîlik",
+    "Eş'arîlik",
+    "Mu'tezile",
+    "Hanbelîlik"
+   ],
+   "info": "Ehl-i sünnetin iki itikadi mezhebi Mâtürîdîlik ve Eş'arîliktir."
+  },
+  {
+   "id": "z016",
+   "level": "zor",
+   "q": "Hicri takvimi başlatan halife kimdir?",
+   "options": [
+    "Hz. Ömer",
+    "Hz. Ebûbekir",
+    "Hz. Osman",
+    "Hz. Ali"
+   ],
+   "info": "Hz. Ömer döneminde hicret yılı takvimin başlangıcı kabul edildi."
+  },
+  {
+   "id": "z017",
+   "level": "zor",
+   "q": "Peygamberimiz Veda Hutbesi'ni Veda Haccı sırasında esas olarak nerede okudu?",
+   "options": [
+    "Arafat",
+    "Taif",
+    "Kuba",
+    "Uhud"
+   ],
+   "info": "Veda Haccı sırasında (hicri 10) Arafat'ta okundu."
+  },
+  {
+   "id": "z018",
+   "level": "zor",
+   "q": "Zekât verilecek sekiz sınıf Kur'an'da hangi surede sayılır?",
+   "options": [
+    "Tevbe",
+    "Bakara",
+    "Nisâ",
+    "Mâide"
+   ],
+   "info": "Tevbe suresinin 60. ayetinde sayılır."
+  },
+  {
+   "id": "z019",
+   "level": "zor",
+   "q": "Hanefi mezhebine göre vitir namazının hükmü nedir?",
+   "options": [
+    "Vâcip",
+    "Farz",
+    "Sünnet",
+    "Müstehap"
+   ],
+   "info": "Hanefîlere göre vitir vâciptir; diğer mezheplerde sünnettir."
+  },
+  {
+   "id": "z020",
+   "level": "zor",
+   "q": "Namazda yapılan bazı yanılmalar için namazın sonunda yapılan secdeye ne denir?",
+   "options": [
+    "Sehiv secdesi",
+    "Tilâvet secdesi",
+    "Şükür secdesi",
+    "Kamet secdesi"
+   ],
+   "info": "Sehiv, 'yanılma' demektir."
+  },
+  {
+   "id": "z021",
+   "level": "zor",
+   "q": "Mestler üzerine mesh süresi yolcu olmayan (mukim) biri için ne kadardır?",
+   "options": [
+    "1 gün 1 gece",
+    "3 gün 3 gece",
+    "1 hafta",
+    "Sadece 1 namaz vakti"
+   ],
+   "info": "Mukim için 24 saat, yolcu için 3 gün 3 gecedir."
+  },
+  {
+   "id": "z022",
+   "level": "zor",
+   "q": "'Mesnevî'nin yazarı kimdir?",
+   "options": [
+    "Mevlânâ Celâleddîn-i Rûmî",
+    "Yunus Emre",
+    "Hacı Bektaş-ı Velî",
+    "Ahmed Yesevî"
+   ],
+   "info": "Mesnevî Farsça yazılmış, yaklaşık 26 bin beyitlik bir eserdir."
+  },
+  {
+   "id": "z023",
+   "level": "zor",
+   "q": "'Kutadgu Bilig'in yazarı kimdir?",
+   "options": [
+    "Yusuf Has Hâcib",
+    "Kaşgarlı Mahmud",
+    "Edip Ahmet",
+    "Ali Şîr Nevâî"
+   ],
+   "info": "Kutadgu Bilig, Karahanlılar döneminde yazılmış bir siyasetnamedir."
+  },
+  {
+   "id": "z024",
+   "level": "zor",
+   "q": "Karahanlı hükümdarlarından ilk Müslüman olan kimdir?",
+   "options": [
+    "Satuk Buğra Han",
+    "Tuğrul Bey",
+    "Alparslan",
+    "Kutalmışoğlu Süleyman"
+   ],
+   "info": "Satuk Buğra Han'ın Müslüman olmasıyla Karahanlılar İslam'ı kabul etti."
+  },
+  {
+   "id": "z025",
+   "level": "zor",
+   "q": "Kâbe'nin üzerine örtülen siyah örtüye ne denir?",
+   "options": [
+    "Kisve",
+    "Hırka",
+    "Seccade",
+    "Sancak"
+   ],
+   "info": "Kisve her yıl yenilenir."
+  },
+  {
+   "id": "z026",
+   "level": "zor",
+   "q": "Hanefi mezhebine göre haccın farzları kaç tanedir?",
+   "options": [
+    "3",
+    "2",
+    "4",
+    "5"
+   ],
+   "info": "İhram, Arafat'ta vakfe ve ziyaret tavafı."
+  },
+  {
+   "id": "z027",
+   "level": "zor",
+   "q": "Başında besmele bulunmayan sure hangisidir?",
+   "options": [
+    "Tevbe",
+    "Fâtiha",
+    "Neml",
+    "Yâsîn"
+   ],
+   "info": "Tevbe suresi besmelesiz başlar."
+  },
+  {
+   "id": "z028",
+   "level": "zor",
+   "q": "İçinde iki kez besmele geçen sure hangisidir?",
+   "options": [
+    "Neml",
+    "Bakara",
+    "Tevbe",
+    "Fâtiha"
+   ],
+   "info": "Neml suresinin başında ve 30. ayetinde besmele geçer."
+  },
+  {
+   "id": "z029",
+   "level": "zor",
+   "q": "'Ümmü'l-Kitâb' (Kitabın anası) olarak bilinen sure hangisidir?",
+   "options": [
+    "Fâtiha",
+    "Bakara",
+    "İhlâs",
+    "Yâsîn"
+   ],
+   "info": "Fâtiha suresinin isimlerinden biri Ümmü'l-Kitâb'dır."
+  },
+  {
+   "id": "z030",
+   "level": "zor",
+   "q": "Hendek Savaşı'nda Medine çevresine hendek kazılmasını öneren sahabi kimdir?",
+   "options": [
+    "Selmân-ı Fârisî",
+    "Hz. Ömer",
+    "Hz. Hamza",
+    "Hâlid b. Velîd"
+   ],
+   "info": "Bu savunma yöntemi İran'da biliniyordu; Selmân-ı Fârisî önerdi."
+  },
+  {
+   "id": "z031",
+   "level": "zor",
+   "q": "Uhud Savaşı'nda şehit düşen ve 'Seyyidü'ş-şühedâ' denilen sahabi kimdir?",
+   "options": [
+    "Hz. Hamza",
+    "Hz. Mus'ab",
+    "Hz. Câfer",
+    "Hz. Zeyd"
+   ],
+   "info": "Peygamberimizin amcası Hz. Hamza Uhud'da şehit oldu."
+  },
+  {
+   "id": "z032",
+   "level": "zor",
+   "q": "Endülüs'te inşa edilen ve bugün İspanya'da bulunan ünlü cami hangisidir?",
+   "options": [
+    "Kurtuba Ulu Camii",
+    "Emevî Camii",
+    "Ezher Camii",
+    "Kayrevan Camii"
+   ],
+   "info": "Kurtuba (Córdoba) Ulu Camii 8. yüzyılda yapımına başlanan bir Endülüs eseridir."
+  },
+  {
+   "id": "z033",
+   "level": "zor",
+   "q": "Fatih Sultan Mehmed İstanbul'u hangi yıl fethetti?",
+   "options": [
+    "1453",
+    "1402",
+    "1517",
+    "1071"
+   ],
+   "info": "29 Mayıs 1453'te İstanbul fethedildi."
+  },
+  {
+   "id": "z034",
+   "level": "zor",
+   "q": "Ehl-i sünnetin itikadi mezheplerinden birinin kurucusu Ebû Mansûr el-Mâtürîdî hangi şehirde yaşadı?",
+   "options": [
+    "Semerkant",
+    "Bağdat",
+    "Kûfe",
+    "Buhara"
+   ],
+   "info": "Mâtürîdî Semerkant'ta yaşadı ve orada vefat etti (ö. 944)."
+  },
+  {
+   "id": "z035",
+   "level": "zor",
+   "q": "Peygamberimizin kabrinin bulunduğu mescit hangisidir?",
+   "options": [
+    "Mescid-i Nebevî",
+    "Kuba Mescidi",
+    "Mescid-i Haram",
+    "Mescid-i Aksâ"
+   ],
+   "info": "Mescid-i Nebevî Medine'dedir."
+  },
+  {
+   "id": "z036",
+   "level": "zor",
+   "q": "Hâlid b. Velîd'e verilen 'Allah'ın kılıcı' anlamındaki lakap hangisidir?",
+   "options": [
+    "Seyfullah",
+    "Esedullah",
+    "Fâruk",
+    "Zinnûreyn"
+   ],
+   "info": "Peygamberimiz ona 'Seyfullah' lakabını verdi."
+  },
+  {
+   "id": "z037",
+   "level": "zor",
+   "q": "Hz. Ali'ye verilen 'Allah'ın aslanı' anlamındaki lakap hangisidir?",
+   "options": [
+    "Esedullah",
+    "Seyfullah",
+    "Sıddîk",
+    "Fâruk"
+   ],
+   "info": "Hz. Ali'ye ayrıca 'Haydar' da denir."
+  },
+  {
+   "id": "z038",
+   "level": "zor",
+   "q": "İslam dünyasında ilk hastane türü kurumlara verilen ad hangisidir?",
+   "options": [
+    "Bîmâristan (Dârüşşifâ)",
+    "Medrese",
+    "Kervansaray",
+    "İmaret"
+   ],
+   "info": "Bîmâristan/Dârüşşifâ, hastaların tedavi edildiği kurumlardır."
+  },
+  {
+   "id": "z039",
+   "level": "zor",
+   "q": "Selçuklu veziri Nizâmülmülk'ün kurduğu ünlü medreselerin adı nedir?",
+   "options": [
+    "Nizâmiye Medreseleri",
+    "Sahn-ı Seman",
+    "Süleymaniye Medreseleri",
+    "Ezher"
+   ],
+   "info": "Nizâmiye Medreseleri 11. yüzyılda Bağdat başta olmak üzere birçok şehirde kuruldu."
+  },
+  {
+   "id": "z040",
+   "level": "zor",
+   "q": "Kur'an'da kıssası anlatılan ve sabrıyla bilinen peygamber kimdir?",
+   "options": [
+    "Hz. Eyyub",
+    "Hz. Lut",
+    "Hz. Hud",
+    "Hz. Salih"
+   ],
+   "info": "Hz. Eyyub, ağır hastalık ve kayıplara rağmen sabrıyla örnek gösterilir (Sâd 44)."
+  }
+ ]
+}

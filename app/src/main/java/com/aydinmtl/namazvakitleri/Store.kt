@@ -126,6 +126,26 @@ object Store {
         prefs(ctx).edit().putBoolean("adhanSilent", on).apply()
     }
 
+    // ---- Bilgi yarışması (Aile Halkası) ----
+
+    fun quizSession(ctx: Context): QuizSession? = QuizSession.fromJson(prefs(ctx).getString("quizSession", null))
+    fun saveQuizSession(ctx: Context, s: QuizSession?) {
+        val e = prefs(ctx).edit()
+        if (s == null) e.remove("quizSession") else e.putString("quizSession", s.toJson())
+        e.apply()
+    }
+
+    /** Ağacın puanı: tüm yarışmalardaki toplam doğru cevap. */
+    fun treePoints(ctx: Context): Int = prefs(ctx).getInt("treePoints", 0)
+    fun addTreePoint(ctx: Context) {
+        prefs(ctx).edit().putInt("treePoints", treePoints(ctx) + 1).apply()
+    }
+
+    fun goals(ctx: Context): List<FamilyGoal> = FamilyGoal.listFromJson(prefs(ctx).getString("goals", null))
+    fun saveGoals(ctx: Context, list: List<FamilyGoal>) {
+        prefs(ctx).edit().putString("goals", FamilyGoal.listToJson(list)).apply()
+    }
+
     // ---- Kaza çetelesi ve zikirmatik ----
 
     fun kaza(ctx: Context, i: Int): Int = prefs(ctx).getInt("kaza_$i", 0)

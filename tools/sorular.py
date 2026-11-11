@@ -1,0 +1,148 @@
+# Kıblenüma soru bankası. Her soru: (soru, doğru cevap, [3 yanlış], kısa açıklama)
+# Doğru cevap her zaman ilk sırada saklanır; uygulama şıkları her gösterimde karıştırır.
+import json, sys
+
+KOLAY = [
+("Müslümanların kutsal kitabının adı nedir?", "Kur'an-ı Kerim", ["Tevrat", "Zebur", "İncil"], "Kur'an-ı Kerim, Hz. Muhammed'e (s.a.v.) indirilen son ilahi kitaptır."),
+("Kur'an-ı Kerim'in ilk suresi hangisidir?", "Fâtiha", ["Bakara", "İhlâs", "Yâsîn"], "Mushafta ilk sırada Fâtiha suresi yer alır."),
+("Günde kaç vakit namaz kılmak farzdır?", "5", ["3", "4", "6"], "Sabah, öğle, ikindi, akşam ve yatsı: beş vakit."),
+("Büyük tufandan önce Allah'ın emriyle gemi yapan peygamber kimdir?", "Hz. Nuh", ["Hz. Musa", "Hz. Yunus", "Hz. İbrahim"], "Hz. Nuh, Allah'ın emriyle gemiyi yaptı; inananlar tufandan kurtuldu."),
+("Balığın karnında kalıp dua ederek kurtulan peygamber kimdir?", "Hz. Yunus", ["Hz. Nuh", "Hz. Eyyub", "Hz. Yusuf"], "Hz. Yunus balığın karnında Allah'a dua etti ve kurtuldu (Enbiyâ 87-88)."),
+("Ateşe atıldığında ateşin onu yakmadığı peygamber kimdir?", "Hz. İbrahim", ["Hz. Musa", "Hz. İsa", "Hz. Davud"], "Allah ateşe 'İbrahim'e karşı serin ve esenlik ol' buyurdu (Enbiyâ 69)."),
+("Asasını denize vurunca denizin yarıldığı peygamber kimdir?", "Hz. Musa", ["Hz. Nuh", "Hz. Süleyman", "Hz. Harun"], "Hz. Musa ve İsrailoğulları yarılan denizden geçerek Firavun'dan kurtuldu."),
+("Kardeşleri tarafından kuyuya atılan peygamber kimdir?", "Hz. Yusuf", ["Hz. Yakup", "Hz. İsmail", "Hz. Yunus"], "Hz. Yusuf'un kıssası Yusuf suresinde anlatılır."),
+("Ramazan ayında hangi ibadet farzdır?", "Oruç", ["Hac", "Kurban", "Umre"], "Ramazan ayında oruç tutmak her ergen ve sağlıklı Müslümana farzdır."),
+("İlk insan ve ilk peygamber kimdir?", "Hz. Âdem", ["Hz. Nuh", "Hz. İdris", "Hz. Şit"], "Hz. Âdem hem ilk insan hem de ilk peygamberdir."),
+("Peygamber Efendimiz hangi şehirde doğdu?", "Mekke", ["Medine", "Kudüs", "Taif"], "Hz. Muhammed (s.a.v.) 571 yılında Mekke'de doğdu."),
+("Kâbe hangi şehirdedir?", "Mekke", ["Medine", "Kudüs", "Şam"], "Kâbe, Mekke'deki Mescid-i Haram'ın ortasındadır."),
+("Namaz kılmadan önce yapılan temizliğe ne denir?", "Abdest", ["Teyemmüm", "Ezan", "Kamet"], "Namaz için abdest almak gerekir; su yoksa teyemmüm yapılır."),
+("Peygamber Efendimizin annesinin adı nedir?", "Âmine", ["Hatice", "Halime", "Fatıma"], "Annesi Âmine Hatun'dur; Peygamberimiz altı yaşındayken vefat etmiştir."),
+("Peygamber Efendimizin babasının adı nedir?", "Abdullah", ["Ebû Talib", "Abdülmuttalib", "Hamza"], "Babası Abdullah, Peygamberimiz doğmadan önce vefat etmiştir."),
+("Kur'an ayetlerini Peygamberimize getiren melek kimdir?", "Cebrail", ["Mikail", "İsrafil", "Azrail"], "Vahiy meleği Cebrail'dir (a.s.)."),
+("Kurban Bayramı'nda Allah rızası için ne yapılır?", "Kurban kesilir", ["Oruç tutulur", "Fitre verilir", "Teravih kılınır"], "Gücü yeten Müslümanlar Kurban Bayramı'nda kurban keser."),
+("Bir işe başlarken ne söyleriz?", "Bismillâhirrahmânirrahîm", ["Elhamdülillah", "Maşallah", "Sübhanallah"], "Besmele, 'Rahmân ve Rahîm olan Allah'ın adıyla' demektir."),
+("Müslümanlar karşılaştığında birbirine ne der?", "Esselâmü aleyküm", ["Günaydın", "Allah'a emanet ol", "Elhamdülillah"], "Selam, 'Allah'ın selameti üzerine olsun' anlamına gelir; cevabı 've aleyküm selam'dır."),
+("Aşağıdakilerden hangisi güzel ahlaka uygun DEĞİLDİR?", "Yalan söylemek", ["Doğru sözlü olmak", "Büyüklere saygı", "Sözünde durmak"], "Peygamberimiz doğruluğu emretmiş, yalandan sakındırmıştır."),
+("Komşumuz hastalandığında ne yapmak güzel olur?", "Ziyaret edip halini sormak", ["Hiç ilgilenmemek", "Kapısını çalmamak", "Sadece kendi işimize bakmak"], "Hasta ziyareti Müslümanın Müslüman üzerindeki haklarındandır."),
+("Peygamber Efendimiz Mekke'den hangi şehre hicret etti?", "Medine", ["Taif", "Kudüs", "Şam"], "622 yılında Mekke'den Medine'ye hicret edildi."),
+("Kur'an-ı Kerim'de kaç sure vardır?", "114", ["99", "110", "120"], "Kur'an-ı Kerim 114 sureden oluşur."),
+("Hz. Süleyman, Kur'an'da hangi hayvanın konuşmasını duyup tebessüm etti?", "Karınca", ["Arı", "Örümcek", "Kuş"], "Neml (Karınca) suresinde anlatılır (Neml 18-19)."),
+("Hz. Davud'a indirilen kitap hangisidir?", "Zebur", ["Tevrat", "İncil", "Kur'an"], "Zebur Hz. Davud'a, Tevrat Hz. Musa'ya, İncil Hz. İsa'ya indirildi."),
+("Tevrat hangi peygambere indirildi?", "Hz. Musa", ["Hz. İsa", "Hz. Davud", "Hz. İbrahim"], "Tevrat Hz. Musa'ya indirilen kitaptır."),
+("İncil hangi peygambere indirildi?", "Hz. İsa", ["Hz. Musa", "Hz. Davud", "Hz. Yahya"], "İncil Hz. İsa'ya indirilen kitaptır."),
+("Ezan ne için okunur?", "Namaz vaktinin girdiğini bildirmek için", ["Bayramı kutlamak için", "Ramazanın bittiğini söylemek için", "Sadece cuma günleri için"], "Ezan her vakitte namaza çağrıdır."),
+("Babası olmadan dünyaya gelen peygamber kimdir?", "Hz. İsa", ["Hz. Yahya", "Hz. Musa", "Hz. Yusuf"], "Hz. İsa, Hz. Meryem'den babasız olarak dünyaya geldi."),
+("Peygamberimizin kızı ve Hz. Ali'nin eşi kimdir?", "Hz. Fatıma", ["Hz. Ayşe", "Hz. Hatice", "Hz. Zeynep"], "Hz. Fatıma, Hz. Hasan ve Hz. Hüseyin'in annesidir."),
+("Peygamberimizin ilk eşi kimdir?", "Hz. Hatice", ["Hz. Ayşe", "Hz. Hafsa", "Hz. Fatıma"], "Hz. Hatice aynı zamanda ilk Müslüman olan kişidir."),
+("İlk vahiy Peygamberimize hangi mağarada geldi?", "Hira", ["Sevr", "Uhud", "Kehf"], "İlk vahiy Nur dağındaki Hira mağarasında geldi."),
+("İslam'ın şartları kaç tanedir?", "5", ["3", "6", "7"], "Kelime-i şehadet, namaz, oruç, zekât ve hac."),
+("İmanın şartları kaç tanedir?", "6", ["4", "5", "7"], "Allah'a, meleklere, kitaplara, peygamberlere, ahiret gününe ve kadere iman."),
+("İhtiyaç sahibine Allah rızası için yapılan yardıma ne denir?", "Sadaka", ["Vergi", "Borç", "Kira"], "Sadaka, karşılık beklemeden Allah rızası için yapılan iyiliktir."),
+("Yemekten sonra şükür için ne söyleriz?", "Elhamdülillah", ["Bismillah", "Estağfirullah", "İnşallah"], "'Elhamdülillah' Allah'a hamd olsun demektir."),
+("Peygamberimize gençliğinde 'güvenilir kişi' anlamında hangi lakap verilmişti?", "el-Emîn", ["el-Fâruk", "es-Sıddîk", "Seyfullah"], "Mekkeliler dürüstlüğü sebebiyle ona 'el-Emîn' derdi."),
+("Cuma namazı haftanın hangi günü kılınır?", "Cuma", ["Pazartesi", "Perşembe", "Pazar"], "Cuma namazı cuma günü öğle vaktinde cemaatle kılınır."),
+("Hz. Yusuf'un babası olan peygamber kimdir?", "Hz. Yakup", ["Hz. İshak", "Hz. İbrahim", "Hz. İsmail"], "Hz. Yakup, Hz. Yusuf'un babasıdır."),
+("Hz. İbrahim ile birlikte Kâbe'yi inşa eden oğlu kimdir?", "Hz. İsmail", ["Hz. İshak", "Hz. Yakup", "Hz. Lut"], "Kâbe'nin temellerini Hz. İbrahim ve Hz. İsmail yükseltti (Bakara 127)."),
+]
+
+ORTA = [
+("Mekke'den Medine'ye hicret miladi hangi yılda oldu?", "622", ["610", "630", "632"], "Hicret 622'de oldu; Hicri takvim bu olayı başlangıç alır."),
+("Bedir Savaşı hicretin kaçıncı yılında yapıldı?", "2", ["1", "3", "5"], "Bedir Savaşı hicretin 2. yılında (624) yapıldı."),
+("Uhud Savaşı hicretin kaçıncı yılında yapıldı?", "3", ["2", "5", "8"], "Uhud Savaşı hicretin 3. yılında (625) yapıldı."),
+("Mekke'nin fethi hicretin kaçıncı yılında gerçekleşti?", "8", ["5", "6", "10"], "Mekke hicretin 8. yılında (630) fethedildi."),
+("Peygamberimizden sonraki ilk halife kimdir?", "Hz. Ebûbekir", ["Hz. Ömer", "Hz. Osman", "Hz. Ali"], "Dört halife sırasıyla: Hz. Ebûbekir, Hz. Ömer, Hz. Osman, Hz. Ali."),
+("İkinci halife kimdir?", "Hz. Ömer", ["Hz. Ebûbekir", "Hz. Osman", "Hz. Ali"], "Hz. Ömer, Hz. Ebûbekir'den sonra halife oldu."),
+("Kur'an ayetleri hangi halife döneminde tek bir kitap (mushaf) halinde toplandı?", "Hz. Ebûbekir", ["Hz. Ömer", "Hz. Osman", "Hz. Ali"], "Yemâme savaşından sonra Hz. Ebûbekir döneminde toplandı; Hz. Osman döneminde çoğaltıldı."),
+("Mushafın çoğaltılıp merkezlere gönderilmesi hangi halife döneminde oldu?", "Hz. Osman", ["Hz. Ebûbekir", "Hz. Ömer", "Hz. Ali"], "Hz. Osman döneminde nüshalar çoğaltılarak İslam merkezlerine gönderildi."),
+("Peygamber Efendimiz hangi yılda vefat etti?", "632", ["622", "630", "640"], "Peygamberimiz 632 yılında Medine'de vefat etti."),
+("Kur'an-ı Kerim'in en uzun suresi hangisidir?", "Bakara", ["Âl-i İmrân", "Nisâ", "Yâsîn"], "Bakara suresi 286 ayettir ve en uzun suredir."),
+("Kur'an-ı Kerim'in en kısa suresi hangisidir?", "Kevser", ["Fâtiha", "İhlâs", "Felak"], "Kevser suresi üç kısa ayettir ve en kısa suredir."),
+("Âyetü'l-Kürsî hangi surededir?", "Bakara", ["Fâtiha", "Yâsîn", "Mülk"], "Âyetü'l-Kürsî, Bakara suresinin 255. ayetidir."),
+("İslam'ın ilk müezzini kimdir?", "Hz. Bilal", ["Hz. Ammar", "Hz. Zeyd", "Hz. Hamza"], "Hz. Bilal-i Habeşî güzel sesiyle ilk ezanı okuyan sahabidir."),
+("Müslümanların kıblesi Kudüs'ten hangi yöne çevrildi?", "Kâbe", ["Medine", "Taif", "Şam"], "Hicretten yaklaşık 16-17 ay sonra kıble Kâbe'ye çevrildi (Bakara 144)."),
+("Ticaret malı ve paranın zekât oranı ne kadardır?", "Kırkta bir (%2,5)", ["Onda bir (%10)", "Yirmide bir (%5)", "Yüzde bir (%1)"], "Nisap miktarına ulaşan para ve ticaret malında zekât kırkta birdir."),
+("Hac ibadeti hicri takvimin hangi ayında yapılır?", "Zilhicce", ["Ramazan", "Muharrem", "Şevval"], "Hac, Zilhicce ayının belirli günlerinde yapılır."),
+("Ramazan hicri takvimin kaçıncı ayıdır?", "9.", ["1.", "7.", "12."], "Ramazan hicri yılın dokuzuncu ayıdır."),
+("Teyemmüm ne zaman yapılır?", "Su bulunamadığında ya da kullanılamadığında", ["Her namazdan önce", "Sadece cuma günleri", "Abdest tazelemek için"], "Teyemmüm, suyun bulunmadığı veya kullanılamadığı durumlarda abdest yerine geçer."),
+("Hanefi mezhebine göre abdestin farzları kaç tanedir?", "4", ["3", "5", "6"], "Yüzü yıkamak, kolları dirseklerle yıkamak, başın dörtte birini meshetmek, ayakları topuklarla yıkamak."),
+("Sabah namazının farzı kaç rekâttır?", "2", ["3", "4", "1"], "Sabah namazının farzı 2 rekâttır."),
+("Akşam namazının farzı kaç rekâttır?", "3", ["2", "4", "5"], "Akşam namazının farzı 3 rekâttır."),
+("Peygamberimizi çocukken himaye eden dedesi kimdir?", "Abdülmuttalib", ["Ebû Talib", "Abbas", "Hâşim"], "Annesinin vefatından sonra dedesi Abdülmuttalib, onun vefatından sonra amcası Ebû Talib baktı."),
+("Peygamberimizi uzun yıllar koruyan amcası kimdir?", "Ebû Talib", ["Ebû Leheb", "Abbas", "Hamza"], "Ebû Talib, peygamberliğin ilk yıllarında da onu müşriklere karşı korudu."),
+("Kur'an'ın indirilmeye başladığı gece hangisidir?", "Kadir Gecesi", ["Berat Gecesi", "Miraç Gecesi", "Regaib Gecesi"], "Kadr suresi Kur'an'ın Kadir Gecesi'nde indirildiğini bildirir."),
+("Peygamberimizin Medine'ye varırken yaptırdığı ilk mescit hangisidir?", "Kuba Mescidi", ["Mescid-i Nebevî", "Mescid-i Aksâ", "Mescid-i Haram"], "Kuba Mescidi, hicret yolculuğunda Medine'ye girmeden önce inşa edildi."),
+("Hudeybiye Antlaşması hicretin kaçıncı yılında yapıldı?", "6", ["2", "4", "8"], "Hudeybiye Antlaşması hicretin 6. yılında (628) imzalandı."),
+("Medineli Müslümanlara ne ad verilir?", "Ensar", ["Muhacir", "Tâbiîn", "Ashâb-ı Suffe"], "Ensar 'yardım edenler' demektir; Mekke'den göç edenlere ise Muhacir denir."),
+("Peygamberimizin süt annesi kimdir?", "Halime", ["Âmine", "Hatice", "Ümmü Eymen"], "Halime-i Sa'diyye, Peygamberimizi çocukken çölde emzirip büyüttü."),
+("İsrâ olayında Peygamberimiz Mescid-i Haram'dan hangi mescide götürüldü?", "Mescid-i Aksâ", ["Kuba Mescidi", "Mescid-i Nebevî", "Mescid-i Kıbleteyn"], "İsrâ suresinin ilk ayeti bu geceyi anlatır."),
+("Kur'an'da adı açıkça geçen tek kadın kimdir?", "Hz. Meryem", ["Hz. Hatice", "Hz. Âsiye", "Hz. Hacer"], "Hz. Meryem'in adı Kur'an'da geçer; adını taşıyan bir sure de vardır."),
+("Fil olayında Kâbe'yi yıkmak isteyen ordunun komutanı kimdir?", "Ebrehe", ["Ebû Cehil", "Firavun", "Nemrut"], "Bu olay Fil suresinde anlatılır; Peygamberimizin doğduğu yıl yaşandı."),
+("Ashâb-ı Kehf kıssası hangi surede anlatılır?", "Kehf", ["Yusuf", "Meryem", "Rûm"], "Mağara arkadaşlarının kıssası Kehf suresindedir."),
+("Hicret yolculuğunda Peygamberimiz ve Hz. Ebûbekir hangi mağaraya saklandı?", "Sevr", ["Hira", "Uhud", "Kuba"], "Sevr mağarasında üç gün kaldılar."),
+("Hz. Ömer'e verilen 'hak ile batılı ayıran' anlamındaki lakap hangisidir?", "Fâruk", ["Sıddîk", "Zinnûreyn", "Esedullah"], "Hz. Ebûbekir'e Sıddîk, Hz. Osman'a Zinnûreyn denir."),
+("Kur'an-ı Kerim kaç cüzden oluşur?", "30", ["20", "40", "114"], "Kur'an 30 cüze ayrılır; mukabele genellikle cüz cüz okunur."),
+("Teravih namazı hangi ayda kılınır?", "Ramazan", ["Şaban", "Recep", "Zilhicce"], "Teravih, Ramazan gecelerinde yatsıdan sonra kılınan namazdır."),
+("Hz. Yusuf hangi ülkede yönetici oldu?", "Mısır", ["Yemen", "Irak", "Şam"], "Hz. Yusuf Mısır'da hazinelerin başına getirildi."),
+("Hz. Musa'nın peygamber olan kardeşi kimdir?", "Hz. Harun", ["Hz. Yuşa", "Hz. Yahya", "Hz. Zekeriyya"], "Hz. Harun, Hz. Musa'ya yardımcı olarak gönderildi."),
+("Fitre (fıtır sadakası) ne zamana kadar verilmelidir?", "Ramazan Bayramı namazından önce", ["Kurban Bayramı'nda", "Hicri yılbaşında", "Hac döneminde"], "Fitrenin bayram namazından önce, tercihen Ramazan içinde verilmesi gerekir."),
+("Kâbe'yi tavaf ederken kaç tur atılır?", "7", ["3", "5", "9"], "Tavaf, Kâbe'nin etrafında yedi şavttan (tur) oluşur."),
+]
+
+ZOR = [
+("İlk inen ayetler hangi surenin başındadır?", "Alak", ["Fâtiha", "Müddessir", "Kalem"], "'Oku! Yaratan Rabbinin adıyla oku' diye başlayan Alak suresinin ilk 5 ayetidir."),
+("Hz. Ebûbekir döneminde Kur'an'ı toplama heyetinin başkanı olan vahiy kâtibi kimdir?", "Zeyd b. Sâbit", ["Übey b. Kâ'b", "Abdullah b. Mes'ûd", "Muâz b. Cebel"], "Zeyd b. Sâbit vahiy kâtiplerindendi ve toplama işini yürüttü."),
+("Hanefi mezhebinin imamı kimdir?", "İmam-ı Âzam Ebû Hanîfe", ["İmam Şâfiî", "İmam Mâlik", "Ahmed b. Hanbel"], "Ebû Hanîfe (ö. 767) Kûfe'de yaşadı; Türkiye'de yaygın fıkhi mezhep Hanefîliktir."),
+("'el-Câmiu's-Sahîh' adlı ünlü hadis kitabının yazarı kimdir?", "İmam Buhârî", ["İmam Müslim", "Tirmizî", "İbn Mâce"], "Sahîh-i Buhârî, en güvenilir hadis kaynaklarından kabul edilir."),
+("Cebir biliminin kurucusu sayılan Müslüman matematikçi kimdir?", "Hârizmî", ["İbn Sînâ", "Bîrûnî", "Fârâbî"], "'Cebir' kelimesi Hârizmî'nin el-Kitâbü'l-Muhtasar fî hisâbi'l-cebr ve'l-mukâbele eserinden gelir."),
+("'el-Kânûn fi't-tıb' adlı tıp eserinin yazarı kimdir?", "İbn Sînâ", ["Râzî", "İbn Rüşd", "Zehrâvî"], "Bu eser Avrupa'da yüzyıllarca tıp ders kitabı olarak okutuldu."),
+("Mimar Sinan'ın 'ustalık eserim' dediği cami hangisidir?", "Selimiye Camii", ["Süleymaniye Camii", "Şehzade Camii", "Sultanahmet Camii"], "Edirne'deki Selimiye ustalık, Süleymaniye kalfalık, Şehzade çıraklık eseridir."),
+("Mimar Sinan'ın 'çıraklık eserim' dediği cami hangisidir?", "Şehzade Camii", ["Selimiye Camii", "Süleymaniye Camii", "Mihrimah Sultan Camii"], "İstanbul'daki Şehzade Camii, Sinan'ın çıraklık eseridir."),
+("Kudüs'teki Kubbetü's-Sahra'yı yaptıran Emevî halifesi kimdir?", "Abdülmelik b. Mervân", ["Muâviye", "Ömer b. Abdülaziz", "Harun Reşid"], "Kubbetü's-Sahra 691-692 yıllarında tamamlandı."),
+("Abbasiler döneminde kurulan ünlü ilim merkezi Beytü'l-Hikme hangi şehirdeydi?", "Bağdat", ["Şam", "Kahire", "Kurtuba"], "Beytü'l-Hikme'de birçok eser Arapçaya çevrildi ve bilimsel çalışmalar yapıldı."),
+("İbn Haldûn'un tarih felsefesiyle tanınan ünlü eseri hangisidir?", "Mukaddime", ["Mesnevî", "Siyasetname", "Kutadgu Bilig"], "Mukaddime, toplum ve tarih üzerine öncü bir eserdir."),
+("Işık ve görme üzerine 'Kitâbü'l-Menâzır'ı yazan bilgin kimdir?", "İbnü'l-Heysem", ["Hârizmî", "Bîrûnî", "Câbir b. Hayyân"], "İbnü'l-Heysem optik biliminin öncülerindendir."),
+("Malazgirt Savaşı hangi yılda yapıldı?", "1071", ["1037", "1176", "1299"], "Sultan Alparslan komutasındaki Selçuklular Bizans'ı yendi ve Anadolu'nun kapıları açıldı."),
+("Halifelik Osmanlılara hangi padişah döneminde geçti?", "Yavuz Sultan Selim", ["Fatih Sultan Mehmed", "Kanuni Sultan Süleyman", "II. Bayezid"], "1517'deki Mısır seferinin ardından halifelik Osmanlılara geçti."),
+("Türkiye'de yaygın olan itikadi (inanç) mezhep hangisidir?", "Mâtürîdîlik", ["Eş'arîlik", "Mu'tezile", "Hanbelîlik"], "Ehl-i sünnetin iki itikadi mezhebi Mâtürîdîlik ve Eş'arîliktir."),
+("Hicri takvimi başlatan halife kimdir?", "Hz. Ömer", ["Hz. Ebûbekir", "Hz. Osman", "Hz. Ali"], "Hz. Ömer döneminde hicret yılı takvimin başlangıcı kabul edildi."),
+("Peygamberimiz Veda Hutbesi'ni Veda Haccı sırasında esas olarak nerede okudu?", "Arafat", ["Taif", "Kuba", "Uhud"], "Veda Haccı sırasında (hicri 10) Arafat'ta okundu."),
+("Zekât verilecek sekiz sınıf Kur'an'da hangi surede sayılır?", "Tevbe", ["Bakara", "Nisâ", "Mâide"], "Tevbe suresinin 60. ayetinde sayılır."),
+("Hanefi mezhebine göre vitir namazının hükmü nedir?", "Vâcip", ["Farz", "Sünnet", "Müstehap"], "Hanefîlere göre vitir vâciptir; diğer mezheplerde sünnettir."),
+("Namazda yapılan bazı yanılmalar için namazın sonunda yapılan secdeye ne denir?", "Sehiv secdesi", ["Tilâvet secdesi", "Şükür secdesi", "Kamet secdesi"], "Sehiv, 'yanılma' demektir."),
+("Mestler üzerine mesh süresi yolcu olmayan (mukim) biri için ne kadardır?", "1 gün 1 gece", ["3 gün 3 gece", "1 hafta", "Sadece 1 namaz vakti"], "Mukim için 24 saat, yolcu için 3 gün 3 gecedir."),
+("'Mesnevî'nin yazarı kimdir?", "Mevlânâ Celâleddîn-i Rûmî", ["Yunus Emre", "Hacı Bektaş-ı Velî", "Ahmed Yesevî"], "Mesnevî Farsça yazılmış, yaklaşık 26 bin beyitlik bir eserdir."),
+("'Kutadgu Bilig'in yazarı kimdir?", "Yusuf Has Hâcib", ["Kaşgarlı Mahmud", "Edip Ahmet", "Ali Şîr Nevâî"], "Kutadgu Bilig, Karahanlılar döneminde yazılmış bir siyasetnamedir."),
+("Karahanlı hükümdarlarından ilk Müslüman olan kimdir?", "Satuk Buğra Han", ["Tuğrul Bey", "Alparslan", "Kutalmışoğlu Süleyman"], "Satuk Buğra Han'ın Müslüman olmasıyla Karahanlılar İslam'ı kabul etti."),
+("Kâbe'nin üzerine örtülen siyah örtüye ne denir?", "Kisve", ["Hırka", "Seccade", "Sancak"], "Kisve her yıl yenilenir."),
+("Hanefi mezhebine göre haccın farzları kaç tanedir?", "3", ["2", "4", "5"], "İhram, Arafat'ta vakfe ve ziyaret tavafı."),
+("Başında besmele bulunmayan sure hangisidir?", "Tevbe", ["Fâtiha", "Neml", "Yâsîn"], "Tevbe suresi besmelesiz başlar."),
+("İçinde iki kez besmele geçen sure hangisidir?", "Neml", ["Bakara", "Tevbe", "Fâtiha"], "Neml suresinin başında ve 30. ayetinde besmele geçer."),
+("'Ümmü'l-Kitâb' (Kitabın anası) olarak bilinen sure hangisidir?", "Fâtiha", ["Bakara", "İhlâs", "Yâsîn"], "Fâtiha suresinin isimlerinden biri Ümmü'l-Kitâb'dır."),
+("Hendek Savaşı'nda Medine çevresine hendek kazılmasını öneren sahabi kimdir?", "Selmân-ı Fârisî", ["Hz. Ömer", "Hz. Hamza", "Hâlid b. Velîd"], "Bu savunma yöntemi İran'da biliniyordu; Selmân-ı Fârisî önerdi."),
+("Uhud Savaşı'nda şehit düşen ve 'Seyyidü'ş-şühedâ' denilen sahabi kimdir?", "Hz. Hamza", ["Hz. Mus'ab", "Hz. Câfer", "Hz. Zeyd"], "Peygamberimizin amcası Hz. Hamza Uhud'da şehit oldu."),
+("Endülüs'te inşa edilen ve bugün İspanya'da bulunan ünlü cami hangisidir?", "Kurtuba Ulu Camii", ["Emevî Camii", "Ezher Camii", "Kayrevan Camii"], "Kurtuba (Córdoba) Ulu Camii 8. yüzyılda yapımına başlanan bir Endülüs eseridir."),
+("Fatih Sultan Mehmed İstanbul'u hangi yıl fethetti?", "1453", ["1402", "1517", "1071"], "29 Mayıs 1453'te İstanbul fethedildi."),
+("Ehl-i sünnetin itikadi mezheplerinden birinin kurucusu Ebû Mansûr el-Mâtürîdî hangi şehirde yaşadı?", "Semerkant", ["Bağdat", "Kûfe", "Buhara"], "Mâtürîdî Semerkant'ta yaşadı ve orada vefat etti (ö. 944)."),
+("Peygamberimizin kabrinin bulunduğu mescit hangisidir?", "Mescid-i Nebevî", ["Kuba Mescidi", "Mescid-i Haram", "Mescid-i Aksâ"], "Mescid-i Nebevî Medine'dedir."),
+("Hâlid b. Velîd'e verilen 'Allah'ın kılıcı' anlamındaki lakap hangisidir?", "Seyfullah", ["Esedullah", "Fâruk", "Zinnûreyn"], "Peygamberimiz ona 'Seyfullah' lakabını verdi."),
+("Hz. Ali'ye verilen 'Allah'ın aslanı' anlamındaki lakap hangisidir?", "Esedullah", ["Seyfullah", "Sıddîk", "Fâruk"], "Hz. Ali'ye ayrıca 'Haydar' da denir."),
+("İslam dünyasında ilk hastane türü kurumlara verilen ad hangisidir?", "Bîmâristan (Dârüşşifâ)", ["Medrese", "Kervansaray", "İmaret"], "Bîmâristan/Dârüşşifâ, hastaların tedavi edildiği kurumlardır."),
+("Selçuklu veziri Nizâmülmülk'ün kurduğu ünlü medreselerin adı nedir?", "Nizâmiye Medreseleri", ["Sahn-ı Seman", "Süleymaniye Medreseleri", "Ezher"], "Nizâmiye Medreseleri 11. yüzyılda Bağdat başta olmak üzere birçok şehirde kuruldu."),
+("Kur'an'da kıssası anlatılan ve sabrıyla bilinen peygamber kimdir?", "Hz. Eyyub", ["Hz. Lut", "Hz. Hud", "Hz. Salih"], "Hz. Eyyub, ağır hastalık ve kayıplara rağmen sabrıyla örnek gösterilir (Sâd 44)."),
+]
+
+def build():
+    out = []
+    for level, items in (("kolay", KOLAY), ("orta", ORTA), ("zor", ZOR)):
+        for i, (q, a, wrong, info) in enumerate(items, 1):
+            assert len(wrong) == 3, q
+            assert a not in wrong, q
+            assert len(set(wrong)) == 3, q
+            out.append({"id": f"{level[0]}{i:03d}", "level": level, "q": q, "options": [a] + wrong, "info": info})
+    return out
+
+data = build()
+qs = [d["q"] for d in data]
+assert len(qs) == len(set(qs)), "tekrarlanan soru var"
+json.dump({"version": 1, "questions": data}, open(sys.argv[1], "w"), ensure_ascii=False, indent=1)
+print({l: sum(1 for d in data if d["level"] == l) for l in ("kolay", "orta", "zor")})

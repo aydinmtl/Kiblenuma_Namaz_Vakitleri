@@ -37,6 +37,7 @@
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".HolyDaysActivity" android:exported="false" />
         <activity android:name=".KazaActivity" android:exported="false" />
+        <activity android:name=".QuizActivity" android:exported="false" />
         <activity android:name=".ZikirActivity" android:exported="false" />
         <activity android:name=".MosquesActivity" android:exported="false" />
         <activity

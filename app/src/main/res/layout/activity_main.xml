@@ -165,6 +165,13 @@
                 android:text="Zikirmatik" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnQuiz"
+            style="@style/Btn"
+            android:layout_width="match_parent"
+            android:layout_marginTop="12dp"
+            android:text="🌳  Aile Halkası · Bilgi Yarışması" />
+
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"

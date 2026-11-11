@@ -93,6 +93,9 @@ class MainActivity : Activity() {
         findViewById<Button>(R.id.btnZikir).setOnClickListener {
             startActivity(Intent(this, ZikirActivity::class.java))
         }
+        findViewById<Button>(R.id.btnQuiz).setOnClickListener {
+            startActivity(Intent(this, QuizActivity::class.java))
+        }
     }
 
     override fun onResume() {
