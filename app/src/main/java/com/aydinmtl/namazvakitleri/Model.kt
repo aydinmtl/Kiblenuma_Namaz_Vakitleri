@@ -16,20 +16,34 @@ val PRAYER_NAMES = listOf("İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Y
 /** Güneş (1) bir namaz vakti değil; bildirim gönderilmez. */
 const val SUNRISE = 1
 
-/** Bir günün 6 vakti. */
+/**
+ * Bir günün 6 vakti.
+ * [times] yerin kendi saatiyle yazılır (Diyanet'in listesindeki gibi).
+ * [shiftMinutes]: telefonun saati ile yerin saati arasındaki fark (dakika). Genelde 0'dır;
+ * başka saat dilimindeki bir yer seçilince (ör. Cenevre'deyken İstanbul) 0 olmaz.
+ * Ekranda [times] aynen gösterilir; alarm ve geri sayım bu farkla düzeltilmiş anı kullanır.
+ */
 data class PrayerDay(
     val date: LocalDate,
     val times: List<LocalTime>,
     val hijri: String,
     val hijriShort: String = "",
+    val shiftMinutes: Int = 0,
 )
 
 /**
  * Takvimdeki tek bir an: hangi vakit, ne zaman.
+ * [at] her zaman TELEFONUN saatiyle gerçek andır (alarm ve geri sayım bunu kullanır).
+ * [clock]: listede yazan saat (yerin kendi saati). Saat dilimleri aynıysa [at] ile aynıdır.
  * [day]: vaktin ait olduğu gün (imsakiyedeki satır). Genelde [at] ile aynı gündür; ama kuzey
  * ülkelerinde yatsı gece yarısını geçerse [at] ertesi güne düşer, [day] yine o günün satırıdır.
  */
-data class Moment(val index: Int, val at: LocalDateTime, val day: LocalDate = at.toLocalDate()) {
+data class Moment(
+    val index: Int,
+    val at: LocalDateTime,
+    val day: LocalDate = at.toLocalDate(),
+    val clock: LocalTime = at.toLocalTime(),
+) {
     val name: String get() = PRAYER_NAMES[index]
 }
 
@@ -56,7 +70,9 @@ object Prayers {
                 i == 5 && time.isBefore(t[4]) -> d.date.plusDays(1)
                 else -> d.date
             }
-            Moment(i, LocalDateTime.of(date, time), d.date)
+            // Yerin saatiyle an -> telefonun saatiyle an (fark yoksa aynı kalır)
+            val at = LocalDateTime.of(date, time).plusMinutes(d.shiftMinutes.toLong())
+            Moment(i, at, d.date, time)
         }
     }
 
