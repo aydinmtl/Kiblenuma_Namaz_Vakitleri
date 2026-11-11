@@ -28,19 +28,19 @@ Ekrana bağlı olmayan mantık JVM birim testleriyle denendi (`app/src/test/`).
 
 ## Küçük
 
-| # | Sorun | Nerede |
-|---|---|---|
-| S1 | Widget geri sayımı alarm gecikirse eksiye düşer (devir notu 7). Alarm tam zamanlıysa görülmez. | `PrayerWidget` |
-| S2 | Ana ekran her saniye `Times.days()` + `Prayers.moments()` çağırıyor (devir notu 10). Önbellek sayesinde maliyeti çok düşük (≈190 öğe sıralanıyor); ölçülebilir pil etkisi beklenmez. | `MainActivity.tick` |
-| S3 | Bildirim alarmı Doze yüzünden 15 dakikadan fazla gecikirse bildirim hiç gösterilmez (eski vakit için uyarı vermeme kuralı). Yalnızca tam zamanlı alarm izni yoksa olur. | `PrayerAlarmReceiver` |
-| S4 | Aynı ana denk gelen iki olaydan (ör. bir hatırlatma ile bir vakit girişi) ikincisi atlanır. Çok nadir. | `AlarmScheduler.nextEvent` |
-| S5 | `Hijri.alignWithDiyanet` ortak `offsetDays` değişkenini döngüde geçici olarak değiştiriyor; aynı anda başka iş parçacığı Hicri tarih okursa bir an yanlış gün görebilir. | `Hijri.kt` |
-| S6 | Elle yer seçiminde arama aksan duyarlı: "zurih" yazınca "Zürih" bulunur ama "geneve" ile "Cenevre" bulunmaz (beklenen), "kadikoy" ile "Kadıköy" bulunmaz. `norm()` kullanılabilir. | `LocationActivity.filter` |
-| S7 | Kaza sayısına çok büyük sayı yazılırsa (Int'i aşan) değer sessizce 0 olur. | `KazaActivity.askNumber` |
-| S8 | Hedef kaydı bozulursa (aşama numarası listede yoksa) Aile Halkası ekranı çöker. Normal kullanımda olmaz. | `QuizActivity.renderGoals` |
-| S9 | AR kıblede kamera görüş açısı 62° varsayılıyor (devir notu 9); `CameraCharacteristics`'ten okunabilir. Ok yönü doğru, yalnızca Kâbe işaretinin ekrandaki yatay yeri biraz kayabilir. | `ArOverlayView` |
-| S10 | `allowBackup=true`: yedekten başka telefona geri yüklenince seçili ezan dosyasının adresi geçersiz olur; ezan çalmaz, bildirim yine gelir (K1 düzeltmesinden sonra sesli). | `AndroidManifest.xml` |
-| S11 | Fransızca "Genève" ile Diyanet'in İngilizce "Geneva" adı eşleşmiyor (testle gösterildi). Türkçe "Cenevre" adı ya da "en yakın yer" yedeği bunu karşılıyor; Thônex'te sorun beklenmez ama telefonda denenmeli. | `PlaceMatch` |
+| # | Sorun | Nerede | Durum |
+|---|---|---|---|
+| S1 | Widget geri sayımı alarm gecikirse eksiye düşer (devir notu 7). Alarm tam zamanlıysa görülmez. | `PrayerWidget` | Açık: "Alarmlar ve hatırlatıcılar" izni açıksa alarm tam zamanında çalar ve sorun görülmez |
+| S2 | Ana ekran her saniye `Times.days()` + `Prayers.moments()` çağırıyor (devir notu 10). Önbellek sayesinde maliyeti çok düşük (≈190 öğe sıralanıyor); ölçülebilir pil etkisi beklenmez. | `MainActivity.tick` | Bilerek bırakıldı (ölçülebilir etkisi yok) |
+| S3 | Bildirim alarmı Doze yüzünden 15 dakikadan fazla gecikirse bildirim hiç gösterilmez (eski vakit için uyarı vermeme kuralı). Yalnızca tam zamanlı alarm izni yoksa olur. | `PrayerAlarmReceiver` | Düzeltildi: vakit bildirimi 1 saate kadar gecikse de gelir; ezan 15 dk'dan geç çalmaz; hatırlatma vakit girdiyse gösterilmez (`AlarmPlan`) |
+| S4 | Aynı ana denk gelen iki olaydan (ör. bir hatırlatma ile bir vakit girişi) ikincisi atlanır. Çok nadir. | `AlarmScheduler.nextEvent` | Düzeltildi: çakışan hatırlatma 1 dk öne alınır (`AlarmPlan.next`, testli) |
+| S5 | `Hijri.alignWithDiyanet` ortak `offsetDays` değişkenini döngüde geçici olarak değiştiriyor; aynı anda başka iş parçacığı Hicri tarih okursa bir an yanlış gün görebilir. | `Hijri.kt` | Düzeltildi: denemeler ortak değişkene dokunmadan yapılıyor |
+| S6 | Elle yer seçiminde arama aksan duyarlı: "zurih" yazınca "Zürih" bulunur ama "geneve" ile "Cenevre" bulunmaz (beklenen), "kadikoy" ile "Kadıköy" bulunmaz. `norm()` kullanılabilir. | `LocationActivity.filter` | Düzeltildi: arama `norm()` ile |
+| S7 | Kaza sayısına çok büyük sayı yazılırsa (Int'i aşan) değer sessizce 0 olur. | `KazaActivity.askNumber` | Düzeltildi: üst sınır 100.000, boş bırakılırsa 0 |
+| S8 | Hedef kaydı bozulursa (aşama numarası listede yoksa) Aile Halkası ekranı çöker. Normal kullanımda olmaz. | `QuizActivity.renderGoals` | Aile Halkası 1. paketinde (PR #7) düzeltildi |
+| S9 | AR kıblede kamera görüş açısı 62° varsayılıyor (devir notu 9); `CameraCharacteristics`'ten okunabilir. Ok yönü doğru, yalnızca Kâbe işaretinin ekrandaki yatay yeri biraz kayabilir. | `ArOverlayView` | Düzeltildi: açı kameradan okunuyor, ekran kırpması ve tanjant hesaba katılıyor (`ArMath`, testli) |
+| S10 | `allowBackup=true`: yedekten başka telefona geri yüklenince seçili ezan dosyasının adresi geçersiz olur; ezan çalmaz, bildirim yine gelir (K1 düzeltmesinden sonra sesli). | `AndroidManifest.xml` | Ezan PR'ı (#2) ile karşılandı: ezan dosyası açılamazsa bildirim sesli gelir |
+| S11 | Fransızca "Genève" ile Diyanet'in İngilizce "Geneva" adı eşleşmiyor (testle gösterildi). Türkçe "Cenevre" adı ya da "en yakın yer" yedeği bunu karşılıyor; Thônex'te sorun beklenmez ama telefonda denenmeli. | `PlaceMatch` | Açık: "en yakın yer" yedeği karşılıyor; telefonda denenmeli |
 
 ## Devir notlarındaki 12 maddenin doğrulaması
 

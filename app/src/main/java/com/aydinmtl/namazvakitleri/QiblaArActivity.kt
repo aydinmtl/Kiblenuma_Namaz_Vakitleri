@@ -7,6 +7,8 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -75,10 +77,32 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
                 p.setSurfaceProvider(preview.surfaceProvider)
                 provider.unbindAll()
                 provider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, p)
+                overlay.cameraFov = backCameraFov()
             } catch (e: Exception) {
                 tvInfo.text = "Kamera açılamadı."
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    /**
+     * Arka kameranın tam yatay görüş açısını kameranın kendi bilgilerinden hesaplar
+     * (sensör boyu + odak uzaklığı). CameraX de varsayılan olarak ilk arka kamerayı açar.
+     * Okunamazsa varsayılan açı kullanılır.
+     */
+    private fun backCameraFov(): Float = try {
+        val cm = getSystemService(CameraManager::class.java)
+        val id = cm.cameraIdList.first {
+            cm.getCameraCharacteristics(it).get(CameraCharacteristics.LENS_FACING) ==
+                CameraCharacteristics.LENS_FACING_BACK
+        }
+        val c = cm.getCameraCharacteristics(id)
+        val size = c.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)
+        val focal = c.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)?.firstOrNull()
+        // Sensör yatay durur; telefon dik tutulunca ekranın yatayı sensörün KISA kenarıdır.
+        if (size == null || focal == null) ArMath.DEFAULT_CAMERA_FOV
+        else ArMath.cameraFov(minOf(size.width, size.height), focal)
+    } catch (e: Exception) {
+        ArMath.DEFAULT_CAMERA_FOV
     }
 
     private fun findLocation() {

@@ -19,9 +19,10 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
         val at = Instant.ofEpochMilli(atMs).atZone(zone).toLocalDateTime()
         val fire = Instant.ofEpochMilli(fireMs).atZone(zone).toLocalDateTime()
 
-        // Telefon uzun süre kapalı kaldıysa eski olay için uyarı verme (15 dk tolerans).
-        val late = System.currentTimeMillis() - fireMs
-        val notify = index in PRAYER_NAMES.indices && late < 15 * 60_000L &&
+        // Alarm çok geciktiyse eski olay için uyarı verme (kurallar AlarmPlan.shouldNotify'da).
+        val nowMs = System.currentTimeMillis()
+        val notify = index in PRAYER_NAMES.indices &&
+            AlarmPlan.shouldNotify(reminder, nowMs, fireMs, atMs) &&
             Store.notificationsOn(app) && Store.notifyFor(app, index)
 
         if (notify) {
@@ -29,7 +30,8 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
             if (reminder) {
                 Notifications.showReminder(app, m, Store.reminderMinutes(app))
             } else {
-                val playAdhan = index != SUNRISE && Store.adhanOn(app) && AdhanService.allowedNow(app)
+                val playAdhan = index != SUNRISE && Store.adhanOn(app) && AdhanService.allowedNow(app) &&
+                    AlarmPlan.adhanInTime(nowMs, atMs) // 15 dakikadan geç ezan çalınmaz
                 // Önce ezanı başlatmayı dene. Android izin vermezse (ör. "Alarmlar ve hatırlatıcılar"
                 // izni yoksa) bildirim SESLİ gönderilir; yoksa kullanıcı vakti hiç duymaz.
                 val adhanStarted = playAdhan && AdhanService.start(app, m)

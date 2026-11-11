@@ -15,8 +15,11 @@ import kotlin.math.abs
 class ArOverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     var offset: Float? = null
-    /** Kameranın yatay görüş açısı (derece); çoğu telefonda 60-70°. */
-    var horizontalFov = 62f
+    /**
+     * Kameranın, telefon dik tutulunca tam yatay görüş açısı (derece). QiblaArActivity bunu
+     * kameranın kendi bilgilerinden okur; okuyamazsa varsayılan kalır.
+     */
+    var cameraFov = ArMath.DEFAULT_CAMERA_FOV
 
     private val dp = resources.displayMetrics.density
     private val gold = context.getColor(R.color.gold)
@@ -40,12 +43,13 @@ class ArOverlayView(context: Context, attrs: AttributeSet?) : View(context, attr
         // Ortadaki nişangâh
         canvas.drawLine(cx, cy - 30 * dp, cx, cy + 30 * dp, stroke)
 
-        val half = horizontalFov / 2f
+        // Ekranda görünen açı: kamera görüntüsü ekranı doldurmak için kırpıldığından daha dar.
+        val half = ArMath.visibleFov(cameraFov, width, height) / 2f
         if (abs(off) <= half) {
             val aligned = abs(off) < 3f
             val color = if (aligned) green else gold
             fill.color = color
-            val x = cx + off / half * (width / 2f)
+            val x = ArMath.screenX(off, half, width)
             // Kâbe: siyah küp + altın kuşak
             val s = 34 * dp
             fill.color = 0xFF111111.toInt()

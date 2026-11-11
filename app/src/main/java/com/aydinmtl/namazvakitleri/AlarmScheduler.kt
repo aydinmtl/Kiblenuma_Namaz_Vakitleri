@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Build
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 
 /**
  * Her seferinde yalnızca SIRADAKİ olay için bir alarm kurar. Olaylar:
@@ -21,28 +20,19 @@ object AlarmScheduler {
     const val EXTRA_FIRE = "fire"         // alarmın çaldığı an (ms)
     const val EXTRA_REMINDER = "reminder" // true: önceden hatırlatma
 
-    data class Event(val moment: Moment, val reminder: Boolean, val fireAt: LocalDateTime)
-
     fun canExact(ctx: Context): Boolean {
         if (Build.VERSION.SDK_INT < 31) return true
         val am = ctx.getSystemService(AlarmManager::class.java) ?: return false
         return am.canScheduleExactAlarms()
     }
 
-    /** [after] anından sonraki ilk olay. */
-    fun nextEvent(ctx: Context, after: LocalDateTime): Event? {
-        val moments = Prayers.moments(Times.days(ctx))
-        val remind = Store.reminderMinutes(ctx)
-        val events = ArrayList<Event>()
-        for (m in moments) {
-            events.add(Event(m, false, m.at))
-            if (remind > 0 && Store.notificationsOn(ctx) && Store.notifyFor(ctx, m.index)) {
-                events.add(Event(m, true, m.at.minusMinutes(remind.toLong())))
-            }
-        }
-        return events
-            .filter { it.fireAt.isAfter(after) }
-            .minByOrNull { it.fireAt.toEpochSecond(ZoneOffset.UTC) }
+    /** [after] anından sonraki ilk olay. Kurallar AlarmPlan.next içinde. */
+    fun nextEvent(ctx: Context, after: LocalDateTime): AlarmPlan.Event? {
+        val remind = if (Store.notificationsOn(ctx)) Store.reminderMinutes(ctx) else 0
+        return AlarmPlan.next(
+            Prayers.moments(Times.days(ctx)), remind,
+            remindFor = { Store.notifyFor(ctx, it) }, after = after,
+        )
     }
 
     fun schedule(ctx: Context, after: LocalDateTime = LocalDateTime.now()) {
