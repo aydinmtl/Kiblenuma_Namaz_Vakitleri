@@ -163,18 +163,18 @@ class MainActivity : Activity() {
         if (checkingLocation) return
         if (!LocationHelper.isLocationOn(this)) {
             locationNote = "Telefonun konum servisi kapalı; son seçilen yer kullanılıyor."
-            noPlaceFallback("Konum servisi kapalı. Şehrini elle seç ya da konumu açıp tekrar dene.")
+            noPlaceFallback("telefonun konum servisi kapalı.")
             return
         }
         checkingLocation = true
         updateLocMode()
-        LocationHelper.current(this) { loc ->
+        LocationHelper.current(this, timeoutMs = 10_000L) { loc ->
             if (isFinishing || isDestroyed) return@current
             if (loc == null) {
                 checkingLocation = false
                 locationNote = "Konum alınamadı; son seçilen yer kullanılıyor."
                 updateLocMode()
-                noPlaceFallback("Konum alınamadı. Şehrini elle seç.")
+                noPlaceFallback("telefon konumu bildirmedi (10 sn içinde).")
                 return@current
             }
             if (!AutoLocation.needsCheck(this, loc)) {
@@ -186,16 +186,19 @@ class MainActivity : Activity() {
             val app = applicationContext
             Thread {
                 val result = try {
-                    AutoLocation.resolve(app, loc)
+                    AutoLocation.resolve(app, loc) { msg ->
+                        // İlk kurulumda hangi adımda olunduğunu göster
+                        runOnUiThread { if (Store.districtId(app) == null) tvNextLabel.text = msg }
+                    }
                 } catch (e: Exception) {
                     AutoLocation.Result.Failed("İnternete bağlanılamadı.")
                 }
-                runOnUiThread { onLocationResult(result) }
+                runOnUiThread { onLocationResult(result, loc) }
             }.start()
         }
     }
 
-    private fun onLocationResult(r: AutoLocation.Result) {
+    private fun onLocationResult(r: AutoLocation.Result, loc: android.location.Location) {
         checkingLocation = false
         if (isFinishing || isDestroyed) return
         when (r) {
@@ -211,17 +214,18 @@ class MainActivity : Activity() {
             is AutoLocation.Result.Same -> locationNote = null
             is AutoLocation.Result.Failed -> {
                 locationNote = r.reason + " Son seçilen yer kullanılıyor."
-                noPlaceFallback(r.reason + " Şehrini elle seç.")
+                // Aynı yerde her açılışta yeniden denemesin; 15 km yer değiştirince ya da ↻ ile tekrar dener.
+                Store.saveAutoPoint(this, loc.latitude, loc.longitude)
+                noPlaceFallback(r.reason)
             }
         }
         updateLocMode()
     }
 
     /** Hiç yer seçilmemişken konum bulunamazsa elle seçim ekranını aç. */
-    private fun noPlaceFallback(message: String) {
+    private fun noPlaceFallback(reason: String) {
         if (Store.districtId(this) != null) return
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        startActivity(Intent(this, LocationActivity::class.java))
+        startActivity(Intent(this, LocationActivity::class.java).putExtra(LocationActivity.EXTRA_REASON, reason))
     }
 
     private fun updateLocMode() {

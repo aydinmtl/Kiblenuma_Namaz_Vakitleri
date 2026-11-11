@@ -88,6 +88,19 @@ object Store {
         e.apply()
     }
 
+    /** Diyanet yerlerinin (adından bulunmuş) koordinat önbelleği: en yakın yer hesabı için. */
+    fun geoCache(ctx: Context, placeId: String): Pair<Double, Double>? {
+        val s = prefs(ctx).getString("geo_$placeId", null) ?: return null
+        val parts = s.split(",")
+        val lat = parts.getOrNull(0)?.toDoubleOrNull() ?: return null
+        val lon = parts.getOrNull(1)?.toDoubleOrNull() ?: return null
+        return Pair(lat, lon)
+    }
+
+    fun setGeoCache(ctx: Context, placeId: String, p: Pair<Double, Double>) {
+        prefs(ctx).edit().putString("geo_$placeId", "${p.first},${p.second}").apply()
+    }
+
     // ---- Hatırlatma ve ezan ----
 
     /** Vakitten kaç dakika önce hatırlatılsın (0 = kapalı). */

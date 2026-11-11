@@ -15,6 +15,10 @@ import android.widget.Toast
 /** Ülke → Şehir → İlçe seçimi. Seçimden sonra 30 günlük vakitleri indirir. */
 class LocationActivity : Activity() {
 
+    companion object {
+        const val EXTRA_REASON = "reason"
+    }
+
     private enum class Stage { COUNTRY, CITY, DISTRICT }
 
     private var stage = Stage.COUNTRY
@@ -55,6 +59,13 @@ class LocationActivity : Activity() {
             override fun afterTextChanged(s: Editable?) = filter()
         })
         tvError.setOnClickListener { lastLoad?.invoke() }
+
+        // Ana ekran otomatik konumda başarısız olduysa nedenini göster.
+        intent.getStringExtra(EXTRA_REASON)?.let { reason ->
+            val tv = findViewById<TextView>(R.id.tvReason)
+            tv.text = "Konumun otomatik bulunamadı: $reason\nŞimdilik şehrini elle seçebilirsin."
+            tv.visibility = View.VISIBLE
+        }
 
         showCountries()
     }
@@ -128,7 +139,8 @@ class LocationActivity : Activity() {
         progress.visibility = View.VISIBLE
         list.isEnabled = false
         val label = Diyanet.label(district, city, country)
-        val wasAuto = Store.autoLocation(this)
+        val fromAutoFailure = intent.hasExtra(EXTRA_REASON)
+        val wasAuto = Store.autoLocation(this) && !fromAutoFailure
         val app = applicationContext
         Thread {
             try {
@@ -143,8 +155,9 @@ class LocationActivity : Activity() {
                     listOf(district.nameEn, c?.nameEn ?: "", k?.nameEn ?: "").filter { it.isNotBlank() }.joinToString(", "),
                     label,
                 )))
-                // Elle seçilen yer, otomatik konum tarafından ezilmesin.
-                Store.setAutoLocation(app, false)
+                // Elle seçilen yer otomatik konum tarafından ezilmesin. Ama bu ekran otomatik konum
+                // başarısız olduğu için açıldıysa otomatik konum açık kalır (yolculukta yine çalışsın).
+                if (!fromAutoFailure) Store.setAutoLocation(app, false)
                 AlarmScheduler.schedule(app)
                 PrayerWidget.updateAll(app)
                 runOnUiThread {
