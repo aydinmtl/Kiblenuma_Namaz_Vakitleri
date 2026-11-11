@@ -141,6 +141,7 @@ class MainActivity : Activity() {
             if (Store.notificationsOn(this)) askNotificationPermission()
         } else {
             tvPlace.text = "📍 Konum aranıyor…"
+            tvDate.text = LocalDate.now().format(dateFormat)
             tvNextLabel.text = "Bulunduğun yer bulunuyor…"
         }
         updateLocMode()
@@ -203,6 +204,8 @@ class MainActivity : Activity() {
                 Toast.makeText(this, "Konum güncellendi: ${r.label}", Toast.LENGTH_LONG).show()
                 shownNext = null
                 showTimes()
+                // İlk kurulumda yer ancak şimdi bulundu: bildirim iznini şimdi sor.
+                if (Store.notificationsOn(this)) askNotificationPermission()
                 updateStatus()
             }
             is AutoLocation.Result.Same -> locationNote = null
@@ -339,6 +342,9 @@ class MainActivity : Activity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LocationConsent.REQUEST_CODE) {
+            // İzin penceresi kapandı: açıklama penceresinin bekleme işaretini kaldır,
+            // yoksa resumeFlow hiç ilerlemez ve ekran boş kalır.
+            dialogOpen = false
             val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
             if (!granted) {
                 Store.setAutoLocation(this, false)
