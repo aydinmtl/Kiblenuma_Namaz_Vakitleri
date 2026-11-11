@@ -74,13 +74,13 @@ object AutoLocation {
         val found = (names.places.take(3) + names.countries.take(1)).distinct().joinToString(", ")
 
         progress("Diyanet listesinde aranıyor: ${names.shown}")
-        val country = bestMatch(Diyanet.countries(), names.countries)
+        val country = PlaceMatch.best(Diyanet.countries(), names.countries)
             ?: return Result.Failed("Ülke Diyanet listesinde bulunamadı. (Bulunan: $found)")
 
         val cities = Diyanet.cities(country.id)
-        val city = bestMatch(cities, names.places)
+        val city = PlaceMatch.best(cities, names.places)
             ?: cities.singleOrNull()
-            ?: bestMatch(cities, names.countries)
+            ?: PlaceMatch.best(cities, names.countries)
             ?: run {
                 progress("En yakın şehir hesaplanıyor…")
                 nearest(ctx, cities, country.name, loc)
@@ -88,13 +88,13 @@ object AutoLocation {
             ?: return Result.Failed("${country.name} içinde yakın bir Diyanet şehri bulunamadı. (Bulunan: $found)")
 
         val districts = Diyanet.districts(city.id)
-        val district = bestMatch(districts, names.places)
+        val district = PlaceMatch.best(districts, names.places)
             ?: districts.singleOrNull()
             ?: run {
                 progress("En yakın ilçe hesaplanıyor…")
                 nearest(ctx, districts, "${city.name}, ${country.name}", loc)
             }
-            ?: bestMatch(districts, listOf(city.name, city.nameEn))
+            ?: PlaceMatch.best(districts, listOf(city.name, city.nameEn))
             ?: return Result.Failed("${city.name} içinde yakın bir Diyanet ilçesi bulunamadı. (Bulunan: $found)")
 
         if (district.id == Store.districtId(ctx)) {
@@ -264,22 +264,5 @@ object AutoLocation {
         } finally {
             executor.shutdownNow()
         }
-    }
-
-    /** Önce birebir eşleşme, sonra baş kısmı tutan eşleşme ("Genève" ~ "Geneve"). */
-    private fun bestMatch(list: List<Diyanet.Place>, names: List<String?>): Diyanet.Place? {
-        val keys = names.map { norm(it) }.filter { it.length >= 3 }.distinct()
-        if (keys.isEmpty()) return null
-        for (k in keys) {
-            list.firstOrNull { norm(it.name) == k || norm(it.nameEn) == k }?.let { return it }
-        }
-        for (k in keys) {
-            list.firstOrNull { p ->
-                listOf(norm(p.name), norm(p.nameEn)).any { a ->
-                    a.length >= 4 && k.length >= 4 && (a.startsWith(k) || k.startsWith(a))
-                }
-            }?.let { return it }
-        }
-        return null
     }
 }

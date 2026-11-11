@@ -57,13 +57,16 @@ object Hijri {
     /**
      * Bugünden itibaren [days] gün içindeki dini günler.
      * Kandiller "gecesi" kutlandığı için Diyanet gibi bir önceki günün tarihiyle verilir.
+     *
+     * [hijriOf]: Miladi tarihi Hicri'ye çeviren fonksiyon. Uygulamada her zaman [of] kullanılır;
+     * birim testleri Android olmadan çalışabilsin diye dışarıdan verilebilir.
      */
-    fun holyDays(from: LocalDate, days: Int = 385): List<HolyDay> {
+    fun holyDays(from: LocalDate, days: Int = 385, hijriOf: (LocalDate) -> HDate = ::of): List<HolyDay> {
         val out = ArrayList<HolyDay>()
-        var h = of(from)
+        var h = hijriOf(from)
         for (i in 0 until days) {
             val d = from.plusDays(i.toLong())
-            val next = of(d.plusDays(1))
+            val next = hijriOf(d.plusDays(1))
             val md = h.month to h.day
             val nmd = next.month to next.day
 

@@ -53,6 +53,12 @@ android {
         abortOnError = false
         checkReleaseBuilds = false
     }
+
+    testOptions {
+        // Birim testleri bilgisayarda (JVM) çalışır, telefonda değil. Android'in kendi
+        // fonksiyonları orada yoktur; yanlışlıkla çağrılırsa hata yerine boş değer dönsün.
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -61,4 +67,9 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.4.2")
     implementation("androidx.camera:camera-lifecycle:1.4.2")
     implementation("androidx.camera:camera-view:1.4.2")
+
+    // Yalnızca birim testleri için (APK'ya girmez):
+    // JUnit: test çatısı. org.json: Android'deki JSON sınıflarının bilgisayarda çalışan sürümü.
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
 }
