@@ -51,6 +51,34 @@ jobs:
           name: Kiblenuma-apk
           path: Kiblenuma.apk
 
+      # Play Store için imzalı AAB. Yalnızca main'de ve elle çalıştırmada; yükleme anahtarı
+      # GitHub Secrets'a eklenmemişse bu adımlar atlanır (ayrıntı: PLAY_STORE.md).
+      - name: Play Store AAB'sini derle (yükleme anahtarıyla)
+        id: aab
+        if: github.event_name != 'pull_request'
+        env:
+          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          UPLOAD_STORE_PASSWORD: ${{ secrets.UPLOAD_STORE_PASSWORD }}
+          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then
+            echo "Yükleme anahtarı tanımlı değil; AAB atlandı."
+            exit 0
+          fi
+          export UPLOAD_KEYSTORE_PATH="$RUNNER_TEMP/upload.jks"
+          echo "$UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$UPLOAD_KEYSTORE_PATH"
+          ./gradlew bundleRelease -PplayUpload --stacktrace
+          rm -f "$UPLOAD_KEYSTORE_PATH"
+          cp app/build/outputs/bundle/release/app-release.aab Kiblenuma.aab
+          echo "built=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.aab.outputs.built == 'true'
+        with:
+          name: Kiblenuma-aab
+          path: Kiblenuma.aab
+
   release:
     # Yalnızca main'e yapılan push'ta yayınla; PR'larda ve elle çalıştırmada yayın yok.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

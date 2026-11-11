@@ -7,6 +7,12 @@ plugins {
 // bir öncekinin üzerine güncelleme olarak kurulabilir.
 val runNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInt()
 
+// Play Store yükleme anahtarı. Yalnızca GitHub Actions'ta, Secrets tanımlıysa ve
+// "./gradlew bundleRelease -PplayUpload" komutuyla derlenirken kullanılır.
+// Anahtar dosyası ve şifreler depoda DEĞİL, GitHub Secrets'ta durur.
+val uploadKeystore = System.getenv("UPLOAD_KEYSTORE_PATH")
+val usePlayUpload = project.hasProperty("playUpload") && !uploadKeystore.isNullOrEmpty()
+
 android {
     namespace = "com.aydinmtl.namazvakitleri"
     compileSdk = 36
@@ -28,12 +34,22 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        if (usePlayUpload) {
+            create("upload") {
+                storeFile = file(uploadKeystore!!)
+                storePassword = System.getenv("UPLOAD_STORE_PASSWORD")
+                keyAlias = System.getenv("UPLOAD_KEY_ALIAS")
+                keyPassword = System.getenv("UPLOAD_KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("sideload")
+            // Elden kurulan APK her zaman aynı "sideload" anahtarıyla imzalanır (güncellemeler
+            // üst üste kurulabilsin). Play'e gidecek AAB ise yükleme anahtarıyla imzalanır.
+            signingConfig = signingConfigs.getByName(if (usePlayUpload) "upload" else "sideload")
         }
         debug {
             signingConfig = signingConfigs.getByName("sideload")
