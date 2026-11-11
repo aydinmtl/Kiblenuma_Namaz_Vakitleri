@@ -143,6 +143,8 @@ object PrayerCalc {
             if (times[5].isNaN() || (times[5] - sunset) > ishaPortion) times[5] = sunset + ishaPortion
         }
 
+        // Saat 24'ü geçen vakit (ör. 24:20) 00:20 olarak yazılır. Hangi güne ait olduğunu
+        // Prayers.dayMoments sıralamaya bakarak bulur (akşamdan önce görünen yatsı = ertesi gün).
         return times.map { t ->
             val minutes = (fixHour(t + tz - lon / 15.0) * 60.0).roundToInt() % 1440
             LocalTime.of(minutes / 60, minutes % 60)

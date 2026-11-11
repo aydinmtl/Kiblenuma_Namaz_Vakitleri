@@ -284,7 +284,7 @@ class MainActivity : Activity() {
         }
 
         // Gece yarısından sonra imsaka kadar dünün yatsısı sürer; o zaman hiçbir satır vurgulanmaz.
-        val activeIndex = if (current != null && current.at.toLocalDate() == now.toLocalDate()) current.index else -1
+        val activeIndex = if (current != null && current.day == now.toLocalDate()) current.index else -1
         for (i in 0..5) {
             rowViews[i].setBackgroundResource(if (i == activeIndex) R.drawable.row_active else 0)
         }
