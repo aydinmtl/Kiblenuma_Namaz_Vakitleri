@@ -30,6 +30,16 @@
             android:textColor="@color/text"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <!-- Yenile: konumu bulur ve vakitleri günceller -->
+        <ImageView
+            android:id="@+id/w_refresh"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:contentDescription="Konumu ve vakitleri yenile"
+            android:padding="6dp"
+            android:src="@drawable/ic_refresh" />
     </LinearLayout>
 
     <TextView

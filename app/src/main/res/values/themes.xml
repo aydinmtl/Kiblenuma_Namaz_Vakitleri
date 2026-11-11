@@ -10,6 +10,14 @@
         <item name="android:textColor">@color/text</item>
     </style>
 
+    <!-- Widget'taki yenile düğmesinin açtığı küçük pencere -->
+    <style name="RefreshDialog" parent="android:Theme.Material.Dialog.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorAccent">@color/gold</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+
     <style name="Btn">
         <item name="android:layout_height">52dp</item>
         <item name="android:background">@drawable/btn</item>

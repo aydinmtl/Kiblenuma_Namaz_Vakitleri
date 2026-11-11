@@ -66,6 +66,12 @@ class PrayerWidget : AppWidgetProvider() {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
             v.setOnClickPendingIntent(R.id.w_root, open)
+
+            val refresh = PendingIntent.getActivity(
+                ctx, 3, Intent(ctx, RefreshActivity::class.java),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+            v.setOnClickPendingIntent(R.id.w_refresh, refresh)
             return v
         }
     }

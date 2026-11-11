@@ -31,6 +31,13 @@
         <activity android:name=".ImsakiyeActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity
+            android:name=".RefreshActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@style/RefreshDialog" />
+        <activity
             android:name=".QiblaActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
