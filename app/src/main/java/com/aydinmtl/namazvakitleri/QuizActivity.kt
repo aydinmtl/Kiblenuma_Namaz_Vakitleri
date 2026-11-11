@@ -2,6 +2,7 @@ package com.aydinmtl.namazvakitleri
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.Gravity
@@ -13,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
+import android.window.OnBackInvokedDispatcher
 
 /**
  * Aile Halkası: bilgi yarışması.
@@ -42,6 +44,13 @@ class QuizActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
+        // Geri hareketi / geri tuşu. Android 13+ yeni yolu kullanır (hedef API 36'da
+        // eski onBackPressed artık çağrılmaz); eskiler aşağıdaki onBackPressed'i kullanır.
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) { goBack() }
+        }
         Ui.fitSystemBars(this, findViewById(R.id.root))
 
         homePane = findViewById(R.id.homePane)
@@ -82,14 +91,13 @@ class QuizActivity : Activity() {
         }
     }
 
+    // Android 12 ve öncesinde geri tuşu buraya gelir.
     @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (playPane.visibility == View.VISIBLE) {
-            showHome() // yarışma kayıtlı kalır
-        } else {
-            @Suppress("DEPRECATION")
-            super.onBackPressed()
-        }
+    override fun onBackPressed() = goBack()
+
+    /** Geri: yarışma ekranındaysak ana sayfaya dön (yarışma kayıtlı kalır), değilse ekranı kapat. */
+    private fun goBack() {
+        if (playPane.visibility == View.VISIBLE) showHome() else finish()
     }
 
     // ---------------- Ana sayfa ----------------
