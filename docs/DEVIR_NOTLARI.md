@@ -20,10 +20,10 @@ Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. 
 | SDK | minSdk 26, compileSdk/targetSdk 35 |
 | Araçlar | AGP 8.7.3, Kotlin 2.0.21, Gradle 8.14.3 (wrapper depoda) |
 | Paket | namespace `com.aydinmtl.namazvakitleri`, applicationId `com.aydinmtl.kiblenuma` |
-| Derleme | `.github/workflows/build.yml`: `main`'e her push → `assembleRelease` → GitHub Release `v1.0.<run>` (`Kiblenuma.apk`) |
+| Derleme | `.github/workflows/build.yml`: her PR'da ve `main`'e her push'ta birim testleri + `assembleRelease`, APK "artifact" olarak indirilebilir. Yalnızca `main` push'unda GitHub Release `v1.0.<run>` (`Kiblenuma.apk`) |
 | İmza | `app/debug.keystore` yalnızca elden kurulum içindir; Play için ayrı upload key gerekecek |
 | Lint | `abortOnError=false`, `checkReleaseBuilds=false` (bilinçli olarak gevşek; sıkılaştırılabilir) |
-| Test | Henüz birim testi YOK |
+| Test | `app/src/test/`: JVM birim testleri (`./gradlew testDebugUnitTest`), yalnızca JUnit + org.json (test için) |
 
 Bulut çalışma ortamında Google Maven / Android SDK sunucularına erişim yok: **derleme yalnızca
 GitHub Actions'ta** yapılabiliyor. Ortamdan ezanvakti.emushaf.net, Nominatim ve Overpass'a da
@@ -39,6 +39,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `Times.kt` | **Vakitlerin tek kaynağı.** Diyanet seçiliyse indirilen liste, değilse `PrayerCalc` ile hesap |
 | `PrayerCalc.kt` | `CalcMethod` (Diyanet, MWL, ISNA, Mısır, Ümmü'l-Kurâ, Karaçi, Kuveyt, Katar, Singapur, UOIF) + astronomik hesap |
 | `Hijri.kt` | ICU Ümmü'l-Kurâ takvimi, Diyanet'e göre gün kaydırma, dini günler listesi |
+| `PlaceMatch.kt` | Yer adlarını Diyanet listesiyle eşleştirme (saf mantık, testli) |
 | `AutoLocation.kt` | Konum → Diyanet ilçesi: önce isim eşleştirme, olmazsa en yakın yer (Geocoder ile ileri arama, önbellekli); Geocoder yoksa Nominatim |
 | `LocationHelper.kt` | Tek seferlik konum (fused/network/gps), zaman aşımlı |
 | `LocationConsent.kt` | Konum izni öncesi gerekçe penceresi |
@@ -82,8 +83,7 @@ JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıklar
    açılınca kilit sorulup sorulmadığı denenmedi.
 9. **AR kıble:** kamera yatay görüş açısı 62° varsayıldı; `CameraCharacteristics`'ten okunabilir.
 10. **Ana ekran her saniye** `Times.days()` + `Prayers.moments()` çağırıyor; gereksiz iş.
-11. **Birim testi yok.** Saf mantık için JVM testleri yazılmalı: `PrayerCalc`, `Prayers.next/current`,
-    `norm`/eşleştirme, `QuizSession` (kaydet/yükle), `FamilyTree`, `Hijri.holyDays`.
+11. ~~Birim testi yok.~~ Yapıldı: `app/src/test/`. Hata taraması sonuçları: `docs/HATA_TARAMASI.md`.
 12. **Soru içeriği** bir hoca tarafından kontrol edilmedi; Play'den önce şart.
 
 ## Uyulması gereken kurallar

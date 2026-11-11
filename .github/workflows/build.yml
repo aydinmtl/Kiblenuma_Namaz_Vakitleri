@@ -1,12 +1,18 @@
 name: APK derle
 
+# Ne zaman çalışır?
+# - Pull Request açılınca / güncellenince: testler + APK derlenir, APK "artifact" olarak indirilebilir.
+# - main'e her push'ta: aynısı + GitHub Release (v1.0.<numara>) yayınlanır.
+# - Elle (Actions sekmesinden "Run workflow"): testler + APK.
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
+# Varsayılan olarak yalnızca okuma izni. Release adımı kendi iznini aşağıda ister.
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -21,18 +27,41 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: APK'yı derle
+      - name: Birim testleri
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --stacktrace
+          ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Test raporunu sakla (test başarısız olursa bakmak için)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-raporu
+          path: app/build/reports/tests/
+
+      - name: APK'yı derle
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: APK'yı adlandır
         run: cp app/build/outputs/apk/release/app-release.apk Kiblenuma.apk
 
+      # PR'larda da APK indirilebilir: PR sayfası -> Checks -> "APK derle" -> Artifacts.
       - uses: actions/upload-artifact@v4
         with:
           name: Kiblenuma-apk
           path: Kiblenuma.apk
+
+  release:
+    # Yalnızca main'e yapılan push'ta yayınla; PR'larda ve elle çalıştırmada yayın yok.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Kiblenuma-apk
 
       - name: Sürüm (Release) olarak yayınla
         uses: softprops/action-gh-release@v2

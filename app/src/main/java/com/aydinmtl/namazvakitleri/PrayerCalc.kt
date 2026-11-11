@@ -129,7 +129,8 @@ object PrayerCalc {
         if (sunrise.isNaN() || sunset.isNaN()) return null
 
         if (ishaAngle == null) {
-            val ramadan = Hijri.of(date).month == 9 && method == CalcMethod.MAKKAH
+            // Önce yönteme bakılır: Hicri takvim yalnızca Ümmü'l-Kurâ için gerekir.
+            val ramadan = method == CalcMethod.MAKKAH && Hijri.of(date).month == 9
             times[5] = sunset + ((method.ishaMinutes ?: 90) + if (ramadan) 30 else 0) / 60.0
         }
 
