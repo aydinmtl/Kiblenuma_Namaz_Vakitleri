@@ -13,6 +13,8 @@ object Times {
     private var cacheKey: String? = null
     private var cache: List<PrayerDay> = emptyList()
     private var alignedFor: String? = null
+    private var zoneKey: String? = null
+    private var zoneCache: List<PrayerDay> = emptyList()
 
     /** Seçilen yöntem hesaplanamıyorsa (yerin koordinatı yok) Diyanet'e düşülür. */
     fun effectiveMethod(ctx: Context): CalcMethod {
@@ -26,8 +28,13 @@ object Times {
     fun sourceLabel(ctx: Context): String {
         val m = effectiveMethod(ctx)
         val asr = if (m != CalcMethod.DIYANET && Store.asrHanafi(ctx)) " · İkindi: Hanefi" else ""
+        // Seçilen yer başka bir saat dilimindeyse kullanıcıya söyle (bkz. PlaceZone)
+        val shift = Prayers.day(days(ctx), LocalDate.now())?.shiftMinutes ?: 0
+        val zoneNote = if (shift == 0) "" else
+            "\nSaatler seçilen yerin saatiyle. Alarm ve geri sayım telefonun saatine göre."
         return "Kaynak: ${m.title}$asr" +
-            if (isFallback(ctx)) "\n⚠ Seçilen yöntem için yerin koordinatı bulunamadı; Diyanet gösteriliyor." else ""
+            (if (isFallback(ctx)) "\n⚠ Seçilen yöntem için yerin koordinatı bulunamadı; Diyanet gösteriliyor." else "") +
+            zoneNote
     }
 
     @Synchronized
@@ -44,7 +51,7 @@ object Times {
         }
 
         val m = effectiveMethod(ctx)
-        if (m == CalcMethod.DIYANET) return diyanet
+        if (m == CalcMethod.DIYANET) return withPlaceZone(ctx, diyanet)
 
         val point = Store.placePoint(ctx) ?: return diyanet
         val zone = ZoneId.systemDefault()
@@ -60,6 +67,23 @@ object Times {
         }
         cache = out
         cacheKey = key
+        return out
+    }
+
+    /**
+     * Diyanet saatleri yerin kendi saatidir. Seçilen yer başka bir saat dilimindeyse
+     * alarm ve geri sayım kaymasın diye her güne saat farkını yazar (bkz. PlaceZone).
+     * Yerin koordinatı bilinmiyorsa liste olduğu gibi kalır.
+     */
+    private fun withPlaceZone(ctx: Context, diyanet: List<PrayerDay>): List<PrayerDay> {
+        val point = Store.placePoint(ctx) ?: return diyanet
+        val zone = ZoneId.systemDefault()
+        val key = "${Store.districtId(ctx)}|${point.second}|${zone.id}|${diyanet.size}|" +
+            "${diyanet.firstOrNull()?.date}|${diyanet.lastOrNull()?.date}"
+        if (key == zoneKey) return zoneCache
+        val out = PlaceZone.apply(diyanet, point.second, zone)
+        zoneCache = out
+        zoneKey = key
         return out
     }
 }

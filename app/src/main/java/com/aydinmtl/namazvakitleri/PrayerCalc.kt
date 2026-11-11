@@ -86,6 +86,15 @@ object PrayerCalc {
     }
 
     /**
+     * Güneşin [lon] boylamında en yükseğe çıktığı an (gerçek öğle), UTC saatiyle.
+     * Örnek: 11.32 = 11:19 UTC. Saat dilimi bulmak için kullanılır (bkz. PlaceZone).
+     */
+    fun solarNoonUtc(date: LocalDate, lon: Double): Double {
+        val jd = date.toEpochDay() + 2440587.5 + 0.5 - lon / 360.0
+        return fixHour(12.0 - sun(jd).second - lon / 15.0)
+    }
+
+    /**
      * Bir günün 6 vakti: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı.
      * Güneşin hiç doğmadığı/batmadığı kutup bölgelerinde null döner.
      * [asrFactor]: 1 = standart (Şafii, Maliki, Hanbeli ve Diyanet), 2 = Hanefi (asr-ı sani).

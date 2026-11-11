@@ -48,7 +48,7 @@ class PrayerWidget : AppWidgetProvider() {
                 v.setTextViewText(R.id.w_next, "Vakitler için uygulamayı aç")
                 v.setViewVisibility(R.id.w_countdown, View.GONE)
             } else {
-                v.setTextViewText(R.id.w_next, "${next.name} ${next.at.toLocalTime().format(HHMM)}")
+                v.setTextViewText(R.id.w_next, "${next.name} ${next.clock.format(HHMM)}")
                 val targetMs = next.at.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 val base = SystemClock.elapsedRealtime() + (targetMs - System.currentTimeMillis())
                 v.setViewVisibility(R.id.w_countdown, View.VISIBLE)
