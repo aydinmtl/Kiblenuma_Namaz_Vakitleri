@@ -27,7 +27,12 @@ object LocationHelper {
      * Konumu [callback] ile ana iş parçacığında verir (bulunamazsa null).
      * [maxAgeMs]'den yeni kayıtlı bir konum varsa onu hemen kullanır.
      */
-    fun current(ctx: Context, maxAgeMs: Long = 10 * 60_000L, callback: (Location?) -> Unit) {
+    fun current(
+        ctx: Context,
+        maxAgeMs: Long = 10 * 60_000L,
+        timeoutMs: Long = 20_000L,
+        callback: (Location?) -> Unit,
+    ) {
         val lm = ctx.getSystemService(LocationManager::class.java)
         if (lm == null || !hasPermission(ctx)) {
             callback(null)
@@ -39,6 +44,9 @@ object LocationHelper {
             return
         }
         val provider = when {
+            // "fused": Google'ın Wi-Fi + baz istasyonu + GPS birleşimi; genelde en hızlısı (Android 12+).
+            Build.VERSION.SDK_INT >= 31 && lm.allProviders.contains(LocationManager.FUSED_PROVIDER) &&
+                lm.isProviderEnabled(LocationManager.FUSED_PROVIDER) -> LocationManager.FUSED_PROVIDER
             lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
             lm.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
             else -> null
@@ -58,7 +66,8 @@ object LocationHelper {
                 callback(l ?: last)
             }
         }
-        handler.postDelayed({ deliver(null) }, 20_000L) // 20 sn içinde bulunamazsa vazgeç
+        // Süre dolarsa vazgeç; varsa son bilinen konum kullanılır.
+        handler.postDelayed({ deliver(null) }, timeoutMs)
 
         try {
             if (Build.VERSION.SDK_INT >= 30) {

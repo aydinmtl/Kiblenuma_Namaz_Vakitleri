@@ -5,6 +5,9 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import java.util.Locale
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * Konumdan Diyanet ilçesini bulur:
@@ -47,9 +50,13 @@ object AutoLocation {
         return out[0] / 1000f > MOVE_KM
     }
 
-    /** Ağ kullanır: arka planda çağır. */
-    fun resolve(ctx: Context, loc: Location): Result {
+    /**
+     * Ağ kullanır: arka planda çağır.
+     * [progress]: hangi adımda olunduğunu ekrana yazmak için (arka plan iş parçacığından çağrılır).
+     */
+    fun resolve(ctx: Context, loc: Location, progress: (String) -> Unit = {}): Result {
         if (!Geocoder.isPresent()) return Result.Failed("Bu telefonda şehir bulma hizmeti yok.")
+        progress("Şehir adı bulunuyor…")
         val tr = geocode(ctx, loc, TR)
         val en = geocode(ctx, loc, Locale.ENGLISH)
         if (tr == null && en == null) return Result.Failed("Şehir adı bulunamadı (internet bağlantısını kontrol et).")
@@ -66,6 +73,7 @@ object AutoLocation {
         )
         val shownName = tr?.locality ?: tr?.subAdminArea ?: tr?.adminArea ?: "Bulunduğun yer"
 
+        progress("Diyanet listesinde aranıyor: $shownName")
         val country = bestMatch(Diyanet.countries(), countryNames)
             ?: return Result.Failed("${tr?.countryName ?: "Bu ülke"} Diyanet listesinde bulunamadı.")
 
@@ -86,6 +94,7 @@ object AutoLocation {
             return Result.Same
         }
 
+        progress("${district.name} vakitleri indiriliyor…")
         val json = Diyanet.fetchTimes(district.id)
         if (Diyanet.parseDays(json).isEmpty()) return Result.Failed("${district.name} için vakit alınamadı.")
         val label = Diyanet.label(district, city, country)
@@ -94,13 +103,20 @@ object AutoLocation {
         return Result.Changed(label)
     }
 
+    /** Şehir adı sorgusu bazı telefonlarda uzun süre takılabiliyor; en çok 8 sn bekle. */
     @Suppress("DEPRECATION")
-    private fun geocode(ctx: Context, loc: Location, locale: Locale): Address? =
-        try {
-            Geocoder(ctx, locale).getFromLocation(loc.latitude, loc.longitude, 1)?.firstOrNull()
+    private fun geocode(ctx: Context, loc: Location, locale: Locale): Address? {
+        val executor = Executors.newSingleThreadExecutor()
+        return try {
+            executor.submit(Callable<Address?> {
+                Geocoder(ctx, locale).getFromLocation(loc.latitude, loc.longitude, 1)?.firstOrNull()
+            }).get(8, TimeUnit.SECONDS)
         } catch (e: Exception) {
             null
+        } finally {
+            executor.shutdownNow()
         }
+    }
 
     /** Önce birebir eşleşme, sonra baş kısmı tutan eşleşme ("Genève" ~ "Geneve"). */
     private fun bestMatch(list: List<Diyanet.Place>, names: List<String?>): Diyanet.Place? {
