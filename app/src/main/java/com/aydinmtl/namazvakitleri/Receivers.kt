@@ -30,8 +30,10 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
                 Notifications.showReminder(app, m, Store.reminderMinutes(app))
             } else {
                 val playAdhan = index != SUNRISE && Store.adhanOn(app) && AdhanService.allowedNow(app)
-                Notifications.showPrayer(app, m, silent = playAdhan)
-                if (playAdhan) AdhanService.start(app, m.name)
+                // Önce ezanı başlatmayı dene. Android izin vermezse (ör. "Alarmlar ve hatırlatıcılar"
+                // izni yoksa) bildirim SESLİ gönderilir; yoksa kullanıcı vakti hiç duymaz.
+                val adhanStarted = playAdhan && AdhanService.start(app, m)
+                Notifications.showPrayer(app, m, silent = adhanStarted)
             }
         }
 
