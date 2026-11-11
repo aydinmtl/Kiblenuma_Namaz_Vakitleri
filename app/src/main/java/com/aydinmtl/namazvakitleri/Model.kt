@@ -16,6 +16,9 @@ val PRAYER_NAMES = listOf("İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Y
 /** Güneş (1) bir namaz vakti değil; bildirim gönderilmez. */
 const val SUNRISE = 1
 
+/** Akşam vaktinin sırası (0 İmsak … 4 Akşam, 5 Yatsı). */
+const val MAGHRIB = 4
+
 /**
  * Bir günün 6 vakti.
  * [times] yerin kendi saatiyle yazılır (Diyanet'in listesindeki gibi).

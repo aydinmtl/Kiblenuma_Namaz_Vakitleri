@@ -48,6 +48,26 @@
                 android:textColor="@color/gold"
                 android:textSize="15sp" />
 
+            <!-- Her gün bir soru -->
+            <Button
+                android:id="@+id/btnDailyHome"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="52dp"
+                android:text="💡 Günün sorusu" />
+
+            <CheckBox
+                android:id="@+id/cbDaily"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:buttonTint="@color/gold"
+                android:text="Akşam vakti girince günün sorusunu bildir"
+                android:textColor="@color/muted"
+                android:textSize="14sp" />
+
             <TextView style="@style/SectionHead" android:text="Seviye seç ve başla" />
 
             <Button
@@ -110,6 +130,18 @@
                 android:layout_marginTop="10dp"
                 android:text="+ Hedef ekle" />
 
+            <!-- Yeni bir dönem için: ağaç tohuma döner (onay sorulur) -->
+            <TextView
+                android:id="@+id/btnResetTree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:padding="8dp"
+                android:text="Ağacı sıfırla"
+                android:textColor="@color/muted"
+                android:textSize="14sp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,6 +173,19 @@
                     android:layout_weight="1"
                     android:textColor="@color/muted"
                     android:textSize="14sp" />
+
+                <!-- Soruyu ve şıkları sesli okur -->
+                <TextView
+                    android:id="@+id/btnSpeak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="Sesli oku"
+                    android:padding="8dp"
+                    android:text="🔊 Oku"
+                    android:textColor="@color/gold"
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/btnClose"
@@ -192,8 +237,10 @@
                 android:layout_marginTop="12dp"
                 android:orientation="vertical" />
 
+            <!-- accessibilityLiveRegion: TalkBack sonucu kendiliğinden okur -->
             <TextView
                 android:id="@+id/tvInfo"
+                android:accessibilityLiveRegion="polite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"

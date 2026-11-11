@@ -172,6 +172,14 @@
             android:layout_marginTop="12dp"
             android:text="🌳  Aile Halkası · Bilgi Yarışması" />
 
+        <!-- Aile Halkası: her gün bir soru -->
+        <Button
+            android:id="@+id/btnDaily"
+            style="@style/Btn"
+            android:layout_width="match_parent"
+            android:layout_marginTop="12dp"
+            android:text="💡  Günün sorusu" />
+
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"

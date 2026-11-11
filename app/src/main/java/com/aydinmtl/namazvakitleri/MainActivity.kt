@@ -96,10 +96,20 @@ class MainActivity : Activity() {
         findViewById<Button>(R.id.btnQuiz).setOnClickListener {
             startActivity(Intent(this, QuizActivity::class.java))
         }
+        findViewById<Button>(R.id.btnDaily).setOnClickListener {
+            startActivity(Intent(this, QuizActivity::class.java).putExtra(QuizActivity.EXTRA_DAILY, true))
+        }
+    }
+
+    /** "Günün sorusu" düğmesi: bugün cevaplandıysa ✓ işareti. */
+    private fun updateDailyButton() {
+        val done = Store.dailyDoneDate(this) == LocalDate.now().toString()
+        findViewById<Button>(R.id.btnDaily).text = if (done) "💡  Günün sorusu ✓" else "💡  Günün sorusu"
     }
 
     override fun onResume() {
         super.onResume()
+        updateDailyButton()
         resumeFlow()
     }
 
