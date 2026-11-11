@@ -1,6 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +12,7 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 
 /** Ülke → Şehir → İlçe seçimi. Seçimden sonra 30 günlük vakitleri indirir. */
 class LocationActivity : Activity() {
@@ -40,6 +42,13 @@ class LocationActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
+        // Geri hareketi / geri tuşu. Android 13+ yeni yolu kullanır (hedef API 36'da
+        // eski onBackPressed artık çağrılmaz); eskiler aşağıdaki onBackPressed'i kullanır.
+        if (Build.VERSION.SDK_INT >= 33) {
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT
+            ) { goBack() }
+        }
         Ui.fitSystemBars(this, findViewById(R.id.root))
 
         tvTitle = findViewById(R.id.tvTitle)
@@ -175,8 +184,12 @@ class LocationActivity : Activity() {
         }.start()
     }
 
+    // Android 12 ve öncesinde geri tuşu buraya gelir.
     @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
+    override fun onBackPressed() = goBack()
+
+    /** Geri: ilçe listesinden şehre, şehirden ülkeye, ülke listesinden çıkış. */
+    private fun goBack() {
         when (stage) {
             Stage.DISTRICT -> country?.let { showCities(it) } ?: showCountries()
             Stage.CITY -> showCountries()
@@ -184,8 +197,7 @@ class LocationActivity : Activity() {
                 if (Store.districtId(this) == null) {
                     finishAffinity() // Henüz yer seçilmedi: uygulamadan çık.
                 } else {
-                    @Suppress("DEPRECATION")
-                    super.onBackPressed()
+                    finish()
                 }
             }
         }

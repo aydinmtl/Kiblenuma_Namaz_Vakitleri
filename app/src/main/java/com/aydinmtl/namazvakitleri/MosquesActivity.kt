@@ -78,8 +78,18 @@ class MosquesActivity : Activity() {
         val fromGps = loc != null
         tvSubtitle.text = "Camiler aranıyor…"
         Thread {
+            // Önce 3 km içinde ara; çok az sonuç çıkarsa 10 km'ye genişlet.
+            // (Sunucu sonuçları mesafeye göre değil kayıt sırasına göre keser; dar alanda aramak
+            // yoğun şehirlerde en yakın camilerin listeden düşmesini önler.)
+            var radiusKm = 3
             val result = try {
-                search(point.first, point.second, 10_000)
+                val near = search(point.first, point.second, radiusKm * 1000)
+                if (near.size >= 5) {
+                    near
+                } else {
+                    radiusKm = 10
+                    search(point.first, point.second, radiusKm * 1000)
+                }
             } catch (e: Exception) {
                 null
             }
@@ -95,9 +105,9 @@ class MosquesActivity : Activity() {
                 adapter.notifyDataSetChanged()
                 val where = if (fromGps) "bulunduğun yere" else "${Store.placeName(this)} merkezine"
                 tvSubtitle.text = if (result.isEmpty()) {
-                    "10 km içinde kayıtlı cami bulunamadı."
+                    "$radiusKm km içinde kayıtlı cami bulunamadı."
                 } else {
-                    "${result.size} yer, $where 10 km içinde. Veri: © OpenStreetMap katkıcıları (eksik olabilir)."
+                    "${result.size} yer, $where $radiusKm km içinde. Veri: © OpenStreetMap katkıcıları (eksik olabilir)."
                 }
             }
         }.start()
@@ -107,7 +117,7 @@ class MosquesActivity : Activity() {
     private fun search(lat: Double, lon: Double, radiusM: Int): List<Mosque> {
         val q = "[out:json][timeout:25];" +
             "nwr[\"amenity\"=\"place_of_worship\"][\"religion\"=\"muslim\"](around:$radiusM,$lat,$lon);" +
-            "out center 100;"
+            "out center 500;" // en çok 500 kayıt; ekranda mesafeye göre sıralanır
         val url = URL("https://overpass-api.de/api/interpreter?data=" + URLEncoder.encode(q, "UTF-8"))
         val c = url.openConnection() as HttpURLConnection
         c.connectTimeout = 15_000
