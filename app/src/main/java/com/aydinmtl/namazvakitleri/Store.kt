@@ -180,6 +180,17 @@ object Store {
         prefs(ctx).edit().putString("quizPlayers", players.joinToString(", ")).apply()
     }
 
+    /** "Bu soruda hata var" diye işaretlenen sorular ve notları (bkz. QuizFlags). */
+    fun quizFlags(ctx: Context): Map<String, String> = QuizFlags.fromJson(prefs(ctx).getString("quizFlags", null))
+    fun setQuizFlag(ctx: Context, id: String, note: String?) {
+        val now = quizFlags(ctx)
+        val next = if (note == null) now - id else now + (id to note)
+        prefs(ctx).edit().putString("quizFlags", QuizFlags.toJson(next)).apply()
+    }
+    fun clearQuizFlags(ctx: Context) {
+        prefs(ctx).edit().remove("quizFlags").apply()
+    }
+
     fun goals(ctx: Context): List<FamilyGoal> = FamilyGoal.listFromJson(prefs(ctx).getString("goals", null))
     fun saveGoals(ctx: Context, list: List<FamilyGoal>) {
         prefs(ctx).edit().putString("goals", FamilyGoal.listToJson(list)).apply()

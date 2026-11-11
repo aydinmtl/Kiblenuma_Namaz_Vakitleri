@@ -131,7 +131,7 @@
     "Kudüs",
     "Taif"
    ],
-   "info": "Hz. Muhammed (s.a.v.) 571 yılında Mekke'de doğdu."
+   "info": "Hz. Muhammed (s.a.v.) Mekke'de doğdu. Doğum yılı için kaynaklarda miladi 570 ve 571 geçer."
   },
   {
    "id": "k012",
@@ -839,7 +839,8 @@
     "Hz. Âsiye",
     "Hz. Hacer"
    ],
-   "info": "Hz. Meryem'in adı Kur'an'da geçer; adını taşıyan bir sure de vardır."
+   "info": "Hz. Meryem'in adı Kur'an'da açıkça geçer; adını taşıyan bir sure de vardır.",
+   "source": "Meryem suresi (19. sure)"
   },
   {
    "id": "o031",
@@ -947,7 +948,8 @@
     "Hicri yılbaşında",
     "Hac döneminde"
    ],
-   "info": "Fitrenin bayram namazından önce, tercihen Ramazan içinde verilmesi gerekir."
+   "info": "Peygamberimiz (s.a.v.) fitrenin, insanlar bayram namazına çıkmadan önce verilmesini emretmiştir. Sahabe bayramdan bir iki gün önce de verirdi.",
+   "source": "Müslim, Zekât 986; Buhârî, Zekât 1511"
   },
   {
    "id": "o040",
@@ -1139,7 +1141,7 @@
     "Mu'tezile",
     "Hanbelîlik"
    ],
-   "info": "Ehl-i sünnetin iki itikadi mezhebi Mâtürîdîlik ve Eş'arîliktir."
+   "info": "Ehl-i sünnetin iki büyük itikadi mezhebi Mâtürîdîlik ve Eş'arîliktir; Türkiye'de Mâtürîdîlik yaygındır."
   },
   {
    "id": "z016",
@@ -1163,7 +1165,8 @@
     "Kuba",
     "Uhud"
    ],
-   "info": "Veda Haccı sırasında (hicri 10) Arafat'ta okundu."
+   "info": "Veda Haccı sırasında (hicri 10) Arafat'ta, vadinin içinde insanlara hitap etti: \"Kanlarınız ve mallarınız birbirinize haramdır...\" Bayram günü de ayrıca bir hutbe irad buyurdu.",
+   "source": "Müslim, Hac 1218; Buhârî, Hac 1739"
   },
   {
    "id": "z018",
@@ -1271,7 +1274,8 @@
     "4",
     "5"
    ],
-   "info": "İhram, Arafat'ta vakfe ve ziyaret tavafı."
+   "info": "İhram (haccın şartı), Arafat'ta vakfe ve ziyaret tavafı (haccın rükünleri). Peygamberimiz \"Hac, Arafat'tır\" buyurmuştur.",
+   "source": "Tirmizî, Hac 889; Hac suresi 29"
   },
   {
    "id": "z027",
@@ -1408,7 +1412,7 @@
   {
    "id": "z038",
    "level": "zor",
-   "q": "İslam dünyasında ilk hastane türü kurumlara verilen ad hangisidir?",
+   "q": "İslam medeniyetinde hastanelere verilen ad hangisidir?",
    "options": [
     "Bîmâristan (Dârüşşifâ)",
     "Medrese",
