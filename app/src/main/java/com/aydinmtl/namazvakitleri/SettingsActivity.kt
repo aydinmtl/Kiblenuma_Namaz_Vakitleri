@@ -148,6 +148,8 @@ class SettingsActivity : Activity() {
             "Kıblenüma $version\n" +
             "Reklamsız ve ücretsiz. Kişisel veri toplamaz.\n" +
             "Diyanet vakitleri ezanvakti.emushaf.net üzerinden alınır. Diğer yöntemler telefonda hesaplanır.\n" +
+            "Şehir adı (telefonun hizmeti çalışmazsa) ve yakındaki camiler için konum, kimlik bilgisi olmadan " +
+            "OpenStreetMap'e gönderilir.\n" +
             "Camiler: © OpenStreetMap katkıcıları."
     }
 
