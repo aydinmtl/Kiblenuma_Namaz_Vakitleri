@@ -58,7 +58,7 @@ class PrayerWidget : AppWidgetProvider() {
                 v.setChronometerCountDown(R.id.w_countdown, true)
 
                 // Sıradaki vaktin ait olduğu günü göster (yatsıdan sonra yarının vakitleri).
-                val day = Prayers.day(days, next.at.toLocalDate())
+                val day = Prayers.day(days, next.day)
                 for (i in 0..5) {
                     val isNext = i == next.index
                     v.setTextViewText(TIME_IDS[i], day?.times?.get(i)?.format(HHMM) ?: "--:--")

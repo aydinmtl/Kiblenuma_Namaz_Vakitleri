@@ -24,8 +24,12 @@ data class PrayerDay(
     val hijriShort: String = "",
 )
 
-/** Takvimdeki tek bir an: hangi vakit, ne zaman. */
-data class Moment(val index: Int, val at: LocalDateTime) {
+/**
+ * Takvimdeki tek bir an: hangi vakit, ne zaman.
+ * [day]: vaktin ait olduğu gün (imsakiyedeki satır). Genelde [at] ile aynı gündür; ama kuzey
+ * ülkelerinde yatsı gece yarısını geçerse [at] ertesi güne düşer, [day] yine o günün satırıdır.
+ */
+data class Moment(val index: Int, val at: LocalDateTime, val day: LocalDate = at.toLocalDate()) {
     val name: String get() = PRAYER_NAMES[index]
 }
 
@@ -33,8 +37,28 @@ object Prayers {
 
     /** Bütün günlerin bütün vakitlerini zaman sırasıyla tek listede verir. */
     fun moments(days: List<PrayerDay>): List<Moment> =
-        days.flatMap { d -> d.times.mapIndexed { i, t -> Moment(i, LocalDateTime.of(d.date, t)) } }
+        days.flatMap { dayMoments(it) }
             .sortedBy { it.at.toEpochSecond(ZoneOffset.UTC) }
+
+    /**
+     * Bir günün 6 vaktini gerçek tarih-saatleriyle verir.
+     *
+     * Vakitler yalnızca saat olarak saklanır (ör. 00:20). Yaz aylarında kuzey ülkelerinde:
+     *  - yatsı gece yarısını geçebilir: akşamdan "önce" görünen yatsı aslında ERTESİ gündedir;
+     *  - imsak gece yarısından önce olabilir: güneşten "sonra" görünen imsak aslında ÖNCEKİ gündedir.
+     * Bunu düzeltmezsek sıradaki vakit ve alarmlar karışır.
+     */
+    fun dayMoments(d: PrayerDay): List<Moment> {
+        val t = d.times
+        return t.mapIndexed { i, time ->
+            val date = when {
+                i == 0 && t.size > 1 && time.isAfter(t[1]) -> d.date.minusDays(1)
+                i == 5 && time.isBefore(t[4]) -> d.date.plusDays(1)
+                else -> d.date
+            }
+            Moment(i, LocalDateTime.of(date, time), d.date)
+        }
+    }
 
     /** [after] anından SONRA gelen ilk vakit. */
     fun next(days: List<PrayerDay>, after: LocalDateTime): Moment? =
