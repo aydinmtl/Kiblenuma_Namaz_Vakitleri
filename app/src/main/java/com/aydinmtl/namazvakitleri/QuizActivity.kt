@@ -1,5 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -9,6 +11,8 @@ import android.speech.tts.TextToSpeech
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
@@ -24,8 +28,10 @@ import java.util.Locale
 
 /**
  * Aile Halkası: bilgi yarışması.
- * - Seviye seçilir (Kolay/Orta/Zor). Yarışma 10 soruluk turlardır; seviyedeki bütün sorular
- *   görülmeden aynı soru tekrar gelmez (QuizDeck).
+ * Ekranlar ("pane"): ana sayfa → seviye seçimi → sorular → tur sonucu. Aynı ekranın içinde
+ * bölümler gösterilip gizlenir; her geçişte kısa bir kayma/belirme canlandırması olur.
+ * - Ana sayfada tek bir "Bilgi Yarışması" kartı vardır. Seviye (Kolay/Orta/Zor) içeride seçilir.
+ * - Yarışma 10 soruluk turlardır; seviyedeki bütün sorular görülmeden aynı soru tekrar gelmez (QuizDeck).
  * - İstenirse aile üyeleri sırayla oynar ("Sıra: Zeynep"); tur sonunda kişi kişi puan gösterilir.
  * - Cevaptan sonra doğrusu ve kısa açıklama gösterilir, "Sıradaki soru" ile devam edilir.
  * - İstenildiği an kapatılabilir; tekrar girince "kaldığın yerden devam" sorulur.
@@ -38,6 +44,9 @@ class QuizActivity : Activity() {
 
     private lateinit var homePane: View
     private lateinit var playPane: View
+    private lateinit var levelPane: View
+    private lateinit var resultPane: View
+    private lateinit var levelList: LinearLayout
     private lateinit var tree: TreeView
     private lateinit var tvTree: TextView
     private lateinit var goalList: LinearLayout
@@ -66,6 +75,9 @@ class QuizActivity : Activity() {
     }
 
     private var session: QuizSession? = null
+    /** Sonuç ekranında gösterilen, biten tur ("Yeni tur" aynı seviyeden başlasın diye). */
+    private var lastResult: QuizSession? = null
+    private val dp: Float by lazy { resources.displayMetrics.density }
     private var answered = false
     private var askedResume = false
 
@@ -83,6 +95,9 @@ class QuizActivity : Activity() {
 
         homePane = findViewById(R.id.homePane)
         playPane = findViewById(R.id.playPane)
+        levelPane = findViewById(R.id.levelPane)
+        resultPane = findViewById(R.id.resultPane)
+        levelList = findViewById(R.id.levelList)
         tree = findViewById(R.id.tree)
         tvTree = findViewById(R.id.tvTree)
         goalList = findViewById(R.id.goalList)
@@ -99,12 +114,19 @@ class QuizActivity : Activity() {
         btnSpeak = findViewById(R.id.btnSpeak)
         cbDaily = findViewById(R.id.cbDaily)
 
-        setupLevelButton(R.id.btnEasy, QuizLevel.EASY)
-        setupLevelButton(R.id.btnMedium, QuizLevel.MEDIUM)
-        setupLevelButton(R.id.btnHard, QuizLevel.HARD)
+        findViewById<View>(R.id.menuQuiz).setOnClickListener { showLevels() }
+        findViewById<View>(R.id.btnLevelBack).setOnClickListener { showHome() }
         btnReview.setOnClickListener { askPlayersThen { players -> startReview(players) } }
         findViewById<View>(R.id.btnAddGoal).setOnClickListener { addGoal() }
-        findViewById<View>(R.id.btnClose).setOnClickListener { showHome() }
+        // Yarışmayı kapat: tur kayıtlı kalır, seviye seçimine dönülür.
+        findViewById<View>(R.id.btnClose).setOnClickListener { showLevels() }
+        // Sonuç ekranının düğmeleri
+        findViewById<View>(R.id.btnAgain).setOnClickListener {
+            val s = lastResult
+            if (s == null) showLevels() else if (s.review) startReview(s.players) else start(s.level, s.players)
+        }
+        findViewById<View>(R.id.btnLevels).setOnClickListener { showLevels() }
+        findViewById<View>(R.id.btnResultHome).setOnClickListener { showHome() }
         btnNext.setOnClickListener { showQuestion() }
         btnFlag.setOnClickListener { currentQuestion?.let { flagQuestion(it) } }
         btnFlags.setOnClickListener { showFlags() }
@@ -137,7 +159,9 @@ class QuizActivity : Activity() {
         super.onResume()
         // Yarım kalmış yarışma varsa sor (ekran her açıldığında bir kez).
         val s = Store.quizSession(this)
-        if (!askedResume && playPane.visibility != View.VISIBLE && s != null && !s.finished) {
+        if (!askedResume && playPane.visibility != View.VISIBLE && resultPane.visibility != View.VISIBLE &&
+            s != null && !s.finished
+        ) {
             askedResume = true
             AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
                 .setTitle("Kaldığın yerden devam etmek ister misin?")
@@ -153,37 +177,39 @@ class QuizActivity : Activity() {
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() = goBack()
 
-    /** Geri: yarışma ekranındaysak ana sayfaya dön (yarışma kayıtlı kalır), değilse ekranı kapat. */
+    /**
+     * Geri: sorulardan ya da sonuçtan seviye seçimine, seviye seçiminden ana sayfaya döner
+     * (yarım tur kayıtlı kalır). Ana sayfadaysak ekranı kapatır.
+     */
     private fun goBack() {
-        if (playPane.visibility == View.VISIBLE) showHome() else finish()
+        when {
+            playPane.visibility == View.VISIBLE || resultPane.visibility == View.VISIBLE -> showLevels()
+            levelPane.visibility == View.VISIBLE -> showHome()
+            else -> finish()
+        }
+    }
+
+    /**
+     * Bölümler arası geçiş: yalnızca [pane] görünür kalır; içeri hafifçe sağdan kayarak
+     * ve belirerek girer. Sayfa en üste kaydırılır.
+     */
+    private fun showPane(pane: View) {
+        for (p in listOf(homePane, levelPane, playPane, resultPane)) {
+            if (p !== pane) p.visibility = View.GONE
+        }
+        findViewById<View>(R.id.root).scrollTo(0, 0)
+        if (pane.visibility == View.VISIBLE) return
+        pane.visibility = View.VISIBLE
+        pane.alpha = 0f
+        pane.translationX = 28 * dp
+        pane.animate().alpha(1f).translationX(0f).setStartDelay(0).setDuration(240)
+            .setInterpolator(DecelerateInterpolator()).start()
     }
 
     // ---------------- Ana sayfa ----------------
 
-    private fun setupLevelButton(id: Int, level: QuizLevel) {
-        val b = findViewById<Button>(id)
-        val count = QuizBank.byLevel(this, level).size
-        b.text = "${level.title}\n${level.hint} · $count soru, ${minOf(ROUND_SIZE, count)} soruluk turlar"
-        b.setOnClickListener {
-            val s = Store.quizSession(this)
-            if (s != null && !s.finished) {
-                AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                    .setTitle("Yarım kalan tur var")
-                    .setMessage("${title(s)}: ${s.index + 1}. sorudasın. Ne yapalım?")
-                    .setPositiveButton("Devam et") { _, _ -> resume(s) }
-                    .setNegativeButton("Yeni ${level.title} turu") { _, _ ->
-                        askPlayersThen { players -> start(level, players) }
-                    }
-                    .show()
-            } else {
-                askPlayersThen { players -> start(level, players) }
-            }
-        }
-    }
-
     private fun showHome() {
-        playPane.visibility = View.GONE
-        homePane.visibility = View.VISIBLE
+        showPane(homePane)
         val points = Store.treePoints(this)
         val stage = FamilyTree.stageIndex(points)
         tree.stage = stage
@@ -193,18 +219,130 @@ class QuizActivity : Activity() {
             if (next != null) "\nSonraki aşamaya (${FamilyTree.STAGES[stage + 1].name}) $next doğru kaldı" else "\nAğacımız en büyük haline ulaştı!"
         renderGoals(stage)
 
+        val dailyDone = Store.dailyDoneDate(this) == LocalDate.now().toString()
+        findViewById<Button>(R.id.btnDailyHome).text = if (dailyDone) "💡 Günün sorusu ✓ (bugün cevaplandı)" else "💡 Günün sorusu"
+    }
+
+    // ---------------- Seviye seçimi ----------------
+
+    /** Seviye seçim ekranı: üç seviye kartı, varsa "Yanlışlarımı tekrar et" ve işaretli sorular. */
+    private fun showLevels() {
+        tts?.stop()
+        showPane(levelPane)
+        buildLevelCards()
+
         // Yanlış bilinen soru varsa tekrar düğmesini göster (bankadan çıkmış sorular sayılmaz).
         val wrong = reviewIds().size
         btnReview.visibility = if (wrong > 0) View.VISIBLE else View.GONE
-        btnReview.text = "Yanlışlarımı tekrar et ($wrong soru)"
+        btnReview.text = "🔁 Yanlışlarımı tekrar et"
 
         // "Bu soruda hata var" diye işaretlenmiş soru varsa listesini gösteren düğme
         val flags = Store.quizFlags(this).size
         btnFlags.visibility = if (flags > 0) View.VISIBLE else View.GONE
-        btnFlags.text = "İşaretlediğim sorular ($flags)"
+        btnFlags.text = "⚑ İşaretlediğim sorular"
+    }
 
-        val dailyDone = Store.dailyDoneDate(this) == LocalDate.now().toString()
-        findViewById<Button>(R.id.btnDailyHome).text = if (dailyDone) "💡 Günün sorusu ✓ (bugün cevaplandı)" else "💡 Günün sorusu"
+    /**
+     * Kolay / Orta / Zor kartları. Kartta soru sayısı yazmaz; yalnızca seviyenin adı, konusu
+     * ve ince bir çubuk (o seviyedeki soruların ne kadarını bildiğin) görünür.
+     * Kartlar sırayla aşağıdan kayarak gelir.
+     */
+    private fun buildLevelCards() {
+        levelList.removeAllViews()
+        val solved = Store.solvedIds(this)
+        val open = Store.quizSession(this)?.takeIf { !it.finished && !it.review }
+        val icons = mapOf(QuizLevel.EASY to "🌱", QuizLevel.MEDIUM to "🌿", QuizLevel.HARD to "🌳")
+        val stars = mapOf(QuizLevel.EASY to "★☆☆", QuizLevel.MEDIUM to "★★☆", QuizLevel.HARD to "★★★")
+        QuizLevel.values().forEachIndexed { i, level ->
+            val card = LinearLayout(this)
+            card.orientation = LinearLayout.HORIZONTAL
+            card.gravity = Gravity.CENTER_VERTICAL
+            card.setBackgroundResource(R.drawable.level_card)
+            card.isClickable = true
+            card.isFocusable = true
+            val pad = (16 * dp).toInt()
+            card.setPadding(pad, pad, pad, pad)
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            lp.topMargin = (12 * dp).toInt()
+            card.layoutParams = lp
+
+            // Soldaki yuvarlak simge
+            val icon = TextView(this)
+            icon.text = icons[level]
+            icon.textSize = 28f
+            icon.gravity = Gravity.CENTER
+            icon.setBackgroundResource(R.drawable.icon_circle)
+            icon.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            card.addView(icon, LinearLayout.LayoutParams((56 * dp).toInt(), (56 * dp).toInt()))
+
+            // Ortada: ad + yıldızlar, konu, ilerleme çubuğu
+            val mid = LinearLayout(this)
+            mid.orientation = LinearLayout.VERTICAL
+            val midLp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            midLp.marginStart = (14 * dp).toInt()
+            card.addView(mid, midLp)
+
+            val name = TextView(this)
+            name.text = "${level.title}  ${stars[level]}"
+            name.textSize = 20f
+            name.setTypeface(name.typeface, android.graphics.Typeface.BOLD)
+            name.setTextColor(getColor(R.color.text))
+            mid.addView(name)
+
+            val hint = TextView(this)
+            hint.text = level.hint
+            hint.textSize = 13f
+            hint.setTextColor(getColor(R.color.muted))
+            mid.addView(hint)
+
+            val all = QuizBank.byLevel(this, level)
+            val known = all.count { it.id in solved }
+            val bar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal)
+            bar.max = maxOf(1, all.size)
+            bar.progress = known
+            bar.progressTintList = android.content.res.ColorStateList.valueOf(getColor(R.color.gold))
+            val barLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (6 * dp).toInt())
+            barLp.topMargin = (8 * dp).toInt()
+            mid.addView(bar, barLp)
+
+            // Sağda: yarım tur varsa "Devam", yoksa ok işareti
+            val right = TextView(this)
+            right.text = if (open?.level == level) "▶ Devam" else "›"
+            right.textSize = if (open?.level == level) 14f else 30f
+            right.setTextColor(getColor(R.color.gold))
+            right.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            val rLp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            rLp.marginStart = (8 * dp).toInt()
+            card.addView(right, rLp)
+
+            card.contentDescription = "${level.title} seviye. ${level.hint}." +
+                if (open?.level == level) " Yarım kalan tur var." else ""
+            card.setOnClickListener { onLevelChosen(level) }
+
+            // Giriş canlandırması: sırayla aşağıdan kayarak belirir
+            card.alpha = 0f
+            card.translationY = 24 * dp
+            card.animate().alpha(1f).translationY(0f).setStartDelay(70L * i).setDuration(260)
+                .setInterpolator(DecelerateInterpolator()).start()
+            levelList.addView(card)
+        }
+    }
+
+    /** Seviye kartına dokunulunca: yarım tur varsa sor, yoksa oyuncuları sorup başlat. */
+    private fun onLevelChosen(level: QuizLevel) {
+        val s = Store.quizSession(this)
+        if (s != null && !s.finished) {
+            AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+                .setTitle("Yarım kalan tur var")
+                .setMessage("${title(s)}: ${s.index + 1}. sorudasın. Ne yapalım?")
+                .setPositiveButton("Devam et") { _, _ -> resume(s) }
+                .setNegativeButton("Yeni ${level.title} turu") { _, _ ->
+                    askPlayersThen { players -> start(level, players) }
+                }
+                .show()
+        } else {
+            askPlayersThen { players -> start(level, players) }
+        }
     }
 
     /** Tur başlığı: "Kolay seviye" ya da "Yanlışları tekrar". */
@@ -263,7 +401,7 @@ class QuizActivity : Activity() {
     private fun startReview(players: List<String>) {
         val ids = reviewIds().shuffled().take(ROUND_SIZE)
         if (ids.isEmpty()) {
-            showHome()
+            showLevels()
             return
         }
         val s = QuizSession(QuizLevel.EASY, ids, 0, 0, players, review = true)
@@ -273,8 +411,7 @@ class QuizActivity : Activity() {
 
     private fun resume(s: QuizSession) {
         session = s
-        homePane.visibility = View.GONE
-        playPane.visibility = View.VISIBLE
+        showPane(playPane)
         showQuestion()
     }
 
@@ -296,17 +433,23 @@ class QuizActivity : Activity() {
         btnFlag.visibility = View.GONE
         showTurn(s)
         tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${s.score}"
-        bar.max = s.order.size
-        bar.progress = s.index
+        bar.max = s.order.size * 100
+        animateBar(s.index * 100)
         tvQuestion.text = q.text
         tvInfo.visibility = View.GONE
         btnNext.visibility = View.GONE
 
+        // Soru kartı sağdan kayarak gelir
+        tvQuestion.alpha = 0f
+        tvQuestion.translationX = 40 * dp
+        tvQuestion.animate().alpha(1f).translationX(0f).setStartDelay(0).setDuration(260)
+            .setInterpolator(DecelerateInterpolator()).start()
+
         options.removeAllViews()
-        // Şıklar her gösterimde karışık sırada
-        for (opt in q.options.shuffled()) {
+        // Şıklar her gösterimde karışık sırada. Başlarına A, B, C, D harfi konur.
+        q.options.shuffled().forEachIndexed { i, opt ->
             val b = Button(this)
-            b.text = opt
+            b.text = "${'A' + i}   $opt"
             b.isAllCaps = false
             b.textSize = 17f
             b.setTextColor(getColor(R.color.text))
@@ -319,10 +462,36 @@ class QuizActivity : Activity() {
             lp.topMargin = (8 * resources.displayMetrics.density).toInt()
             b.layoutParams = lp
             b.tag = opt // asıl şık metni (cevaptan sonra yazının başına ✓ / ✗ eklenir)
+            b.contentDescription = opt
             b.setOnClickListener { answer(q, opt) }
+            // Şıklar sırayla aşağıdan belirir
+            b.alpha = 0f
+            b.translationY = 18 * dp
+            b.animate().alpha(1f).translationY(0f).setStartDelay(120L + 60L * i).setDuration(220)
+                .setInterpolator(DecelerateInterpolator()).start()
             options.addView(b)
         }
         findViewById<View>(R.id.root).scrollTo(0, 0)
+    }
+
+    /** İlerleme çubuğu yeni değerine yumuşakça kayar. */
+    private fun animateBar(to: Int) {
+        ObjectAnimator.ofInt(bar, "progress", bar.progress, to).setDuration(400).start()
+    }
+
+    /** Doğru şık: kısa bir "büyüyüp küçülme". */
+    private fun pulse(v: View) {
+        // Not: şıkların giriş canlandırmasındaki gecikme burada sıfırlanır
+        v.animate().scaleX(1.05f).scaleY(1.05f).setStartDelay(0).setDuration(140).withEndAction {
+            v.animate().scaleX(1f).scaleY(1f).setDuration(160).start()
+        }.start()
+    }
+
+    /** Yanlış şık: sağa sola sallanma. */
+    private fun shake(v: View) {
+        val d = 10 * dp
+        ObjectAnimator.ofFloat(v, "translationX", 0f, -d, d, -d * 0.7f, d * 0.7f, -d * 0.3f, 0f)
+            .setDuration(420).start()
     }
 
     private fun answer(q: Question, chosen: String) {
@@ -334,6 +503,7 @@ class QuizActivity : Activity() {
 
         // Doğru şıkkı yeşil, yanlış seçileni kırmızı göster. Renk ayırt edemeyenler ve ekran
         // okuyucu (TalkBack) kullananlar için yazının başına da ✓ / ✗ konur.
+        // Doğru şık hafifçe büyüyüp küçülür, yanlış seçilen şık sallanır.
         for (i in 0 until options.childCount) {
             val b = options.getChildAt(i) as Button
             b.isEnabled = false
@@ -343,11 +513,13 @@ class QuizActivity : Activity() {
                     b.setBackgroundResource(R.drawable.opt_correct)
                     b.text = "✓  $opt"
                     b.contentDescription = "$opt, doğru cevap"
+                    pulse(b)
                 }
                 chosen -> {
                     b.setBackgroundResource(R.drawable.opt_wrong)
                     b.text = "✗  $opt"
                     b.contentDescription = "$opt, senin cevabın, yanlış"
+                    shake(b)
                 }
             }
         }
@@ -356,6 +528,8 @@ class QuizActivity : Activity() {
             (if (q.source.isNotEmpty()) "\nKaynak: ${q.source}" else "")
         tvInfo.setTextColor(getColor(if (ok) R.color.gold else R.color.text))
         tvInfo.visibility = View.VISIBLE
+        tvInfo.alpha = 0f
+        tvInfo.animate().alpha(1f).setStartDelay(150).setDuration(250).start()
 
         // Hemen kaydet: kapatılırsa bir sonraki sorudan devam edilir.
         val updated = s.answered(ok)
@@ -374,7 +548,7 @@ class QuizActivity : Activity() {
         btnNext.visibility = View.VISIBLE
         updateFlagButton(q)
         tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${updated.score}"
-        bar.progress = updated.index
+        animateBar(updated.index * 100)
 
         val newStage = FamilyTree.stageIndex(Store.treePoints(this))
         if (newStage > oldStage) celebrate(newStage)
@@ -557,7 +731,7 @@ class QuizActivity : Activity() {
             .setNeutralButton("Listeyi temizle") { _, _ ->
                 AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
                     .setTitle("Bütün işaretler silinsin mi?")
-                    .setPositiveButton("Sil") { _, _ -> Store.clearQuizFlags(this); showHome() }
+                    .setPositiveButton("Sil") { _, _ -> Store.clearQuizFlags(this); showLevels() }
                     .setNegativeButton("Vazgeç", null)
                     .show()
             }
@@ -576,21 +750,60 @@ class QuizActivity : Activity() {
         }
     }
 
+    /**
+     * Tur sonucu ekranı: başarıya göre simge ve başlık, sırayla beliren üç yıldız,
+     * sıfırdan yukarı sayan puan ve (sırayla oynandıysa) kişi kişi doğrular.
+     */
     private fun showResult(s: QuizSession) {
         Store.saveQuizSession(this, null)
-        val msg = StringBuilder("${title(s)}: ${s.order.size} sorudan ${s.score} doğru.")
-        if (s.players.isNotEmpty()) {
-            msg.append("\n")
-            // Kişi kişi: "Zeynep: 3 doğru"
-            s.players.forEachIndexed { i, name -> msg.append("\n").append(name).append(": ").append(s.scores.getOrElse(i) { 0 }).append(" doğru") }
+        lastResult = s
+        tts?.stop()
+        showPane(resultPane)
+        val total = s.order.size
+        val stars = QuizResult.stars(s.score, total)
+        findViewById<TextView>(R.id.tvResultEmoji).text = QuizResult.EMOJI[stars]
+        findViewById<TextView>(R.id.tvResultTitle).text = QuizResult.TITLE[stars]
+
+        // Üç yıldız: kazanılanlar altın renkli, sırayla "zıplayarak" belirir
+        val row = findViewById<LinearLayout>(R.id.starsRow)
+        row.removeAllViews()
+        row.contentDescription = "3 yıldızdan $stars"
+        for (i in 0 until 3) {
+            val st = TextView(this)
+            st.text = "★"
+            st.textSize = 44f
+            st.setTextColor(if (i < stars) getColor(R.color.gold) else 0x44FFFFFF)
+            st.setPadding((6 * dp).toInt(), 0, (6 * dp).toInt(), 0)
+            st.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            st.scaleX = 0f
+            st.scaleY = 0f
+            st.animate().scaleX(1f).scaleY(1f).setStartDelay(250L + 180L * i).setDuration(380)
+                .setInterpolator(OvershootInterpolator(2.5f)).start()
+            row.addView(st)
         }
-        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Tur bitti 🎉")
-            .setMessage(msg.toString())
-            .setPositiveButton("Yeni tur") { _, _ -> if (s.review) startReview(s.players) else start(s.level, s.players) }
-            .setNegativeButton("Ana sayfa") { _, _ -> showHome() }
-            .setCancelable(false)
-            .show()
+
+        // Puan sıfırdan yukarı sayar
+        val tvScore = findViewById<TextView>(R.id.tvResultScore)
+        tvScore.text = "0 / $total"
+        tvScore.contentDescription = "$total sorudan ${s.score} doğru"
+        ValueAnimator.ofInt(0, s.score).apply {
+            duration = 120L * s.score + 200
+            startDelay = 300
+            addUpdateListener { tvScore.text = "${it.animatedValue} / $total" }
+            start()
+        }
+
+        val detail = StringBuilder(title(s))
+        if (s.players.isNotEmpty()) {
+            detail.append("\n")
+            // Kişi kişi: "Zeynep: 3 doğru"
+            s.players.forEachIndexed { i, name ->
+                detail.append("\n").append(name).append(": ").append(s.scores.getOrElse(i) { 0 }).append(" doğru")
+            }
+        }
+        if (s.score < total) detail.append("\n\nYanlış bildiklerin \"Yanlışlarımı tekrar et\" bölümünde seni bekliyor.")
+        findViewById<TextView>(R.id.tvResultDetail).text = detail.toString()
+        findViewById<Button>(R.id.btnAgain).text = if (s.review) "Yanlışları yeniden tekrar et" else "Yeni ${s.level.title} turu"
     }
 
     /** Ağaç yeni bir aşamaya geçince kutla ve o aşamaya bağlı aile hedeflerini göster. */

@@ -269,3 +269,22 @@ object QuizSpeech {
         return sb.toString()
     }
 }
+
+/** Tur sonucu ekranı: kaç yıldız verileceği ve ona göre simge/başlık. */
+object QuizResult {
+    /** 0-3 yıldız: %90 ve üstü 3, %60 ve üstü 2, %30 ve üstü 1, altı 0. */
+    fun stars(score: Int, total: Int): Int {
+        if (total <= 0) return 0
+        val pct = score * 100 / total
+        return when {
+            pct >= 90 -> 3
+            pct >= 60 -> 2
+            pct >= 30 -> 1
+            else -> 0
+        }
+    }
+
+    /** Yıldız sayısına göre (0..3) büyük simge ve başlık. */
+    val EMOJI = listOf("📖", "👍", "🌟", "🏆")
+    val TITLE = listOf("Birlikte tekrar edelim", "Güzel başlangıç!", "Çok güzel!", "Maşallah!")
+}
