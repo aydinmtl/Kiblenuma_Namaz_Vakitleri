@@ -12,11 +12,11 @@ import android.widget.RemoteViews
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-/** Ana ekran widget'ı: sıradaki vakit, geri sayım ve o günün 6 vakti. */
+/** Geniş widget (4x2): sıradaki vakit, geri sayım ve o günün 6 vakti. */
 class PrayerWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
-        manager.updateAppWidget(appWidgetIds, build(context))
+        manager.updateAppWidget(appWidgetIds, build(context, small = false))
         AlarmScheduler.schedule(context)
     }
 
@@ -24,15 +24,17 @@ class PrayerWidget : AppWidgetProvider() {
         private val TIME_IDS = intArrayOf(R.id.w_t0, R.id.w_t1, R.id.w_t2, R.id.w_t3, R.id.w_t4, R.id.w_t5)
         private val NAME_IDS = intArrayOf(R.id.w_n0, R.id.w_n1, R.id.w_n2, R.id.w_n3, R.id.w_n4, R.id.w_n5)
 
+        /** Ekrandaki bütün widget'ları (geniş ve küçük) günceller. */
         fun updateAll(ctx: Context) {
             val mgr = AppWidgetManager.getInstance(ctx) ?: return
-            val ids = mgr.getAppWidgetIds(ComponentName(ctx, PrayerWidget::class.java))
-            if (ids == null || ids.isEmpty()) return
-            mgr.updateAppWidget(ids, build(ctx))
+            val big = mgr.getAppWidgetIds(ComponentName(ctx, PrayerWidget::class.java))
+            if (big != null && big.isNotEmpty()) mgr.updateAppWidget(big, build(ctx, small = false))
+            val small = mgr.getAppWidgetIds(ComponentName(ctx, PrayerWidgetSmall::class.java))
+            if (small != null && small.isNotEmpty()) mgr.updateAppWidget(small, build(ctx, small = true))
         }
 
-        private fun build(ctx: Context): RemoteViews {
-            val v = RemoteViews(ctx.packageName, R.layout.widget)
+        fun build(ctx: Context, small: Boolean): RemoteViews {
+            val v = RemoteViews(ctx.packageName, if (small) R.layout.widget_small else R.layout.widget)
             val gold = ctx.getColor(R.color.gold)
             val text = ctx.getColor(R.color.text)
             val muted = ctx.getColor(R.color.muted)
@@ -52,12 +54,14 @@ class PrayerWidget : AppWidgetProvider() {
                 v.setChronometer(R.id.w_countdown, base, null, true)
                 v.setChronometerCountDown(R.id.w_countdown, true)
 
-                // Sıradaki vaktin ait olduğu günü göster (yatsıdan sonra yarının vakitleri).
-                val day = Prayers.day(days, next.at.toLocalDate())
-                for (i in 0..5) {
-                    v.setTextViewText(TIME_IDS[i], day?.times?.get(i)?.format(HHMM) ?: "--:--")
-                    v.setTextColor(TIME_IDS[i], if (i == next.index) gold else text)
-                    v.setTextColor(NAME_IDS[i], if (i == next.index) gold else muted)
+                if (!small) {
+                    // Sıradaki vaktin ait olduğu günü göster (yatsıdan sonra yarının vakitleri).
+                    val day = Prayers.day(days, next.at.toLocalDate())
+                    for (i in 0..5) {
+                        v.setTextViewText(TIME_IDS[i], day?.times?.get(i)?.format(HHMM) ?: "--:--")
+                        v.setTextColor(TIME_IDS[i], if (i == next.index) gold else text)
+                        v.setTextColor(NAME_IDS[i], if (i == next.index) gold else muted)
+                    }
                 }
             }
 
@@ -74,5 +78,13 @@ class PrayerWidget : AppWidgetProvider() {
             v.setOnClickPendingIntent(R.id.w_refresh, refresh)
             return v
         }
+    }
+}
+
+/** Küçük widget (4x1): tek satırda sıradaki vakit, geri sayım, yer ve yenile düğmesi. */
+class PrayerWidgetSmall : AppWidgetProvider() {
+    override fun onUpdate(context: Context, manager: AppWidgetManager, appWidgetIds: IntArray) {
+        manager.updateAppWidget(appWidgetIds, PrayerWidget.build(context, small = true))
+        AlarmScheduler.schedule(context)
     }
 }

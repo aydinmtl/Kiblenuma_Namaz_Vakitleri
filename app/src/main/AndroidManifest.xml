@@ -72,13 +72,28 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".PrayerWidget" android:exported="true">
+        <receiver
+            android:name=".PrayerWidget"
+            android:exported="true"
+            android:label="@string/widget_big_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".PrayerWidgetSmall"
+            android:exported="true"
+            android:label="@string/widget_small_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_small_info" />
         </receiver>
     </application>
 </manifest>
