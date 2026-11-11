@@ -117,9 +117,10 @@ class LocationActivity : Activity() {
     }
 
     private fun filter() {
-        val q = etSearch.text.toString().trim().lowercase(TR)
+        // norm() harfleri sadeleştirir: "kadikoy" yazınca "Kadıköy", "zurih" yazınca "Zürih" bulunur.
+        val q = norm(etSearch.text.toString())
         shown.clear()
-        shown.addAll(if (q.isEmpty()) all else all.filter { it.name.lowercase(TR).contains(q) })
+        shown.addAll(if (q.isEmpty()) all else all.filter { norm(it.name).contains(q) })
         adapter.clear()
         adapter.addAll(shown.map { it.name })
         adapter.notifyDataSetChanged()

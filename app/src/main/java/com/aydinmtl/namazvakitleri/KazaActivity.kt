@@ -50,7 +50,13 @@ class KazaActivity : Activity() {
             .setTitle("${names[i]} kazası")
             .setView(input)
             .setPositiveButton("Kaydet") { _, _ ->
-                Store.setKaza(this, i, input.text.toString().toIntOrNull() ?: 0)
+                // Çok büyük sayı yazılırsa eskiden sessizce 0 oluyordu; artık üst sınırda durur.
+                // (Bir vakit için 100.000 kaza ≈ 270 yıl; gerçekte bundan fazlası olmaz.)
+                // Boş bırakılırsa 0. Yalnızca rakam girilebildiği için sayıya çevrilemeyen bir
+                // yazı ancak aşırı uzun bir sayı olabilir; o da üst sınır sayılır.
+                val t = input.text.toString().trim()
+                val n = if (t.isEmpty()) 0L else t.toLongOrNull() ?: Long.MAX_VALUE
+                Store.setKaza(this, i, n.coerceIn(0L, KAZA_MAX.toLong()).toInt())
                 refresh()
             }
             .setNegativeButton("Vazgeç", null)
@@ -65,5 +71,9 @@ class KazaActivity : Activity() {
             countViews[i].text = n.toString()
         }
         tvTotal.text = if (total == 0) "Kaza borcu yok" else "Toplam: $total vakit"
+    }
+
+    companion object {
+        const val KAZA_MAX = 100_000
     }
 }

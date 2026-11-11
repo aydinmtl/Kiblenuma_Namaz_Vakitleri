@@ -22,10 +22,13 @@ object Hijri {
     @Volatile
     var offsetDays: Long = 0
 
-    fun of(date: LocalDate): HDate {
+    fun of(date: LocalDate): HDate = ofShifted(date, offsetDays)
+
+    /** [date] için Hicri tarih, [shift] gün kaydırarak. Ortak [offsetDays] değişkenine dokunmaz. */
+    private fun ofShifted(date: LocalDate, shift: Long): HDate {
         val cal = IslamicCalendar()
         cal.calculationType = IslamicCalendar.CalculationType.ISLAMIC_UMALQURA
-        val d = date.plusDays(offsetDays)
+        val d = date.plusDays(shift)
         cal.timeInMillis = d.atTime(12, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         return HDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH))
     }
@@ -42,12 +45,11 @@ object Hijri {
     fun alignWithDiyanet(date: LocalDate, diyanetShort: String) {
         val m = Regex("(\\d{1,2})\\D(\\d{1,2})\\D(\\d{4})").find(diyanetShort) ?: return
         val target = HDate(m.groupValues[3].toInt(), m.groupValues[2].toInt(), m.groupValues[1].toInt())
-        val saved = offsetDays
-        for (k in longArrayOf(0, 1, -1, 2, -2)) {
-            offsetDays = k
-            if (of(date) == target) return
-        }
-        offsetDays = saved
+        // Denemeler ortak değişkeni değiştirmeden yapılır; yalnızca bulunan sonuç bir kez yazılır.
+        // (Eskiden döngüde geçici olarak değiştiriliyordu; aynı anda tarih okuyan başka bir
+        // iş parçacığı bir an yanlış gün görebiliyordu.)
+        val k = longArrayOf(0, 1, -1, 2, -2).firstOrNull { ofShifted(date, it) == target } ?: return
+        offsetDays = k
     }
 
     // ---------------- Dini günler ----------------
