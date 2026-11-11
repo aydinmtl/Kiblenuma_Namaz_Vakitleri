@@ -25,11 +25,26 @@ object Diyanet {
     private val DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private val KEYS = listOf("Imsak", "Gunes", "Ogle", "Ikindi", "Aksam", "Yatsi")
 
-    data class Place(val id: String, val name: String)
+    /** [nameEn]: servisin verdiği İngilizce ad (yoksa boş). Otomatik konum eşleştirmesinde kullanılır. */
+    data class Place(val id: String, val name: String, val nameEn: String = "")
 
-    fun countries(): List<Place> = places(get("$BASE/ulkeler"), "UlkeID", "UlkeAdi")
-    fun cities(countryId: String): List<Place> = places(get("$BASE/sehirler/$countryId"), "SehirID", "SehirAdi")
-    fun districts(cityId: String): List<Place> = places(get("$BASE/ilceler/$cityId"), "IlceID", "IlceAdi")
+    @Volatile
+    private var countriesCache: List<Place>? = null
+
+    fun countries(): List<Place> =
+        countriesCache ?: places(get("$BASE/ulkeler"), "UlkeID", "UlkeAdi", "UlkeAdiEn").also { countriesCache = it }
+
+    fun cities(countryId: String): List<Place> = places(get("$BASE/sehirler/$countryId"), "SehirID", "SehirAdi", "SehirAdiEn")
+    fun districts(cityId: String): List<Place> = places(get("$BASE/ilceler/$cityId"), "IlceID", "IlceAdi", "IlceAdiEn")
+
+    /**
+     * Ekranda görünen yer adı. Türkiye'de "İlçe, İl" (Kadıköy, İstanbul),
+     * yurt dışında "Şehir, Ülke" (Cenevre, İsviçre).
+     */
+    fun label(district: Place, city: Place?, country: Place?): String {
+        val second = if (country == null || norm(country.name) == "turkiye") city?.name else country.name
+        return if (second == null || norm(second) == norm(district.name)) district.name else "${district.name}, $second"
+    }
 
     /** Ham JSON döndürür; önbelleğe olduğu gibi yazılır. */
     fun fetchTimes(districtId: String): String = get("$BASE/vakitler/$districtId")
@@ -50,14 +65,15 @@ object Diyanet {
         return out.sortedBy { it.date.toEpochDay() }
     }
 
-    private fun places(json: String, idKey: String, nameKey: String): List<Place> {
+    private fun places(json: String, idKey: String, nameKey: String, enKey: String): List<Place> {
         val arr = JSONArray(json)
         val out = ArrayList<Place>()
         for (i in 0 until arr.length()) {
             val o = arr.optJSONObject(i) ?: continue
             val id = o.optString(idKey, "")
             val name = o.optString(nameKey, "")
-            if (id.isNotEmpty() && name.isNotEmpty()) out.add(Place(id, titleCase(name)))
+            val en = o.optString(enKey, "")
+            if (id.isNotEmpty() && name.isNotEmpty()) out.add(Place(id, titleCase(name), en))
         }
         val collator = Collator.getInstance(TR)
         return out.sortedWith { a, b -> collator.compare(a.name, b.name) }

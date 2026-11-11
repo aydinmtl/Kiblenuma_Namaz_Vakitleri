@@ -29,6 +29,7 @@
 
         <activity android:name=".LocationActivity" android:exported="false" />
         <activity android:name=".ImsakiyeActivity" android:exported="false" />
+        <activity android:name=".SettingsActivity" android:exported="false" />
         <activity
             android:name=".QiblaActivity"
             android:exported="false"

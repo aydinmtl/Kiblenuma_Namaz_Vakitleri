@@ -53,6 +53,18 @@ fun formatDuration(totalSeconds: Long): String {
     return String.format(Locale.ROOT, "%02d:%02d:%02d", s / 3600, (s % 3600) / 60, s % 60)
 }
 
+/**
+ * İsim karşılaştırmak için sadeleştirir: "İSVİÇRE" -> "isvicre", "Genève" -> "geneve",
+ * "Kadıköy" -> "kadikoy". Harf ve rakam dışındaki her şey atılır.
+ */
+fun norm(s: String?): String {
+    if (s.isNullOrBlank()) return ""
+    val lower = s.lowercase(TR).replace('ı', 'i')
+    val noAccents = java.text.Normalizer.normalize(lower, java.text.Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}+"), "")
+    return noAccents.replace("ß", "ss").replace(Regex("[^a-z0-9]"), "")
+}
+
 /** "İSVİÇRE" -> "İsviçre", "CENEVRE" -> "Cenevre" (Türkçe harf kurallarıyla). */
 fun titleCase(s: String): String =
     s.trim().lowercase(TR).split(" ").joinToString(" ") { w ->

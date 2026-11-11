@@ -3,6 +3,7 @@ package com.aydinmtl.namazvakitleri
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,8 +13,8 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -23,17 +24,20 @@ class MainActivity : Activity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var tvPlace: TextView
+    private lateinit var tvLocMode: TextView
     private lateinit var tvDate: TextView
     private lateinit var tvHijri: TextView
     private lateinit var tvNextLabel: TextView
     private lateinit var tvCountdown: TextView
     private lateinit var tvStatus: TextView
-    private lateinit var swNotify: Switch
     private val rowViews = ArrayList<View>()
 
     private var shownNext: LocalDateTime? = null
     private var shownDate: LocalDate? = null
     private var refreshing = false
+    private var checkingLocation = false
+    private var locationNote: String? = null
+    private var dialogOpen = false
 
     private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", TR)
 
@@ -51,12 +55,12 @@ class MainActivity : Activity() {
         Notifications.createChannel(this)
 
         tvPlace = findViewById(R.id.tvPlace)
+        tvLocMode = findViewById(R.id.tvLocMode)
         tvDate = findViewById(R.id.tvDate)
         tvHijri = findViewById(R.id.tvHijri)
         tvNextLabel = findViewById(R.id.tvNextLabel)
         tvCountdown = findViewById(R.id.tvCountdown)
         tvStatus = findViewById(R.id.tvStatus)
-        swNotify = findViewById(R.id.swNotify)
 
         val rows = findViewById<LinearLayout>(R.id.rows)
         for (name in PRAYER_NAMES) {
@@ -67,41 +71,159 @@ class MainActivity : Activity() {
         }
 
         tvPlace.setOnClickListener { startActivity(Intent(this, LocationActivity::class.java)) }
+        tvLocMode.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        findViewById<View>(R.id.btnSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
         findViewById<Button>(R.id.btnImsakiye).setOnClickListener {
             startActivity(Intent(this, ImsakiyeActivity::class.java))
         }
         findViewById<Button>(R.id.btnQibla).setOnClickListener {
             startActivity(Intent(this, QiblaActivity::class.java))
         }
-
-        swNotify.isChecked = Store.notificationsOn(this)
-        swNotify.setOnCheckedChangeListener { _, on ->
-            Store.setNotificationsOn(this, on)
-            if (on) askNotificationPermission(force = true)
-            updateStatus()
-        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (Store.districtId(this) == null) {
-            startActivity(Intent(this, LocationActivity::class.java))
-            return
-        }
-        render()
-        handler.removeCallbacks(ticker)
-        handler.post(ticker)
-        AlarmScheduler.schedule(this)
-        PrayerWidget.updateAll(this)
-        maybeRefresh()
-        if (Store.notificationsOn(this)) askNotificationPermission(force = false)
-        updateStatus()
+        resumeFlow()
     }
 
     override fun onPause() {
         super.onPause()
         handler.removeCallbacks(ticker)
     }
+
+    /** Açılışta ne yapılacağına karar verir: izin açıklaması, konum kontrolü, vakitler. */
+    private fun resumeFlow() {
+        if (dialogOpen) return
+
+        // 1) İlk açılışta (ve bu güncellemeyle birlikte bir kez) konum izninin nedenini anlat.
+        if (!Store.locationIntroShown(this)) {
+            dialogOpen = true
+            LocationConsent.show(
+                this,
+                onReady = { dialogOpen = false; resumeFlow() },
+                onManual = {
+                    dialogOpen = false
+                    if (Store.districtId(this) == null) startActivity(Intent(this, LocationActivity::class.java))
+                    else resumeFlow()
+                },
+            )
+            return
+        }
+
+        val hasDistrict = Store.districtId(this) != null
+        val auto = Store.autoLocation(this) && LocationHelper.hasPermission(this)
+
+        // 2) Ne yer seçilmiş ne de otomatik konum var: elle seçim ekranına git.
+        if (!hasDistrict && !auto) {
+            startActivity(Intent(this, LocationActivity::class.java))
+            return
+        }
+
+        // 3) Otomatik konum açıksa yer değişmiş mi bak.
+        if (auto) checkLocation()
+
+        if (hasDistrict) {
+            showTimes()
+            if (Store.notificationsOn(this)) askNotificationPermission()
+        } else {
+            tvPlace.text = "📍 Konum aranıyor…"
+            tvNextLabel.text = "Bulunduğun yer bulunuyor…"
+        }
+        updateLocMode()
+        updateStatus()
+    }
+
+    private fun showTimes() {
+        render()
+        handler.removeCallbacks(ticker)
+        handler.post(ticker)
+        AlarmScheduler.schedule(this)
+        PrayerWidget.updateAll(this)
+        maybeRefresh()
+    }
+
+    // ---------------- Otomatik konum ----------------
+
+    private fun checkLocation() {
+        if (checkingLocation) return
+        if (!LocationHelper.isLocationOn(this)) {
+            locationNote = "Telefonun konum servisi kapalı; son seçilen yer kullanılıyor."
+            noPlaceFallback("Konum servisi kapalı. Şehrini elle seç ya da konumu açıp tekrar dene.")
+            return
+        }
+        checkingLocation = true
+        updateLocMode()
+        LocationHelper.current(this) { loc ->
+            if (isFinishing || isDestroyed) return@current
+            if (loc == null) {
+                checkingLocation = false
+                locationNote = "Konum alınamadı; son seçilen yer kullanılıyor."
+                updateLocMode()
+                noPlaceFallback("Konum alınamadı. Şehrini elle seç.")
+                return@current
+            }
+            if (!AutoLocation.needsCheck(this, loc)) {
+                checkingLocation = false
+                locationNote = null
+                updateLocMode()
+                return@current
+            }
+            val app = applicationContext
+            Thread {
+                val result = try {
+                    AutoLocation.resolve(app, loc)
+                } catch (e: Exception) {
+                    AutoLocation.Result.Failed("İnternete bağlanılamadı.")
+                }
+                runOnUiThread { onLocationResult(result) }
+            }.start()
+        }
+    }
+
+    private fun onLocationResult(r: AutoLocation.Result) {
+        checkingLocation = false
+        if (isFinishing || isDestroyed) return
+        when (r) {
+            is AutoLocation.Result.Changed -> {
+                locationNote = null
+                Toast.makeText(this, "Konum güncellendi: ${r.label}", Toast.LENGTH_LONG).show()
+                shownNext = null
+                showTimes()
+                updateStatus()
+            }
+            is AutoLocation.Result.Same -> locationNote = null
+            is AutoLocation.Result.Failed -> {
+                locationNote = r.reason + " Son seçilen yer kullanılıyor."
+                noPlaceFallback(r.reason + " Şehrini elle seç.")
+            }
+        }
+        updateLocMode()
+    }
+
+    /** Hiç yer seçilmemişken konum bulunamazsa elle seçim ekranını aç. */
+    private fun noPlaceFallback(message: String) {
+        if (Store.districtId(this) != null) return
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        startActivity(Intent(this, LocationActivity::class.java))
+    }
+
+    private fun updateLocMode() {
+        if (!Store.autoLocation(this)) {
+            tvLocMode.visibility = View.GONE
+            return
+        }
+        tvLocMode.visibility = View.VISIBLE
+        tvLocMode.text = when {
+            !LocationHelper.hasPermission(this) -> "⚠ Otomatik konum için izin gerekli. Ayarlar'a gitmek için dokun."
+            checkingLocation -> "📡 Otomatik konum · kontrol ediliyor…"
+            locationNote != null -> "📡 Otomatik konum · $locationNote"
+            else -> "📡 Otomatik konum açık"
+        }
+    }
+
+    // ---------------- Ekran ----------------
 
     /** Ekrandaki tarih, yer ve 6 vakti yeniden doldurur. */
     private fun render() {
@@ -139,7 +261,6 @@ class MainActivity : Activity() {
             }
         }
 
-        // İçinde bulunduğumuz vakti vurgula (yalnızca bugünün satırları için).
         // Gece yarısından sonra imsaka kadar dünün yatsısı sürer; o zaman hiçbir satır vurgulanmaz.
         val activeIndex = if (current != null && current.at.toLocalDate() == now.toLocalDate()) current.index else -1
         for (i in 0..5) {
@@ -171,14 +292,16 @@ class MainActivity : Activity() {
     private fun updateStatus(message: String? = null) {
         val lines = ArrayList<String>()
         if (message != null) lines.add(message)
-        val days = Store.days(this)
-        days.lastOrNull()?.let { lines.add("Kayıtlı vakitler: ${it.date.format(DateTimeFormatter.ofPattern("d MMMM", TR))} tarihine kadar.") }
 
         var action: (() -> Unit)? = null
         if (Store.notificationsOn(this)) {
             if (!Notifications.canPost(this)) {
                 lines.add("⚠ Bildirim izni kapalı. Açmak için dokun.")
-                action = { openAppNotificationSettings() }
+                action = {
+                    startActivity(
+                        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName),
+                    )
+                }
             } else if (!AlarmScheduler.canExact(this)) {
                 lines.add("⚠ Bildirimlerin tam vaktinde gelmesi için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.")
                 action = {
@@ -194,21 +317,23 @@ class MainActivity : Activity() {
         if (a != null) tvStatus.setOnClickListener { a() } else tvStatus.setOnClickListener(null)
     }
 
-    private fun askNotificationPermission(force: Boolean) {
+    private fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT < 33 || Notifications.canPost(this)) return
-        if (!force && Store.askedNotificationPermission(this)) return
+        if (Store.askedNotificationPermission(this)) return
         Store.setAskedNotificationPermission(this)
         requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
     }
 
-    private fun openAppNotificationSettings() {
-        val i = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-            .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-        startActivity(i)
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LocationConsent.REQUEST_CODE) {
+            val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            if (!granted) {
+                Store.setAutoLocation(this, false)
+                Toast.makeText(this, "Konum izni verilmedi. Şehrini elle seçebilirsin.", Toast.LENGTH_LONG).show()
+            }
+            // Sonrası onResume -> resumeFlow ile devam eder.
+        }
         updateStatus()
     }
 }

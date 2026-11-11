@@ -25,6 +25,41 @@ object Store {
         prefs(ctx).edit().putBoolean("notify", on).apply()
     }
 
+    /** Vakit bazında bildirim. Varsayılan: Güneş hariç hepsi açık. */
+    fun notifyFor(ctx: Context, index: Int): Boolean = prefs(ctx).getBoolean("notify_$index", index != SUNRISE)
+    fun setNotifyFor(ctx: Context, index: Int, on: Boolean) {
+        prefs(ctx).edit().putBoolean("notify_$index", on).apply()
+    }
+
+    // ---- Otomatik konum ----
+
+    fun autoLocation(ctx: Context): Boolean = prefs(ctx).getBoolean("autoLocation", false)
+    fun setAutoLocation(ctx: Context, on: Boolean) {
+        val e = prefs(ctx).edit().putBoolean("autoLocation", on)
+        if (!on) e.remove("autoLat").remove("autoLon")
+        e.apply()
+    }
+
+    /** Konum izni açıklaması bir kez gösterilir. */
+    fun locationIntroShown(ctx: Context): Boolean = prefs(ctx).getBoolean("locIntro", false)
+    fun setLocationIntroShown(ctx: Context) {
+        prefs(ctx).edit().putBoolean("locIntro", true).apply()
+    }
+
+    /** Vakitlerin en son otomatik olarak belirlendiği nokta (enlem, boylam). */
+    fun autoPoint(ctx: Context): Pair<Double, Double>? {
+        val p = prefs(ctx)
+        val lat = p.getString("autoLat", null)?.toDoubleOrNull() ?: return null
+        val lon = p.getString("autoLon", null)?.toDoubleOrNull() ?: return null
+        return Pair(lat, lon)
+    }
+
+    fun saveAutoPoint(ctx: Context, lat: Double, lon: Double) {
+        prefs(ctx).edit().putString("autoLat", lat.toString()).putString("autoLon", lon.toString()).apply()
+    }
+
+    fun lastDay(ctx: Context): LocalDate? = days(ctx).lastOrNull()?.date
+
     fun askedNotificationPermission(ctx: Context): Boolean = prefs(ctx).getBoolean("askedNotif", false)
     fun setAskedNotificationPermission(ctx: Context) {
         prefs(ctx).edit().putBoolean("askedNotif", true).apply()

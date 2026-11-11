@@ -17,7 +17,9 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
 
         // Telefon uzun süre kapalı kaldıysa eski vakit için bildirim gösterme (15 dk tolerans).
         val late = System.currentTimeMillis() - atMs
-        if (index in PRAYER_NAMES.indices && index != SUNRISE && late < 15 * 60_000L && Store.notificationsOn(app)) {
+        if (index in PRAYER_NAMES.indices && late < 15 * 60_000L &&
+            Store.notificationsOn(app) && Store.notifyFor(app, index)
+        ) {
             Notifications.showPrayer(app, Moment(index, at))
         }
 

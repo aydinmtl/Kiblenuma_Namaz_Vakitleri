@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 
 /** Ülke → Şehir → İlçe seçimi. Seçimden sonra 30 günlük vakitleri indirir. */
 class LocationActivity : Activity() {
@@ -126,17 +127,24 @@ class LocationActivity : Activity() {
         tvError.visibility = View.GONE
         progress.visibility = View.VISIBLE
         list.isEnabled = false
-        val cityName = city?.name
-        val label = if (cityName == null || cityName == district.name) district.name else "${district.name}, $cityName"
+        val label = Diyanet.label(district, city, country)
+        val wasAuto = Store.autoLocation(this)
         val app = applicationContext
         Thread {
             try {
                 val json = Diyanet.fetchTimes(district.id)
                 if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException("bu yer için vakit bulunamadı")
                 Store.saveLocation(app, district.id, label, json)
+                // Elle seçilen yer, otomatik konum tarafından ezilmesin.
+                Store.setAutoLocation(app, false)
                 AlarmScheduler.schedule(app)
                 PrayerWidget.updateAll(app)
-                runOnUiThread { finish() }
+                runOnUiThread {
+                    if (wasAuto) {
+                        Toast.makeText(this, "Otomatik konum kapatıldı. Ayarlar'dan tekrar açabilirsin.", Toast.LENGTH_LONG).show()
+                    }
+                    finish()
+                }
             } catch (e: Exception) {
                 runOnUiThread {
                     list.isEnabled = true
