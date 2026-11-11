@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Birlikte bilgi yarışması. Her doğru cevap aile ağacımızı büyütür."
+                android:text="Birlikte bilgi yarışması. İlk kez doğru bilinen her soru aile ağacımızı büyütür."
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
 
@@ -72,6 +72,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:minHeight="60dp" />
+
+            <!-- Yanlış bilinen soru varsa görünür -->
+            <Button
+                android:id="@+id/btnReview"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minHeight="52dp"
+                android:visibility="gone" />
 
             <TextView style="@style/SectionHead" android:text="Aile hedeflerimiz" />
 
@@ -140,6 +150,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:progressTint="@color/gold" />
+
+            <!-- Sırayla oynanıyorsa: "Sıra: Zeynep" -->
+            <TextView
+                android:id="@+id/tvTurn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:textColor="@color/gold"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tvQuestion"
