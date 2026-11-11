@@ -1,0 +1,96 @@
+# Kıblenüma — Geliştirici devir notları
+
+Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. Önce bunu, sonra
+`PLAY_STORE.md` ve `YAPILACAKLAR.md` dosyalarını oku.
+
+## Proje özeti
+
+- Reklamsız, ücretsiz, kişisel veri toplamayan Android namaz vakti uygulaması.
+- Sahibi: Aydın (1. sınıf bilgisayar öğrencisi, C ve Linux biliyor, Kotlin/Android'de yeni).
+  **Kod okunur ve Türkçe yorumlu kalmalı**; her değişiklik sade Türkçeyle açıklanmalı.
+- Arayüz dili: Türkçe. Yorumlar: Türkçe.
+- Mağaza başlığı (kesin): **Kıblenüma: Namaz Vakitleri**. Yeni uygulama/modül adları Osmanlıca seçilir.
+
+## Teknik yapı
+
+| Konu | Değer |
+|---|---|
+| Dil / UI | Kotlin, platform View'ları (XML layout). Compose YOK. |
+| Bağımlılıklar | Yalnızca `androidx.activity` + CameraX (AR kıble için). Gerisi Android platformu. |
+| SDK | minSdk 26, compileSdk/targetSdk 35 |
+| Araçlar | AGP 8.7.3, Kotlin 2.0.21, Gradle 8.14.3 (wrapper depoda) |
+| Paket | namespace `com.aydinmtl.namazvakitleri`, applicationId `com.aydinmtl.kiblenuma` |
+| Derleme | `.github/workflows/build.yml`: `main`'e her push → `assembleRelease` → GitHub Release `v1.0.<run>` (`Kiblenuma.apk`) |
+| İmza | `app/debug.keystore` yalnızca elden kurulum içindir; Play için ayrı upload key gerekecek |
+| Lint | `abortOnError=false`, `checkReleaseBuilds=false` (bilinçli olarak gevşek; sıkılaştırılabilir) |
+| Test | Henüz birim testi YOK |
+
+Bulut çalışma ortamında Google Maven / Android SDK sunucularına erişim yok: **derleme yalnızca
+GitHub Actions'ta** yapılabiliyor. Ortamdan ezanvakti.emushaf.net, Nominatim ve Overpass'a da
+erişilemiyor; bunları kullanan kod telefonda denenmeli.
+
+## Dosyalar ve görevleri (`app/src/main/java/com/aydinmtl/namazvakitleri/`)
+
+| Dosya | Görevi |
+|---|---|
+| `Model.kt` | `PrayerDay`, `Moment`, `Prayers` (sıradaki/şu anki vakit), `norm()` (isim sadeleştirme), biçimlendirme |
+| `Diyanet.kt` | ezanvakti.emushaf.net: ülke/şehir/ilçe listeleri, 30 günlük vakit JSON'u, `label()` |
+| `Store.kt` | SharedPreferences: yer, ayarlar, Diyanet önbelleği, yarışma oturumu, ağaç puanı, hedefler, kaza, zikir |
+| `Times.kt` | **Vakitlerin tek kaynağı.** Diyanet seçiliyse indirilen liste, değilse `PrayerCalc` ile hesap |
+| `PrayerCalc.kt` | `CalcMethod` (Diyanet, MWL, ISNA, Mısır, Ümmü'l-Kurâ, Karaçi, Kuveyt, Katar, Singapur, UOIF) + astronomik hesap |
+| `Hijri.kt` | ICU Ümmü'l-Kurâ takvimi, Diyanet'e göre gün kaydırma, dini günler listesi |
+| `AutoLocation.kt` | Konum → Diyanet ilçesi: önce isim eşleştirme, olmazsa en yakın yer (Geocoder ile ileri arama, önbellekli); Geocoder yoksa Nominatim |
+| `LocationHelper.kt` | Tek seferlik konum (fused/network/gps), zaman aşımlı |
+| `LocationConsent.kt` | Konum izni öncesi gerekçe penceresi |
+| `AlarmScheduler.kt` | Yalnızca SIRADAKİ olay için alarm (vakit girişi veya X dk önce hatırlatma) |
+| `Receivers.kt` | `PrayerAlarmReceiver` (bildirim, ezan, widget, sonraki alarm), `BootReceiver` |
+| `Notifications.kt` | 4 kanal: vakit, vakit (sessiz), hatırlatma, ezan |
+| `AdhanService.kt` | Kullanıcının seçtiği ses dosyasını ön plan servisiyle çalar |
+| `PrayerWidget.kt` | 4x2 ve 4x1 widget'lar (`PrayerWidgetSmall`), ↻ yenile düğmesi |
+| `RefreshActivity.kt` | Widget'tan açılan küçük pencere: konum + vakit yenileme (kilit ekranında da görünür) |
+| `MainActivity.kt` | Ana ekran, ilk açılış akışı (`resumeFlow`), otomatik konum kontrolü |
+| `SettingsActivity.kt` | Konum, yöntem, ikindi, bildirimler, hatırlatma, ezan sesi, hakkında |
+| `LocationActivity.kt` | Ülke → şehir → ilçe elle seçim |
+| `ImsakiyeActivity.kt`, `HolyDaysActivity.kt` | Aylık tablo, dini günler |
+| `QiblaActivity.kt`, `QiblaView.kt` | Pusulalı kıble |
+| `QiblaArActivity.kt`, `ArOverlayView.kt` | Kamerayla (AR) kıble — `ComponentActivity` + CameraX |
+| `MosquesActivity.kt` | OpenStreetMap Overpass ile 10 km içindeki camiler |
+| `KazaActivity.kt`, `ZikirActivity.kt` | Kaza çetelesi, zikirmatik |
+| `Quiz.kt`, `QuizActivity.kt`, `TreeView.kt` | Aile Halkası: bilgi yarışması, oturum kaydı, aile ağacı, aile hedefleri |
+
+Soru bankası: `tools/sorular.py` → `python3 tools/sorular.py app/src/main/assets/sorular.json`.
+JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıkları karıştırır.
+
+## Bilinen sorunlar ve şüpheler (öncelik sırasıyla)
+
+1. **Otomatik konum hiç telefonda doğrulanmadı.** v1.0.10'da kullanıcı (Cenevre/Thônex) yerin bulunamayıp
+   elle seçime gönderildiğini bildirdi. v1.0.11'de "en yakın yer" yedeği eklendi, sonucu bekleniyor.
+   Başarısızlık nedeni elle seçim ekranının üstünde yazıyor; kullanıcıdan o metni iste.
+2. **Saat dilimi:** Diyanet vakitleri o yerin yerel saatidir ama alarmlar telefonun saat diliminde kurulur.
+   Elle uzak bir yer seçilirse (ör. İsviçre'deyken İstanbul) vakitler kayar. API'deki
+   `GreenwichOrtalamaZamani` alanı kullanılabilir.
+3. **Yüksek enlem / gece yarısını geçen yatsı:** `PrayerCalc` saati `LocalTime`'a mod 24 ile çeviriyor;
+   yatsı 00:00'ı geçerse aynı günün başına düşer ve sıralama bozulur.
+4. **Ezan servisi:** Tam zamanlı alarm izni yoksa (inexact alarm) Android 12+ arka plandan ön plan servisi
+   başlatmayı reddedebilir (`ForegroundServiceStartNotAllowedException`); şu an sessizce yutuluyor.
+5. **Hedef API:** targetSdk 35. Play'in güncel şartı kontrol edilip yükseltilmeli (edge-to-edge,
+   öngörülü geri hareketi, `onBackPressed` kullanımları).
+6. **Hicri kaydırma:** `HicriTarihKisa` biçimi ("2.6.1448" varsayıldı) doğrulanmadı.
+   Dini günler Diyanet'in yayımladığı takvimle karşılaştırılmalı.
+7. **Widget:** alarm gecikirse Chronometer eksiye düşer; `updatePeriodMillis` 30 dk.
+8. **Kilit ekranı:** `RefreshActivity` `setShowWhenLocked(true)` kullanıyor; kilit ekranı widget'ından
+   açılınca kilit sorulup sorulmadığı denenmedi.
+9. **AR kıble:** kamera yatay görüş açısı 62° varsayıldı; `CameraCharacteristics`'ten okunabilir.
+10. **Ana ekran her saniye** `Times.days()` + `Prayers.moments()` çağırıyor; gereksiz iş.
+11. **Birim testi yok.** Saf mantık için JVM testleri yazılmalı: `PrayerCalc`, `Prayers.next/current`,
+    `norm`/eşleştirme, `QuizSession` (kaydet/yükle), `FamilyTree`, `Hijri.holyDays`.
+12. **Soru içeriği** bir hoca tarafından kontrol edilmedi; Play'den önce şart.
+
+## Uyulması gereken kurallar
+
+- Reklam, analitik, izleyici, hesap/sunucu YOK. Kişisel veri cihazdan çıkmaz
+  (yalnızca Diyanet, Geocoder/Nominatim ve Overpass sorguları; kimlik bilgisi gönderilmez).
+- Yeni bağımlılık, Compose'a geçiş, sunucu/bulut eklemek gibi büyük kararlar **önce sahibine sorulur**.
+- Dini içerikte uydurma yok; tartışmalı konular ya çıkarılır ya mezhep belirtilerek yazılır.
+- Başka uygulamalardan kod, görsel, ses kopyalanmaz.
+- Play meta veri politikası: başlık/simge/geliştirici adında "Reklamsız/Ücretsiz" geçmez.
