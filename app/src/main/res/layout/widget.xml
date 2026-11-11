@@ -57,27 +57,27 @@
         android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
-        <LinearLayout style="@style/WCol">
+        <LinearLayout android:id="@+id/w_c0" style="@style/WCol">
             <TextView android:id="@+id/w_n0" style="@style/WName" android:text="İmsak" />
             <TextView android:id="@+id/w_t0" style="@style/WTime" />
         </LinearLayout>
-        <LinearLayout style="@style/WCol">
+        <LinearLayout android:id="@+id/w_c1" style="@style/WCol">
             <TextView android:id="@+id/w_n1" style="@style/WName" android:text="Güneş" />
             <TextView android:id="@+id/w_t1" style="@style/WTime" />
         </LinearLayout>
-        <LinearLayout style="@style/WCol">
+        <LinearLayout android:id="@+id/w_c2" style="@style/WCol">
             <TextView android:id="@+id/w_n2" style="@style/WName" android:text="Öğle" />
             <TextView android:id="@+id/w_t2" style="@style/WTime" />
         </LinearLayout>
-        <LinearLayout style="@style/WCol">
+        <LinearLayout android:id="@+id/w_c3" style="@style/WCol">
             <TextView android:id="@+id/w_n3" style="@style/WName" android:text="İkindi" />
             <TextView android:id="@+id/w_t3" style="@style/WTime" />
         </LinearLayout>
-        <LinearLayout style="@style/WCol">
+        <LinearLayout android:id="@+id/w_c4" style="@style/WCol">
             <TextView android:id="@+id/w_n4" style="@style/WName" android:text="Akşam" />
             <TextView android:id="@+id/w_t4" style="@style/WTime" />
         </LinearLayout>
-        <LinearLayout style="@style/WCol">
+        <LinearLayout android:id="@+id/w_c5" style="@style/WCol">
             <TextView android:id="@+id/w_n5" style="@style/WName" android:text="Yatsı" />
             <TextView android:id="@+id/w_t5" style="@style/WTime" />
         </LinearLayout>

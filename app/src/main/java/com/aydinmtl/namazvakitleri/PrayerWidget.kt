@@ -23,6 +23,7 @@ class PrayerWidget : AppWidgetProvider() {
     companion object {
         private val TIME_IDS = intArrayOf(R.id.w_t0, R.id.w_t1, R.id.w_t2, R.id.w_t3, R.id.w_t4, R.id.w_t5)
         private val NAME_IDS = intArrayOf(R.id.w_n0, R.id.w_n1, R.id.w_n2, R.id.w_n3, R.id.w_n4, R.id.w_n5)
+        private val COL_IDS = intArrayOf(R.id.w_c0, R.id.w_c1, R.id.w_c2, R.id.w_c3, R.id.w_c4, R.id.w_c5)
 
         /** Ekrandaki bütün widget'ları (geniş ve küçük) günceller. */
         fun updateAll(ctx: Context) {
@@ -51,17 +52,20 @@ class PrayerWidget : AppWidgetProvider() {
                 val targetMs = next.at.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 val base = SystemClock.elapsedRealtime() + (targetMs - System.currentTimeMillis())
                 v.setViewVisibility(R.id.w_countdown, View.VISIBLE)
-                v.setChronometer(R.id.w_countdown, base, null, true)
+                // Küçük widget'ta sayaç cümle içinde: "Öğle vaktine kalan: 3:40:51"
+                val format = if (small) "${next.name} vaktine kalan: %s" else null
+                v.setChronometer(R.id.w_countdown, base, format, true)
                 v.setChronometerCountDown(R.id.w_countdown, true)
 
-                if (!small) {
-                    // Sıradaki vaktin ait olduğu günü göster (yatsıdan sonra yarının vakitleri).
-                    val day = Prayers.day(days, next.at.toLocalDate())
-                    for (i in 0..5) {
-                        v.setTextViewText(TIME_IDS[i], day?.times?.get(i)?.format(HHMM) ?: "--:--")
-                        v.setTextColor(TIME_IDS[i], if (i == next.index) gold else text)
-                        v.setTextColor(NAME_IDS[i], if (i == next.index) gold else muted)
-                    }
+                // Sıradaki vaktin ait olduğu günü göster (yatsıdan sonra yarının vakitleri).
+                val day = Prayers.day(days, next.at.toLocalDate())
+                for (i in 0..5) {
+                    val isNext = i == next.index
+                    v.setTextViewText(TIME_IDS[i], day?.times?.get(i)?.format(HHMM) ?: "--:--")
+                    // Sıradaki vakit yeşil kutu içinde
+                    v.setInt(COL_IDS[i], "setBackgroundResource", if (isNext) R.drawable.row_active else 0)
+                    v.setTextColor(TIME_IDS[i], text)
+                    v.setTextColor(NAME_IDS[i], if (isNext) text else muted)
                 }
             }
 
