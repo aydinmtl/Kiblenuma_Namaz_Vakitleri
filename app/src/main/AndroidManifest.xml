@@ -6,6 +6,11 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
@@ -30,6 +35,14 @@
         <activity android:name=".LocationActivity" android:exported="false" />
         <activity android:name=".ImsakiyeActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".HolyDaysActivity" android:exported="false" />
+        <activity android:name=".KazaActivity" android:exported="false" />
+        <activity android:name=".ZikirActivity" android:exported="false" />
+        <activity android:name=".MosquesActivity" android:exported="false" />
+        <activity
+            android:name=".QiblaArActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RefreshActivity"
             android:excludeFromRecents="true"
@@ -43,6 +56,11 @@
             android:screenOrientation="portrait" />
 
         <receiver android:name=".PrayerAlarmReceiver" android:exported="false" />
+
+        <service
+            android:name=".AdhanService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
         <receiver android:name=".BootReceiver" android:exported="true">
             <intent-filter>

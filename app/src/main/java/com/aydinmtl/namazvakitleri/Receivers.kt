@@ -7,24 +7,36 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-/** Vakit girdiğinde AlarmManager tarafından çağrılır. */
+/** Vakit girdiğinde ya da hatırlatma zamanı geldiğinde AlarmManager tarafından çağrılır. */
 class PrayerAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val app = context.applicationContext
+        val zone = ZoneId.systemDefault()
         val index = intent.getIntExtra(AlarmScheduler.EXTRA_INDEX, -1)
         val atMs = intent.getLongExtra(AlarmScheduler.EXTRA_AT, 0L)
-        val at = Instant.ofEpochMilli(atMs).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        val fireMs = intent.getLongExtra(AlarmScheduler.EXTRA_FIRE, atMs)
+        val reminder = intent.getBooleanExtra(AlarmScheduler.EXTRA_REMINDER, false)
+        val at = Instant.ofEpochMilli(atMs).atZone(zone).toLocalDateTime()
+        val fire = Instant.ofEpochMilli(fireMs).atZone(zone).toLocalDateTime()
 
-        // Telefon uzun süre kapalı kaldıysa eski vakit için bildirim gösterme (15 dk tolerans).
-        val late = System.currentTimeMillis() - atMs
-        if (index in PRAYER_NAMES.indices && late < 15 * 60_000L &&
+        // Telefon uzun süre kapalı kaldıysa eski olay için uyarı verme (15 dk tolerans).
+        val late = System.currentTimeMillis() - fireMs
+        val notify = index in PRAYER_NAMES.indices && late < 15 * 60_000L &&
             Store.notificationsOn(app) && Store.notifyFor(app, index)
-        ) {
-            Notifications.showPrayer(app, Moment(index, at))
+
+        if (notify) {
+            val m = Moment(index, at)
+            if (reminder) {
+                Notifications.showReminder(app, m, Store.reminderMinutes(app))
+            } else {
+                val playAdhan = index != SUNRISE && Store.adhanOn(app) && AdhanService.allowedNow(app)
+                Notifications.showPrayer(app, m, silent = playAdhan)
+                if (playAdhan) AdhanService.start(app, m.name)
+            }
         }
 
         val now = LocalDateTime.now()
-        val after = if (at.isAfter(now)) at else now
+        val after = if (fire.isAfter(now)) fire else now
         PrayerWidget.updateAll(app)
         AlarmScheduler.schedule(app, after)
 

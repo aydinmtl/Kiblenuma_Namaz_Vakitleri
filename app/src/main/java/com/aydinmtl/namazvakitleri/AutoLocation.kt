@@ -91,6 +91,7 @@ object AutoLocation {
 
         if (district.id == Store.districtId(ctx)) {
             Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
+            Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
             return Result.Same
         }
 
@@ -100,7 +101,33 @@ object AutoLocation {
         val label = Diyanet.label(district, city, country)
         Store.saveLocation(ctx, district.id, label, json)
         Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
+        Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
         return Result.Changed(label)
+    }
+
+    /**
+     * Yer adından koordinat bulur ("Cenevre, İsviçre" -> 46.20, 6.14).
+     * Elle seçilen yerlerde hesaplama yöntemleri, kıble ve camiler için gerekir. Ağ kullanır.
+     */
+    @Suppress("DEPRECATION")
+    fun geocodeName(ctx: Context, queries: List<String>): Pair<Double, Double>? {
+        if (!Geocoder.isPresent()) return null
+        val executor = Executors.newSingleThreadExecutor()
+        try {
+            for (q in queries.filter { it.isNotBlank() }.distinct()) {
+                val a = try {
+                    executor.submit(Callable<Address?> {
+                        Geocoder(ctx, TR).getFromLocationName(q, 1)?.firstOrNull()
+                    }).get(8, TimeUnit.SECONDS)
+                } catch (e: Exception) {
+                    null
+                }
+                if (a != null && a.hasLatitude() && a.hasLongitude()) return Pair(a.latitude, a.longitude)
+            }
+            return null
+        } finally {
+            executor.shutdownNow()
+        }
     }
 
     /** Şehir adı sorgusu bazı telefonlarda uzun süre takılabiliyor; en çok 8 sn bekle. */

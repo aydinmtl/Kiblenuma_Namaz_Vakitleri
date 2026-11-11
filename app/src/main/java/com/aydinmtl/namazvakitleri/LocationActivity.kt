@@ -135,6 +135,14 @@ class LocationActivity : Activity() {
                 val json = Diyanet.fetchTimes(district.id)
                 if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException("bu yer için vakit bulunamadı")
                 Store.saveLocation(app, district.id, label, json)
+                // Koordinat: hesaplama yöntemleri, kıble ve camiler için.
+                val c = city
+                val k = country
+                Store.savePlacePoint(app, AutoLocation.geocodeName(app, listOf(
+                    listOfNotNull(district.name, c?.name, k?.name).joinToString(", "),
+                    listOf(district.nameEn, c?.nameEn ?: "", k?.nameEn ?: "").filter { it.isNotBlank() }.joinToString(", "),
+                    label,
+                )))
                 // Elle seçilen yer, otomatik konum tarafından ezilmesin.
                 Store.setAutoLocation(app, false)
                 AlarmScheduler.schedule(app)

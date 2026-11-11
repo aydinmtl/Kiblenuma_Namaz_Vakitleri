@@ -21,6 +21,7 @@ data class PrayerDay(
     val date: LocalDate,
     val times: List<LocalTime>,
     val hijri: String,
+    val hijriShort: String = "",
 )
 
 /** Takvimdeki tek bir an: hangi vakit, ne zaman. */

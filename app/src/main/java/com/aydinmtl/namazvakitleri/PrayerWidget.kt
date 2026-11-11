@@ -37,7 +37,7 @@ class PrayerWidget : AppWidgetProvider() {
             val text = ctx.getColor(R.color.text)
             val muted = ctx.getColor(R.color.muted)
 
-            val days = Store.days(ctx)
+            val days = Times.days(ctx)
             val next = Prayers.next(days, LocalDateTime.now())
             v.setTextViewText(R.id.w_place, Store.placeName(ctx))
 

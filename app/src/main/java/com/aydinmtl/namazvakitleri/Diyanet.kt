@@ -57,7 +57,7 @@ object Diyanet {
             try {
                 val date = LocalDate.parse(o.getString("MiladiTarihKisa"), DATE)
                 val times = KEYS.map { LocalTime.parse(o.getString(it).trim()) }
-                out.add(PrayerDay(date, times, o.optString("HicriTarihUzun", "")))
+                out.add(PrayerDay(date, times, o.optString("HicriTarihUzun", ""), o.optString("HicriTarihKisa", "")))
             } catch (e: Exception) {
                 // Bozuk bir gün varsa onu atla, diğerlerini kullan.
             }

@@ -24,7 +24,7 @@ class ImsakiyeActivity : Activity() {
 
         findViewById<TextView>(R.id.tvTitle).text = "İmsakiye · ${Store.placeName(this)}"
 
-        val days = Store.days(this)
+        val days = Times.days(this)
         val today = LocalDate.now()
         val highlight = getColor(R.color.primary)
         val list = findViewById<ListView>(R.id.list)

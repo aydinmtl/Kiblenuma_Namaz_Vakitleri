@@ -81,6 +81,18 @@ class MainActivity : Activity() {
         findViewById<Button>(R.id.btnQibla).setOnClickListener {
             startActivity(Intent(this, QiblaActivity::class.java))
         }
+        findViewById<Button>(R.id.btnMosques).setOnClickListener {
+            startActivity(Intent(this, MosquesActivity::class.java))
+        }
+        findViewById<Button>(R.id.btnHolyDays).setOnClickListener {
+            startActivity(Intent(this, HolyDaysActivity::class.java))
+        }
+        findViewById<Button>(R.id.btnKaza).setOnClickListener {
+            startActivity(Intent(this, KazaActivity::class.java))
+        }
+        findViewById<Button>(R.id.btnZikir).setOnClickListener {
+            startActivity(Intent(this, ZikirActivity::class.java))
+        }
     }
 
     override fun onResume() {
@@ -227,7 +239,7 @@ class MainActivity : Activity() {
 
     /** Ekrandaki tarih, yer ve 6 vakti yeniden doldurur. */
     private fun render() {
-        val days = Store.days(this)
+        val days = Times.days(this)
         val today = LocalDate.now()
         val day = Prayers.day(days, today)
         shownDate = today
@@ -246,7 +258,7 @@ class MainActivity : Activity() {
         val now = LocalDateTime.now()
         if (now.toLocalDate() != shownDate) render()
 
-        val days = Store.days(this)
+        val days = Times.days(this)
         val next = Prayers.next(days, now)
         val current = Prayers.current(days, now)
 
@@ -311,7 +323,7 @@ class MainActivity : Activity() {
                 }
             }
         }
-        lines.add("Kaynak: Diyanet İşleri Başkanlığı vakitleri")
+        lines.add(Times.sourceLabel(this))
         tvStatus.text = lines.joinToString("\n")
         val a = action
         if (a != null) tvStatus.setOnClickListener { a() } else tvStatus.setOnClickListener(null)

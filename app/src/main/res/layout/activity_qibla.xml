@@ -37,4 +37,11 @@
         android:text="Telefonu yere paralel tut. Altın ok Kâbe'yi gösterir; üstteki işaretle hizalanınca yeşile döner."
         android:textColor="@color/muted"
         android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnAr"
+        style="@style/Btn"
+        android:layout_width="match_parent"
+        android:layout_marginTop="12dp"
+        android:text="📷  Kamerayla bul (AR)" />
 </LinearLayout>

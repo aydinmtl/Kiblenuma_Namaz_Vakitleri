@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        style="@style/Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Zikirmatik" />
+
+    <TextView
+        android:id="@+id/rowTarget"
+        style="@style/SettingRow"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvRounds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/muted"
+        android:textSize="14sp" />
+
+    <!-- Büyük sayaç: her yere dokunmak +1 -->
+    <FrameLayout
+        android:id="@+id/tapArea"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/card"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/tvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFeatureSettings="tnum"
+            android:text="0"
+            android:textColor="@color/gold"
+            android:textSize="96sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:text="Saymak için dokun · ses açma tuşu da sayar"
+            android:textColor="@color/muted"
+            android:textSize="13sp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnUndo"
+            style="@style/Btn"
+            android:layout_width="0dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:text="−1" />
+
+        <Button
+            android:id="@+id/btnReset"
+            style="@style/Btn"
+            android:layout_width="0dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:text="Sıfırla" />
+    </LinearLayout>
+</LinearLayout>

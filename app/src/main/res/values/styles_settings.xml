@@ -28,6 +28,16 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <!-- Dokunulunca seçim penceresi açan satır: "Başlık\nDeğer ›" -->
+    <style name="SettingRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="SettingNote">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

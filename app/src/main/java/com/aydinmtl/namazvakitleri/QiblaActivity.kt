@@ -75,6 +75,14 @@ class QiblaActivity : Activity(), SensorEventListener {
         sensor = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
             ?: sm.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)
         if (sensor == null) tvHint.text = "Bu telefonda pusula sensörü bulunamadı."
+        findViewById<android.view.View>(R.id.btnAr).setOnClickListener {
+            startActivity(android.content.Intent(this, QiblaArActivity::class.java))
+        }
+
+        // GPS gelene kadar (ya da hiç gelmezse) seçili yerin koordinatını kullan.
+        Store.placePoint(this)?.let { p ->
+            setLocation(Location("place").apply { latitude = p.first; longitude = p.second })
+        }
 
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locate()

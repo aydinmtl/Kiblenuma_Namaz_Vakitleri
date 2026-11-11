@@ -119,6 +119,52 @@
                 android:text="@string/qibla" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnMosques"
+                style="@style/Btn"
+                android:layout_width="0dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="Camiler" />
+
+            <Button
+                android:id="@+id/btnHolyDays"
+                style="@style/Btn"
+                android:layout_width="0dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="Dini Günler" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnKaza"
+                style="@style/Btn"
+                android:layout_width="0dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:text="Kaza Çetelesi" />
+
+            <Button
+                android:id="@+id/btnZikir"
+                style="@style/Btn"
+                android:layout_width="0dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:text="Zikirmatik" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"
