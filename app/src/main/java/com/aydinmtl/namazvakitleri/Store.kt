@@ -135,10 +135,49 @@ object Store {
         e.apply()
     }
 
-    /** Ağacın puanı: tüm yarışmalardaki toplam doğru cevap. */
+    /**
+     * Ağacın puanı. Önceki sürümde her doğru cevap 1 puandı; o puanlar korunur.
+     * Artık yalnızca ilk kez doğru bilinen soru puan getirir (bkz. [markSolved]).
+     */
     fun treePoints(ctx: Context): Int = prefs(ctx).getInt("treePoints", 0)
-    fun addTreePoint(ctx: Context) {
-        prefs(ctx).edit().putInt("treePoints", treePoints(ctx) + 1).apply()
+
+    /** Daha önce en az bir kez doğru bilinen soruların kimlikleri. */
+    fun solvedIds(ctx: Context): Set<String> = prefs(ctx).getStringSet("quizSolved", null)?.toSet() ?: emptySet()
+
+    /**
+     * Soru doğru bilindi. İlk kez bilindiyse ağaca 1 puan eklenir ve true döner;
+     * daha önce bilinmişse hiçbir şey değişmez, false döner.
+     */
+    fun markSolved(ctx: Context, id: String): Boolean {
+        val solved = solvedIds(ctx)
+        if (id in solved) return false
+        // Not: getStringSet'in verdiği küme değiştirilmemeli; her zaman yeni küme yazılır.
+        prefs(ctx).edit()
+            .putStringSet("quizSolved", solved + id)
+            .putInt("treePoints", treePoints(ctx) + 1)
+            .apply()
+        return true
+    }
+
+    /** Yanlış bilinen ve henüz doğru bilinmemiş sorular ("Yanlışlarımı tekrar et" için). */
+    fun wrongIds(ctx: Context): Set<String> = prefs(ctx).getStringSet("quizWrong", null)?.toSet() ?: emptySet()
+    fun setWrong(ctx: Context, id: String, wrong: Boolean) {
+        val now = wrongIds(ctx)
+        prefs(ctx).edit().putStringSet("quizWrong", if (wrong) now + id else now - id).apply()
+    }
+
+    /** Bir seviyenin destesinde bu tura kadar sorulmuş sorular (tekrar gelmesin diye). */
+    fun seenIds(ctx: Context, level: QuizLevel): Set<String> =
+        prefs(ctx).getStringSet("quizSeen_${level.id}", null)?.toSet() ?: emptySet()
+    fun saveSeenIds(ctx: Context, level: QuizLevel, ids: Set<String>) {
+        prefs(ctx).edit().putStringSet("quizSeen_${level.id}", ids).apply()
+    }
+
+    /** Son yarışmada sırayla oynayan aile üyeleri (bir dahaki sefere hazır gelsin). */
+    fun quizPlayers(ctx: Context): List<String> =
+        QuizDeck.parsePlayers(prefs(ctx).getString("quizPlayers", "") ?: "")
+    fun saveQuizPlayers(ctx: Context, players: List<String>) {
+        prefs(ctx).edit().putString("quizPlayers", players.joinToString(", ")).apply()
     }
 
     fun goals(ctx: Context): List<FamilyGoal> = FamilyGoal.listFromJson(prefs(ctx).getString("goals", null))

@@ -3,6 +3,7 @@ package com.aydinmtl.namazvakitleri
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.random.Random
 
 /** Bir soru. [options] içinde ilk şık her zaman doğru cevaptır; ekranda karıştırılır. */
 data class Question(
@@ -54,29 +55,65 @@ object QuizBank {
     fun byId(ctx: Context, id: String): Question? = all(ctx).firstOrNull { it.id == id }
 }
 
-/** Yarım kalan yarışma: seviye, karışık soru sırası, kaçıncı soruda olunduğu ve doğru sayısı. */
-data class QuizSession(val level: QuizLevel, val order: List<String>, val index: Int, val score: Int) {
+/** Bir turda kaç soru sorulur. Seviyedeki bütün sorular turlara bölünür. */
+const val ROUND_SIZE = 10
+
+/**
+ * Yarım kalan yarışma turu.
+ * [order]: bu turun soruları (karışık sırada), [index]: kaçıncı soruda olunduğu, [score]: toplam doğru.
+ * [players]: sırayla oynayan aile üyeleri (boşsa tek kişi oynuyor), [scores]: her oyuncunun doğru sayısı.
+ * [review]: true ise bu tur "yanlışlarımı tekrar et" turudur.
+ */
+data class QuizSession(
+    val level: QuizLevel,
+    val order: List<String>,
+    val index: Int,
+    val score: Int,
+    val players: List<String> = emptyList(),
+    val scores: List<Int> = List(players.size) { 0 },
+    val review: Boolean = false,
+) {
     val finished: Boolean get() = index >= order.size
+
+    /** Şu anki soruyu cevaplayacak oyuncunun sırası (tek kişiyse null). Oyuncular sırayla döner. */
+    val currentPlayer: Int? get() = if (players.isEmpty()) null else index % players.size
+
+    /** Şu anki soru cevaplanınca oturumun yeni hali: sıradaki soruya geçilir, doğruysa puan eklenir. */
+    fun answered(correct: Boolean): QuizSession {
+        val add = if (correct) 1 else 0
+        val p = currentPlayer
+        val newScores = if (p == null) scores else scores.mapIndexed { i, sc -> if (i == p) sc + add else sc }
+        return copy(index = index + 1, score = score + add, scores = newScores)
+    }
 
     fun toJson(): String = JSONObject()
         .put("level", level.id)
         .put("order", JSONArray(order))
         .put("index", index)
         .put("score", score)
+        .put("players", JSONArray(players))
+        .put("scores", JSONArray(scores))
+        .put("review", review)
         .toString()
 
     companion object {
-        /** Her yeni yarışmada sorular farklı sırayla gelir. */
-        fun newGame(ctx: Context, level: QuizLevel): QuizSession =
-            QuizSession(level, QuizBank.byLevel(ctx, level).map { it.id }.shuffled(), 0, 0)
-
         fun fromJson(s: String?): QuizSession? = if (s == null) null else try {
             val o = JSONObject(s)
             val arr = o.getJSONArray("order")
+            // Eski sürümün kayıtlarında oyuncu bilgisi yok: tek kişi sayılır.
+            val pl = o.optJSONArray("players")
+            val players = if (pl == null) emptyList() else (0 until pl.length()).map { pl.getString(it) }
+            val sc = o.optJSONArray("scores")
+            val scores = if (sc != null && sc.length() == players.size) {
+                (0 until sc.length()).map { sc.getInt(it) }
+            } else {
+                List(players.size) { 0 }
+            }
             QuizSession(
                 QuizLevel.byId(o.getString("level")),
                 (0 until arr.length()).map { arr.getString(it) },
                 o.getInt("index"), o.getInt("score"),
+                players, scores, o.optBoolean("review", false),
             )
         } catch (e: Exception) {
             null
@@ -84,18 +121,50 @@ data class QuizSession(val level: QuizLevel, val order: List<String>, val index:
     }
 }
 
-/** Aile ağacı: bütün yarışmalardaki toplam doğru cevapla büyür. */
+/**
+ * Turların sorularını seçer. Bir seviyedeki bütün sorular görülmeden aynı soru tekrar gelmez;
+ * hepsi görülünce deste baştan karıştırılır.
+ */
+object QuizDeck {
+    /**
+     * [allIds]: seviyedeki bütün soruların kimlikleri. [seen]: bu destede daha önce sorulanlar.
+     * Döner: (bu turun soruları, turdan sonra "görülenler" kümesi).
+     */
+    fun nextRound(
+        allIds: List<String>,
+        seen: Set<String>,
+        size: Int = ROUND_SIZE,
+        random: Random = Random.Default,
+    ): Pair<List<String>, Set<String>> {
+        val stillValid = seen.intersect(allIds.toSet()) // bankadan çıkarılan soruları unut
+        val round = ArrayList(allIds.filter { it !in stillValid }.shuffled(random).take(size))
+        if (round.size == size) return Pair(round, stillValid + round)
+        // Deste bitti: eksik kalan yeri yeni karışık desteden doldur (bu turdakiler hariç).
+        val refill = allIds.filter { it !in round }.shuffled(random).take(size - round.size)
+        round.addAll(refill)
+        return Pair(round, refill.toSet())
+    }
+
+    /** Oyuncu adlarını "Annem, Babam ,Zeynep" gibi bir yazıdan ayırır (en çok 8 kişi). */
+    fun parsePlayers(text: String): List<String> =
+        text.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }.distinct().take(8)
+}
+
+/**
+ * Aile ağacı: her soru İLK KEZ doğru bilindiğinde 1 puan alır. Aynı soruyu tekrar bilmek ağacı
+ * büyütmez; böylece ağaç ezberle değil, öğrenilen yeni bilgiyle büyür (120 soru = en çok 120 puan).
+ */
 object FamilyTree {
     data class Stage(val name: String, val minPoints: Int)
 
     val STAGES = listOf(
         Stage("Tohum", 0),
-        Stage("Filiz", 10),
-        Stage("Fidan", 25),
-        Stage("Genç ağaç", 50),
-        Stage("Çiçekli ağaç", 100),
-        Stage("Meyveli ağaç", 175),
-        Stage("Ulu çınar", 275),
+        Stage("Filiz", 5),
+        Stage("Fidan", 15),
+        Stage("Genç ağaç", 30),
+        Stage("Çiçekli ağaç", 50),
+        Stage("Meyveli ağaç", 75),
+        Stage("Ulu çınar", 100),
     )
 
     fun stageIndex(points: Int): Int = STAGES.indexOfLast { points >= it.minPoints }.coerceAtLeast(0)
