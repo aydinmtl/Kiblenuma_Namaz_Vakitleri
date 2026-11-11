@@ -187,8 +187,12 @@ object Store {
     /** Veri bitmek üzereyse ve kısa süre önce denenmediyse true. */
     fun needsRefresh(ctx: Context): Boolean {
         if (districtId(ctx) == null) return false
-        // Diyanet dışı yöntemler telefonda hesaplanır; indirme gerekmez.
-        if (method(ctx) != CalcMethod.DIYANET) return false
+        // Diyanet dışı bir yöntem seçili olsa da Diyanet verisi güncel tutulur, çünkü:
+        //  - yerin koordinatı bulunamazsa uygulama Diyanet vakitlerini gösterir (Times.effectiveMethod);
+        //    önceden burada "yöntem Diyanet değil" diye yenileme yapılmıyordu ve ~30 gün sonra
+        //    vakitler tamamen bitiyordu,
+        //  - Hicri tarih Diyanet takvimine bu veriyle hizalanır.
+        // Ayda bir kez küçük bir indirme; pil ve veri etkisi önemsiz.
         val sinceLast = System.currentTimeMillis() - prefs(ctx).getLong("lastAttempt", 0L)
         if (sinceLast < MIN_RETRY_MS) return false
         val last = days(ctx).lastOrNull()?.date ?: return true
