@@ -12,23 +12,22 @@ import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import org.json.JSONObject
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
-import java.net.URLEncoder
 import java.util.Locale
 import kotlin.math.roundToInt
 
 /**
  * Yakındaki camiler ve mescitler. Veri: OpenStreetMap (Overpass API), ücretsiz ve anahtarsız.
+ * Arama ve ayrıştırma MosqueSearch.kt dosyasında.
  * Bir camiye dokununca telefonun harita uygulamasında açılır.
  */
 class MosquesActivity : Activity() {
 
-    data class Mosque(val name: String, val lat: Double, val lon: Double, val distanceM: Float, val bearing: Float)
+    private companion object {
+        /** Listede en çok bu kadar yer gösterilir (en yakınlar). */
+        const val MAX_SHOWN = 150
+    }
 
-    private val items = ArrayList<Mosque>()
+    private val items = ArrayList<MosqueSearch.Mosque>()
     private lateinit var tvSubtitle: TextView
     private lateinit var progress: ProgressBar
     private lateinit var adapter: BaseAdapter
@@ -76,28 +75,35 @@ class MosquesActivity : Activity() {
             return
         }
         val fromGps = loc != null
+        progress.visibility = View.VISIBLE
+        tvSubtitle.setOnClickListener(null)
         tvSubtitle.text = "Camiler aranıyor…"
         Thread {
-            // Önce 3 km içinde ara; çok az sonuç çıkarsa 10 km'ye genişlet.
-            // (Sunucu sonuçları mesafeye göre değil kayıt sırasına göre keser; dar alanda aramak
-            // yoğun şehirlerde en yakın camilerin listeden düşmesini önler.)
-            var radiusKm = 3
+            // Tek seferde 10 km içinde ara, telefonda mesafeye göre sırala.
+            // (Eskiden önce 3 km, az çıkarsa 10 km diye iki istek gidiyordu; az camili yerlerde,
+            // örneğin Cenevre'de, ikinci istek sunucuyu daha çabuk "yoğun" durumuna düşürüyordu.)
+            val radiusKm = 10
+            var error: MosqueSearch.SearchFailed? = null
             val result = try {
-                val near = search(point.first, point.second, radiusKm * 1000)
-                if (near.size >= 5) {
-                    near
-                } else {
-                    radiusKm = 10
-                    search(point.first, point.second, radiusKm * 1000)
-                }
+                MosqueSearch.search(point.first, point.second, radiusKm * 1000).take(MAX_SHOWN)
+            } catch (e: MosqueSearch.SearchFailed) {
+                error = e
+                null
             } catch (e: Exception) {
+                error = MosqueSearch.SearchFailed(false, e.message ?: "")
                 null
             }
             runOnUiThread {
                 if (isFinishing) return@runOnUiThread
                 progress.visibility = View.GONE
                 if (result == null) {
-                    tvSubtitle.text = "Camiler alınamadı. İnternet bağlantını kontrol et."
+                    tvSubtitle.text = if (error?.busy == true) {
+                        "Cami sunucuları şu an çok yoğun. Birkaç dakika sonra tekrar denemek için buraya dokun."
+                    } else {
+                        "Camiler alınamadı. İnternet bağlantını kontrol edip tekrar denemek için buraya dokun."
+                    }
+                    // Yazıya dokununca aramayı yeniden başlat.
+                    tvSubtitle.setOnClickListener { start(loc) }
                     return@runOnUiThread
                 }
                 items.clear()
@@ -105,7 +111,7 @@ class MosquesActivity : Activity() {
                 adapter.notifyDataSetChanged()
                 val where = if (fromGps) "bulunduğun yere" else "${Store.placeName(this)} merkezine"
                 tvSubtitle.text = if (result.isEmpty()) {
-                    "$radiusKm km içinde kayıtlı cami bulunamadı."
+                    "$radiusKm km içinde kayıtlı cami bulunamadı. Veri: © OpenStreetMap katkıcıları (eksik olabilir)."
                 } else {
                     "${result.size} yer, $where $radiusKm km içinde. Veri: © OpenStreetMap katkıcıları (eksik olabilir)."
                 }
@@ -113,42 +119,7 @@ class MosquesActivity : Activity() {
         }.start()
     }
 
-    /** Overpass API'den çevredeki "amenity=place_of_worship + religion=muslim" kayıtları. */
-    private fun search(lat: Double, lon: Double, radiusM: Int): List<Mosque> {
-        val q = "[out:json][timeout:25];" +
-            "nwr[\"amenity\"=\"place_of_worship\"][\"religion\"=\"muslim\"](around:$radiusM,$lat,$lon);" +
-            "out center 500;" // en çok 500 kayıt; ekranda mesafeye göre sıralanır
-        val url = URL("https://overpass-api.de/api/interpreter?data=" + URLEncoder.encode(q, "UTF-8"))
-        val c = url.openConnection() as HttpURLConnection
-        c.connectTimeout = 15_000
-        c.readTimeout = 30_000
-        c.setRequestProperty("User-Agent", "Kiblenuma-Android/1.0")
-        val body = try {
-            if (c.responseCode != 200) throw IOException("HTTP ${c.responseCode}")
-            c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-        } finally {
-            c.disconnect()
-        }
-
-        val arr = JSONObject(body).optJSONArray("elements") ?: return emptyList()
-        val out = ArrayList<Mosque>()
-        val res = FloatArray(2)
-        for (i in 0 until arr.length()) {
-            val e = arr.optJSONObject(i) ?: continue
-            val center = e.optJSONObject("center")
-            val la = if (e.has("lat")) e.optDouble("lat") else center?.optDouble("lat") ?: continue
-            val lo = if (e.has("lon")) e.optDouble("lon") else center?.optDouble("lon") ?: continue
-            val tags = e.optJSONObject("tags")
-            val name = tags?.optString("name:tr")?.takeIf { it.isNotBlank() }
-                ?: tags?.optString("name")?.takeIf { it.isNotBlank() }
-                ?: "İsimsiz cami / mescit"
-            Location.distanceBetween(lat, lon, la, lo, res)
-            out.add(Mosque(name, la, lo, res[0], (res[1] + 360f) % 360f))
-        }
-        return out.sortedBy { it.distanceM }
-    }
-
-    private fun openInMaps(m: Mosque) {
+    private fun openInMaps(m: MosqueSearch.Mosque) {
         val label = Uri.encode(m.name)
         val uri = Uri.parse(String.format(Locale.ROOT, "geo:%f,%f?q=%f,%f(%s)", m.lat, m.lon, m.lat, m.lon, label))
         try {
