@@ -103,6 +103,61 @@
                     android:textSize="34sp" />
             </LinearLayout>
 
+            <!-- Çocuklar için namaz oyunu -->
+            <LinearLayout
+                android:id="@+id/menuPrayer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/menu_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/icon_circle"
+                    android:gravity="center"
+                    android:importantForAccessibility="no"
+                    android:text="🕌"
+                    android:textSize="32sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Namaz Öğreniyorum"
+                        android:textColor="@color/text"
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Çocuklar için abdest ve namaz oyunu"
+                        android:textColor="#DDF2F2F2"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:text="›"
+                    android:textColor="@color/gold"
+                    android:textSize="34sp" />
+            </LinearLayout>
+
             <!-- Her gün bir soru -->
             <Button
                 android:id="@+id/btnDailyHome"

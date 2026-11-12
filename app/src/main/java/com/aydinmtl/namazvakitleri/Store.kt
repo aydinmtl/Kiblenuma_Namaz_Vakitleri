@@ -285,4 +285,25 @@ object Store {
             false
         }
     }
+
+    // ---------------- Namaz Öğreniyorum oyunu ----------------
+
+    /** Oyunda kaldığı adım (0 = en baş). Oyun bitince 0'a döner. */
+    fun prayerStep(ctx: Context): Int = prefs(ctx).getInt("prayerStep", 0)
+    fun setPrayerStep(ctx: Context, step: Int) {
+        prefs(ctx).edit().putInt("prayerStep", step).apply()
+    }
+
+    /** Seçilen figür: true kız, false erkek, null henüz seçilmedi. */
+    fun prayerGirl(ctx: Context): Boolean? =
+        if (prefs(ctx).contains("prayerGirl")) prefs(ctx).getBoolean("prayerGirl", false) else null
+    fun setPrayerGirl(ctx: Context, girl: Boolean) {
+        prefs(ctx).edit().putBoolean("prayerGirl", girl).apply()
+    }
+
+    /** Namaz oyunu kaç kez baştan sona tamamlandı. */
+    fun prayerWins(ctx: Context): Int = prefs(ctx).getInt("prayerWins", 0)
+    fun addPrayerWin(ctx: Context) {
+        prefs(ctx).edit().putInt("prayerWins", prayerWins(ctx) + 1).apply()
+    }
 }
