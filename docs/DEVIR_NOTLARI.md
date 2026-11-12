@@ -55,7 +55,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `ImsakiyeActivity.kt`, `HolyDaysActivity.kt` | Aylık tablo, dini günler |
 | `QiblaActivity.kt`, `QiblaView.kt` | Pusulalı kıble |
 | `QiblaArActivity.kt`, `ArOverlayView.kt` | Kamerayla (AR) kıble — `ComponentActivity` + CameraX |
-| `MosquesActivity.kt` | OpenStreetMap Overpass ile 10 km içindeki camiler |
+| `MosquesActivity.kt` | Yakındaki camiler ekranı (arama mantığı `MosqueSearch.kt`: OpenStreetMap Overpass, 3 yedek sunucu, 10 km) |
 | `KazaActivity.kt`, `ZikirActivity.kt` | Kaza çetelesi, zikirmatik |
 | `Quiz.kt`, `QuizActivity.kt`, `TreeView.kt` | Aile Halkası: bilgi yarışması, oturum kaydı, aile ağacı, aile hedefleri |
 | `PrayerGame.kt`, `PrayerGameActivity.kt` | Namaz Öğreniyorum: çocuklar için soru cevap oyunu (abdest + sabah namazının farzı), adımlar ve okunan dualar |
