@@ -44,6 +44,7 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="false" />
         <activity android:name=".ZikirActivity" android:exported="false" />
+        <activity android:name=".PrayerGameActivity" android:exported="false" />
         <activity android:name=".MosquesActivity" android:exported="false" />
         <activity
             android:name=".QiblaArActivity"

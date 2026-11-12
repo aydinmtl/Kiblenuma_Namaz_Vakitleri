@@ -115,6 +115,9 @@ class QuizActivity : Activity() {
         cbDaily = findViewById(R.id.cbDaily)
 
         findViewById<View>(R.id.menuQuiz).setOnClickListener { showLevels() }
+        findViewById<View>(R.id.menuPrayer).setOnClickListener {
+            startActivity(Intent(this, PrayerGameActivity::class.java))
+        }
         findViewById<View>(R.id.btnLevelBack).setOnClickListener { showHome() }
         btnReview.setOnClickListener { askPlayersThen { players -> startReview(players) } }
         findViewById<View>(R.id.btnAddGoal).setOnClickListener { addGoal() }
