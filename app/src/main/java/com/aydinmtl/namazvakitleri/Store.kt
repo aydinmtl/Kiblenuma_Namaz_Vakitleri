@@ -301,6 +301,12 @@ object Store {
         prefs(ctx).edit().putBoolean("prayerGirl", girl).apply()
     }
 
+    /** Namaz oyununda dualar sesli mi okunsun (true) yoksa yalnızca yazı mı ilerlesin (false). */
+    fun prayerSound(ctx: Context): Boolean = prefs(ctx).getBoolean("prayerSound", true)
+    fun setPrayerSound(ctx: Context, on: Boolean) {
+        prefs(ctx).edit().putBoolean("prayerSound", on).apply()
+    }
+
     /** Namaz oyunu kaç kez baştan sona tamamlandı. */
     fun prayerWins(ctx: Context): Int = prefs(ctx).getInt("prayerWins", 0)
     fun addPrayerWin(ctx: Context) {
