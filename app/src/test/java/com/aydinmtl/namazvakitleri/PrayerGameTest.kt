@@ -27,6 +27,16 @@ class PrayerGameTest {
     }
 
     @Test
+    fun herOkumaninSesDosyasiAdiVar() {
+        // Her dua/sure için bir ses dosyası adı tanımlı olmalı; adlar res/raw kurallarına uymalı ve birbirinden farklı olmalı
+        for (r in Recitations.ALL) assertTrue("ses adı eksik: ${r.title}", PrayerSounds.of(r) != null)
+        for (ad in PrayerSounds.ALL) assertTrue("geçersiz dosya adı: $ad", Regex("ses_[a-z0-9_]+").matches(ad))
+        assertEquals(PrayerSounds.ALL.size, PrayerSounds.ALL.toSet().size)
+        assertEquals(PrayerSounds.TEKBIR, PrayerSounds.ofCaption("Allâhu Ekber"))
+        assertEquals(null, PrayerSounds.ofCaption("1"))
+    }
+
+    @Test
     fun ucBoyutluSahnedeButunDuruslarVar() {
         // 3B sahnenin duruşları assets/namazoyun3d/duruslar.js içinde "D.ad = ..." diye tanımlanır.
         // Oyundaki her duruşun orada da karşılığı olmalı; yoksa figür o adımda ayakta kalır.

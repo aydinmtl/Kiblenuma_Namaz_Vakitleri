@@ -22,7 +22,7 @@ enum class BodyPart { HANDS, MOUTH, NOSE, FACE, R_ARM, L_ARM, HEAD, EARS, R_FOOT
 
 /**
  * Okunan bir dua ya da sure: [text] okunuşu (Latin harfleriyle), [meaning] Türkçe anlamı.
- * Figür okurken ağzı kıpırdar; okunuş ekranda kelime kelime ilerler (ses yok).
+ * Figür okurken ağzı kıpırdar; okunuş ekranda kelime kelime ilerler. Ses kaydı varsa çalınır ([PrayerSounds]).
  * [source]: yalnızca ayet ya da hadis numarası.
  */
 data class Recitation(val title: String, val text: String, val meaning: String, val source: String = "") {
@@ -159,6 +159,44 @@ object Recitations {
         BESMELE, SEHADET, NIYET, SUBHANEKE, EUZU, FATIHA, IHLAS, KEVSER, RUKU, SEMI, RABBENA_LEKEL,
         SECDE, TAHIYYAT, SALLI, BARIK, RABBENA, SELAM,
     )
+}
+
+/**
+ * Sesli okuma dosyalarının adları. Dosyalar `app/src/main/res/raw/` klasörüne bu adlarla konur
+ * (uzantı mp3, m4a ya da ogg olabilir; ör. `ses_fatiha.mp3`). Olmayan dosya sessiz geçilir.
+ */
+object PrayerSounds {
+    /** "Allâhu Ekber" sözü. */
+    const val TEKBIR = "ses_tekbir"
+
+    private val names: Map<Recitation, String> = mapOf(
+        Recitations.BESMELE to "ses_besmele",
+        Recitations.SEHADET to "ses_sehadet",
+        Recitations.NIYET to "ses_niyet",
+        Recitations.SUBHANEKE to "ses_subhaneke",
+        Recitations.EUZU to "ses_euzu",
+        Recitations.FATIHA to "ses_fatiha",
+        Recitations.IHLAS to "ses_ihlas",
+        Recitations.KEVSER to "ses_kevser",
+        Recitations.RUKU to "ses_ruku",
+        Recitations.SEMI to "ses_semi",
+        Recitations.RABBENA_LEKEL to "ses_rabbena_lekel",
+        Recitations.SECDE to "ses_secde",
+        Recitations.TAHIYYAT to "ses_tahiyyat",
+        Recitations.SALLI to "ses_salli",
+        Recitations.BARIK to "ses_barik",
+        Recitations.RABBENA to "ses_rabbena",
+        Recitations.SELAM to "ses_selam",
+    )
+
+    /** Okunan dua ya da surenin ses dosyası adı. */
+    fun of(r: Recitation): String? = names[r]
+
+    /** Konuşma balonundaki sözün ses dosyası adı (şimdilik yalnızca "Allâhu Ekber"). */
+    fun ofCaption(caption: String?): String? = if (caption == "Allâhu Ekber") TEKBIR else null
+
+    /** Bütün dosya adları (testte ve belgede kullanılır). */
+    val ALL: List<String> get() = names.values + TEKBIR
 }
 
 /** [pose] duruşunda [r] okunur; süre okunacak kelime sayısına göre. */
@@ -329,7 +367,7 @@ object PrayerGame {
         ),
         PrayerStep(
             PrayerChapter.NAMAZ, "Niyet ettik",
-            "Namaza başlamadan önce kalbimizden ne yaparız?",
+            "Namaza başlamadan önce içimizden ne yaparız?",
             listOf("Hangi namazı kılacağımıza niyet ederiz", "Şarkı söyleriz", "Gözümüzü kapatıp uyuruz"),
             "\"Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya\" diye niyet ederiz. Ameller niyetlere göredir.",
             listOf(read("stand", Recitations.NIYET)),

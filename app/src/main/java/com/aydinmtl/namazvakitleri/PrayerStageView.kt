@@ -43,6 +43,15 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
             flat?.onRecite = v
         }
 
+    /** Figür balonda bir söz söylemeye başlayınca çağrılır ("Allâhu Ekber"). Ses çalmak için. */
+    var onCaption: ((String) -> Unit)? = null
+
+    /** Okuma dokunularak atlanınca çağrılır (çalan ses sussun diye). */
+    var onSkip: (() -> Unit)? = null
+
+    /** Bir duanın ses kaydı varsa süresini (ms) verir; okuma o kadar sürer. Kayıt yoksa null. */
+    var reciteMs: ((Recitation) -> Long?)? = null
+
     private var web: WebView? = null
     private var flat: PrayerFigureView? = null // 3B çalışmazsa kullanılan 2B çizim
     private var ready = false
@@ -107,6 +116,12 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         fun okuma(moveIndex: Int, words: Int) = main.post {
             val r = playMoves.getOrNull(moveIndex)?.recite ?: return@post
             onRecite?.invoke(r, words)
+        }
+
+        @JavascriptInterface
+        fun soz(moveIndex: Int) = main.post {
+            val c = playMoves.getOrNull(moveIndex)?.caption ?: return@post
+            onCaption?.invoke(c)
         }
 
         @JavascriptInterface
@@ -179,7 +194,8 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         for (m in list) {
             val o = JSONObject()
             o.put("pose", m.pose)
-            o.put("ms", m.ms)
+            // Ses kaydı olan okuma, kaydın uzunluğu kadar sürer; yoksa kelime sayısına göre
+            o.put("ms", m.recite?.let { reciteMs?.invoke(it) } ?: m.ms)
             if (m.caption != null) o.put("caption", m.caption)
             if (m.water) o.put("water", true)
             m.recite?.let { r ->
@@ -194,6 +210,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
 
     /** Okuma sürerken dokunulursa okumayı hemen bitirir. */
     fun fastForward() {
+        onSkip?.invoke()
         flat?.fastForward()
         js("N3.hizli()")
     }

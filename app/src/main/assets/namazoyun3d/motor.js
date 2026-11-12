@@ -130,7 +130,9 @@ class Mesh {
         if (e !== 2) { cx = Math.sign(cx) * Math.pow(Math.abs(cx), 2 / e); sz = Math.sign(sz) * Math.pow(Math.abs(sz), 2 / e); }
         let x = cx * r.rx, z = sz * r.rz;
         if (r.f) [x, z] = r.f(x, z, th); // isteğe bağlı biçim düzeltmesi
-        this.vert([r.c[0] + ax[0] * x + az[0] * z, r.c[1] + ax[1] * x + az[1] * z, r.c[2] + ax[2] * x + az[2] * z], col, r.mat ?? mat, b[0], b[1], b[2]);
+        // r.bf verilirse her köşe kendi kemik bağını seçer (ör. etek: sol yarı sol bacağı izler)
+        const bb = r.bf ? r.bf(r.c[0] + ax[0] * x + az[0] * z, th) : b;
+        this.vert([r.c[0] + ax[0] * x + az[0] * z, r.c[1] + ax[1] * x + az[1] * z, r.c[2] + ax[2] * x + az[2] * z], col, r.mat ?? mat, bb[0], bb[1], bb[2]);
       }
     }
     // Yüzlerin dışarı bakması için dolanma yönü: halkaların ilerleme yönüne göre otomatik seçilir.

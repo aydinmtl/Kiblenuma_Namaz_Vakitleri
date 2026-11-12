@@ -61,6 +61,9 @@ class PrayerGameActivity : Activity() {
     private var ttsReady = false
     private var pendingSpeech: String? = null
 
+    // Duaların, surelerin ve tekbirin uygulamayla gelen ses kayıtları (dosya yoksa sessiz geçer)
+    private lateinit var voice: PrayerVoice
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prayer_game)
@@ -84,7 +87,15 @@ class PrayerGameActivity : Activity() {
         btnSpeak = findViewById(R.id.btnSpeak)
         tvRecite = findViewById(R.id.tvRecite)
         // Figür okurken okuma kartı kelime kelime ilerler; karta ya da figüre dokununca okuma biter
-        figure.onRecite = { r, n -> showRecite(r, n) }
+        // Okumanın ilk kelimesinde o duanın ses kaydı başlar
+        voice = PrayerVoice(this)
+        figure.onRecite = { r, n ->
+            if (n == 1) voice.play(PrayerSounds.of(r))
+            showRecite(r, n)
+        }
+        figure.onCaption = { c -> voice.play(PrayerSounds.ofCaption(c)) }
+        figure.onSkip = { voice.stop() }
+        figure.reciteMs = { r -> voice.durationMs(PrayerSounds.of(r))?.plus(300) }
         tvRecite.setOnClickListener { figure.fastForward() }
 
         girl = Store.prayerGirl(this) ?: false
@@ -105,11 +116,12 @@ class PrayerGameActivity : Activity() {
     }
 
     // Ekrandan çıkınca 3B çizimi durdur, dönünce devam ettir
-    override fun onPause() { figure.pause(); super.onPause() }
+    override fun onPause() { voice.stop(); figure.pause(); super.onPause() }
     override fun onResume() { super.onResume(); figure.resume() }
 
     override fun onDestroy() {
         figure.destroy()
+        voice.stop()
         tts?.shutdown()
         tts = null
         super.onDestroy()
@@ -139,6 +151,7 @@ class PrayerGameActivity : Activity() {
 
     private fun showStart() {
         tts?.stop()
+        voice.stop()
         gamePane.visibility = View.GONE
         startPane.visibility = View.VISIBLE
         btnSpeak.visibility = View.GONE

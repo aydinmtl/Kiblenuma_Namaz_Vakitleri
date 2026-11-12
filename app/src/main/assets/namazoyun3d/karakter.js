@@ -62,6 +62,24 @@ function karakterKur(kiz) {
   m.tube([{ c: [0, 0.585, 0], rx: 0.136, rz: 0.098, e: 2.25 }, { c: [0, 0.60, 0], rx: 0.120, rz: 0.085, e: 2.25 }, { c: [0, 0.64, 0], rx: 0.09, rz: 0.066, e: 2.25 }], { n: 28, col: R.ustKoyu, b: [K.LEGEN, K.LEGEN, 1], flip: true });
   // Etek ucunun içi görünmesin: pantolonun üst kısmı (leğen)
   m.ball([0, 0.652, 0], [0.114, 0.078, 0.088], { col: R.alt, b: [K.LEGEN, K.LEGEN, 1], lat: 10, lon: 20 });
+  if (kiz) {
+    // ---- Uzun elbise: belden ayak bileğine inen etek ----
+    // Eteğin sol yarısı sol bacağı, sağ yarısı sağ bacağı izler; böylece otururken ve
+    // secdede kumaş bacaklarla birlikte katlanır. Ortadaki dar şerit iki bacağın ortalamasını alır.
+    const etek = [[0.63, 0.125, 0.090], [0.585, 0.139, 0.101], [0.55, 0.143, 0.104], [0.50, 0.147, 0.107], [0.45, 0.151, 0.110], [0.41, 0.154, 0.112], [0.385, 0.155, 0.113],
+      [0.36, 0.156, 0.113], [0.335, 0.157, 0.114], [0.31, 0.158, 0.115], [0.25, 0.162, 0.117], [0.18, 0.166, 0.120], [0.13, 0.169, 0.122], [0.112, 0.171, 0.123], [0.095, 0.172, 0.124]];
+    const etekBag = (y) => (x) => {
+      const L = x >= 0, UY = L ? K.UYL_L : K.UYL_R, BL = L ? K.BAL_L : K.BAL_R;
+      if (y > 0.56) return [K.LEGEN, UY, 1 - yum(0.66, 0.56, y)];       // kalça: leğen → uyluk
+      if (y < 0.41 && y > 0.31) return [UY, BL, 1 - yum(0.41, 0.31, y)]; // diz: uyluk → baldır
+      const w = clamp(0.5 + x / 0.08, 0, 1);                             // orta şerit: iki bacak arası yumuşak geçiş
+      return y >= 0.41 ? [K.UYL_L, K.UYL_R, w] : [K.BAL_L, K.BAL_R, w];
+    };
+    m.tube(etek.map(([y, rx, rz]) => ({ c: [0, y, 0.004], rx, rz, e: 2.25, bf: etekBag(y), col: y < 0.125 ? R.ustKoyu : R.ust })), { n: 32 });
+    // etek ucunun içi (alttan bakınca içi boş görünmesin)
+    m.tube([{ c: [0, 0.095, 0.004], rx: 0.172, rz: 0.124, e: 2.25, bf: etekBag(0.095) }, { c: [0, 0.13, 0.004], rx: 0.150, rz: 0.106, e: 2.25, bf: etekBag(0.13) },
+      { c: [0, 0.25, 0.004], rx: 0.142, rz: 0.098, e: 2.25, bf: etekBag(0.25) }], { n: 32, col: R.ustKoyu, flip: true });
+  }
   if (!kiz) { // gömleğin önünde düğme sırası
     for (let i = 0; i < 4; i++) m.ball([0, 0.93 - i * 0.075, 0.084 + (i === 0 ? -0.004 : i > 1 ? 0.006 : 0.002)], [0.008, 0.008, 0.004],
       { col: R.ustKoyu, b: i < 2 ? [K.GOGUS, K.GOGUS, 1] : [K.BEL, K.LEGEN, i === 2 ? 0.8 : 0.3], lat: 5, lon: 8 });
