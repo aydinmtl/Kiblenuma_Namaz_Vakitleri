@@ -58,6 +58,9 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `MosquesActivity.kt` | OpenStreetMap Overpass ile 10 km içindeki camiler |
 | `KazaActivity.kt`, `ZikirActivity.kt` | Kaza çetelesi, zikirmatik |
 | `Quiz.kt`, `QuizActivity.kt`, `TreeView.kt` | Aile Halkası: bilgi yarışması, oturum kaydı, aile ağacı, aile hedefleri |
+| `PrayerGame.kt`, `PrayerGameActivity.kt` | Namaz Öğreniyorum: çocuklar için soru cevap oyunu (abdest + sabah namazının farzı), adımlar ve okunan dualar |
+| `PrayerStageView.kt` + `assets/namazoyun3d/` | Oyunun 3B sahnesi: kodla üretilen çocuk figürü (Ahmet/Zeynep), abdesthane ve namaz odası. WebView + WebGL2; hazır model, doku ya da kütüphane yok. `motor.js` çizim, `karakter.js` figür ve iskelet, `duruslar.js` duruşlar ve geçiş yolları, `sahne.js` sahneler, `oyun.js` oyunla köprü |
+| `PrayerFigure.kt`, `PrayerFigureView.kt` | Eski 2B çizim; yalnızca 3B açılamayan cihazlarda yedek olarak kullanılır |
 
 Soru bankası: `tools/sorular.py` → `python3 tools/sorular.py app/src/main/assets/sorular.json`.
 JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıkları karıştırır.

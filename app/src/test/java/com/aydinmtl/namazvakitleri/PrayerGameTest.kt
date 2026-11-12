@@ -27,6 +27,17 @@ class PrayerGameTest {
     }
 
     @Test
+    fun ucBoyutluSahnedeButunDuruslarVar() {
+        // 3B sahnenin duruşları assets/namazoyun3d/duruslar.js içinde "D.ad = ..." diye tanımlanır.
+        // Oyundaki her duruşun orada da karşılığı olmalı; yoksa figür o adımda ayakta kalır.
+        val dosya = listOf("src/main/assets/namazoyun3d/duruslar.js", "app/src/main/assets/namazoyun3d/duruslar.js")
+            .map { java.io.File(it) }.firstOrNull { it.exists() } ?: return
+        val js = dosya.readText()
+        val tanimli = Regex("""D\.(\w+)\s*=""").findAll(js).map { it.groupValues[1] }.toSet()
+        for (s in PrayerGame.STEPS) for (m in s.moves) assertTrue("3B duruşu eksik: ${m.pose}", m.pose in tanimli)
+    }
+
+    @Test
     fun abdestleBaslarSelamlaBiter() {
         val steps = PrayerGame.STEPS
         assertEquals(PrayerChapter.ABDEST, steps.first().chapter)

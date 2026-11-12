@@ -30,13 +30,14 @@ import java.util.Locale
  * şık altın çerçeveyle belli olur. Selamla namaz biter, konfeti yağar.
  *
  * Kaldığı adım kaydedilir; çıkıp girince "Kaldığın yerden devam et" denebilir.
- * Adımlar ve sorular PrayerGame.kt'de, çizim PrayerFigureView.kt'dedir.
+ * Adımlar ve sorular PrayerGame.kt'de; 3B sahne PrayerStageView.kt ve assets/namazoyun3d/ içindedir
+ * (3B çalışmayan cihazlar için eski 2B çizim PrayerFigureView.kt'de durur).
  */
 class PrayerGameActivity : Activity() {
 
     private lateinit var startPane: View
     private lateinit var gamePane: View
-    private lateinit var figure: PrayerFigureView
+    private lateinit var figure: PrayerStageView
     private lateinit var tvChapter: TextView
     private lateinit var bar: ProgressBar
     private lateinit var tvStepTitle: TextView
@@ -85,11 +86,7 @@ class PrayerGameActivity : Activity() {
         // Figür okurken okuma kartı kelime kelime ilerler; karta ya da figüre dokununca okuma biter
         figure.onRecite = { r, n -> showRecite(r, n) }
         tvRecite.setOnClickListener { figure.fastForward() }
-        figure.setOnClickListener { figure.fastForward() }
 
-        // Seçim kartlarındaki küçük figürler namaz odasında ayakta durur
-        findViewById<PrayerFigureView>(R.id.previewBoy).apply { girl = false; show("kiyam", PrayerChapter.NAMAZ) }
-        findViewById<PrayerFigureView>(R.id.previewGirl).apply { girl = true; show("kiyam", PrayerChapter.NAMAZ) }
         girl = Store.prayerGirl(this) ?: false
         findViewById<View>(R.id.cardBoy).setOnClickListener { choose(false) }
         findViewById<View>(R.id.cardGirl).setOnClickListener { choose(true) }
@@ -107,7 +104,12 @@ class PrayerGameActivity : Activity() {
         showStart()
     }
 
+    // Ekrandan çıkınca 3B çizimi durdur, dönünce devam ettir
+    override fun onPause() { figure.pause(); super.onPause() }
+    override fun onResume() { super.onResume(); figure.resume() }
+
     override fun onDestroy() {
+        figure.destroy()
         tts?.shutdown()
         tts = null
         super.onDestroy()
