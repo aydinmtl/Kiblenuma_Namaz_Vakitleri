@@ -323,7 +323,7 @@ object PrayerGame {
             PrayerChapter.NAMAZ, "Kıbleye döndük",
             "Namaz kılarken hangi yöne döneriz?",
             listOf("Kıbleye, yani Kâbe'ye doğru", "Güneşe doğru", "Pencereye doğru"),
-            "Namazda Mekke'deki Kâbe'ye doğru döneriz. Buna kıble denir. Seccademizin önündeki mihrap kıbleyi gösteriyor.",
+            "Namazda Mekke'deki Kâbe'ye doğru döneriz. Buna kıble denir. Seccademizdeki mihrap deseninin ucu kıbleyi gösteriyor.",
             listOf(Move("stand", 1200)),
             "Bakara suresi, 144. ayet",
         ),
