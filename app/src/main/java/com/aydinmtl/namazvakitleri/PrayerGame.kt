@@ -21,11 +21,148 @@ enum class PrayerChapter(val title: String, val icon: String) {
 enum class BodyPart { HANDS, MOUTH, NOSE, FACE, R_ARM, L_ARM, HEAD, EARS, R_FOOT, L_FOOT, ALL }
 
 /**
+ * Okunan bir dua ya da sure: [text] okunuşu (Latin harfleriyle), [meaning] Türkçe anlamı.
+ * Figür okurken ağzı kıpırdar; okunuş ekranda kelime kelime ilerler (ses yok).
+ * [source]: yalnızca ayet ya da hadis numarası.
+ */
+data class Recitation(val title: String, val text: String, val meaning: String, val source: String = "") {
+    val words: List<String> get() = text.split(' ').filter { it.isNotBlank() }
+
+    /** Okuma süresi: kelime başına 380 ms (en az 1,5 sn). */
+    val durationMs: Long get() = maxOf(1500L, words.size * 380L)
+}
+
+/**
  * Canlandırmanın bir karesi: figür [ms] milisaniyede [pose] duruşuna geçer.
  * [caption] verilirse figürün üstündeki konuşma balonunda o söz yazar ("Allâhu Ekber").
- * [water]: musluk akıyor mu.
+ * [water]: musluk akıyor mu. [recite]: bu sırada okunan dua/sure.
  */
-data class Move(val pose: String, val ms: Long = 700, val caption: String? = null, val water: Boolean = false)
+data class Move(
+    val pose: String,
+    val ms: Long = 700,
+    val caption: String? = null,
+    val water: Boolean = false,
+    val recite: Recitation? = null,
+)
+
+/** Oyunda okunan dualar ve sureler (Hanefi uygulamasına göre). */
+object Recitations {
+    val BESMELE = Recitation(
+        "Besmele", "Bismillâhirrahmânirrahîm.",
+        "Rahmân ve Rahîm olan Allah'ın adıyla.",
+    )
+    val SEHADET = Recitation(
+        "Kelime-i şehâdet",
+        "Eşhedü en lâ ilâhe illallâh ve eşhedü enne Muhammeden abdühû ve rasûlüh.",
+        "Şahitlik ederim ki Allah'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O'nun kulu ve elçisidir.",
+        "Müslim, Tahâret 234",
+    )
+    val NIYET = Recitation(
+        "Niyet", "Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya.",
+        "Niyet kalple yapılır; dille söylemek de güzeldir.",
+    )
+    val SUBHANEKE = Recitation(
+        "Sübhâneke",
+        "Sübhânekellâhümme ve bi hamdik. Ve tebârakesmük. Ve teâlâ ceddük. Ve lâ ilâhe ğayrük.",
+        "Allah'ım! Seni her türlü eksiklikten uzak tutar ve överim. Senin adın mübarektir. Şanın yücedir. Senden başka ilah yoktur.",
+        "Müslim, Salât 399",
+    )
+    val EUZU = Recitation(
+        "Eûzü besmele",
+        "E'ûzü billâhimineşşeytânirracîm. Bismillâhirrahmânirrahîm.",
+        "Kovulmuş şeytandan Allah'a sığınırım. Rahmân ve Rahîm olan Allah'ın adıyla.",
+        "Nahl suresi, 98. ayet",
+    )
+    val FATIHA = Recitation(
+        "Fâtiha suresi",
+        "Elhamdü lillâhi rabbil'âlemîn. Errahmânirrahîm. Mâliki yevmiddîn. İyyâke na'büdü ve iyyâke neste'în. " +
+            "İhdinas-sırâtal müstakîm. Sırâtallezîne en'amte aleyhim ğayril mağdûbi aleyhim ve leddâllîn. Âmîn.",
+        "Hamd, âlemlerin Rabbi Allah'a mahsustur. O, Rahmân'dır, Rahîm'dir. Din gününün sahibidir. " +
+            "Yalnız sana ibadet ederiz ve yalnız senden yardım dileriz. Bizi doğru yola ilet. Kendilerine nimet " +
+            "verdiklerinin yoluna; gazaba uğramışların ve sapmışların yoluna değil.",
+        "Fâtiha suresi, 1-7. ayet",
+    )
+    val IHLAS = Recitation(
+        "İhlâs suresi",
+        "Kul hüvallâhü ehad. Allâhüssamed. Lem yelid ve lem yûled. Ve lem yekün lehû küfüven ehad.",
+        "De ki: O, Allah'tır, bir tektir. Allah Samed'dir; her şey O'na muhtaçtır, O hiçbir şeye muhtaç değildir. " +
+            "O doğurmamış ve doğmamıştır. Hiçbir şey O'na denk değildir.",
+        "İhlâs suresi, 1-4. ayet",
+    )
+    val KEVSER = Recitation(
+        "Kevser suresi",
+        "İnnâ a'taynâkel kevser. Fesalli li rabbike venhar. İnne şânieke hüvel ebter.",
+        "Şüphesiz biz sana Kevser'i verdik. Şimdi sen Rabbin için namaz kıl, kurban kes. " +
+            "Asıl soyu kesik olan, şüphesiz sana buğzedendir.",
+        "Kevser suresi, 1-3. ayet",
+    )
+    val RUKU = Recitation(
+        "Rükû tesbihi",
+        "Sübhâne rabbiyel azîm. Sübhâne rabbiyel azîm. Sübhâne rabbiyel azîm.",
+        "Büyük Rabbimi her türlü eksiklikten uzak tutarım. (3 kez)",
+        "Müslim, Salâtü'l-müsâfirîn 772",
+    )
+    val SEMI = Recitation(
+        "Rükûdan doğrulurken", "Semi'allâhü limen hamideh.",
+        "Allah, kendisine hamd edeni işitir.",
+        "Buhârî, Ezan 789",
+    )
+    val RABBENA_LEKEL = Recitation(
+        "Dimdik durunca", "Rabbenâ lekel hamd.",
+        "Rabbimiz, hamd sanadır.",
+        "Buhârî, Ezan 789",
+    )
+    val SECDE = Recitation(
+        "Secde tesbihi",
+        "Sübhâne rabbiyel a'lâ. Sübhâne rabbiyel a'lâ. Sübhâne rabbiyel a'lâ.",
+        "En yüce olan Rabbimi her türlü eksiklikten uzak tutarım. (3 kez)",
+        "Müslim, Salâtü'l-müsâfirîn 772",
+    )
+    val TAHIYYAT = Recitation(
+        "Ettehiyyâtü",
+        "Ettehiyyâtü lillâhi vessalevâtü vettayyibât. Esselâmü aleyke eyyühen-nebiyyü ve rahmetullâhi ve berakâtüh. " +
+            "Esselâmü aleynâ ve alâ ibâdillâhis-sâlihîn. Eşhedü en lâ ilâhe illallâh ve eşhedü enne Muhammeden abdühû ve rasûlüh.",
+        "Bütün dualar, ibadetler ve güzel sözler Allah içindir. Ey Peygamber! Allah'ın selamı, rahmeti ve bereketi " +
+            "senin üzerine olsun. Selam bizim üzerimize ve Allah'ın salih kulları üzerine olsun. Şahitlik ederim ki " +
+            "Allah'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O'nun kulu ve elçisidir.",
+        "Buhârî, Ezan 831",
+    )
+    val SALLI = Recitation(
+        "Allâhümme salli",
+        "Allâhümme salli alâ Muhammedin ve alâ âli Muhammed. Kemâ salleyte alâ İbrâhîme ve alâ âli İbrâhîm. İnneke hamîdün mecîd.",
+        "Allah'ım! İbrahim'e ve ailesine rahmet ettiğin gibi Muhammed'e ve ailesine de rahmet et. " +
+            "Şüphesiz sen övülmeye layıksın, şanı yüce olansın.",
+        "Buhârî, Enbiyâ 3370",
+    )
+    val BARIK = Recitation(
+        "Allâhümme bârik",
+        "Allâhümme bârik alâ Muhammedin ve alâ âli Muhammed. Kemâ bârekte alâ İbrâhîme ve alâ âli İbrâhîm. İnneke hamîdün mecîd.",
+        "Allah'ım! İbrahim'e ve ailesine bereket verdiğin gibi Muhammed'e ve ailesine de bereket ver. " +
+            "Şüphesiz sen övülmeye layıksın, şanı yüce olansın.",
+        "Buhârî, Enbiyâ 3370",
+    )
+    val RABBENA = Recitation(
+        "Rabbenâ duaları",
+        "Rabbenâ âtinâ fid'dünyâ haseneten ve fil'âhireti haseneten ve kınâ azâben-nâr. " +
+            "Rabbenağfirlî ve li vâlideyye ve lil mü'minîne yevme yekûmül hisâb.",
+        "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi cehennem azabından koru. " +
+            "Rabbimiz! Hesap gününde beni, anamı, babamı ve bütün müminleri bağışla.",
+        "Bakara suresi, 201. ayet; İbrâhîm suresi, 41. ayet",
+    )
+    val SELAM = Recitation(
+        "Selam", "Esselâmü aleyküm ve rahmetullâh.",
+        "Allah'ın selamı ve rahmeti üzerinize olsun.",
+        "Müslim, Mesâcid 582",
+    )
+
+    val ALL = listOf(
+        BESMELE, SEHADET, NIYET, SUBHANEKE, EUZU, FATIHA, IHLAS, KEVSER, RUKU, SEMI, RABBENA_LEKEL,
+        SECDE, TAHIYYAT, SALLI, BARIK, RABBENA, SELAM,
+    )
+}
+
+/** [pose] duruşunda [r] okunur; süre okunacak kelime sayısına göre. */
+fun read(pose: String, r: Recitation) = Move(pose, r.durationMs, recite = r)
 
 /**
  * Oyunun bir adımı.
@@ -65,7 +202,7 @@ object PrayerGame {
             "Abdest almaya başlarken ne deriz?",
             listOf("Bismillâhirrahmânirrahîm", "Elhamdülillah", "Esselâmü aleyküm"),
             "Abdest almaya niyet eder, \"Bismillâhirrahmânirrahîm\" diyerek başlarız.",
-            listOf(Move("a_sit", 600, "Bismillâhirrahmânirrahîm")),
+            listOf(read("a_sit", Recitations.BESMELE)),
         ),
         PrayerStep(
             PrayerChapter.ABDEST, "Ellerimizi yıkıyoruz",
@@ -149,6 +286,14 @@ object PrayerGame {
             "", BodyPart.EARS,
         ),
         PrayerStep(
+            PrayerChapter.ABDEST, "Ensemizi meshediyoruz",
+            "Kulaklarımızdan sonra ellerimizin dışıyla neyi meshederiz?",
+            listOf("Ensemizi", "Dizlerimizi", "Ayak tabanlarımızı"),
+            "Ellerimizin dışıyla ensemizi meshederiz. Hanefi mezhebinde ense meshi abdestin edeplerindendir. Ayaklarımızı bundan sonra yıkarız.",
+            listOf(Move("a_neck", 650), Move("a_neck2", 450), Move("a_neck", 450), Move("a_sit", 550)),
+            "", BodyPart.HEAD,
+        ),
+        PrayerStep(
             PrayerChapter.ABDEST, "Sağ ayağımızı yıkıyoruz",
             "Ayaklarımızı nereye kadar yıkarız?",
             listOf("Topuklarımızla beraber", "Parmak uçlarına kadar", "Dizlerimize kadar"),
@@ -169,7 +314,7 @@ object PrayerGame {
             "Abdest bitince ne söylemek güzeldir?",
             listOf("Kelime-i şehâdet", "Sübhâneke", "Âmin"),
             "Abdestten sonra \"Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh\" demek güzeldir.",
-            listOf(Move("a_sit", 1600, "Eşhedü en lâ ilâhe illallah…")),
+            listOf(read("a_sit", Recitations.SEHADET)),
             "Müslim, Tahâret 234", BodyPart.ALL,
         ),
 
@@ -187,7 +332,7 @@ object PrayerGame {
             "Namaza başlamadan önce kalbimizden ne yaparız?",
             listOf("Hangi namazı kılacağımıza niyet ederiz", "Şarkı söyleriz", "Gözümüzü kapatıp uyuruz"),
             "\"Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya\" diye niyet ederiz. Ameller niyetlere göredir.",
-            listOf(Move("stand", 1400, "Niyet ettim…")),
+            listOf(read("stand", Recitations.NIYET)),
             "Buhârî, Bed'ü'l-vahy 1",
         ),
         PrayerStep(
@@ -203,7 +348,7 @@ object PrayerGame {
             "Ellerimizi bağladık. Ayakta ilk okuduğumuz dua hangisidir?",
             listOf("Sübhâneke", "Ettehiyyâtü", "Rabbenâ âtinâ"),
             "Ayakta ellerimizi bağlarız ve Sübhâneke duasını okuruz.",
-            listOf(Move("kiyam", 1600, "Sübhânekellâhümme ve bi-hamdik…")),
+            listOf(read("kiyam", Recitations.SUBHANEKE)),
             "Müslim, Salât 399",
         ),
         PrayerStep(
@@ -211,7 +356,7 @@ object PrayerGame {
             "Her rekatta mutlaka okunan sure hangisidir?",
             listOf("Fâtiha", "Kevser", "Nâs"),
             "Eûzü besmele çekip Fâtiha suresini okuruz. Fâtiha'yı okumayanın namazı olmaz.",
-            listOf(Move("kiyam", 1600, "Elhamdü lillâhi rabbi'l-âlemîn…")),
+            listOf(read("kiyam", Recitations.EUZU), read("kiyam", Recitations.FATIHA)),
             "Buhârî, Ezan 756",
         ),
         PrayerStep(
@@ -219,7 +364,7 @@ object PrayerGame {
             "Fâtiha'dan sonra ne okuruz?",
             listOf("Kur'an'dan kısa bir sure, örneğin İhlâs", "Ezan", "Hiçbir şey"),
             "Fâtiha'dan sonra Kur'an'dan bir sure ya da birkaç ayet okuruz. Buna zamm-ı sure denir.",
-            listOf(Move("kiyam", 1600, "Kul hüvallâhü ehad…")),
+            listOf(read("kiyam", Recitations.IHLAS)),
             "Buhârî, Ezan 757",
         ),
         PrayerStep(
@@ -227,7 +372,7 @@ object PrayerGame {
             "Şimdi eğilip ellerimizi dizlerimize koyacağız. Bu harekete ne denir?",
             listOf("Rükû", "Secde", "Kıyam"),
             "\"Allâhu Ekber\" diyerek eğiliriz, ellerimizle dizlerimizi tutarız ve üç kez \"Sübhâne rabbiye'l-azîm\" deriz.",
-            listOf(Move("ruku", 1000, "Allâhu Ekber"), Move("ruku", 1600, "Sübhâne rabbiye'l-azîm (3 kez)")),
+            listOf(Move("ruku", 1000, "Allâhu Ekber"), read("ruku", Recitations.RUKU)),
             "Müslim, Salâtü'l-müsâfirîn 772",
         ),
         PrayerStep(
@@ -235,7 +380,7 @@ object PrayerGame {
             "Rükûdan doğrulurken ne deriz?",
             listOf("Semi'allâhü limen hamideh", "Sübhâne rabbiye'l-a'lâ", "Esselâmü aleyküm"),
             "Doğrulurken \"Semi'allâhü limen hamideh\", dimdik durunca \"Rabbenâ leke'l-hamd\" deriz.",
-            listOf(Move("stand", 1000, "Semi'allâhü limen hamideh"), Move("stand", 1300, "Rabbenâ leke'l-hamd")),
+            listOf(read("stand", Recitations.SEMI), read("stand", Recitations.RABBENA_LEKEL)),
             "Buhârî, Ezan 789",
         ),
         PrayerStep(
@@ -251,7 +396,7 @@ object PrayerGame {
             "Secdede ne deriz?",
             listOf("Sübhâne rabbiye'l-a'lâ", "Sübhâne rabbiye'l-azîm", "Semi'allâhü limen hamideh"),
             "Secdede üç kez \"Sübhâne rabbiye'l-a'lâ\" deriz.",
-            listOf(Move("secde", 1700, "Sübhâne rabbiye'l-a'lâ (3 kez)")),
+            listOf(read("secde", Recitations.SECDE)),
             "Müslim, Salâtü'l-müsâfirîn 772",
         ),
         PrayerStep(
@@ -271,7 +416,7 @@ object PrayerGame {
                 "Yalnız ellerimiz",
             ),
             "\"Allâhu Ekber\" deyip ikinci kez secdeye gideriz. Peygamberimiz yedi organ üzerine secde etmeyi emretti.",
-            listOf(Move("secde", 1000, "Allâhu Ekber"), Move("secde", 1500, "Sübhâne rabbiye'l-a'lâ (3 kez)")),
+            listOf(Move("secde", 1000, "Allâhu Ekber"), read("secde", Recitations.SECDE)),
             "Buhârî, Ezan 812",
         ),
         PrayerStep(
@@ -286,8 +431,8 @@ object PrayerGame {
             PrayerChapter.NAMAZ, "Fâtiha ve bir sure",
             "İkinci rekatta da önce hangi sureyi okuruz?",
             listOf("Fâtiha", "İhlâs", "Hiçbir sure"),
-            "İkinci rekatta da önce Fâtiha'yı, ardından bir sure okuruz.",
-            listOf(Move("kiyam", 1500, "Elhamdü lillâhi…"), Move("kiyam", 1200, "Kul e'ûzü bi-rabbi'l-felak…")),
+            "İkinci rekatta besmele çekip Fâtiha'yı, ardından bir sure (burada Kevser) okuruz.",
+            listOf(read("kiyam", Recitations.BESMELE), read("kiyam", Recitations.FATIHA), read("kiyam", Recitations.KEVSER)),
             "Buhârî, Ezan 756",
         ),
         PrayerStep(
@@ -295,7 +440,7 @@ object PrayerGame {
             "Rükûda sırtımız nasıl olur?",
             listOf("Dümdüz", "Kambur", "Dimdik ayakta"),
             "Rükûda başımızı ne yukarı kaldırırız ne aşağı sarkıtırız; sırtımız dümdüz olur.",
-            listOf(Move("ruku", 1000, "Allâhu Ekber"), Move("ruku", 1500, "Sübhâne rabbiye'l-azîm (3 kez)")),
+            listOf(Move("ruku", 1000, "Allâhu Ekber"), read("ruku", Recitations.RUKU)),
             "Müslim, Salât 498",
         ),
         PrayerStep(
@@ -303,7 +448,7 @@ object PrayerGame {
             "\"Rabbenâ leke'l-hamd\" ne demektir?",
             listOf("Rabbimiz, hamd sanadır", "Allah en büyüktür", "Selam üzerinize olsun"),
             "Rükûdan doğrulup \"Rabbimiz, hamd sanadır\" anlamına gelen \"Rabbenâ leke'l-hamd\" sözünü söyleriz.",
-            listOf(Move("stand", 1000, "Semi'allâhü limen hamideh"), Move("stand", 1200, "Rabbenâ leke'l-hamd")),
+            listOf(read("stand", Recitations.SEMI), read("stand", Recitations.RABBENA_LEKEL)),
             "Buhârî, Ezan 789",
         ),
         PrayerStep(
@@ -311,7 +456,7 @@ object PrayerGame {
             "Secdeye giderken ne deriz?",
             listOf("Allâhu Ekber", "Âmin", "Elhamdülillah"),
             "Her eğilip kalkışta \"Allâhu Ekber\" deriz.",
-            listOf(Move("kneel", 900, "Allâhu Ekber"), Move("secde", 900), Move("secde", 1300, "Sübhâne rabbiye'l-a'lâ (3 kez)")),
+            listOf(Move("kneel", 900, "Allâhu Ekber"), Move("secde", 900), read("secde", Recitations.SECDE)),
             "Buhârî, Ezan 789",
         ),
         PrayerStep(
@@ -321,7 +466,7 @@ object PrayerGame {
             "Kısa oturuştan sonra \"Allâhu Ekber\" deyip ikinci kez secdeye gideriz.",
             listOf(
                 Move("sit", 1000, "Allâhu Ekber"), Move("sit", 500),
-                Move("secde", 1000, "Allâhu Ekber"), Move("secde", 1300, "Sübhâne rabbiye'l-a'lâ (3 kez)"),
+                Move("secde", 1000, "Allâhu Ekber"), read("secde", Recitations.SECDE),
             ),
             "Buhârî, Ezan 757",
         ),
@@ -337,7 +482,7 @@ object PrayerGame {
             "Oturuşta ilk hangi duayı okuruz?",
             listOf("Ettehiyyâtü", "Sübhâneke", "Fâtiha"),
             "Oturuşta önce Ettehiyyâtü duasını okuruz.",
-            listOf(Move("sit", 1700, "Ettehiyyâtü lillâhi…")),
+            listOf(read("sit", Recitations.TAHIYYAT)),
             "Buhârî, Ezan 831",
         ),
         PrayerStep(
@@ -345,16 +490,16 @@ object PrayerGame {
             "Ettehiyyâtü'den sonra Peygamberimiz için hangi duaları okuruz?",
             listOf("Allâhümme salli ve Allâhümme bârik", "Sübhâneke", "Ezan"),
             "Peygamberimize salavat getiren Allâhümme salli ve Allâhümme bârik dualarını okuruz.",
-            listOf(Move("sit", 1500, "Allâhümme salli…"), Move("sit", 1300, "Allâhümme bârik…")),
+            listOf(read("sit", Recitations.SALLI), read("sit", Recitations.BARIK)),
             "Buhârî, Enbiyâ 3370",
         ),
         PrayerStep(
             PrayerChapter.NAMAZ, "Rabbenâ duası",
             "Sonra hangi duayı okuruz?",
             listOf("Rabbenâ âtinâ", "Sübhâneke", "Ezan"),
-            "\"Rabbenâ âtinâ fi'd-dünyâ haseneten ve fi'l-âhireti haseneten ve kınâ azâbe'n-nâr\" diye dua ederiz.",
-            listOf(Move("sit", 1700, "Rabbenâ âtinâ…")),
-            "Bakara suresi, 201. ayet",
+            "Rabbenâ âtinâ ve Rabbenağfirlî dualarını okuruz.",
+            listOf(read("sit", Recitations.RABBENA)),
+            "Bakara suresi, 201. ayet; İbrâhîm suresi, 41. ayet",
         ),
         PrayerStep(
             PrayerChapter.NAMAZ, "Selam verdik",
@@ -366,8 +511,8 @@ object PrayerGame {
             ),
             "Başımızı önce sağa, sonra sola çevirip \"Esselâmü aleyküm ve rahmetullah\" deriz. Namazımız tamam!",
             listOf(
-                Move("selam_r", 900, "Esselâmü aleyküm ve rahmetullah →"), Move("selam_r", 700, "Esselâmü aleyküm ve rahmetullah →"),
-                Move("selam_l", 1100, "← Esselâmü aleyküm ve rahmetullah"), Move("selam_l", 700, "← Esselâmü aleyküm ve rahmetullah"),
+                Move("selam_r", 800, "Sağa selam →"), read("selam_r", Recitations.SELAM),
+                Move("selam_l", 1000, "← Sola selam"), read("selam_l", Recitations.SELAM),
                 Move("sit", 700),
             ),
             "Müslim, Mesâcid 582",

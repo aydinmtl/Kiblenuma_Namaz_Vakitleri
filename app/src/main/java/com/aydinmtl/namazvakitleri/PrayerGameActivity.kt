@@ -5,6 +5,11 @@ import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -42,6 +47,7 @@ class PrayerGameActivity : Activity() {
     private lateinit var btnNext: Button
     private lateinit var finishBox: View
     private lateinit var btnSpeak: TextView
+    private lateinit var tvRecite: TextView
 
     private var girl = false
     private var index = 0
@@ -75,6 +81,11 @@ class PrayerGameActivity : Activity() {
         btnNext = findViewById(R.id.btnNext)
         finishBox = findViewById(R.id.finishBox)
         btnSpeak = findViewById(R.id.btnSpeak)
+        tvRecite = findViewById(R.id.tvRecite)
+        // Figür okurken okuma kartı kelime kelime ilerler; karta ya da figüre dokununca okuma biter
+        figure.onRecite = { r, n -> showRecite(r, n) }
+        tvRecite.setOnClickListener { figure.fastForward() }
+        figure.setOnClickListener { figure.fastForward() }
 
         // Seçim kartlarındaki küçük figürler namaz odasında ayakta durur
         findViewById<PrayerFigureView>(R.id.previewBoy).apply { girl = false; show("kiyam", PrayerChapter.NAMAZ) }
@@ -174,6 +185,7 @@ class PrayerGameActivity : Activity() {
         ObjectAnimator.ofInt(bar, "progress", bar.progress, i * 100).setDuration(450).start()
 
         finishBox.visibility = View.GONE
+        tvRecite.visibility = View.GONE
         questionBox.visibility = View.VISIBLE
         tvStepTitle.visibility = View.INVISIBLE
         tvInfo.visibility = View.GONE
@@ -267,6 +279,31 @@ class PrayerGameActivity : Activity() {
                 btnNext.alpha = 0f
                 btnNext.animate().alpha(1f).setStartDelay(0).setDuration(250).start()
             }
+        }
+    }
+
+    /**
+     * Okuma kartı: başlık, okunuşun okunmuş kısmı altın renkli ve kalın, kalanı soluk; altında anlamı.
+     * [n]: şu ana kadar okunan kelime sayısı.
+     */
+    private fun showRecite(r: Recitation, n: Int) {
+        val words = r.words
+        val sb = SpannableStringBuilder()
+        fun span(text: String, vararg spans: Any) {
+            val start = sb.length
+            sb.append(text)
+            for (sp in spans) sb.setSpan(sp, start, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        span("📖 ${r.title}\n", ForegroundColorSpan(getColor(R.color.gold)), StyleSpan(android.graphics.Typeface.BOLD), RelativeSizeSpan(0.85f))
+        span(words.take(n).joinToString(" "), ForegroundColorSpan(getColor(R.color.gold)), StyleSpan(android.graphics.Typeface.BOLD))
+        if (n < words.size) span(" " + words.drop(n).joinToString(" "), ForegroundColorSpan(0x66F2F2F2))
+        span("\n\nAnlamı: ${r.meaning}", ForegroundColorSpan(getColor(R.color.muted)), RelativeSizeSpan(0.8f))
+        if (r.source.isNotEmpty()) span("\nKaynak: ${r.source}", ForegroundColorSpan(getColor(R.color.muted)), RelativeSizeSpan(0.75f))
+        tvRecite.text = sb
+        tvRecite.contentDescription = "${r.title}. ${r.text}. Anlamı: ${r.meaning}"
+        if (tvRecite.visibility != View.VISIBLE) {
+            tvRecite.visibility = View.VISIBLE
+            fadeIn(tvRecite)
         }
     }
 

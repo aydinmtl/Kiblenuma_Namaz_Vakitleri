@@ -125,7 +125,9 @@ object Poses {
             "ruku" to Pose(88f, 0f, -38f, -38f, -34f, -34f, 14f, -3f, 90f, 14f, -3f, 90f),
             // Secdeye inerken/kalkarken ara duruş: dizler yerde, gövde dik
             "kneel" to Pose(0f, 0f, 5f, 5f, 8f, 8f, 0f, -88f, 0f, 0f, -88f, 0f),
-            "secde" to Pose(112f, 8f, 13.1f, 10.2f, 16.6f, 13.7f, 12f, -86f, -5f, 12f, -86f, -5f),
+            // Secde: alın ve burun yerde, eller kulak hizasında yere düz konmuş, dirsekler yerden
+            // kalkık; dizler yerde, ayak parmakları yere basıp kıbleye dönük, kalça yukarıda.
+            "secde" to Pose(98f, 37f, -35.8f, 81.6f, -29.8f, 85f, 28.2f, -105f, -35f, 28.2f, -105f, -35f),
             "sit" to Pose(4f, 0f, 18f, 32.1f, 24.3f, 27.1f, 84f, -92f, -90f, 84f, -92f, -90f),
             "selam_r" to Pose(4f, -6f, 18f, 32.1f, 24.3f, 27.1f, 84f, -92f, -90f, 84f, -92f, -90f),
             "selam_l" to Pose(4f, 6f, 18f, 32.1f, 24.3f, 27.1f, 84f, -92f, -90f, 84f, -92f, -90f),
@@ -145,6 +147,9 @@ object Poses {
             "a_head1" to Pose(0f, 0f, 125.6f, -147.7f, 120.7f, -148.8f, 88f, 2f, 90f, 86f, 0f, 90f),
             "a_head2" to Pose(0f, 0f, 151f, -113.6f, 146.3f, -112.3f, 88f, 2f, 90f, 86f, 0f, 90f),
             "a_ear" to Pose(0f, 0f, 115.6f, -105.8f, 108.5f, -109.1f, 88f, 2f, 90f, 86f, 0f, 90f),
+            // Ense meshi: ellerin dışı başın arkasından enseye doğru
+            "a_neck" to Pose(0f, -8f, -202.1f, -101.8f, -206.4f, -99.8f, 88f, 2f, 90f, 86f, 0f, 90f),
+            "a_neck2" to Pose(0f, -8f, -205.5f, -115.4f, -210.2f, -113.8f, 88f, 2f, 90f, 86f, 0f, 90f),
             // Ayak yıkama: ayak musluğun altına uzatılır, eller ayağı ovar
             "a_rfoot" to Pose(28f, 0f, 29.4f, 31.4f, 30.7f, 32.7f, 88f, 2f, 90f, 80f, 50f, 90f),
             "a_rfoot2" to Pose(34f, 0f, 22.1f, 24.3f, 23.8f, 26f, 88f, 2f, 90f, 80f, 50f, 90f),

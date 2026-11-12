@@ -228,6 +228,20 @@
                 android:textStyle="bold"
                 android:visibility="invisible" />
 
+            <!-- Figür bir dua ya da sure okurken: okunuş kelime kelime altın renge döner, altında anlamı.
+                 Dokununca okuma hemen biter. -->
+            <TextView
+                android:id="@+id/tvRecite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/level_card"
+                android:lineSpacingExtra="4dp"
+                android:padding="14dp"
+                android:textColor="@color/text"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/questionBox"
                 android:layout_width="match_parent"
