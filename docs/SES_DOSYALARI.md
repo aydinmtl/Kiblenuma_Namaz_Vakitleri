@@ -23,7 +23,7 @@ Kayıtlar Diyanet İşleri Başkanlığı'nın kendi sitelerinden alındı (proj
 
 - Sureler ve ayetler (`ses_besmele`, `ses_euzu`, `ses_fatiha`, `ses_ihlas`, `ses_kevser`):
   kuran.diyanet.gov.tr, ayet ayet okuyuş (Osman Şahin). Ayet dosyaları sırayla birleştirildi.
-- Dualar (`ses_subhaneke`, `ses_ruku`, `ses_rabbena_lekel`, `ses_secde`, `ses_tahiyyat`, `ses_salli`,
+- Dualar (`ses_subhaneke`, `ses_ruku`, `ses_secde`, `ses_tahiyyat`, `ses_salli`,
   `ses_barik`, `ses_rabbena`): namaz.diyanet.gov.tr, "Sureler ve Dualar" bölümü, Hanefi duaları.
   Rükû ve secde tesbihi kayıtta bir kez okunuyor; üç kez art arda eklendi.
 - `ses_sehadet`: Ettehiyyâtü kaydının son bölümü (kelime-i şehâdet) kesilerek elde edildi.
@@ -35,6 +35,9 @@ Dosyalar tek kanala ve 64 kbps'e indirildi, baştaki ve sondaki sessizlik kırp�
   sesi; diğer üçü: Arapça `ar_JO-kareem-medium` sesi, harekeli Arapça metinden). Yapay sestir;
   gerçek bir okuyuş kaydı bulunursa aynı adla değiştirilmesi yeterli.
   Not: Türkçe sesin eğitim verisinin lisansı CC BY-NC-SA 4.0'dır (ticari olmayan kullanım).
+
+**Şu an olmayan kayıt:** `ses_rabbena_lekel`. Diyanet kaydında söz "Rabbenâ ve lekel hamd" diye okunuyor,
+oyundaki metinle ("Rabbenâ lekel hamd") uyuşmadığı için çıkarıldı; o adım sessiz geçer.
 
 ## Liste
 
