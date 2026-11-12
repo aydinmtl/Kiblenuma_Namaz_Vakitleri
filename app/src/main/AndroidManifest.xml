@@ -45,6 +45,11 @@
             android:exported="false" />
         <activity android:name=".ZikirActivity" android:exported="false" />
         <activity android:name=".PrayerGameActivity" android:exported="false" />
+        <!-- 3B namaz canlandırması: döndürünce sahne baştan yüklenmesin -->
+        <activity
+            android:name=".Namaz3dActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+            android:exported="false" />
         <activity android:name=".MosquesActivity" android:exported="false" />
         <activity
             android:name=".QiblaArActivity"

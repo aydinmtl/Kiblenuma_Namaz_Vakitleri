@@ -1,0 +1,1500 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Namaz Öğreniyorum 3D</title>
+<style>
+/*
+ * Namaz Öğreniyorum 3D — tek dosyalık, dış kaynaksız 3B canlandırma.
+ * Bütün model, iskelet, oda, ışık ve kamera bu dosyadaki kodla üretilir.
+ * Çizim: kendi yazdığımız WebGL2 ışın yürütme (raymarching) motoru + son işlem (alan derinliği, parlama, renk düzenleme).
+ */
+:root{
+  color-scheme:dark;
+  --bg:#0d0b09; --panel:rgba(14,12,10,.72); --line:rgba(255,236,200,.16);
+  --text:#fbf3e4; --muted:#cdbfa6; --accent:#e9b864; --accent2:#3fb6a8;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden;touch-action:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block}
+.top{position:fixed;left:0;right:0;top:0;padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));
+  display:flex;align-items:center;gap:10px;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0))}
+.brand{font-weight:700;letter-spacing:.3px;font-size:15px}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:11px;letter-spacing:.2px}
+.top .sp{flex:1}
+.fps{font:11px ui-monospace,monospace;color:var(--muted);pointer-events:none}
+.chips{position:fixed;left:0;right:0;top:calc(max(10px,env(safe-area-inset-top)) + 40px);
+  display:flex;gap:6px;overflow-x:auto;padding:4px 16px 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--muted);
+  border-radius:999px;padding:6px 11px;font-size:12px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--accent);color:#1d1406;border-color:var(--accent);font-weight:700}
+.cap{position:fixed;left:16px;right:16px;bottom:calc(132px + env(safe-area-inset-bottom));text-align:center;pointer-events:none}
+.cap .t{display:inline-block;font-size:clamp(17px,4.6vw,24px);font-weight:750;text-shadow:0 2px 10px rgba(0,0,0,.7)}
+.cap .r{margin-top:6px;font-size:clamp(15px,4.2vw,21px);color:#ffe7b5;font-style:italic;min-height:1.3em;
+  text-shadow:0 2px 10px rgba(0,0,0,.8);transition:opacity .35s}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.7) 35%)}
+.tl{position:relative;height:26px;display:flex;align-items:center}
+.tl input{width:100%;margin:0;accent-color:var(--accent);height:26px;background:transparent}
+.marks{position:absolute;left:0;right:0;top:3px;height:4px;pointer-events:none}
+.marks i{position:absolute;top:0;width:2px;height:6px;background:rgba(255,236,200,.5);border-radius:1px}
+.row{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);border-radius:12px;
+  min-width:44px;height:44px;padding:0 12px;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.main{background:var(--accent);color:#1d1406;border-color:var(--accent);font-weight:800}
+.btn.rec.on{background:#c2392f;border-color:#c2392f;color:#fff}
+.btn svg{width:20px;height:20px;fill:currentColor}
+.row .sp{flex:1}
+.time{font:12px ui-monospace,monospace;color:var(--muted);min-width:78px}
+select.btn{appearance:none;-webkit-appearance:none;font-size:13px;padding:0 10px}
+.info{position:fixed;left:16px;right:16px;bottom:calc(196px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;
+  background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);
+  border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.5;display:none}
+.info.on{display:block}
+.info b{color:var(--accent)}
+.info .src{margin-top:8px;color:var(--muted);font-size:12.5px}
+.info .note{margin-top:8px;color:#9fdcd3;font-size:12.5px}
+.toast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line);
+  padding:14px 18px;border-radius:14px;font-size:14px;max-width:86vw;text-align:center;display:none}
+.toast.on{display:block}
+.toast a{color:var(--accent);font-weight:700}
+.load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--bg);
+  transition:opacity .8s;z-index:5}
+.load .ring{width:46px;height:46px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--accent);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hide{opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="top">
+  <div class="brand">Namaz Öğreniyorum<small>3B canlandırma · Hanefi</small></div>
+  <div class="sp"></div>
+  <div class="fps" id="fps"></div>
+</div>
+<div class="chips" id="chips"></div>
+
+<div class="cap"><div class="t" id="capT"></div><div class="r" id="capR"></div></div>
+<div class="info" id="info"></div>
+
+<div class="bar">
+  <div class="tl"><div class="marks" id="marks"></div><input id="seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Zaman çizelgesi"></div>
+  <div class="row">
+    <button class="btn" id="bPrev" aria-label="Önceki adım"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+    <button class="btn main" id="bPlay" aria-label="Oynat / durdur"><svg viewBox="0 0 24 24" id="icPlay"><path d="M7 5v14l12-7z"/></svg></button>
+    <button class="btn" id="bNext" aria-label="Sonraki adım"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+    <button class="btn" id="bRestart" aria-label="Baştan oynat"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg></button>
+    <span class="time" id="time">0:00 / 0:00</span>
+    <span class="sp"></span>
+    <button class="btn" id="bInfo" aria-label="Bilgi">i</button>
+    <button class="btn" id="bCam" aria-label="Kamera kipi">🎬</button>
+    <select class="btn" id="sSpeed" aria-label="Hız"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option></select>
+    <select class="btn" id="sQ" aria-label="Kalite"><option value="0">Hızlı</option><option value="1" selected>Dengeli</option><option value="2">Sinema</option></select>
+    <button class="btn rec" id="bRec" aria-label="Video kaydet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg></button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="load" id="load"><div class="ring"></div><div style="color:var(--muted);font-size:13px">Stüdyo hazırlanıyor…</div></div>
+
+<!-- ===================================================================== -->
+<!-- SAHNE SHADER'I: oda, seccade, eşyalar ve çocuk karakteri işaretli      -->
+<!-- uzaklık alanlarıyla (SDF) tanımlanır, ışın yürütmeyle çizilir.        -->
+<!-- ===================================================================== -->
+<script type="x-shader/x-fragment" id="fsScene">#version 300 es
+precision highp float;
+precision highp int;
+out vec4 fragColor;
+
+uniform vec2 uRes;
+uniform float uTime;
+uniform vec3 uCamPos;
+uniform mat3 uCam;          // kamera eksenleri: sağ, yukarı, ileri
+uniform float uTanF;        // yarım görüş açısının tanjantı
+uniform mat3 uR[9];         // kemik dönüşleri: 0 leğen,1 bel,2 göğüs,3 boyun,4 baş,5 sağ el,6 sol el,7 sağ ayak,8 sol ayak
+uniform vec3 uP[9];         // kemik konumları
+uniform vec3 uJ[14];        // eklemler: omuz/dirsek/bilek (sağ,sol), kalça/diz/ayak bileği (sağ,sol), boyun, baş
+uniform vec3 uF[40];        // parmak eklemleri: el*20 + parmak*4 + eklem
+uniform vec3 uToe[20];      // ayak parmakları: ayak*10 + parmak*2 + (kök,uç)
+uniform vec3 uBMin;
+uniform vec3 uBMax;
+uniform vec3 uGaze;         // baş uzayında bakış yönü
+uniform float uLid;         // üst göz kapağı (0 açık, 1 kapalı)
+uniform vec3 uSun;          // güneşe doğru birim vektör
+uniform float uQ;           // kalite 0..2
+uniform float uEnc;         // 1: kayan noktalı doku yoksa renk sıkıştır
+
+#define PI 3.14159265
+
+// -------------------- yardımcılar --------------------
+float hash13(vec3 p){p=fract(p*.1031);p+=dot(p,p.zyx+31.32);return fract((p.x+p.y)*p.z);}
+float hash12(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
+float vn3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(mix(hash13(i),hash13(i+vec3(1,0,0)),f.x),mix(hash13(i+vec3(0,1,0)),hash13(i+vec3(1,1,0)),f.x),f.y),
+             mix(mix(hash13(i+vec3(0,0,1)),hash13(i+vec3(1,0,1)),f.x),mix(hash13(i+vec3(0,1,1)),hash13(i+vec3(1,1,1)),f.x),f.y),f.z);}
+float vn2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(hash12(i),hash12(i+vec2(1,0)),f.x),mix(hash12(i+vec2(0,1)),hash12(i+vec2(1,1)),f.x),f.y);}
+float fbm3(vec3 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*vn3(p);p=p*2.03+7.1;a*=.5;}return s;}
+float fbm2(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*vn2(p);p=p*2.07+3.3;a*=.5;}return s;}
+mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
+float sat(float x){return clamp(x,0.,1.);}
+
+// -------------------- işaretli uzaklık ilkelleri --------------------
+float sdSph(vec3 p,float r){return length(p)-r;}
+float sdEll(vec3 p,vec3 r){float k0=length(p/r);float k1=length(p/(r*r));return k0*(k0-1.)/max(k1,1e-6);}
+float sdBox(vec3 p,vec3 b){vec3 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.);}
+float sdRBox(vec3 p,vec3 b,float r){vec3 q=abs(p)-b+r;return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.)-r;}
+float sdBox2(vec2 p,vec2 b){vec2 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,q.y),0.);}
+float sdCap(vec3 p,vec3 a,vec3 b,float r){vec3 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/dot(ba,ba),0.,1.);return length(pa-ba*h)-r;}
+// iki nokta arasında, iki ucu farklı yarıçaplı yuvarlak koni (uzuvların temeli)
+float sdRC(vec3 p,vec3 a,vec3 b,float r1,float r2){
+  vec3 ba=b-a;float l2=dot(ba,ba);float rr=r1-r2;float a2=l2-rr*rr;float il2=1./l2;
+  vec3 pa=p-a;float y=dot(pa,ba);float z=y-l2;vec3 xv=pa*l2-ba*y;float x2=dot(xv,xv);
+  float y2=y*y*l2;float z2=z*z*l2;float k=sign(rr)*rr*rr*x2;
+  if(sign(z)*a2*z2>k)return sqrt(x2+z2)*il2-r2;
+  if(sign(y)*a2*y2<k)return sqrt(x2+y2)*il2-r1;
+  return (sqrt(x2*a2*il2)+y*rr)*il2-r1;}
+float smin(float a,float b,float k){float h=max(k-abs(a-b),0.)/k;return min(a,b)-h*h*k*.25;}
+float smax(float a,float b,float k){return -smin(-a,-b,k);}
+// malzeme taşıyan yumuşak birleşim
+vec2 opU(vec2 d,float nd,float m,float k){float h=clamp(.5+.5*(nd-d.x)/k,0.,1.);
+  return vec2(mix(nd,d.x,h)-k*h*(1.-h), h<.5?m:d.y);}
+
+// -------------------- oda sabitleri --------------------
+const float RX=2.4;      // sağ duvar (pencere)
+const float WT=0.24;     // duvar kalınlığı
+const float RZF=-2.0;    // kıble duvarı
+const float RZB=3.6;
+const float RH=2.9;
+const float WZC=-0.55, WHW=0.62, WY0=1.0, WY1=2.0; // pencere: merkez z, yarı genişlik, alt, kemer başlangıcı
+
+// sivri kemerli açıklık (2B): içeride negatif
+float archOpen(vec2 q,float hw,float y0,float y1){
+  float rect=sdBox2(q-vec2(0.,(y0+y1)*.5),vec2(hw,(y1-y0)*.5));
+  float R=hw*1.45, o=R-hw;
+  vec2 a=q-vec2(0.,y1);
+  float arch=max(length(a-vec2(-o,0.))-R,length(a-vec2(o,0.))-R);
+  arch=max(arch,-a.y);
+  return min(rect,arch);
+}
+float winD(vec2 zy){return archOpen(vec2(zy.x-WZC,zy.y),WHW,WY0,WY1);}
+// pencere kafesi ve kayıtları
+float barsD2(vec2 zy,bool withLat){
+  vec2 q=vec2(zy.x-WZC,zy.y);
+  float b=abs(q.x)-0.022;
+  b=min(b,abs(q.y-WY1)-0.022);
+  b=min(b,abs(q.y-(WY0+WY1)*.5)-0.012);
+  // kemerde geometrik kafes
+  vec2 g=rot(.785398)*(q-vec2(0.,WY1));
+  vec2 c=abs(fract(g/0.095)-.5)*0.095;
+  float lat=min(c.x,c.y)-0.0065;
+  lat=max(lat,WY1-q.y);
+  return withLat?min(b,lat):b;
+}
+float barsD(vec2 zy){return barsD2(zy,true);}
+// nişin (mihrap) açıklığı, kıble duvarında
+float nicheOpen(vec2 xy){return archOpen(xy,0.46,0.0,1.45);}
+
+// -------------------- KARAKTER --------------------
+// parmak yarıçapları (başparmak, işaret, orta, yüzük, serçe) x 4 eklem
+const float FR[20]=float[20](0.0108,0.0094,0.0083,0.0072, 0.0079,0.0072,0.0065,0.0058,
+                              0.0081,0.0074,0.0067,0.0060, 0.0077,0.0070,0.0063,0.0057, 0.0068,0.0062,0.0057,0.0051);
+const float TR[5]=float[5](0.0118,0.0082,0.0076,0.0071,0.0066);
+
+vec3 toL(vec3 p,int i){return (p-uP[i])*uR[i];}
+const float HS=1.07; // çocuk oranı: baş biraz daha büyük
+
+// baş: baş kemiği uzayında (y yukarı, -z yüz)
+vec2 mapHead(vec3 q){
+  vec3 qa=vec3(abs(q.x),q.y,q.z);
+  float d=sdEll(q-vec3(0.,.098,.006),vec3(.074,.084,.092));                 // kafatası
+  d=smin(d,sdEll(q-vec3(0.,.06,-.028),vec3(.063,.071,.066)),.03);           // yüz kütlesi
+  d=smin(d,sdEll(q-vec3(0.,.013,-.047),vec3(.043,.031,.036)),.034);         // çene
+  d=smin(d,sdEll(qa-vec3(.037,.046,-.054),vec3(.028,.026,.026)),.022);      // yanaklar
+  d=smin(d,sdEll(qa-vec3(.027,.101,-.081),vec3(.024,.009,.011)),.02);       // kaş kemeri
+  d=smax(d,-sdEll(qa-vec3(.031,.085,-.092),vec3(.017,.011,.011)),.01);     // göz çukuru
+  // burun
+  float n=sdRC(q,vec3(0.,.09,-.085),vec3(0.,.063,-.101),.0062,.0092);
+  n=smin(n,sdSph(qa-vec3(.0108,.0565,-.0915),.0074),.008);
+  n=smax(n,-sdSph(qa-vec3(.0058,.051,-.0975),.0031),.003);
+  d=smin(d,n,.008);
+  // dudaklar
+  float lp=sdEll(q-vec3(0.,.0345,-.0875),vec3(.0178,.0058,.0082));
+  lp=smin(lp,sdEll(q-vec3(0.,.024,-.0848),vec3(.0152,.0066,.0086)),.004);
+  d=smin(d,lp,.006);
+  d=smax(d,-sdEll(q-vec3(0.,.0292,-.0938),vec3(.0185,.0011,.012)),.0025);
+  // kulaklar
+  vec3 qe=qa-vec3(.077,.071,.014);
+  qe.xz=rot(-.25)*qe.xz;
+  float ear=sdEll(qe,vec3(.0105,.027,.018));
+  ear=smax(ear,-sdEll(qe-vec3(.0085,.002,-.001),vec3(.006,.0185,.011)),.004);
+  d=smin(d,ear,.006);
+  vec2 r=vec2(d,1.);
+  // göz kapakları ve gözler
+  vec3 ec=qa-vec3(.0305,.0848,-.0762);
+  float eye=length(ec)-.0124;
+  if(eye<r.x) r=vec2(eye,6.);
+  float yl=mix(.0064,-.0128,uLid);
+  float lid=max(length(ec)-.0135,yl-ec.y);
+  float lowl=max(length(ec)-.0131,ec.y+.0092);
+  r=opU(r,min(lid,lowl),1.,.002);
+  // kısa saç
+  float hs=sdEll(q-vec3(0.,.098,.006),vec3(.0778,.0878,.0958));
+  float hair=smax(hs,max(.046-q.y,min(-.052-q.z,.152-q.y)),.008);
+  if(hair<r.x) r=vec2(hair,5.);
+  // takke
+  float cap=sdEll(q-vec3(0.,.099,.006),vec3(.0815,.0905,.0995));
+  cap=smax(cap,-dot(q-vec3(0.,.126,0.),normalize(vec3(0.,1.,.28))),.006);
+  if(cap<r.x) r=vec2(cap,4.);
+  return r;
+}
+
+// el: kanonik sağ el uzayında avuç, dünyada parmaklar
+vec2 mapHand(vec3 p,int bi,float s,int fo){
+  vec3 q=toL(p,bi);q.x*=s;
+  float palm=sdRBox(q-vec3(0.,-.036,-.001),vec3(.0105,.0335,.029),.0095);
+  palm=smin(palm,sdEll(q-vec3(-.004,-.027,-.022),vec3(.0135,.024,.0145)),.01);
+  palm=smin(palm,sdEll(q-vec3(-.003,-.03,.021),vec3(.011,.026,.0105)),.008);
+  palm=smin(palm,sdEll(q-vec3(0.,.006,0.),vec3(.0148,.022,.0235)),.012);
+  float fd=1e9; float nail=1e9;
+  vec3 dors=uR[bi]*vec3(s,0.,0.);
+  for(int f=0;f<5;f++){
+    float fi=1e9;
+    for(int k=0;k<3;k++){
+      int id=fo+f*4+k;
+      float sd=sdRC(p,uF[id],uF[id+1],FR[f*4+k],FR[f*4+k+1]);
+      fi=smin(fi,sd,.0035);
+      if(k==2){
+        vec3 tp=uF[id+1]; vec3 ax=normalize(uF[id+1]-uF[id]);
+        float along=dot(p-tp,ax);
+        float up=dot(p-tp,dors);
+        if(sd<.002 && up>FR[f*4+3]*.25 && along>-.011) nail=min(nail,sd);
+      }
+    }
+    fd=min(fd,fi);
+  }
+  float h=smin(palm,fd,.009);
+  return vec2(h, nail<=h+.0005?7.:1.);
+}
+
+// ayak: kanonik sağ ayak uzayında (bilek orijin, -z parmaklar, -y taban)
+vec2 mapFoot(vec3 p,int bi,float s,int to){
+  vec3 q=toL(p,bi);q.x*=s;
+  float d=sdEll(q-vec3(0.,-.037,.02),vec3(.029,.03,.035));
+  d=smin(d,sdEll(q-vec3(-.002,-.043,-.05),vec3(.032,.022,.06)),.03);
+  d=smin(d,sdEll(q-vec3(-.005,-.048,-.097),vec3(.039,.0175,.029)),.02);
+  d=smin(d,sdRC(q,vec3(0.,.025,.004),vec3(-.002,-.028,-.075),.027,.019),.03);
+  d=smin(d,sdSph(vec3(abs(q.x),q.y,q.z)-vec3(.024,0.,.004),.011),.01);
+  float nail=1e9;
+  vec3 dors=uR[bi][1];
+  for(int t=0;t<5;t++){
+    vec3 a=uToe[to+t*2],b=uToe[to+t*2+1];
+    float sd=sdRC(p,a,b,TR[t],TR[t]*.86);
+    d=smin(d,sd,.006);
+    if(sd<.002 && dot(p-b,dors)>TR[t]*.3) nail=min(nail,sd);
+  }
+  return vec2(d,nail<=d+.0005?7.:1.);
+}
+
+vec2 mapChar(vec3 p){
+  vec3 bc=(uBMin+uBMax)*.5, bh=(uBMax-uBMin)*.5;
+  float bd=sdBox(p-bc,bh);
+  if(bd>.03) return vec2(bd,0.);
+  // ---- gövde (entari) ----
+  vec3 q0=toL(p,0), q1=toL(p,1), q2=toL(p,2);
+  float tun=sdEll(q0-vec3(0.,-.004,.006),vec3(.108,.095,.086));
+  tun=smin(tun,sdEll(q1-vec3(0.,.06,-.002),vec3(.098,.1,.076)),.05);
+  tun=smin(tun,sdEll(q2-vec3(0.,.04,.004),vec3(.11,.102,.074)),.05);
+  tun=smin(tun,sdCap(p,uJ[0],uJ[3],.039),.07);
+  vec3 qc=q2-vec3(0.,.127,.004);
+  float col=length(vec2(length(qc.xz*vec2(1.,1.12))-.041,qc.y))-.0105;
+  tun=smin(tun,col,.012);
+  // kollar (yen ağzı bilekte düz kesilir)
+  float sl=1e9;
+  for(int i=0;i<2;i++){
+    vec3 sh=uJ[i*3],el=uJ[i*3+1],wr=uJ[i*3+2];
+    float a=sdRC(p,sh,el,.043,.0365);
+    a=smin(a,sdRC(p,el,wr,.0365,.0315),.025);
+    vec3 ad=normalize(wr-el);
+    a=smax(a,dot(p-(wr-ad*.012),ad),.004);
+    sl=min(sl,a);
+  }
+  tun=smin(tun,sl,.035);
+  // entarinin eteği: uyluk boyunca dize kadar
+  vec3 up0=uR[0][1];
+  float sk=1e9, tr=1e9, ank=1e9;
+  for(int i=0;i<2;i++){
+    vec3 hp=uJ[6+i*3],kn=uJ[7+i*3],an=uJ[8+i*3];
+    vec3 dir=normalize(kn-hp);
+    float a=sdRC(p,hp+up0*.05,mix(hp,kn,.6),.074,.064);
+    a=smax(a,dot(p-mix(hp,kn,.55),dir),.02);
+    sk=min(sk,a);
+    // şalvar
+    float b=sdRC(p,hp,kn,.056,.043);
+    b=smin(b,sdRC(p,kn,mix(kn,an,.92),.043,.034),.03);
+    vec3 sd2=normalize(an-kn);
+    b=smax(b,dot(p-mix(kn,an,.87),sd2),.005);
+    tr=min(tr,b);
+    ank=min(ank,sdRC(p,mix(kn,an,.8),an,.03,.027));
+  }
+  tun=smin(tun,sk,.045);
+  vec2 r=vec2(tun,2.);
+  r=opU(r,tr,3.,.008);
+  // boyun
+  float nk=sdRC(p,uJ[12]-uR[2][1]*.02,uP[4]+uR[4][1]*.035,.032,.029);
+  float skin=min(nk,ank);
+  r=opU(r,skin,1.,.006);
+  // baş
+  vec3 hc=uP[4]+uR[4]*vec3(0.,.088*HS,-.004);
+  float hb=length(p-hc)-.135*HS;
+  if(hb<.02){vec2 h=mapHead(toL(p,4)/HS); r=opU(r,h.x*HS,h.y,.004);} else r.x=min(r.x,hb);
+  // eller
+  for(int i=0;i<2;i++){
+    int bi=5+i; float s=i==0?1.:-1.;
+    vec3 c=uP[bi]+uR[bi]*vec3(0.,-.055,0.);
+    float b=length(p-c)-.1;
+    if(b<.02){vec2 h=mapHand(p,bi,s,i*20); r=opU(r,h.x,h.y,.006);} else r.x=min(r.x,b);
+  }
+  // ayaklar
+  for(int i=0;i<2;i++){
+    int bi=7+i; float s=i==0?1.:-1.;
+    vec3 c=uP[bi]+uR[bi]*vec3(0.,-.03,-.06);
+    float b=length(p-c)-.14;
+    if(b<.02){vec2 h=mapFoot(p,bi,s,i*10); r=opU(r,h.x,h.y,.012);} else r.x=min(r.x,b);
+  }
+  return r;
+}
+
+// -------------------- EŞYALAR --------------------
+const vec3 RAHLE=vec3(-1.12,0.,-1.42);
+const vec3 POT=vec3(1.72,0.,-1.58);
+vec2 mapProps(vec3 p){
+  // seccade
+  vec2 r=vec2(sdRBox(p-vec3(0.,.0045,-.2),vec3(.43,.0045,.7),.003),8.);
+  // tesbih (seccadenin üst köşesinde)
+  {
+    vec3 q=p-vec3(-.29,.0115,-.78);
+    float ang=atan(q.z,q.x);
+    float rr=.045+.006*sin(ang*2.);
+    float tor=length(vec2(length(q.xz)-rr,q.y))-.0055;
+    tor-= .0015*smoothstep(.0,.6,abs(sin(ang*16.5)));
+    float tail=sdCap(q,vec3(.044,0.,.0),vec3(.085,0.,.025),.0045);
+    float t=min(tor,tail);
+    if(t<r.x) r=vec2(t,17.);
+  }
+  // rahle ve açık Kur'an
+  {
+    vec3 q=p-RAHLE; q.xz=rot(-.35)*q.xz;
+    float bb=sdBox(q-vec3(0.,.17,0.),vec3(.2,.2,.2));
+    if(bb<.05){
+      vec3 a=q-vec3(0.,.15,0.); a.yz=rot(.72)*a.yz;
+      vec3 b=q-vec3(0.,.15,0.); b.yz=rot(-.72)*b.yz;
+      float w1=sdRBox(a,vec3(.145,.006,.19),.004);
+      float w2=sdRBox(b,vec3(.145,.006,.19),.004);
+      // oymalı delik
+      w1=smax(w1,-sdEll(a-vec3(0.,0.,-.09),vec3(.035,.02,.04)),.004);
+      w2=smax(w2,-sdEll(b-vec3(0.,0.,.09),vec3(.035,.02,.04)),.004);
+      float w=min(w1,w2);
+      r=opU(r,w,11.,.002);
+      // kitap: iki açık sayfa V'nin üst kollarında
+      vec3 c1=a-vec3(0.,.016,.085), c2=b-vec3(0.,.016,-.085);
+      float pg=min(sdRBox(c1,vec3(.1,.009,.07),.006),sdRBox(c2,vec3(.1,.009,.07),.006));
+      float cv=min(sdRBox(c1+vec3(0.,.007,0.),vec3(.106,.004,.074),.003),sdRBox(c2+vec3(0.,.007,0.),vec3(.106,.004,.074),.003));
+      if(cv<r.x) r=vec2(cv,12.);
+      if(pg<r.x) r=vec2(pg,13.);
+    } else r.x=min(r.x,bb);
+  }
+  // saksı ve bitki
+  {
+    vec3 q=p-POT;
+    float bb=sdBox(q-vec3(0.,.45,0.),vec3(.26,.46,.26));
+    if(bb<.05){
+      float pot=sdRC(q,vec3(0.,.05,0.),vec3(0.,.3,0.),.105,.14);
+      pot=smin(pot,sdCap(q,vec3(0.,.31,0.),vec3(0.,.31,0.),.0)+0.,.0);
+      float rim=length(vec2(length(q.xz)-.145,q.y-.305))-.016;
+      pot=min(pot,rim);
+      pot=smax(pot,-(length(q.xz)-.13),.01*step(.28,q.y));
+      pot=max(pot,-q.y);
+      if(pot<r.x) r=vec2(pot,14.);
+      float soil=max(length(q.xz)-.132,abs(q.y-.285)-.006);
+      if(soil<r.x) r=vec2(soil,18.);
+      float lf=1e9;
+      for(int i=0;i<9;i++){
+        float fi=float(i);
+        float a=fi*2.39996+.3;
+        float h=.45+.32*fract(sin(fi*12.9898)*43758.5453);
+        vec3 base=vec3(cos(a)*.05,.28,sin(a)*.05)*(.4+.6*fract(fi*.37));
+        vec3 tip=base+vec3(cos(a)*.11*(.5+fract(fi*.61)),h,sin(a)*.11*(.5+fract(fi*.61)));
+        lf=min(lf,sdRC(q,base,tip,.022,.004));
+      }
+      if(lf<r.x) r=vec2(lf,16.);
+    } else r.x=min(r.x,bb);
+  }
+  return r;
+}
+
+// -------------------- ODA --------------------
+vec2 mapRoom(vec3 p){
+  float outX=p.x-(RX+WT);
+  float fl=max(p.y,outX);
+  float ce=max(RH-p.y,outX);
+  float wl=RX+p.x;
+  float wb=max(RZB-p.z,outX);
+  float wf=max(p.z-RZF,outX);
+  // mihrap nişi
+  float nz=max(nicheOpen(p.xy),max(p.z-(RZF+.01),(RZF-.3)-p.z));
+  wf=max(wf,-nz);
+  // sağ duvar: kalın, pencereli
+  float slab=max(RX-p.x,p.x-(RX+WT));
+  float hole=max(winD(p.zy),abs(p.x-(RX+WT*.5))-WT*.5-.02);
+  float wr=max(slab,-hole);
+  float d=min(min(fl,ce),min(min(wl,wb),min(wf,wr)));
+  vec2 r=vec2(d,fl<=d+1e-4?9.:10.);
+  // pencere çerçevesi ve kafes
+  float wd=winD(p.zy);
+  float band=abs(wd+.022)-.022;
+  float bars=max(barsD(p.zy),wd);
+  float fr=max(abs(p.x-(RX+.09))-.022,min(band,bars));
+  if(fr<r.x) r=vec2(fr,15.);
+  // süpürgelik
+  float sb=max(min(min(p.x+RX,RZB-p.z),p.z-RZF)-.012,p.y-.09);
+  sb=max(sb,-nz);
+  if(sb<r.x) r=vec2(sb,11.);
+  return r;
+}
+
+vec2 map(vec3 p){
+  vec2 r=mapRoom(p);
+  vec2 a=mapProps(p); if(a.x<r.x) r=a;
+  vec2 c=mapChar(p);  if(c.x<r.x) r=c;
+  return r;
+}
+float mapS(vec3 p){return min(mapProps(p).x,mapChar(p).x);}
+
+vec3 calcN(vec3 p,float t){
+  float e=.00035+.00025*t;
+  vec2 k=vec2(1,-1);
+  return normalize(k.xyy*map(p+k.xyy*e).x+k.yyx*map(p+k.yyx*e).x+k.yxy*map(p+k.yxy*e).x+k.xxx*map(p+k.xxx*e).x);
+}
+
+// -------------------- ışık --------------------
+// pencere maskesi: noktadan güneşe giden ışın pencereden geçiyor mu? (yumuşak kenarlı)
+float sunMask(vec3 p){
+  if(p.x>RX+WT) return 1.;
+  float s1=(RX-p.x)/uSun.x; vec3 w1=p+uSun*s1;
+  float s2=(RX+WT-p.x)/uSun.x; vec3 w2=p+uSun*s2;
+  float k=.004+.016*s1;
+  float o=max(max(winD(w1.zy),-barsD2(w1.zy,false)),winD(w2.zy));
+  // kafes gölgesi: yalnızca hafif bir desen (tende kontur çizgisi oluşturmasın)
+  float lat=barsD2(w1.zy,true);
+  float lm=1.-.28*(1.-smoothstep(-k*.6,k*.6,lat))*step(WY1,w1.y);
+  return (1.-smoothstep(-k,k,o))*lm;
+}
+float softShadow(vec3 ro,vec3 rd,float k){
+  // klasik yumuşak gölge; başlangıç piksel başına titretilir (bantlaşma yerine ince gren)
+  float res=1.,t=.014+.012*hash12(gl_FragCoord.xy);
+  for(int i=0;i<44;i++){
+    float h=mapS(ro+rd*t);
+    res=min(res,k*h/t);
+    t+=clamp(h*.85,.004,.1);
+    if(res<.002||t>2.6) break;
+  }
+  res=sat(res);
+  return res*res*(3.-2.*res);
+}
+float calcAO(vec3 p,vec3 n){
+  float o=0.,s=1.;
+  for(int i=0;i<6;i++){
+    float h=.008+.075*float(i)*float(i)*.25;
+    float d=map(p+n*h).x;
+    o+=(h-d)*s; s*=.72;
+  }
+  return sat(1.-1.6*o);
+}
+vec3 skyCol(vec3 rd){
+  float y=rd.y;
+  vec3 c=mix(vec3(1.25,1.0,.78)*2.4,vec3(.42,.62,1.05)*1.9,smoothstep(-.05,.55,y));
+  float sd=max(dot(rd,uSun),0.);
+  c+=vec3(1.,.78,.5)*(pow(sd,6.)*1.6+pow(sd,400.)*60.);
+  float ang=atan(rd.z,rd.x);
+  float hor=.04+.07*fbm2(vec2(ang*6.,1.3));
+  if(y<hor){
+    vec3 g=mix(vec3(.16,.24,.12),vec3(.34,.42,.22),fbm2(vec2(ang*30.,y*40.)))*1.4;
+    c=mix(c,g,smoothstep(hor+.004,hor-.004,y));
+  }
+  return c;
+}
+
+// ---- yüzey desenleri ----
+// İznik esintili çini: sekiz köşeli yıldız ve rumi yaprak
+vec3 tile(vec2 uv){
+  vec2 g=fract(uv)-.5; vec2 id=floor(uv);
+  vec3 base=vec3(.93,.92,.86);
+  vec2 a=abs(g); float star=max(a.x+a.y,max(a.x,a.y)*1.414)-.36;
+  vec2 r=rot(.785398)*g; vec2 b=abs(r); float star2=max(b.x+b.y,max(b.x,b.y)*1.414)-.36;
+  float st=min(star,star2);
+  vec3 c=base;
+  c=mix(c,vec3(.05,.24,.55),smoothstep(.012,-.012,st));
+  c=mix(c,vec3(.12,.55,.6),smoothstep(.012,-.012,st+.09));
+  c=mix(c,vec3(.75,.18,.12),smoothstep(.01,-.01,length(g)-.028));
+  float corner=length(a-.5)-.13;
+  c=mix(c,vec3(.12,.55,.6),smoothstep(.01,-.01,corner));
+  float line=min(abs(g.x),abs(g.y)); // derz
+  c=mix(c,vec3(.7,.68,.62),smoothstep(.49,.5,max(a.x,a.y)));
+  return c;
+}
+
+// seccade deseni: kenar şeritleri, mihrap kemeri, ortada madalyon
+vec3 rugCol(vec3 p){
+  vec2 u=vec2(p.x,p.z+.2);                 // merkez (0,0); x:+-.43, z:+-.7
+  vec2 a=abs(u);
+  vec3 red=vec3(.42,.035,.05), navy=vec3(.04,.06,.17), gold=vec3(.78,.55,.2), cream=vec3(.85,.75,.55), green=vec3(.05,.22,.14);
+  vec3 c=red;
+  float e=max(a.x-.43,a.y-.7);              // kenara uzaklık (negatif içeride)
+  float bd=-e;
+  // kenar şeritleri
+  if(bd<.075){
+    c=navy;
+    float wave=sin((a.x>.36?u.y:u.x)*90.)*.008;
+    c=mix(c,gold,smoothstep(.006,0.,abs(bd-.038+wave)-.006));
+    c=mix(c,cream,smoothstep(.004,0.,abs(bd-.012)-.004));
+    c=mix(c,gold,smoothstep(.004,0.,abs(bd-.068)-.003));
+    // küçük rozetler
+    vec2 rp=vec2(a.x>.36?u.y:u.x,0.);
+    float ros=length(vec2(fract(rp.x*9.)-.5,(bd-.038)*9.))-.18;
+    c=mix(c,red,smoothstep(.02,-.02,ros));
+  } else {
+    // iç alan: mihrap kemeri (kıble yönünde, -z)
+    vec2 m=vec2(u.x,u.y+.18);
+    float arch=archOpen(vec2(m.x,-m.y),.29,-.42,.12);
+    float archI=archOpen(vec2(m.x,-m.y),.26,-.4,.11);
+    c=mix(green,red,smoothstep(-.004,.004,archI));
+    c=mix(c,gold,smoothstep(.006,0.,abs(arch-(-.015))-.006));
+    // asılı kandil
+    vec2 l=vec2(m.x,-m.y-.24);
+    float lamp=sdEll(vec3(l,0.),vec3(.04,.05,1.));
+    c=mix(c,gold,smoothstep(.004,-.004,lamp));
+    c=mix(c,gold,smoothstep(.003,0.,abs(m.x)-.0025)*step(.29,-m.y)*step(-m.y,.43));
+    // köşe süslemeleri ve madalyon
+    vec2 g=fract(u*vec2(9.,9.))-.5;
+    float dm=abs(g.x)+abs(g.y)-.25;
+    vec3 patt=mix(c,c*1.35+vec3(.04,.02,0.),smoothstep(.03,-.03,dm)*.6);
+    c=mix(c,patt,smoothstep(0.,.02,archI));
+    float med=length(vec2(u.x,u.y-.3))-.11;
+    c=mix(c,navy,smoothstep(.006,-.006,med));
+    c=mix(c,gold,smoothstep(.005,0.,abs(med+.02)-.004));
+    float star=max(abs(u.x)+abs(u.y-.3),max(abs(u.x),abs(u.y-.3))*1.414)-.07;
+    c=mix(c,gold,smoothstep(.005,-.005,star));
+    c=mix(c,red,smoothstep(.005,-.005,length(vec2(u.x,u.y-.3))-.022));
+  }
+  // hav dokusu
+  float pile=vn2(p.xz*900.)*.5+vn2(p.xz*300.)*.5;
+  c*=.78+.34*pile;
+  return c;
+}
+
+vec3 woodCol(vec3 p,out float rough){
+  // parke: z boyunca uzanan tahtalar
+  float w=.16; float ix=floor(p.x/w); float off=hash12(vec2(ix,3.))*2.;
+  float iz=floor((p.z+off)/1.1);
+  float h=hash12(vec2(ix,iz));
+  vec2 lc=vec2(fract(p.x/w),fract((p.z+off)/1.1));
+  float grain=fbm2(vec2(p.x*8.+h*20.,p.z*.9)*vec2(6.,1.))*.6+fbm2(vec2(p.x*90.,p.z*4.)+h*9.)*.4;
+  vec3 c=mix(vec3(.36,.2,.1),vec3(.55,.34,.18),grain);
+  c*=.8+.35*h;
+  float seam=min(min(lc.x,1.-lc.x)*w,min(lc.y,1.-lc.y)*1.1);
+  c*=mix(.45,1.,smoothstep(0.,.0025,seam));
+  rough=.38+.2*grain;
+  return c*.85;
+}
+
+vec3 wallCol(vec3 p,vec3 n,out float rough){
+  rough=.9;
+  vec3 c=vec3(.9,.8,.66)*(.94+.08*fbm3(p*5.));
+  // alt kısımda çini kuşak (kıble duvarı ve yanlar)
+  float tileTop=.95;
+  bool front=n.z>.5;
+  bool inNiche=p.z<RZF-.01;
+  vec2 uv=abs(n.x)>.5?p.zy:p.xy;
+  if(inNiche){
+    vec3 t=tile(uv*6.5+vec2(.5,0.));
+    c=mix(t*vec3(.86,.95,1.),vec3(.06,.2,.3),.25);
+    rough=.25;
+    return c;
+  }
+  if(p.y<tileTop && p.y>.09){
+    c=tile(uv*vec2(3.2)); rough=.22;
+    float trim=abs(p.y-tileTop+.025)-.018;
+    c=mix(c,vec3(.06,.2,.42),smoothstep(.003,-.003,trim));
+  }
+  // mihrap çerçevesi (niş etrafında)
+  if(front){
+    float o=nicheOpen(p.xy);
+    float fr=abs(o-.07)-.05;
+    if(fr<0.){
+      vec2 tuv=p.xy*14.;
+      c=mix(vec3(.75,.58,.28),vec3(.06,.22,.45),step(.5,fract(tuv.x+tuv.y*.5+floor(tuv.y)*.5)));
+      c=mix(vec3(.82,.66,.34),c,smoothstep(.0,.015,abs(fr+.05)-.012));
+      rough=.3;
+    }
+    // yazı kuşağına benzeyen süs (hat değildir, geometrik)
+    float band=abs(p.y-2.15)-.08;
+    if(band<0.){
+      vec2 b=vec2(p.x*12.,(p.y-2.15)*12.);
+      float k=abs(fract(b.x)-.5)+abs(b.y)*1.4-.45;
+      c=mix(vec3(.08,.24,.42),vec3(.86,.7,.4),smoothstep(.05,-.05,k));
+      rough=.3;
+    }
+  }
+  return c;
+}
+
+// -------------------- gölgelendirme --------------------
+vec3 envApprox(vec3 rd,vec3 p){
+  // kaba ortam yansıması: pencere yönü parlak, diğerleri sıcak oda
+  float t=(RX-p.x)/max(rd.x,1e-3);
+  vec3 c=vec3(.32,.25,.19)*.45;
+  if(rd.x>0.){vec3 w=p+rd*t; float o=winD(w.zy); c=mix(c,skyCol(rd)*.8,1.-smoothstep(-.05,.05,o));}
+  c+=vec3(.25,.2,.15)*.3*max(rd.y,0.);
+  return c;
+}
+float ggx(vec3 n,vec3 v,vec3 l,float r){
+  vec3 h=normalize(v+l);float a=r*r;float a2=a*a;float nh=max(dot(n,h),0.);
+  float d=nh*nh*(a2-1.)+1.;float D=a2/(PI*d*d);
+  float k=a*.5;float nv=max(dot(n,v),1e-3),nl=max(dot(n,l),0.);
+  float G=nv/(nv*(1.-k)+k)*nl/(nl*(1.-k)+k);
+  return D*G/(4.*nv+1e-3);
+}
+
+vec3 shade(vec3 p,vec3 rd,vec3 n,float m,float t){
+  vec3 v=-rd;
+  vec3 alb=vec3(.7); float rough=.8; float spec=.04; float sss=0.; float sheen=0.;
+  vec3 nb=n;
+  if(m==1.||m==7.){ // ten
+    alb=vec3(.60,.40,.30); rough=.5; spec=.028; sss=1.;
+    vec3 hc=uP[4];
+    if(length(p-hc)<.2){
+      vec3 q=toL(p,4)/HS; vec3 qa=vec3(abs(q.x),q.y,q.z);
+      // yanak pembeliği
+      alb=mix(alb,vec3(.78,.33,.26),.35*exp(-dot(qa-vec3(.04,.05,-.07),qa-vec3(.04,.05,-.07))*1400.));
+      // dudak
+      float lip=sdEll(q-vec3(0.,.029,-.087),vec3(.019,.0115,.01));
+      alb=mix(alb,vec3(.62,.24,.21),smoothstep(.002,-.002,lip)*.85);
+      if(lip<0.) rough=.33;
+      // kaşlar
+      vec3 bq=qa-vec3(.03,.1015,-.0835);
+      float brow=max(abs(bq.y+bq.x*bq.x*7.)-.0026+abs(bq.x)*.06,abs(bq.x)-.0175);
+      float hairT=.6+.4*sin(bq.x*900.+bq.y*400.);
+      alb=mix(alb,vec3(.05,.03,.02),smoothstep(.0015,-.0012,brow)*(.75+.25*hairT));
+      // kirpik çizgisi
+      vec3 ec=qa-vec3(.0305,.0848,-.0762);
+      float yl=mix(.0064,-.0128,uLid);
+      float lash=abs(ec.y-yl)-.0011;
+      if(length(ec)<.0136) alb=mix(alb,vec3(.03,.02,.02),smoothstep(.0008,-.0008,lash));
+      // saç dibi gölgesi
+      alb*=1.-.25*smoothstep(.06,.12,q.y)*smoothstep(-.02,.04,q.z);
+    }
+    if(m==7.){alb=vec3(.82,.56,.5); rough=.25; spec=.04; sss=.4;}
+  } else if(m==2.){ // entari
+    alb=vec3(.78,.76,.7); rough=.85; sheen=.8;
+    vec3 q2=toL(p,2);
+    // yaka ve göğüs patı nakışı
+    float plk=max(abs(q2.x)-.011,max(q2.z+.0,abs(q2.y-.06)-.075));
+    vec3 q0=toL(p,0);
+    if(q2.y>.112&&q2.y<.15&&length(q2.xz)<.062){alb=mix(alb,vec3(.72,.56,.28),.55+.45*step(.5,fract(atan(q2.x,q2.z)*12.)));}
+    if(plk<0.){
+      float dd=abs(fract(q2.y*55.)-.5)+abs(q2.x)*45.;
+      alb=mix(vec3(.82,.79,.72),vec3(.68,.5,.22),smoothstep(.55,.4,dd));
+      float bt=length(vec2(q2.x,fract(q2.y*22.)/22.-.022))-.0042;
+      if(bt<0.) {alb=vec3(.9,.86,.78);rough=.3;}
+    }
+    // kumaş dokusu ve kıvrımlar
+    float f=fbm3(p*vec3(24.,11.,24.));
+    nb=normalize(n+.12*(vec3(fbm3(p*30.+1.),fbm3(p*30.+5.),fbm3(p*30.+9.))-.5));
+    alb*=.94+.08*f;
+  } else if(m==3.){ // şalvar
+    alb=vec3(.46,.44,.41); rough=.9; sheen=.8;
+    nb=normalize(n+.1*(vec3(fbm3(p*28.+2.),fbm3(p*28.+6.),fbm3(p*28.+3.))-.5));
+  } else if(m==4.){ // örgü takke
+    vec3 q=toL(p,4)/HS;
+    float ang=atan(q.x,q.z); float el=q.y;
+    vec2 cr=vec2(ang*16./PI,el*170.);
+    vec2 g=fract(cr)-.5; float hole=length(g*vec2(1.,1.2))-.26;
+    float rows=step(.5,fract(el*170.*.25));
+    alb=vec3(.9,.89,.85)*mix(1.,.55,smoothstep(.04,-.04,hole)*.8);
+    if(q.y>.165) alb=mix(alb,vec3(.92,.91,.87),.6);
+    rough=.95; sheen=.6;
+  } else if(m==5.){ // saç
+    alb=vec3(.07,.045,.03)*(.75+.5*vn3(p*vec3(900.,300.,900.))); rough=.5; spec=.05;
+  } else if(m==6.){ // göz
+    vec3 q=toL(p,4)/HS; float sd=sign(q.x); vec3 qa=vec3(abs(q.x),q.y,q.z);
+    vec3 ec=qa-vec3(.0305,.0848,-.0762);
+    vec3 g=uGaze; g.x*=sd;
+    float c=dot(normalize(ec),normalize(g));
+    float ang=acos(clamp(c,-1.,1.));
+    vec3 iris=mix(vec3(.12,.06,.02),vec3(.32,.18,.06),smoothstep(.12,.45,ang)+.2*sin(atan(ec.y,ec.x)*30.));
+    alb=vec3(.86,.83,.8)*(1.-.25*smoothstep(.6,1.2,ang));
+    alb=mix(alb,iris,smoothstep(.5,.46,ang));
+    alb=mix(alb,vec3(.06,.03,.015),smoothstep(.49,.53,ang)*smoothstep(.56,.5,ang)*.8);
+    alb=mix(alb,vec3(.005),smoothstep(.21,.18,ang));
+    rough=.06; spec=.06;
+  } else if(m==8.){ // seccade
+    alb=rugCol(p); rough=.95; sheen=1.2;
+    // püsküller
+  } else if(m==9.){ // parke
+    alb=woodCol(p,rough); spec=.045;
+  } else if(m==10.){ // duvar
+    alb=wallCol(p,n,rough); spec=.04;
+  } else if(m==11.){ // ahşap
+    alb=vec3(.3,.15,.07)*(.8+.4*fbm2(vec2(p.x*6.,p.y*60.+p.z*60.))); rough=.4;
+  } else if(m==12.){ // kitap kabı
+    alb=vec3(.03,.18,.1); rough=.5;
+    if(fract(p.x*40.)<.15) alb=vec3(.7,.5,.2);
+  } else if(m==13.){ // sayfalar
+    alb=vec3(.9,.85,.72); rough=.9;
+    vec3 q=p-RAHLE; q.xz=rot(-.35)*q.xz;
+    float ln=step(.55,fract(q.z*120.))*step(abs(q.x),.075)*step(.02,abs(q.z))*step(abs(q.z),.15);
+    alb*=1.-ln*.55*step(.4,vn2(q.xz*vec2(300.,40.)));
+  } else if(m==14.){ // saksı
+    alb=vec3(.55,.24,.12)*(.85+.2*fbm3(p*20.)); rough=.8;
+    vec3 q=p-POT; if(abs(q.y-.2)<.025) alb=vec3(.85,.78,.62);
+  } else if(m==15.){ // pencere çerçevesi
+    alb=vec3(.16,.08,.04); rough=.5;
+  } else if(m==16.){ // yaprak
+    vec3 q=p-POT;
+    alb=mix(vec3(.04,.16,.05),vec3(.2,.36,.1),step(.5,fract(q.y*14.+fbm3(p*30.)*.6)));
+    rough=.45; spec=.05;
+  } else if(m==17.){ // tesbih
+    alb=vec3(.28,.1,.03); rough=.18; spec=.06;
+  } else if(m==18.){ alb=vec3(.07,.05,.03); rough=1.; }
+
+  // ---- ışıklar ----
+  vec3 L=uSun;
+  vec3 sunC=vec3(1.,.87,.72)*4.2;
+  float nl=dot(nb,L);
+  float sh=0.;
+  if(nl>-.3){
+    sh=sunMask(p+n*.003);
+    if(sh>.001 && p.y<1.9 && abs(p.z)<1.6) sh*=softShadow(p+n*.012,L,10.);
+  }
+  float ao=calcAO(p,n);
+  // pencereden gelen gök ışığı (alan ışığı yaklaşıklığı)
+  vec3 wc=vec3(RX,1.55,WZC); vec3 tw=wc-p; float dw=length(tw); tw/=dw;
+  float ff=1.6*max(dot(nb,tw),0.)*max(tw.x,0.)/(PI*dw*dw+1.6);
+  vec3 skyL=vec3(.55,.68,1.)*2.4*ff;
+  // güneş lekesinden sekme (seccade ve parkeden yukarı sıcak ışık)
+  vec3 bp=vec3(-.15,.01,-.1); vec3 tb=bp-p; float db=length(tb); tb/=db;
+  float bf=1.2*max(dot(nb,tb),0.)*max(-tb.y,0.)/(PI*db*db+1.2);
+  vec3 bnc=vec3(1.,.55,.38)*1.2*bf;
+  // yarımküre ortam
+  vec3 amb=mix(vec3(.2,.14,.1),vec3(.34,.32,.3),nb.y*.5+.5)*.32;
+  vec3 indirect=(skyL+bnc+amb)*ao;
+
+  vec3 dif;
+  if(sss>0.){
+    // ten: sarmalanmış yayınım + yüzey altı saçılma (gölge sınırında kızıllık)
+    float w=sat((nl+.4)/1.4);
+    vec3 shc=pow(vec3(sh),vec3(1.,1.55,2.1));
+    vec3 sc=mix(vec3(max(nl,0.)),vec3(w)*vec3(1.,.48,.36),.55*sss);
+    dif=alb*(sunC*sc*shc+indirect*(1.+vec3(.18,.02,0.)*sss));
+  } else {
+    dif=alb*(sunC*max(nl,0.)*sh+indirect);
+  }
+  // kumaş parlaklığı (sheen)
+  float fr=pow(1.-max(dot(n,v),0.),5.);
+  if(sheen>0.){
+    float sv=pow(1.-max(dot(nb,v),0.),3.);
+    dif+=alb*sheen*sv*(sunC*max(nl,0.)*sh*.25+indirect*.5);
+  }
+  // aynasal
+  vec3 spc=vec3(0.);
+  float F=spec+(1.-spec)*fr;
+  spc+=sunC*ggx(nb,v,L,max(rough,.08))*max(nl,0.)*sh*F;
+  vec3 rf=reflect(rd,nb);
+  float envw=(1.-rough)*(1.-rough);
+  spc+=envApprox(rf,p)*F*envw*ao*(m==9.?1.6:1.);
+  // pencereden aynasal parıltı (gözler ve dudak için)
+  if(m==6.||m==7.||m==17.){spc+=skyCol(rf)*.25*pow(max(dot(rf,tw),0.),40.)*F*5.;}
+  return dif+spc;
+}
+
+void main(){
+  vec2 uv=(gl_FragCoord.xy*2.-uRes)/uRes.y;
+  vec3 ro=uCamPos;
+  vec3 rd=normalize(uCam*vec3(uv*uTanF,1.));
+  float t=.02; float m=-1.;
+  float tmax=14.;
+  int maxSteps=uQ>1.5?220:(uQ>.5?170:130);
+  for(int i=0;i<240;i++){
+    if(i>=maxSteps) break;
+    vec3 p=ro+rd*t;
+    vec2 h=map(p);
+    if(abs(h.x)<.00025*t+.00008){m=h.y;break;}
+    t+=h.x*.92;
+    if(t>tmax) break;
+  }
+  // adım sınırı dolduysa (sınır çizgisinde teğet geçen ışınlar) en yakın yüzeyi kabul et
+  if(m<0.&&t<tmax){m=map(ro+rd*t).y; if(m<.5) m=10.;}
+  vec3 col;
+  float depth=t;
+  if(m<0.){
+    col=skyCol(rd);
+    depth=20.;
+  } else {
+    vec3 p=ro+rd*t;
+    vec3 n=calcN(p,t);
+    col=shade(p,rd,n,m,t);
+  }
+  // pencereden giren ışık hüzmeleri ve havadaki toz
+  {
+    float tt=min(depth,8.);
+    int N=uQ>1.5?28:(uQ>.5?18:10);
+    float jit=hash12(gl_FragCoord.xy+fract(uTime)*91.);
+    float acc=0.;
+    for(int i=0;i<28;i++){
+      if(i>=N) break;
+      float s=(float(i)+jit)/float(N)*tt;
+      vec3 q=ro+rd*s;
+      if(q.x>RX) continue;
+      float msk=sunMask(q);
+      float dust=.55+.45*vn3(q*14.+vec3(0.,uTime*.05,uTime*.03));
+      acc+=msk*dust;
+    }
+    acc*=tt/float(N);
+    float ph=.5+.9*pow(max(dot(rd,uSun),0.),6.);
+    col+=vec3(1.,.8,.58)*acc*.05*ph;
+  }
+  if(uEnc>.5){col=col/(1.+col); fragColor=vec4(col,sat(depth/20.));}
+  else fragColor=vec4(col,depth);
+}
+</script>
+
+<!-- ===================== SON İŞLEM SHADER'I ===================== -->
+<script type="x-shader/x-fragment" id="fsPost">#version 300 es
+precision highp float;
+out vec4 fragColor;
+uniform sampler2D uTex;
+uniform vec2 uRes;      // ekran
+uniform vec2 uSrc;      // sahne dokusu boyutu
+uniform float uFocus;
+uniform float uAper;
+uniform float uTime;
+uniform float uEnc;
+uniform float uFade;
+uniform float uQ;
+
+vec4 fetchS(vec2 uv,float lod){
+  vec4 c=textureLod(uTex,uv,lod);
+  if(uEnc>.5){c.rgb=c.rgb/max(1.-c.rgb,.004);c.a*=20.;}
+  return c;
+}
+float coc(float d){return clamp(uAper*abs(d-uFocus)/max(d,.05)/max(uFocus,.1),0.,1.);}
+vec3 aces(vec3 x){const float a=2.51,b=.03,c=2.43,d=.59,e=.14;return clamp((x*(a*x+b))/(x*(c*x+d)+e),0.,1.);}
+float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+void main(){
+  vec2 uv=gl_FragCoord.xy/uRes;
+  vec4 c0=fetchS(uv,0.);
+  float maxR=uSrc.y*.018;             // en büyük bulanıklık yarıçapı (piksel)
+  float cc=coc(c0.a);
+  vec3 acc=c0.rgb; float wsum=1.;
+  int N=uQ>1.5?48:(uQ>.5?32:16);
+  const float GA=2.39996323;
+  if(uAper>0.){
+    for(int i=0;i<48;i++){
+      if(i>=N) break;
+      float fi=float(i)+.5;
+      float r=sqrt(fi/float(N));
+      vec2 o=vec2(cos(fi*GA),sin(fi*GA))*r*maxR/uSrc;
+      vec4 s=fetchS(uv+o,0.);
+      float sc=coc(s.a);
+      // örnek kendi bulanıklık dairesi bu pikseli kapsıyorsa katkı verir
+      float cov=smoothstep(r-.12,r+.02,(s.a<c0.a?sc:min(sc,cc)));
+      acc+=s.rgb*cov; wsum+=cov;
+    }
+  }
+  vec3 col=acc/wsum;
+  // parlama (bloom): küçültülmüş katmanlardan
+  vec3 bl=max(fetchS(uv,3.).rgb-2.2,0.)*.4+max(fetchS(uv,5.).rgb-1.6,0.)*.35+max(fetchS(uv,6.5).rgb-1.2,0.)*.3;
+  col+=bl*.45;
+  // pozlama, ton eşleme, renk düzenleme
+  col*=1.0;
+  col=aces(col);
+  float l=dot(col,vec3(.2126,.7152,.0722));
+  col=mix(vec3(l),col,1.08);
+  col=mix(col,col*vec3(1.03,1.0,.95),smoothstep(.4,1.,l));        // sıcak ışıklar
+  col=mix(col,col*vec3(.94,1.0,1.06)+vec3(0.,.006,.012),smoothstep(.35,0.,l)); // serin gölgeler
+  col=pow(col,vec3(1./2.2));
+  vec2 vq=uv-.5; col*=1.-.32*dot(vq,vq)*1.6;                        // vinyet
+  col+=(hash(gl_FragCoord.xy+fract(uTime)*100.)-.5)*.018;          // film greni
+  col*=uFade;
+  fragColor=vec4(col,1.);
+}
+</script>
+<script type="x-shader/x-vertex" id="vs">#version 300 es
+in vec2 aP; void main(){gl_Position=vec4(aP,0.,1.);}
+</script>
+
+<script>
+"use strict";
+/* =====================================================================
+ * 1) KÜÇÜK MATEMATİK KİTAPLIĞI (vektör, matris)
+ * Matrisler 3 sütun vektörü olarak tutulur: M=[X,Y,Z]
+ * ===================================================================== */
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+const mul=(a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const len=a=>Math.hypot(a[0],a[1],a[2]);
+const norm=a=>{const l=len(a)||1;return [a[0]/l,a[1]/l,a[2]/l];};
+const lerp=(a,b,t)=>a+(b-a)*t;
+const lerp3=(a,b,t)=>[lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)];
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const D2R=Math.PI/180;
+const mv=(M,v)=>add(add(mul(M[0],v[0]),mul(M[1],v[1])),mul(M[2],v[2]));
+const mtv=(M,v)=>[dot(M[0],v),dot(M[1],v),dot(M[2],v)];   // devrik çarpım
+const mm=(A,B)=>[mv(A,B[0]),mv(A,B[1]),mv(A,B[2])];
+const rX=a=>{const c=Math.cos(a),s=Math.sin(a);return [[1,0,0],[0,c,s],[0,-s,c]];};
+const rY=a=>{const c=Math.cos(a),s=Math.sin(a);return [[c,0,-s],[0,1,0],[s,0,c]];};
+const rZ=a=>{const c=Math.cos(a),s=Math.sin(a);return [[c,s,0],[-s,c,0],[0,0,1]];};
+const ease=t=>{t=clamp(t,0,1);return t*t*t*(t*(t*6-15)+10);};   // yumuşak başla-yumuşak dur
+
+/* =====================================================================
+ * 2) İSKELET ÖLÇÜLERİ (8-9 yaşında, ~1.34 m boyunda bir çocuk)
+ * Çocuk -Z yönüne (kıbleye) bakar; sağ tarafı +X'tir. Birimler metre.
+ * ===================================================================== */
+const BONE={
+  spine:0.10, chest:0.14, neck:0.135, head:0.06,
+  shoulder:[0.13,0.10,0.006], hip:[0.072,-0.06,0.0],
+  upper:0.212, fore:0.192, thigh:0.29, shin:0.295,
+};
+// el: parmak kökleri (kanonik sağ el: bilek orijin, parmaklar -Y, avuç -X, başparmak -Z)
+const KNUCK=[[-0.006,-0.014,-0.019],[0.0,-0.069,-0.0255],[0.0,-0.071,-0.0085],[0.0,-0.068,0.0085],[0.0,-0.062,0.0245]];
+const FLEN=[[0.030,0.024,0.020],[0.026,0.017,0.0155],[0.029,0.019,0.0165],[0.027,0.018,0.016],[0.021,0.0145,0.0135]];
+const SPREAD=[0,0.16,0.04,-0.05,-0.15];
+// ayak parmak kökleri (kanonik sağ ayak: bilek orijin, -Z ileri, -Y taban, -X iç taraf)
+const TOEB=[[-0.021,-0.047,-0.117],[-0.002,-0.049,-0.121],[0.013,-0.05,-0.116],[0.026,-0.051,-0.108],[0.036,-0.052,-0.097]];
+const TOEL=[0.034,0.029,0.025,0.021,0.017];
+
+// iki kemikli ters kinematik (omuz-dirsek-bilek, kalça-diz-bilek)
+function ik(a,t,l1,l2,pole,minY){
+  let d=sub(t,a); let dist=len(d);
+  const dir=norm(d);
+  dist=clamp(dist,Math.abs(l1-l2)+0.03,(l1+l2)*0.9995);   // anatomik sınır: tam gerilme ve aşırı bükülme yok
+  const cosA=clamp((l1*l1+dist*dist-l2*l2)/(2*l1*dist),-1,1);
+  const sinA=Math.sqrt(1-cosA*cosA);
+  let pp=sub(pole,mul(dir,dot(pole,dir))); pp=norm(pp);
+  const c=add(a,mul(dir,l1*cosA)), r=l1*sinA;
+  let mid=add(c,mul(pp,r));
+  // diz/dirsek zeminin içine giriyorsa, kemik boyları değişmeden eklem çember üzerinde yukarı döndürülür
+  if(minY!==undefined && mid[1]<minY){
+    const qq=cross(dir,pp); let best=null,bd=1e9;
+    for(let i=1;i<=72;i++){
+      const th=(i<=36?i:36-i)*Math.PI/36;
+      const m=add(c,add(mul(pp,r*Math.cos(th)),mul(qq,r*Math.sin(th))));
+      if(m[1]>=minY && Math.abs(th)<bd){bd=Math.abs(th);best=m;}
+    }
+    if(best) mid=best;
+  }
+  const end=add(a,mul(dir,dist));
+  return [mid,end];
+}
+// el yönelimi: f = parmak yönü, n = avuç içinin baktığı yön, s = +1 sağ / -1 sol
+function handMat(f,n,s){
+  f=norm(f); n=norm(sub(n,mul(f,dot(n,f))));
+  const X=mul(n,-s), Y=mul(f,-1), Z=cross(X,Y);
+  return [X,Y,Z];
+}
+// ayak yönelimi: t = parmak yönü, so = tabanın baktığı yön
+function footMat(t,so){
+  t=norm(t); so=norm(sub(so,mul(t,dot(so,t))));
+  const Y=mul(so,-1), Z=mul(t,-1), X=cross(Y,Z);
+  return [X,Y,Z];
+}
+const toW=(P,M,s,c)=>add(P,mv(M,[c[0]*s,c[1],c[2]]));
+
+/* =====================================================================
+ * 3) DURUŞLAR (Hanefi mezhebine göre)
+ * root: leğen merkezi, bend: öne eğilme (derece), spine/chest/neck/head: ek eğilme
+ * el: w bilek hedefi, f parmak yönü, n avuç yönü, c parmak bükülmesi, sp açıklık, tb başparmak açısı, pole dirsek yönü
+ * ayak: a bilek hedefi, t parmak yönü, so taban yönü, toe parmak bükülmesi (derece), pole diz yönü
+ * look: gözlerin baktığı nokta
+ * ===================================================================== */
+const P={};
+P.STAND={
+  root:[0,0.716,0.0], bend:2, yaw:0, roll:0, shr:0, spine:-1, chest:-2, neck:4, head:-2, hyaw:0, hroll:0,
+  hR:{w:[0.178,0.69,-0.012], f:[0.06,-1,-0.06], n:[-1,0,0.2], c:0.32, sp:0.15, tb:0.25, pole:[0.35,0,1]},
+  hL:{w:[-0.178,0.69,-0.012], f:[-0.06,-1,-0.06], n:[1,0,0.2], c:0.32, sp:0.15, tb:0.25, pole:[-0.35,0,1]},
+  fR:{a:[0.08,0.076,0.0], t:[0.13,0,-1], so:[0,-1,0], toe:0, pole:[0.1,0,-1], k:[0.085,0.37,-0.3]},
+  fL:{a:[-0.08,0.076,0.0], t:[-0.13,0,-1], so:[0,-1,0], toe:0, pole:[-0.1,0,-1], k:[-0.085,0.37,-0.3]},
+  look:[0,1.0,-2.0],
+};
+// İftitah tekbiri: başparmaklar kulak memelerine, avuç içleri kıbleye
+P.TEKBIR={...P.STAND,
+  neck:3, head:-1,
+  shr:1,
+  hR:{w:[0.18,1.12,-0.135], f:[0.05,1,0.18], n:[0,-0.18,-1], c:0.1, sp:0.12, tb:0.8, pole:[0.55,-1,-0.15]},
+  hL:{w:[-0.18,1.12,-0.135], f:[-0.05,1,0.18], n:[0,-0.18,-1], c:0.1, sp:0.12, tb:0.8, pole:[-0.55,-1,-0.15]},
+  look:[0,0.01,-0.62],
+};
+// Kıyam: sağ el sol elin üstünde, göbeğin altında; gözler secde yerinde
+P.KIYAM={...P.STAND,
+  neck:8, head:6,
+  hL:{w:[-0.072,0.755,-0.112], f:[1,-0.18,-0.05], n:[0,0.05,1], c:0.18, sp:0.05, tb:0.45, pole:[-1,-0.4,0.9]},
+  hR:{w:[-0.008,0.765,-0.138], f:[-1,-0.12,-0.02], n:[0,0.05,1], c:0.42, sp:0.1, tb:0.7, pole:[1,-0.4,0.9]},
+  look:[0,0.01,-0.62],
+};
+// Rükû: sırt düz, baş sırtla aynı hizada, eller parmaklar açık dizleri kavrar, bacaklar dik
+P.RUKU={...P.STAND,
+  root:[0,0.648,0.03], bend:86, spine:2, chest:0, neck:-2, head:2,
+  hR:{w:[0.098,0.425,-0.072], f:[0.05,-1,0.25], n:[-0.25,0.1,1], c:0.5, sp:0.95, tb:0.9, pole:[0.5,0.2,1]},
+  hL:{w:[-0.098,0.425,-0.072], f:[-0.05,-1,0.25], n:[0.25,0.1,1], c:0.5, sp:0.95, tb:0.9, pole:[-0.5,0.2,1]},
+  fR:{...P.STAND.fR, k:[0.085,0.37,-0.4]}, fL:{...P.STAND.fL, k:[-0.085,0.37,-0.4]},
+  look:[0,0.0,0.05],
+};
+// Kavme: dimdik ayakta, eller yanlarda
+P.KAVME={...P.STAND, look:[0,0.01,-0.62], neck:7, head:4};
+
+// Secdeye iniş ara duruşu: dizler yere iniyor
+P.DOWN1={...P.STAND,
+  root:[0,0.47,0.06], bend:28, spine:6, chest:4, neck:4, head:4,
+  hR:{w:[0.13,0.43,-0.2], f:[0.05,-0.6,-1], n:[-0.2,-1,0.4], c:0.2, sp:0.2, tb:0.4, pole:[0.6,0,1]},
+  hL:{w:[-0.13,0.43,-0.2], f:[-0.05,-0.6,-1], n:[0.2,-1,0.4], c:0.2, sp:0.2, tb:0.4, pole:[-0.6,0,1]},
+  fR:{a:[0.08,0.12,0.07], t:[0.05,-0.6,-1], so:[0,-1,0.55], toe:40, pole:[0.1,0,-1], k:[0.09,0.2,-0.3]},
+  fL:{a:[-0.08,0.12,0.07], t:[-0.05,-0.6,-1], so:[0,-1,0.55], toe:40, pole:[-0.1,0,-1], k:[-0.09,0.2,-0.3]},
+  look:[0,0.0,-0.6],
+};
+// Dizler yerde, eller yere iniyor (Hanefi: önce dizler, sonra eller, sonra yüz)
+const FOOT_SECDE_R={a:[0.078,0.168,0.125], t:[0.0,-0.97,-0.24], so:[0,-0.24,0.97], toe:72, pole:[0.05,0,-1], k:[0.1,0.045,-0.16]};
+const FOOT_SECDE_L={a:[-0.078,0.168,0.125], t:[0.0,-0.97,-0.24], so:[0,-0.24,0.97], toe:72, pole:[-0.05,0,-1], k:[-0.1,0.045,-0.16]};
+P.KNEEL={...P.STAND,
+  root:[0,0.405,-0.12], bend:22, spine:6, chest:4, neck:4, head:6,
+  hR:{w:[0.13,0.3,-0.3], f:[0.03,-0.8,-1], n:[-0.1,-1,0.6], c:0.18, sp:0.15, tb:0.3, pole:[0.7,0.2,1]},
+  hL:{w:[-0.13,0.3,-0.3], f:[-0.03,-0.8,-1], n:[0.1,-1,0.6], c:0.18, sp:0.15, tb:0.3, pole:[-0.7,0.2,1]},
+  fR:FOOT_SECDE_R, fL:FOOT_SECDE_L,
+  look:[0,0.0,-0.7],
+};
+// Eller yerde, baş henüz kalkık
+P.HANDS={...P.KNEEL,
+  root:[0,0.33,-0.15], bend:92, spine:8, chest:6, neck:-30, head:-22,
+  hR:{w:[0.148,0.026,-0.548], f:[0.03,-0.04,-1], n:[0,-1,-0.04], c:0.06, sp:0.0, tb:0.2, pole:[1,0.6,0.25]},
+  hL:{w:[-0.148,0.026,-0.548], f:[-0.03,-0.04,-1], n:[0,-1,-0.04], c:0.06, sp:0.0, tb:0.2, pole:[-1,0.6,0.25]},
+  look:[0,0.0,-0.75],
+};
+// Secde: alın ve burun yerde, eller kulak hizasında, parmaklar bitişik ve kıbleye,
+// dirsekler yerden ve yanlardan uzak, karın uyluklardan ayrık, ayak parmakları bükülü
+P.SECDE={...P.HANDS,
+  root:[0,0.313,-0.14], bend:104, spine:9, chest:6, neck:-4, head:-6,
+  look:[0,0.0,-0.62],
+};
+// Oturuş (Hanefi, erkek): sol ayak yatırılıp üzerine oturulur, sağ ayak dikilir, parmakları kıbleye;
+// eller uyluklarda, parmak uçları dizlere yakın; gözler kucağa bakar
+P.CELSE={...P.STAND,
+  root:[-0.008,0.218,0.03], bend:4, spine:1, chest:0, neck:10, head:8,
+  hR:{w:[0.088,0.192,-0.062], f:[0.02,-0.35,-1], n:[0,-1,-0.35], c:0.2, sp:0.05, tb:0.15, pole:[0.5,0,1]},
+  hL:{w:[-0.088,0.192,-0.062], f:[-0.02,-0.35,-1], n:[0,-1,-0.35], c:0.2, sp:0.05, tb:0.15, pole:[-0.5,0,1]},
+  fR:{a:[0.1,0.168,0.035], t:[0.0,-0.97,-0.24], so:[0,-0.24,0.97], toe:72, pole:[0.1,-0.4,-1], k:[0.095,0.05,-0.245]},
+  fL:{a:[-0.04,0.042,0.05], t:[0.62,0.0,0.78], so:[0,1,0], toe:6, pole:[-0.25,-0.3,-1], k:[-0.095,0.05,-0.245]},
+  look:[0,0.14,-0.22],
+};
+P.KADE={...P.CELSE};
+P.SELAM_R={...P.CELSE, hyaw:-72, neck:4, head:2, look:[1.2,0.62,0.25]};
+P.SELAM_L={...P.CELSE, hyaw:72, neck:4, head:2, look:[-1.2,0.62,0.25]};
+P.END={...P.CELSE, look:[0,0.14,-0.25]};
+
+// iki duruşu karıştır (sayılar ve vektörler doğrusal, sonra yön vektörleri normalize edilir)
+function mix(a,b,t){
+  if(typeof a==='number') return lerp(a,b,t);
+  if(Array.isArray(a)) return lerp3(a,b,t);
+  const o={}; for(const k in a){ if(b[k]===undefined) continue; o[k]=mix(a[k],b[k],t);} return o;
+}
+
+/* =====================================================================
+ * 4) İSKELETİ HESAPLA: duruştan dünya konumlarına (ileri kinematik + IK)
+ * ===================================================================== */
+const U={R:new Float32Array(81),P:new Float32Array(27),J:new Float32Array(42),F:new Float32Array(120),T:new Float32Array(60),
+  bmin:[0,0,0],bmax:[0,0,0],gaze:[0,0,-1],lid:0};
+function setM(i,M,Pp){U.R.set([...M[0],...M[1],...M[2]],i*9);U.P.set(Pp,i*3);}
+const keyPts={};
+function solve(pose,time){
+  const br=Math.sin(time*1.65)*0.9;     // nefes
+  const R0=mm(mm(rY(pose.yaw*D2R),rX(-pose.bend*D2R)),rZ(pose.roll*D2R));
+  const P0=pose.root;
+  const P1=add(P0,mv(R0,[0,BONE.spine,0]));
+  const R1=mm(R0,rX(-pose.spine*D2R));
+  const P2=add(P1,mv(R1,[0,BONE.chest,0]));
+  const R2=mm(R1,rX(-(pose.chest+br*0.5)*D2R));
+  const P3=add(P2,mv(R2,[0,BONE.neck,0]));
+  const R3=mm(R2,rX(-(pose.neck-br*0.3)*D2R));
+  const P4=add(P3,mv(R3,[0,BONE.head,0]));
+  const hy=clamp(pose.hyaw,-80,80);    // boyun dönme sınırı
+  const R4=mm(mm(mm(R3,rY(hy*D2R)),rX(-pose.head*D2R)),rZ(pose.hroll*D2R));
+  setM(0,R0,P0);setM(1,R1,P1);setM(2,R2,P2);setM(3,R3,P3);setM(4,R4,P4);
+  const pts=[P0,P1,P2,P3,P4,add(P4,mv(R4,[0,0.2,0])),add(P4,mv(R4,[0,0.09,-0.11])),add(P4,mv(R4,[0,0.09,0.1]))];
+  // kollar
+  const J=[];
+  [['hR',1],['hL',-1]].forEach(([k,s],i)=>{
+    const h=pose[k];
+    const sh=add(P2,mv(R2,[BONE.shoulder[0]*s,BONE.shoulder[1]+br*0.0015+pose.shr*0.018,BONE.shoulder[2]-pose.shr*0.012]));
+    const [el,wr]=ik(sh,h.w,BONE.upper,BONE.fore,norm(h.pole),0.05);
+    J.push(sh,el,wr);
+    const M=handMat(h.f,h.n,s);
+    setM(5+i,M,wr);
+    // parmaklar
+    for(let f=0;f<5;f++){
+      let p=KNUCK[f].slice(); const o=(i*20+f*4)*3;
+      U.F.set(toW(wr,M,s,p),o);
+      if(f===0){
+        // başparmak: tb açıklık, c bükülme
+        let d=norm(lerp3([-0.32,-0.72,-0.6],[-0.12,-0.36,-0.92],h.tb));
+        const palmward=norm([-0.75,-0.35,0.55]);
+        for(let k=0;k<3;k++){
+          const bend=clamp(h.c*0.6*(k+1)*0.6,0,0.9);
+          const dd=norm(lerp3(d,palmward,bend));
+          p=add(p,mul(dd,FLEN[0][k]));
+          U.F.set(toW(wr,M,s,p),o+(k+1)*3);
+        }
+      } else {
+        const phi=SPREAD[f]*(0.35+h.sp);
+        let a=0;
+        const jw=[0.9,1.15,0.75];
+        for(let k=0;k<3;k++){
+          a+=h.c*jw[k]*1.15;
+          const dd=[-Math.sin(a),-Math.cos(a)*Math.cos(phi),-Math.cos(a)*Math.sin(phi)];
+          p=add(p,mul(dd,FLEN[f][k]));
+          U.F.set(toW(wr,M,s,p),o+(k+1)*3);
+        }
+      }
+    }
+    pts.push(sh,el,wr,add(wr,mv(M,[0,-0.14,0])));
+  });
+  // bacaklar
+  [['fR',1],['fL',-1]].forEach(([k,s],i)=>{
+    const f=pose[k];
+    const hp=add(P0,mv(R0,[BONE.hip[0]*s,BONE.hip[1],BONE.hip[2]]));
+    // diz hedefi verilmişse dizin yönü oradan hesaplanır (oturuşta dizler yerde kalsın)
+    const pole=f.k?sub(f.k,hp):f.pole;
+    const [kn,an]=ik(hp,f.a,BONE.thigh,BONE.shin,norm(pole),0.043);
+    J.push(hp,kn,an);
+    const M=footMat(f.t,f.so);
+    setM(7+i,M,an);
+    const ta=f.toe*D2R;
+    for(let t=0;t<5;t++){
+      const b=TOEB[t]; const L=TOEL[t];
+      const tip=[b[0],b[1]+Math.sin(ta)*L,b[2]-Math.cos(ta)*L];
+      U.T.set(toW(an,M,s,b),(i*10+t*2)*3);
+      U.T.set(toW(an,M,s,tip),(i*10+t*2+1)*3);
+    }
+    pts.push(hp,kn,an,add(an,mv(M,[0,-0.07,-0.19])),add(an,mv(M,[0,-0.07,0.05])));
+  });
+  // sıralama: 0 omuzR 1 dirsekR 2 bilekR 3 omuzL 4 dirsekL 5 bilekL 6 kalçaR 7 dizR 8 bilekR 9 kalçaL 10 dizL 11 bilekL
+  J.push(P3,P4);
+  J.forEach((v,i)=>U.J.set(v,i*3));
+  // sınır kutusu
+  const mn=[9,9,9],mx=[-9,-9,-9];
+  pts.forEach(p=>{for(let c=0;c<3;c++){mn[c]=Math.min(mn[c],p[c]);mx[c]=Math.max(mx[c],p[c]);}});
+  U.bmin=mn.map(v=>v-0.13); U.bmax=mx.map(v=>v+0.13);
+  // bakış: hedef noktayı baş uzayına çevir, göz hareket sınırı ~35°
+  const eye=add(P4,mv(R4,[0,0.091,-0.082]));
+  let g=mtv(R4,norm(sub(pose.look,eye)));
+  const fwd=[0,0,-1]; const ang=Math.acos(clamp(dot(g,fwd),-1,1)); const lim=36*D2R;
+  if(ang>lim){const side=norm(sub(g,mul(fwd,dot(g,fwd))));g=add(mul(fwd,Math.cos(lim)),mul(side,Math.sin(lim)));}
+  U.gaze=g;
+  // göz kırpma + aşağı bakınca kapağın inmesi
+  const bt=(time%4.3);const blink=bt<0.16?Math.sin(bt/0.16*Math.PI):0;
+  U.lid=clamp(Math.max(0,-g[1]-0.15)*0.75+blink,0,1);
+  // denetim için önemli noktalar
+  keyPts.forehead=add(P4,mv(R4,mul([0,0.122,-0.088],1.07)));
+  keyPts.nose=add(P4,mv(R4,mul([0,0.058,-0.111],1.07)));
+  keyPts.knees=[J[7],J[10]]; keyPts.wrists=[J[2],J[5]]; keyPts.elbows=[J[1],J[4]];
+  keyPts.ankles=[J[8],J[11]]; keyPts.hips=[J[6],J[9]]; keyPts.head=P4; keyPts.shoulders=[J[0],J[3]];
+}
+
+/* =====================================================================
+ * 5) ZAMAN ÇİZELGESİ: adımlar, okunanlar, kamera planları
+ * ===================================================================== */
+const STEPS=[
+  {t:"Hazırlık: kıbleye döndük", info:"Abdestli olarak seccademize, kıbleye (Kâbe yönüne) dönüp dururuz. Kalbimizden kılacağımız namaza niyet ederiz.",
+   src:"Bakara suresi, 144. ayet · Buhârî, Bed'ü'l-vahy 1", rec:[[0.4,"Niyet ettim Allah rızası için…"]]},
+  {t:"1. İftitah tekbiri", info:"Erkekler ellerini, baş parmakları kulak memelerine değecek kadar kaldırır; avuç içleri kıbleye bakar, parmaklar doğal hâlde durur.",
+   src:"Müslim, Salât 391", rec:[[0.25,"Allâhu Ekber"]]},
+  {t:"2. Kıyam", info:"Sağ el sol elin üzerine konur. Hanefi mezhebinde erkekler ellerini göbeğin altında bağlar; sağ elin başparmağı ve serçe parmağı sol bileği kavrar. Gözler secde yerine bakar.",
+   src:"Müslim, Salât 401 (sağ elin sol el üzerine konması)", note:"Ellerin göbek altında bağlanması Hanefi mezhebinin uygulamasıdır.",
+   rec:[[0.15,"Sübhâneke…"],[0.38,"Eûzü besmele"],[0.58,"Elhamdülillâhi rabbi'l-âlemîn…"],[0.82,"…ve le'd-dâllîn. Âmin"]]},
+  {t:"3. Rükû", info:"Sırt dümdüz olur, baş sırtla aynı hizada durur; ne yukarı kalkar ne aşağı sarkar. Eller parmaklar açık olarak dizleri kavrar, bacaklar dik durur. Gözler ayak uçlarına bakar.",
+   src:"Müslim, Salât 498 · Buhârî, Ezan 828", rec:[[0.0,"Allâhu Ekber"],[0.32,"Sübhâne rabbiye'l-azîm (1)"],[0.55,"Sübhâne rabbiye'l-azîm (2)"],[0.78,"Sübhâne rabbiye'l-azîm (3)"]]},
+  {t:"4. Kavme", info:"Rükûdan doğrulup bir an dimdik dururuz. Eller yanlara salınır.",
+   src:"Buhârî, Ezan 789", rec:[[0.02,"Semi'allâhü limen hamideh"],[0.55,"Rabbenâ leke'l-hamd"]]},
+  {t:"5. Birinci secde", info:"Önce dizler, sonra eller, sonra burun ve alın yere konur. Eller kulak hizasında, parmaklar bitişik ve kıbleye dönük; dirsekler yerden ve yanlardan uzak, karın uyluklardan ayrıktır. Ayak parmakları bükülüp kıbleye döner.",
+   src:"Buhârî, Ezan 812 (yedi organ üzerine secde) · Müslim, Salât 494 · Müslim, Salât 401", rec:[[0.02,"Allâhu Ekber"],[0.42,"Sübhâne rabbiye'l-a'lâ (1)"],[0.62,"Sübhâne rabbiye'l-a'lâ (2)"],[0.82,"Sübhâne rabbiye'l-a'lâ (3)"]]},
+  {t:"6. İki secde arası oturuş (celse)", info:"Sol ayak yatırılıp üzerine oturulur, sağ ayak dikilir ve parmakları kıbleye döner. Eller uyluklar üzerinde, parmak uçları dizlere yakındır.",
+   src:"Müslim, Salât 498 · Buhârî, Ezan 828", rec:[[0.05,"Allâhu Ekber"]]},
+  {t:"7. İkinci secde", info:"Yeniden \"Allâhu Ekber\" deyip aynı şekilde ikinci kez secdeye gideriz. Her rekatta iki secde vardır.",
+   src:"Buhârî, Ezan 812", rec:[[0.02,"Allâhu Ekber"],[0.42,"Sübhâne rabbiye'l-a'lâ (1)"],[0.62,"Sübhâne rabbiye'l-a'lâ (2)"],[0.82,"Sübhâne rabbiye'l-a'lâ (3)"]]},
+  {t:"8. Son oturuş (ka'de-i ahîre)", info:"Celsedeki gibi oturulur, gözler kucağa bakar. Ettehiyyâtü, Allâhümme salli, Allâhümme bârik ve Rabbenâ duaları okunur.",
+   src:"Buhârî, Ezan 831", rec:[[0.05,"Allâhu Ekber"],[0.2,"Ettehiyyâtü…"],[0.45,"Allâhümme salli…"],[0.65,"Allâhümme bârik…"],[0.84,"Rabbenâ âtinâ…"]]},
+  {t:"9. Selam", info:"Önce sağa, sonra sola selam verilir. Baş çevrilir, gözler omuz başına bakar. Böylece namaz tamamlanır.",
+   src:"Müslim, Mesâcid 582", rec:[[0.06,"Esselâmü aleyküm ve rahmetullâh"],[0.52,"Esselâmü aleyküm ve rahmetullâh"]]},
+];
+const NOTE_RAKAT="Bu canlandırma, hareketlerin sırasını tek rekat üzerinden gösterir. Namazlar en az iki rekattır; son oturuştan önce ikinci rekat da aynı şekilde kılınır.";
+
+// anahtar kareler: [duruş, geçiş süresi, bekleme süresi, adım]
+const SEQ=[
+  ['STAND',0,3.0,0],
+  ['TEKBIR',1.0,1.7,1],
+  ['KIYAM',1.1,5.6,2],
+  ['RUKU',1.5,4.4,3],
+  ['KAVME',1.4,2.8,4],
+  ['DOWN1',1.0,0.0,5],['KNEEL',0.75,0.1,5],['HANDS',0.75,0.05,5],['SECDE',0.8,3.9,5],
+  ['HANDS',0.8,0.0,6],['CELSE',1.0,2.4,6],
+  ['HANDS',0.95,0.0,7],['SECDE',0.8,3.9,7],
+  ['HANDS',0.8,0.0,8],['KADE',1.0,6.0,8],
+  ['SELAM_R',1.1,1.5,9],['KADE',0.9,0.1,9],['SELAM_L',1.1,1.5,9],['END',1.0,3.0,9],
+];
+const KEYS=[]; let T=0;
+SEQ.forEach(([pose,mv_,hold,step])=>{KEYS.push({pose,start:T,mEnd:T+mv_,end:T+mv_+hold,step});T+=mv_+hold;});
+const DURATION=T;
+const STEP_START=[]; KEYS.forEach(k=>{if(STEP_START[k.step]===undefined) STEP_START[k.step]=k.start;});
+const stepEnd=i=>i+1<STEP_START.length?STEP_START[i+1]:DURATION;
+
+function poseAt(t){
+  t=clamp(t,0,DURATION);
+  let i=KEYS.findIndex(k=>t<k.end); if(i<0) i=KEYS.length-1;
+  const k=KEYS[i];
+  if(i===0||t>=k.mEnd) return P[k.pose];
+  const prev=P[KEYS[i-1].pose];
+  const u=(t-k.start)/(k.mEnd-k.start);
+  return mix(prev,P[k.pose],ease(u));
+}
+function stepAt(t){let s=0;for(let i=0;i<STEP_START.length;i++) if(t>=STEP_START[i]) s=i;return s;}
+
+// kamera planları: her adım için başlangıç (a) ve bitiş (b) çerçevesi
+const SHOTS=[
+  {a:{p:[2.05,1.55,2.55],t:[0,0.75,-0.35],f:44},b:{p:[1.05,1.25,1.15],t:[0,0.8,-0.2],f:38},ap:.9},
+  {a:{p:[0.55,1.3,-1.3],t:[0,1.1,-0.05],f:32},b:{p:[0.42,1.28,-1.15],t:[0,1.1,-0.05],f:30},ap:1.5},
+  {a:{p:[-0.72,1.18,-1.65],t:[0,0.9,0.0],f:38},b:{p:[-0.58,1.12,-1.42],t:[0,0.88,0.0],f:36},ap:1.2},
+  {a:{p:[1.62,0.78,-0.4],t:[0,0.5,-0.2],f:38},b:{p:[1.5,0.82,-0.25],t:[0,0.5,-0.2],f:36},ap:1.0},
+  {a:{p:[1.1,1.2,-1.3],t:[0,0.85,0.0],f:38},b:{p:[0.95,1.12,-1.18],t:[0,0.8,-0.05],f:36},ap:1.1},
+  {a:{p:[1.15,0.55,-1.2],t:[0,0.2,-0.3],f:38},b:{p:[0.95,0.46,-1.08],t:[0,0.17,-0.33],f:36},ap:1.2},
+  {a:{p:[0.95,0.62,-1.18],t:[0,0.42,-0.1],f:36},b:{p:[0.85,0.58,-1.05],t:[0,0.4,-0.1],f:34},ap:1.3},
+  {a:{p:[-1.05,0.5,-1.15],t:[0,0.17,-0.33],f:38},b:{p:[-0.9,0.44,-1.02],t:[0,0.16,-0.35],f:36},ap:1.3},
+  {a:{p:[-0.45,0.72,-1.38],t:[0,0.42,-0.08],f:38},b:{p:[-0.32,0.66,-1.18],t:[0,0.42,-0.08],f:35},ap:1.3},
+  {a:{p:[0.05,0.82,-0.98],t:[0,0.66,-0.04],f:32},b:{p:[-1.25,1.25,-1.65],t:[0,0.45,-0.15],f:40},ap:1.4},
+];
+function shotAt(step,t){
+  const s=SHOTS[step]; const u=ease((t-STEP_START[step])/(stepEnd(step)-STEP_START[step]));
+  return {p:lerp3(s.a.p,s.b.p,u),t:lerp3(s.a.t,s.b.t,u),f:lerp(s.a.f,s.b.f,u),ap:s.ap};
+}
+function camAt(t){
+  const st=stepAt(t);
+  let c=shotAt(st,t);
+  const bl=1.6;
+  if(st>0 && t-STEP_START[st]<bl){
+    const pc=shotAt(st-1,STEP_START[st]);
+    const u=ease((t-STEP_START[st])/bl);
+    c={p:lerp3(pc.p,c.p,u),t:lerp3(pc.t,c.t,u),f:lerp(pc.f,c.f,u),ap:lerp(pc.ap,c.ap,u)};
+  }
+  // el kamerası hissi: çok hafif salınım
+  c.p=add(c.p,[Math.sin(t*0.53)*0.012,Math.sin(t*0.71+1)*0.008,Math.sin(t*0.37+2)*0.01]);
+  return c;
+}
+
+/* =====================================================================
+ * 6) WEBGL2 ÇİZİM ALTYAPISI
+ * ===================================================================== */
+const cv=document.getElementById('c');
+const gl=cv.getContext('webgl2',{antialias:false,alpha:false,preserveDrawingBuffer:false,powerPreference:'high-performance'});
+const toastEl=document.getElementById('toast');
+function toast(html,ms){toastEl.innerHTML=html;toastEl.classList.add('on');if(ms)setTimeout(()=>toastEl.classList.remove('on'),ms);}
+if(!gl){document.getElementById('load').innerHTML='<div style="padding:24px;text-align:center">Bu cihaz WebGL2 desteklemiyor.</div>';throw new Error('webgl2');}
+const floatOK=!!gl.getExtension('EXT_color_buffer_float');
+gl.getExtension('EXT_color_buffer_half_float');
+
+function compile(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const e=gl.getShaderInfoLog(s);console.error(e);throw new Error(e);}return s;}
+function program(fsId){
+  const p=gl.createProgram();
+  gl.attachShader(p,compile(gl.VERTEX_SHADER,document.getElementById('vs').textContent.trim()));
+  gl.attachShader(p,compile(gl.FRAGMENT_SHADER,document.getElementById(fsId).textContent.trim()));
+  gl.bindAttribLocation(p,0,'aP');gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u={};const n=gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);
+  for(let i=0;i<n;i++){const inf=gl.getActiveUniform(p,i);const nm=inf.name.replace(/\[0\]$/,'');u[nm]=gl.getUniformLocation(p,inf.name);}
+  return {p,u};
+}
+const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
+
+let progScene,progPost;
+let fbo=null,tex=null,fbW=0,fbH=0;
+function makeTarget(w,h){
+  if(tex) gl.deleteTexture(tex); if(fbo) gl.deleteFramebuffer(fbo);
+  tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);
+  const lv=Math.floor(Math.log2(Math.max(w,h)))+1;
+  gl.texStorage2D(gl.TEXTURE_2D,lv,floatOK?gl.RGBA16F:gl.RGBA8,w,h);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  fbo=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,tex,0);
+  fbW=w;fbH=h;
+}
+
+/* =====================================================================
+ * 7) OYNATICI DURUMU VE ARAYÜZ
+ * ===================================================================== */
+const S={t:0,playing:false,speed:1,q:1,scale:0.6,free:false,orbit:{yaw:0.6,pitch:0.25,dist:2.4,tgt:[0,0.55,-0.2]},
+  recording:false,ended:false};
+const params=new URLSearchParams(location.search);
+if(params.has('q')) S.q=+params.get('q');
+if(params.has('t')) S.t=+params.get('t');
+if(params.has('scale')) S.fixedScale=+params.get('scale');
+// uygulama içinde (WebView) video indirme desteklenmediği için kayıt düğmesi gizlenir
+if(params.has('app')) document.getElementById('bRec').style.display='none';
+document.getElementById('sQ').value=String(S.q);
+
+const $=id=>document.getElementById(id);
+const chips=$('chips');
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=i===0?'Hazırlık':s.t.replace(/^\d+\.\s*/,'').replace(/ \(.*\)/,'');
+  b.onclick=()=>{S.t=STEP_START[i]+0.001;S.ended=false;};chips.appendChild(b);});
+const marks=$('marks');
+STEP_START.forEach(t=>{const i=document.createElement('i');i.style.left=(t/DURATION*100)+'%';marks.appendChild(i);});
+const fmt=t=>{t=Math.max(0,t);return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');};
+function setPlaying(v){S.playing=v;$('icPlay').innerHTML=v?'<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>':'<path d="M7 5v14l12-7z"/>';}
+$('bPlay').onclick=()=>{if(S.t>=DURATION-0.01){S.t=0;}setPlaying(!S.playing);};
+$('bRestart').onclick=()=>{S.t=0;setPlaying(true);};
+$('bPrev').onclick=()=>{const s=stepAt(S.t);const back=(S.t-STEP_START[s]<1.0&&s>0)?s-1:s;S.t=STEP_START[back]+0.001;};
+$('bNext').onclick=()=>{const s=stepAt(S.t);S.t=s+1<STEP_START.length?STEP_START[s+1]+0.001:DURATION;};
+$('seek').oninput=e=>{S.t=e.target.value/1000*DURATION;};
+$('sSpeed').onchange=e=>{S.speed=+e.target.value;};
+$('sQ').onchange=e=>{S.q=+e.target.value;};
+$('bInfo').onclick=()=>{$('info').classList.toggle('on');};
+$('bCam').onclick=()=>{S.free=!S.free;$('bCam').textContent=S.free?'✋':'🎬';
+  if(S.free){const c=camAt(S.t);const d=sub(c.p,S.orbit.tgt);S.orbit.dist=clamp(len(d),0.8,5);S.orbit.yaw=Math.atan2(d[0],d[2]);S.orbit.pitch=Math.asin(clamp(d[1]/len(d),-0.2,1.2));}
+  toast(S.free?'Serbest kamera: sürükleyerek çevir, iki parmakla yaklaş.':'Sinematik kamera',1600);};
+// serbest kamera: sürükle / yakınlaştır
+let drag=null,pinch=null;
+cv.addEventListener('pointerdown',e=>{if(!S.free)return;drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!drag||pinch)return;S.orbit.yaw-=(e.clientX-drag.x)*0.006;S.orbit.pitch=clamp(S.orbit.pitch+(e.clientY-drag.y)*0.005,-0.15,1.3);drag={x:e.clientX,y:e.clientY};});
+cv.addEventListener('pointerup',()=>{drag=null;});
+cv.addEventListener('wheel',e=>{if(!S.free)return;S.orbit.dist=clamp(S.orbit.dist*(1+e.deltaY*0.001),0.6,5);},{passive:true});
+cv.addEventListener('touchstart',e=>{if(e.touches.length===2){const a=e.touches[0],b=e.touches[1];pinch={d:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),dist:S.orbit.dist};}},{passive:true});
+cv.addEventListener('touchmove',e=>{if(pinch&&e.touches.length===2){const a=e.touches[0],b=e.touches[1];const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);S.orbit.dist=clamp(pinch.dist*pinch.d/d,0.6,5);}},{passive:true});
+cv.addEventListener('touchend',()=>{pinch=null;},{passive:true});
+window.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('bPlay').click();}if(e.code==='ArrowRight')$('bNext').click();if(e.code==='ArrowLeft')$('bPrev').click();});
+
+// ---- video kaydı (tarayıcının MediaRecorder özelliği; dış araç yok) ----
+let rec=null,chunks=[];
+$('bRec').onclick=()=>{
+  if(S.recording){rec&&rec.stop();return;}
+  if(!cv.captureStream||!window.MediaRecorder){toast('Bu tarayıcı video kaydını desteklemiyor.',2500);return;}
+  const types=['video/mp4;codecs=avc1','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
+  const type=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
+  const stream=cv.captureStream(30);
+  rec=new MediaRecorder(stream,type?{mimeType:type,videoBitsPerSecond:12e6}:{});
+  chunks=[];rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+  rec.onstop=()=>{S.recording=false;$('bRec').classList.remove('on');
+    const blob=new Blob(chunks,{type:rec.mimeType||'video/webm'});
+    const url=URL.createObjectURL(blob);const ext=(rec.mimeType||'').includes('mp4')?'mp4':'webm';
+    toast(`Video hazır. <a href="${url}" download="namaz-ogreniyorum.${ext}">İndir (${(blob.size/1e6).toFixed(1)} MB)</a>`);};
+  S.t=0;S.ended=false;setPlaying(true);S.recording=true;$('bRec').classList.add('on');rec.start(500);
+  toast('Kayıt başladı. Canlandırma bitince video hazırlanır.',2200);
+};
+
+function updateUI(){
+  const st=stepAt(S.t);const s=STEPS[st];
+  $('capT').textContent=s.t;
+  const u=(S.t-STEP_START[st])/(stepEnd(st)-STEP_START[st]);
+  let r='';s.rec.forEach(([at,txt])=>{if(u>=at) r=txt;});
+  if($('capR').textContent!==r) $('capR').textContent=r;
+  [...chips.children].forEach((c,i)=>c.classList.toggle('on',i===st));
+  $('info').innerHTML=`<b>${s.t}</b><br>${s.info}<div class="src">Kaynak: ${s.src}</div>${s.note?`<div class="note">${s.note}</div>`:''}<div class="note">${NOTE_RAKAT}</div>`;
+  $('seek').value=Math.round(S.t/DURATION*1000);
+  $('time').textContent=fmt(S.t)+' / '+fmt(DURATION);
+}
+
+/* =====================================================================
+ * 8) ANA DÖNGÜ
+ * ===================================================================== */
+const SUN=norm([0.86,0.42,-0.24]);
+function resize(){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const w=Math.round(innerWidth*dpr),h=Math.round(innerHeight*dpr);
+  if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+}
+let last=performance.now(),fpsAcc=0,fpsN=0,fpsShow=0,frameMs=16;
+function camBasis(p,t){const w=norm(sub(t,p));const u=norm(cross(w,[0,1,0]));const v=cross(u,w);return [u,v,w];}
+
+function render(now){
+  const dt=Math.min(0.1,(now-last)/1000);last=now;
+  if(S.playing){S.t+=dt*S.speed;if(S.t>=DURATION){S.t=DURATION;setPlaying(false);if(S.recording)setTimeout(()=>rec&&rec.stop(),400);}}
+  resize();
+  // uyarlanır çözünürlük: hedef ~30 kare/sn (kayıt sırasında sabit)
+  frameMs=frameMs*0.9+dt*1000*0.1;
+  const target=[0.45,0.62,0.85][S.q];
+  if(S.fixedScale) S.scale=S.fixedScale;
+  else if(!S.recording){
+    if(frameMs>40&&S.scale>0.3) S.scale*=0.97; else if(frameMs<28&&S.scale<target) S.scale*=1.02;
+    if(!S.playing) S.scale=Math.min(target*1.25,1.0);
+    S.scale=clamp(S.scale,0.3,1.0);
+  }
+  const W=Math.max(64,Math.round(cv.width*S.scale)),H=Math.max(64,Math.round(cv.height*S.scale));
+  if(W!==fbW||H!==fbH) makeTarget(W,H);
+
+  const pose=poseAt(S.t);
+  solve(pose,now/1000);
+  let cam=camAt(S.t);
+  if(S.free){const o=S.orbit;cam={p:add(o.tgt,[Math.sin(o.yaw)*Math.cos(o.pitch)*o.dist,Math.sin(o.pitch)*o.dist,Math.cos(o.yaw)*Math.cos(o.pitch)*o.dist]),t:o.tgt,f:42,ap:1.0};
+    cam.p[0]=clamp(cam.p[0],-2.3,2.3);cam.p[1]=clamp(cam.p[1],0.08,2.8);cam.p[2]=clamp(cam.p[2],-1.95,3.5);}
+  // dikey ekranda biraz daha geniş açı
+  const aspect=cv.width/cv.height;
+  let fov=cam.f;
+  if(aspect<1){ fov=Math.min(68,fov*1.3); if(!S.free) cam.p=add(cam.t,mul(sub(cam.p,cam.t),1.28)); }
+  const B=camBasis(cam.p,cam.t);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER,fbo);gl.viewport(0,0,W,H);
+  const u=progScene.u;gl.useProgram(progScene.p);
+  gl.uniform2f(u.uRes,W,H);gl.uniform1f(u.uTime,now/1000);
+  gl.uniform3fv(u.uCamPos,cam.p);gl.uniformMatrix3fv(u.uCam,false,[...B[0],...B[1],...B[2]]);
+  gl.uniform1f(u.uTanF,Math.tan(fov*D2R/2));
+  gl.uniformMatrix3fv(u.uR,false,U.R);gl.uniform3fv(u.uP,U.P);gl.uniform3fv(u.uJ,U.J);
+  gl.uniform3fv(u.uF,U.F);gl.uniform3fv(u.uToe,U.T);
+  gl.uniform3fv(u.uBMin,U.bmin);gl.uniform3fv(u.uBMax,U.bmax);
+  gl.uniform3fv(u.uGaze,U.gaze);gl.uniform1f(u.uLid,U.lid);
+  gl.uniform3fv(u.uSun,SUN);gl.uniform1f(u.uQ,S.q);gl.uniform1f(u.uEnc,floatOK?0:1);
+  gl.drawArrays(gl.TRIANGLES,0,3);
+  gl.bindTexture(gl.TEXTURE_2D,tex);gl.generateMipmap(gl.TEXTURE_2D);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,cv.width,cv.height);
+  const v=progPost.u;gl.useProgram(progPost.p);
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex);gl.uniform1i(v.uTex,0);
+  gl.uniform2f(v.uRes,cv.width,cv.height);gl.uniform2f(v.uSrc,W,H);
+  gl.uniform1f(v.uFocus,len(sub(cam.t,cam.p)));gl.uniform1f(v.uAper,cam.ap*(S.q===0?0.0:1.0)*0.55);
+  gl.uniform1f(v.uTime,now/1000);gl.uniform1f(v.uEnc,floatOK?0:1);gl.uniform1f(v.uQ,S.q);
+  const fade=Math.min(1,S.t/0.9+0.05)*Math.min(1,(DURATION-S.t)/1.2+0.25);
+  gl.uniform1f(v.uFade,S.free?1:clamp(fade,0,1));
+  gl.drawArrays(gl.TRIANGLES,0,3);
+
+  fpsAcc+=dt;fpsN++;if(fpsAcc>0.5){fpsShow=Math.round(fpsN/fpsAcc);fpsAcc=0;fpsN=0;$('fps').textContent=fpsShow+' fps · '+Math.round(S.scale*100)+'%';}
+  updateUI();
+  if(!MANUAL) requestAnimationFrame(render);
+}
+
+try{
+  progScene=program('fsScene');progPost=program('fsPost');
+}catch(e){
+  $('load').innerHTML='<div style="padding:24px;text-align:center;max-width:90vw;font-size:12px;white-space:pre-wrap">Çizim motoru başlatılamadı:\n'+String(e.message||e).slice(0,600)+'</div>';
+  throw e;
+}
+const MANUAL=params.has('manual');
+window.__namaz={S,P,poseAt,solve,keyPts,DURATION,STEP_START,setPlaying,frame:()=>render(performance.now())};
+requestAnimationFrame(t=>{last=t;render(t);setTimeout(()=>{$('load').classList.add('hide');if(!params.has('t'))setPlaying(true);},350);});
+</script>
+</body>
+</html>

@@ -99,6 +99,9 @@ class MainActivity : Activity() {
         findViewById<Button>(R.id.btnPrayerGame).setOnClickListener {
             startActivity(Intent(this, PrayerGameActivity::class.java))
         }
+        findViewById<Button>(R.id.btnNamaz3d).setOnClickListener {
+            startActivity(Intent(this, Namaz3dActivity::class.java))
+        }
         findViewById<Button>(R.id.btnDaily).setOnClickListener {
             startActivity(Intent(this, QuizActivity::class.java).putExtra(QuizActivity.EXTRA_DAILY, true))
         }
