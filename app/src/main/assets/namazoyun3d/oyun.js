@@ -7,7 +7,7 @@
 //   N3.oynat(hareketler, "NAMAZ", "HANDS") → doğru cevaptan sonraki hareketler
 //   N3.yanlis()  N3.kutla()  N3.hizli()
 // Sayfa Android'e şunları bildirir (window.Android varsa):
-//   Android.hazir()  Android.okuma(hareketSırası, kelimeSayısı)  Android.bitti(oyunNo)  Android.hata(mesaj)
+//   Android.hazir()  Android.okuma(hareketSırası, kelimeSayısı)  Android.soz(hareketSırası)  Android.bitti(oyunNo)  Android.hata(mesaj)
 // =====================================================================================
 'use strict';
 
@@ -98,6 +98,7 @@ const N3 = (function () {
     o.okuSure = oku;
     o.sure = h.recite ? Math.max(t + 0.15, oku) : (h.pose === simdiAd ? Math.max(0.3, h.ms / 1000) : t + (h.caption && !/^\d$/.test(h.caption) ? 0.5 : 0.08));
     o.t0 = zaman; simdiAd = h.pose;
+    if (h.caption && !h.recite) bildir('soz', o.i); // "Allâhu Ekber" gibi sözler: Android ses kaydını çalar
   }
   function bitir() {
     const o = oyun; oyun = null;
