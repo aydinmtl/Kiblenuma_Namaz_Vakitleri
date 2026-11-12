@@ -72,7 +72,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         w.setBackgroundColor(context.getColor(R.color.bg))
         // Sahne JavaScript ile çizilir; yalnızca uygulamanın kendi dosyası açılır, internete çıkılmaz.
         w.settings.javaScriptEnabled = true
-        w.settings.allowFileAccess = true // file:///android_asset için gerekli
+        w.settings.allowFileAccess = false // android_asset bundan etkilenmez; başka dosya okunamaz
         w.settings.allowContentAccess = false
         w.settings.domStorageEnabled = false
         w.isVerticalScrollBarEnabled = false
