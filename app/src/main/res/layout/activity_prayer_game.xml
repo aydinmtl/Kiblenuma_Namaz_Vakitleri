@@ -142,6 +142,19 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Sesli / sessiz: sesli modda dualar ve sureler kayıttan okunur; sessizde yalnızca yazı ilerler -->
+            <TextView
+                android:id="@+id/btnSound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/card"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:padding="12dp"
+                android:textColor="@color/text"
+                android:textSize="16sp" />
+
             <Button
                 android:id="@+id/btnStart"
                 style="@style/Btn"
@@ -246,6 +259,24 @@
                 android:padding="14dp"
                 android:textColor="@color/text"
                 android:textSize="18sp"
+                android:visibility="gone" />
+
+            <!-- Okuma sürerken görünür: bu adımdaki okunuşları atlar -->
+            <TextView
+                android:id="@+id/btnSkip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/card"
+                android:gravity="center"
+                android:minHeight="44dp"
+                android:paddingHorizontal="18dp"
+                android:paddingVertical="10dp"
+                android:text="⏭  Okunuşu atla"
+                android:textColor="@color/gold"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:visibility="gone" />
 
             <LinearLayout

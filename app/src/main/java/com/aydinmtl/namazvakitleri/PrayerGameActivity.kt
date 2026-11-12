@@ -2,6 +2,7 @@ package com.aydinmtl.namazvakitleri
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
@@ -63,6 +64,10 @@ class PrayerGameActivity : Activity() {
 
     // Duaların, surelerin ve tekbirin uygulamayla gelen ses kayıtları (dosya yoksa sessiz geçer)
     private lateinit var voice: PrayerVoice
+    private var soundOn = true    // sesli mod: kayıtlar çalınır; sessiz modda yalnızca yazı ilerler
+    private var skipStep = false  // "Okunuşu atla"ya basıldı: bu adımın kalan okumaları da atlanır
+    private lateinit var btnSkip: TextView
+    private lateinit var btnSound: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,13 +94,36 @@ class PrayerGameActivity : Activity() {
         // Figür okurken okuma kartı kelime kelime ilerler; karta ya da figüre dokununca okuma biter
         // Okumanın ilk kelimesinde o duanın ses kaydı başlar
         voice = PrayerVoice(this)
+        soundOn = Store.prayerSound(this)
+        volumeControlStream = AudioManager.STREAM_MUSIC // ses tuşları oyundayken medya sesini ayarlasın
+        btnSkip = findViewById(R.id.btnSkip)
+        btnSound = findViewById(R.id.btnSound)
         figure.onRecite = { r, n ->
-            if (n == 1) voice.play(PrayerSounds.of(r))
+            if (n == 1) {
+                if (skipStep) {
+                    figure.fastForward() // atla denmişti: bu adımın sonraki okuması da hemen geçilir
+                } else {
+                    if (soundOn) { tts?.stop(); voice.play(PrayerSounds.of(r)) }
+                    btnSkip.visibility = View.VISIBLE
+                }
+            }
             showRecite(r, n)
         }
-        figure.onCaption = { c -> voice.play(PrayerSounds.ofCaption(c)) }
+        figure.onCaption = { c -> if (soundOn && !skipStep) voice.play(PrayerSounds.ofCaption(c)) }
         figure.onSkip = { voice.stop() }
-        figure.reciteMs = { r -> voice.durationMs(PrayerSounds.of(r))?.plus(300) }
+        // Sesli modda okuma, kaydın uzunluğu kadar sürer; sessiz modda kelime sayısına göre (eskisi gibi)
+        figure.reciteMs = { r -> if (soundOn) voice.durationMs(PrayerSounds.of(r))?.plus(300) else null }
+        btnSkip.setOnClickListener {
+            skipStep = true
+            btnSkip.visibility = View.GONE
+            figure.fastForward()
+        }
+        btnSound.setOnClickListener {
+            soundOn = !soundOn
+            Store.setPrayerSound(this, soundOn)
+            showSoundChoice()
+        }
+        showSoundChoice()
         tvRecite.setOnClickListener { figure.fastForward() }
 
         girl = Store.prayerGirl(this) ?: false
@@ -136,6 +164,12 @@ class PrayerGameActivity : Activity() {
     }
 
     // ---------------- Başlangıç ----------------
+
+    /** Sesli / sessiz düğmesinin yazısı. */
+    private fun showSoundChoice() {
+        btnSound.text = if (soundOn) "🔊  Sesli: dualar ve sureler sesli okunur" else "🔇  Sessiz: yalnızca yazı ilerler"
+        btnSound.contentDescription = (if (soundOn) "Sesli okuma açık" else "Sesli okuma kapalı") + ". Değiştirmek için dokun."
+    }
 
     private fun choose(g: Boolean, save: Boolean = true) {
         girl = g
@@ -201,6 +235,9 @@ class PrayerGameActivity : Activity() {
 
         finishBox.visibility = View.GONE
         tvRecite.visibility = View.GONE
+        btnSkip.visibility = View.GONE
+        skipStep = false
+        voice.stop()
         questionBox.visibility = View.VISIBLE
         tvStepTitle.visibility = View.INVISIBLE
         tvInfo.visibility = View.GONE
@@ -286,6 +323,7 @@ class PrayerGameActivity : Activity() {
         val last = index == PrayerGame.STEPS.size - 1
         figure.play(step.moves, step.chapter, step.part) {
             if (isFinishing) return@play
+            btnSkip.visibility = View.GONE
             if (last) {
                 finishGame()
             } else {
@@ -380,6 +418,7 @@ class PrayerGameActivity : Activity() {
     }
 
     private fun speak(text: String) {
+        voice.stop() // soru okunurken dua kaydı üstüne binmesin
         val engine = tts
         if (engine != null && ttsReady) {
             engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "prayer")
