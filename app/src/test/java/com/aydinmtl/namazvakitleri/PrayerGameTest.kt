@@ -22,7 +22,7 @@ class PrayerGameTest {
     fun butunHareketlerinDurusuTanimli() {
         for (s in PrayerGame.STEPS) for (m in s.moves) {
             assertTrue("bilinmeyen duruş: ${m.pose}", Poses.has(m.pose))
-            assertTrue(m.ms in 100..5000)
+            assertTrue(m.ms in 100..30000)
         }
     }
 
@@ -30,7 +30,7 @@ class PrayerGameTest {
     fun abdestleBaslarSelamlaBiter() {
         val steps = PrayerGame.STEPS
         assertEquals(PrayerChapter.ABDEST, steps.first().chapter)
-        assertEquals(12, PrayerGame.NAMAZ_START)
+        assertEquals(13, PrayerGame.NAMAZ_START)
         // Abdest bölümünden sonra yalnızca namaz adımları gelir
         assertTrue(steps.drop(PrayerGame.NAMAZ_START).all { it.chapter == PrayerChapter.NAMAZ })
         val last = steps.last().moves.map { it.pose }
@@ -40,8 +40,9 @@ class PrayerGameTest {
     @Test
     fun kaynaklarYalnizcaAyetYaDaHadis() {
         // Kaynak alanına yalnızca Kur'an (sure/ayet) ya da hadis kitabı yazılır
-        val ok = Regex("^(Buhârî|Müslim|.+ suresi, \\d+\\. ayet)")
+        val ok = Regex("^(Buhârî|Müslim|.+ suresi, [\\d-]+\\. ayet)")
         for (s in PrayerGame.STEPS) if (s.source.isNotEmpty()) assertTrue(s.source, ok.containsMatchIn(s.source))
+        for (r in Recitations.ALL) if (r.source.isNotEmpty()) assertTrue(r.source, ok.containsMatchIn(r.source))
     }
 
     @Test
@@ -49,8 +50,8 @@ class PrayerGameTest {
         assertEquals("a_sit", PrayerGame.restingPose(0))
         assertEquals(PrayerChapter.ABDEST, PrayerGame.sceneAt(PrayerGame.NAMAZ_START))
         assertEquals(PrayerChapter.NAMAZ, PrayerGame.sceneAt(PrayerGame.NAMAZ_START + 1))
-        assertEquals(Pair(1, 12), PrayerGame.positionInChapter(0))
-        assertEquals(Pair(1, PrayerGame.STEPS.size - 12), PrayerGame.positionInChapter(PrayerGame.NAMAZ_START))
+        assertEquals(Pair(1, 13), PrayerGame.positionInChapter(0))
+        assertEquals(Pair(1, PrayerGame.STEPS.size - 13), PrayerGame.positionInChapter(PrayerGame.NAMAZ_START))
     }
 
     @Test
@@ -71,5 +72,31 @@ class PrayerGameTest {
         val a = Poses.get("stand", false).copy(na1 = 170f)
         val b = a.copy(na1 = -170f)
         assertTrue(abs(Pose.shortest(180f, Pose.lerp(a, b, 0.5f).na1)) < 0.01f)
+    }
+
+    @Test
+    fun abdestSirasiHanefi() {
+        // Kulak meshinden sonra ense, ayaklar ondan sonra
+        val titles = PrayerGame.STEPS.map { it.title }
+        val kulak = titles.indexOf("Kulaklarımızı meshediyoruz")
+        val ense = titles.indexOf("Ensemizi meshediyoruz")
+        val ayak = titles.indexOf("Sağ ayağımızı yıkıyoruz")
+        assertTrue(kulak >= 0 && ense == kulak + 1 && ayak == ense + 1)
+    }
+
+    @Test
+    fun okumalar() {
+        for (r in Recitations.ALL) {
+            assertTrue(r.title, r.words.isNotEmpty() && r.meaning.isNotBlank())
+            assertTrue(r.durationMs >= 1500)
+        }
+        // Namazda Fâtiha iki kez (her rekatta), ilk rekatta İhlâs, ikincide Kevser okunur
+        val read = PrayerGame.STEPS.flatMap { s -> s.moves.mapNotNull { it.recite } }
+        assertEquals(2, read.count { it == Recitations.FATIHA })
+        assertEquals(1, read.count { it == Recitations.IHLAS })
+        assertEquals(1, read.count { it == Recitations.KEVSER })
+        assertEquals(1, read.count { it == Recitations.SUBHANEKE }) // Sübhâneke yalnız ilk rekatta
+        assertEquals(4, read.count { it == Recitations.SECDE }) // iki rekatta ikişer secde
+        assertEquals(2, read.count { it == Recitations.SELAM })
     }
 }

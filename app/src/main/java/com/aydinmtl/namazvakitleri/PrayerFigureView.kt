@@ -10,6 +10,8 @@ import android.graphics.Shader
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.abs
+import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
@@ -54,6 +56,11 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
     private var sparklePart: BodyPart? = null
     private var caption: String? = null
     private var water = false
+
+    /** Okuma sırasında her yeni kelimede çağrılır: (okunan dua, kaçıncı kelimeye gelindi). */
+    var onRecite: ((Recitation, Int) -> Unit)? = null
+    private var reciting = false
+    private var shownWords = -1
 
     private var face = Face.NORMAL
     private var faceUntil = 0L
@@ -133,6 +140,13 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         face = Face.HAPPY
         faceUntil = Long.MAX_VALUE
         invalidate()
+    }
+
+    /** Okuma sürerken ekrana dokunulursa okumayı hemen bitirir (sabırsız küçükler için). */
+    fun fastForward() {
+        if (moveIdx < moves.size && moves[moveIdx].recite != null) {
+            segStart = SystemClock.uptimeMillis() - moves[moveIdx].ms
+        }
     }
 
     /** Yanlış cevap: figür başını hafifçe sallar, yüzü "hımm" olur. */
@@ -236,14 +250,28 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
             currentPose = Pose.lerp(fromPose, target, smooth(f))
             caption = m.caption
             water = m.water
+            // Okuma: balonda o an okunan kelime, ekrandaki okuma kartında okunan kısım altın renkli
+            val r = m.recite
+            reciting = r != null && f < 1f
+            if (r != null) {
+                val words = r.words
+                val n = ceil(f * words.size).toInt().coerceIn(1, words.size)
+                caption = words[n - 1].trimEnd('.', ',')
+                if (n != shownWords) {
+                    shownWords = n
+                    onRecite?.invoke(r, n)
+                }
+            }
             if (f >= 1f) {
+                shownWords = -1
                 fromPose = target
                 restName = m.pose
                 moveIdx++
                 segStart = now
                 if (moveIdx >= moves.size) {
                     water = false
-                    caption = moves.lastOrNull()?.caption
+                    reciting = false
+                    caption = moves.lastOrNull()?.let { if (it.recite != null) null else it.caption }
                     sparklePart?.let { sparkle(it, if (it == BodyPart.ALL) 36 else 18) }
                     faceUntil = now + 1500
                     val cb = onDone
@@ -267,6 +295,17 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
                     ),
                 )
             }
+        }
+
+        // Namaz odasında ışık huzmesinde süzülen toz zerreleri (huzur veren küçük ayrıntı)
+        if (scene == PrayerChapter.NAMAZ && particles.count { it.kind == 3 } < 12 && rnd.nextFloat() < 0.05f) {
+            val t = rnd.nextFloat()
+            particles.add(
+                Particle(
+                    30f + t * 70f + rnd.nextFloat() * 20f, 30f + t * 70f, (rnd.nextFloat() - 0.5f) * 1.5f, -0.6f - rnd.nextFloat(),
+                    0f, 4f + rnd.nextFloat() * 3f, 3, 0xFFFFF0C8.toInt(), size = 0.35f + rnd.nextFloat() * 0.35f,
+                ),
+            )
         }
 
         // Parçacıkları hareket ettir
@@ -421,6 +460,18 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         c.drawLine(29f, 17f, 29f, 58f, stroke)
         c.drawLine(14f, 40f, 44f, 40f, stroke)
 
+        // Pencereden odaya süzülen yumuşak sabah ışığı
+        path.reset()
+        path.moveTo(16f, 26f); path.lineTo(44f, 22f)
+        path.lineTo(128f, GROUND); path.lineTo(52f, GROUND); path.close()
+        fill.shader = LinearGradient(30f, 24f, 90f, GROUND, 0x33FFE3A8, 0x00FFE3A8, Shader.TileMode.CLAMP)
+        c.drawPath(path, fill)
+        fill.shader = null
+        // Zemine düşen ışık lekesi
+        fill.color = 0x1AFFE3A8
+        rect.set(52f, GROUND - 1f, 128f, GROUND + 4f)
+        c.drawOval(rect, fill)
+
         // Mihrap: kıble yönü (figür bu yöne bakıyor)
         val mx = 182f
         path.reset()
@@ -461,6 +512,16 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         fill.color = 0xFFE8C15A.toInt()
         rect.set(rx0 + 1.5f, GROUND + 0.6f, rx1 - 1.5f, GROUND + 1.4f)
         c.drawRect(rect, fill)
+        // Seccadenin kenar süsü: küçük baklavalar
+        fill.color = 0xFF7E2626.toInt()
+        var dx = rx0 + 4f
+        while (dx < rx1 - 3f) {
+            path.reset()
+            path.moveTo(dx, GROUND + 1.9f); path.lineTo(dx + 1.1f, GROUND + 2.6f)
+            path.lineTo(dx, GROUND + 3.3f); path.lineTo(dx - 1.1f, GROUND + 2.6f); path.close()
+            c.drawPath(path, fill)
+            dx += 4f
+        }
         stroke.color = 0xFFE8D3A0.toInt()
         stroke.strokeWidth = 0.4f
         var fx = rx0 - 2.5f
@@ -505,6 +566,24 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         stroke.color = color
         stroke.strokeWidth = w
         for (i in 0 until pts.size - 1) c.drawLine(pts[i].x, pts[i].y, pts[i + 1].x, pts[i + 1].y, stroke)
+        if (outline) {
+            // Hacim: ışığın geldiği (sol üst) tarafta ince, açık renkli bir parlaklık
+            stroke.color = lighten(color, 0.45f)
+            stroke.strokeWidth = w * 0.3f
+            val o = w * 0.2f
+            for (i in 0 until pts.size - 1) {
+                c.drawLine(pts[i].x - o * 0.6f, pts[i].y - o, pts[i + 1].x - o * 0.6f, pts[i + 1].y - o, stroke)
+            }
+        }
+    }
+
+    /** Rengi beyaza doğru [f] oranında açar (yarı saydam parlaklık için alfa da düşer). */
+    private fun lighten(color: Int, f: Float): Int {
+        val r = (color shr 16) and 0xFF
+        val g = (color shr 8) and 0xFF
+        val b = color and 0xFF
+        fun mix(v: Int) = (v + (255 - v) * f).toInt().coerceIn(0, 255)
+        return (0x99 shl 24) or (mix(r) shl 16) or (mix(g) shl 8) or mix(b)
     }
 
     private fun hand(c: Canvas, p: Pt, color: Int) {
@@ -547,6 +626,13 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         stroke.strokeWidth = 11.2f
         c.drawLine(sk.hip.x, sk.hip.y, hem.x, hem.y, stroke)
         c.drawLine(sk.hip.x, sk.hip.y, hemFar.x, hemFar.y, stroke)
+        // Kumaşa hacim: sırtta hafif gölge, ışık alan tarafta parlaklık
+        stroke.color = 0x1F000000
+        stroke.strokeWidth = 5f
+        c.drawLine(sk.hip.x + 2.6f, sk.hip.y + 2.2f, sk.shoulder.x + 2.6f, sk.shoulder.y + 2.2f, stroke)
+        stroke.color = lighten(cloth, 0.6f)
+        stroke.strokeWidth = 3.2f
+        c.drawLine(sk.hip.x - 2.4f, sk.hip.y - 2.6f, sk.shoulder.x - 2.4f, sk.shoulder.y - 2.6f, stroke)
         // Cübbede yaka çizgisi / elbisede kemer süsü
         val mid = lerpPt(sk.hip, sk.shoulder, 0.42f)
         if (girl) {
@@ -676,9 +762,16 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         val browLift = if (face == Face.OOPS) 0.7f else 0f
         c.drawLine(px(3f, 3.9f + browLift), py(3f, 3.9f + browLift), px(5.6f, 4.1f), py(5.6f, 4.1f), stroke)
 
-        // Ağız
+        // Ağız. Okurken açılıp kapanır (dudak hareketi).
         val mx = px(5.6f, -3.4f)
         val my = py(5.6f, -3.4f)
+        if (reciting) {
+            val open = 0.3f + 0.7f * abs(sin(now / 95f))
+            fill.color = 0xFF7A2E2E.toInt()
+            rect.set(mx - 1.15f, my - 1.3f * open, mx + 1.15f, my + 1.3f * open)
+            c.drawOval(rect, fill)
+            return
+        }
         when (face) {
             Face.OOPS -> {
                 fill.color = 0xFF7A2E2E.toInt()
@@ -714,6 +807,12 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
                     val a = (255 * min(1f, fade * 1.6f)).toInt()
                     val pulse = 0.6f + 0.4f * sin(p.life * 12f)
                     drawStar(c, p.x, p.y, p.size * 0.5f * pulse, (p.color and 0x00FFFFFF) or (a shl 24))
+                }
+                3 -> {
+                    // Toz zerresi: yavaşça belirip kaybolur
+                    val a = (110 * sin(Math.PI.toFloat() * (p.life / p.maxLife).coerceIn(0f, 1f))).toInt()
+                    fill.color = (p.color and 0x00FFFFFF) or (a.coerceIn(0, 255) shl 24)
+                    c.drawCircle(p.x, p.y, p.size, fill)
                 }
                 2 -> {
                     c.save()
