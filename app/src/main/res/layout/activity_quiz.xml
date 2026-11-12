@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- ================= ANA SAYFA: ağaç, seviyeler, hedefler ================= -->
+        <!-- ================= ANA SAYFA: ağaç, menü, hedefler ================= -->
         <LinearLayout
             android:id="@+id/homePane"
             android:layout_width="match_parent"
@@ -28,14 +28,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Birlikte bilgi yarışması. İlk kez doğru bilinen her soru aile ağacımızı büyütür."
+                android:text="Birlikte öğrenelim. İlk kez doğru bilinen her soru aile ağacımızı büyütür."
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
 
             <com.aydinmtl.namazvakitleri.TreeView
                 android:id="@+id/tree"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="200dp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/card" />
 
@@ -47,6 +47,61 @@
                 android:gravity="center"
                 android:textColor="@color/gold"
                 android:textSize="15sp" />
+
+            <!-- Tek bir "Bilgi Yarışması" kartı. Seviye seçimi içeride yapılır. -->
+            <LinearLayout
+                android:id="@+id/menuQuiz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/menu_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/icon_circle"
+                    android:gravity="center"
+                    android:importantForAccessibility="no"
+                    android:text="🏆"
+                    android:textSize="32sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bilgi Yarışması"
+                        android:textColor="@color/text"
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="İslam dini hakkında"
+                        android:textColor="#DDF2F2F2"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:text="›"
+                    android:textColor="@color/gold"
+                    android:textSize="34sp" />
+            </LinearLayout>
 
             <!-- Her gün bir soru -->
             <Button
@@ -67,51 +122,6 @@
                 android:text="Akşam vakti girince günün sorusunu bildir"
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
-
-            <TextView style="@style/SectionHead" android:text="Seviye seç ve başla" />
-
-            <Button
-                android:id="@+id/btnEasy"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="60dp" />
-
-            <Button
-                android:id="@+id/btnMedium"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:minHeight="60dp" />
-
-            <Button
-                android:id="@+id/btnHard"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:minHeight="60dp" />
-
-            <!-- Yanlış bilinen soru varsa görünür -->
-            <Button
-                android:id="@+id/btnReview"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:minHeight="52dp"
-                android:visibility="gone" />
-
-            <!-- "Bu soruda hata var" diye işaretlenen soru varsa görünür -->
-            <Button
-                android:id="@+id/btnFlags"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:minHeight="52dp"
-                android:visibility="gone" />
 
             <TextView style="@style/SectionHead" android:text="Aile hedeflerimiz" />
 
@@ -141,14 +151,175 @@
                 android:text="Ağacı sıfırla"
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- ================= SEVİYE SEÇİMİ ================= -->
+        <LinearLayout
+            android:id="@+id/levelPane"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnLevelBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:contentDescription="Geri"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="4dp"
+                    android:text="‹"
+                    android:textColor="@color/gold"
+                    android:textSize="34sp" />
+
+                <TextView
+                    style="@style/Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bilgi Yarışması" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="2dp"
+                android:text="Seviyeni seç, sorular ona göre gelsin."
+                android:textColor="@color/muted"
+                android:textSize="15sp" />
+
+            <!-- Seviye kartları kodda (QuizActivity.buildLevelCards) eklenir -->
+            <LinearLayout
+                android:id="@+id/levelList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+
+            <!-- Yanlış bilinen soru varsa görünür -->
+            <Button
+                android:id="@+id/btnReview"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:minHeight="52dp"
+                android:visibility="gone" />
+
+            <!-- "Bu soruda hata var" diye işaretlenen soru varsa görünür -->
+            <Button
+                android:id="@+id/btnFlags"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minHeight="52dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
                 android:text="Sorular özgün olarak hazırlanmıştır. Kaynağı belirtilen sorularda ayet ya da hadis numarası verilmiştir. Fıkıh soruları Hanefi mezhebine göredir. Hatalı bulduğun soruyu cevaptan sonra işaretleyebilirsin."
                 android:textColor="@color/muted"
                 android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- ================= TUR SONUCU ================= -->
+        <LinearLayout
+            android:id="@+id/resultPane"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/card"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <TextView
+                    android:id="@+id/tvResultEmoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:textSize="64sp" />
+
+                <TextView
+                    android:id="@+id/tvResultTitle"
+                    style="@style/Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center" />
+
+                <!-- Üç yıldız: doğru oranına göre dolar -->
+                <LinearLayout
+                    android:id="@+id/starsRow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:id="@+id/tvResultScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/gold"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvResultDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/text"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnAgain"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:text="Yeni tur" />
+
+            <Button
+                android:id="@+id/btnLevels"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="Seviye seç" />
+
+            <TextView
+                android:id="@+id/btnResultHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:padding="10dp"
+                android:text="Aile Halkası ana sayfası"
+                android:textColor="@color/muted"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <!-- ================= OYUN ================= -->

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Aile Halkası ana sayfasındaki büyük menü kartı (Bilgi Yarışması, Namaz oyunu) -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#33FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="315"
+                android:endColor="#FF1F5E45"
+                android:startColor="#FF35936A" />
+            <stroke android:width="1dp" android:color="#55E8C15A" />
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+</ripple>
