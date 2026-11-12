@@ -30,14 +30,12 @@ Kayıtlar Diyanet İşleri Başkanlığı'nın kendi sitelerinden alındı (proj
 
 Dosyalar tek kanala ve 64 kbps'e indirildi, baştaki ve sondaki sessizlik kırpıldı, ses düzeyleri eşitlendi.
 
-- `ses_niyet`, `ses_tekbir`, `ses_semi`, `ses_selam`: Diyanet'in sitelerinde ayrı kayıt olarak yok.
-  Bunlar açık kaynak Piper ses üretme aracıyla bilgisayarda üretildi (niyet: Türkçe `tr_TR-dfki-medium`
-  sesi; diğer üçü: Arapça `ar_JO-kareem-medium` sesi, harekeli Arapça metinden). Yapay sestir;
-  gerçek bir okuyuş kaydı bulunursa aynı adla değiştirilmesi yeterli.
-  Not: Türkçe sesin eğitim verisinin lisansı CC BY-NC-SA 4.0'dır (ticari olmayan kullanım).
-
-**Şu an olmayan kayıt:** `ses_rabbena_lekel`. Diyanet kaydında söz "Rabbenâ ve lekel hamd" diye okunuyor,
-oyundaki metinle ("Rabbenâ lekel hamd") uyuşmadığı için çıkarıldı; o adım sessiz geçer.
+- `ses_tekbir`, `ses_semi`, `ses_selam`: Diyanet'in sitelerinde ayrı kayıt olarak yok.
+  Bunlar açık kaynak Piper ses üretme aracıyla bilgisayarda üretildi (Arapça `ar_JO-kareem-medium` sesi,
+  harekeli Arapça metinden). Yapay sestir; gerçek bir okuyuş kaydı bulunursa aynı adla değiştirilmesi yeterli.
+- `ses_niyet`: Türkçe, açık kaynak Chatterbox (çok dilli, MIT lisanslı) ses üretme modeliyle üretildi. Yapay sestir.
+- `ses_rabbena_lekel`: Diyanet'in kıyam kaydından alındı. O kayıtta söz "Rabbenâ ve lekel hamd" diye okunuyor;
+  oyundaki metne ("Rabbenâ lekel hamd") uyması için yalnızca "ve" sözcüğü kesilip çıkarıldı.
 
 ## Liste
 
