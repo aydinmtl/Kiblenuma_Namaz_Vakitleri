@@ -30,9 +30,11 @@ Kayıtlar Diyanet İşleri Başkanlığı'nın kendi sitelerinden alındı (proj
 
 Dosyalar tek kanala ve 64 kbps'e indirildi, baştaki ve sondaki sessizlik kırpıldı, ses düzeyleri eşitlendi.
 
-**Henüz olmayan dört kayıt:** `ses_niyet` (Türkçe niyet), `ses_tekbir` (Allâhu Ekber), `ses_semi`
-(Semi'allâhü limen hamideh), `ses_selam`. Bunlar Diyanet'in bu iki sitesinde ayrı kayıt olarak yok;
-eklenene kadar oyunda sessiz geçer.
+- `ses_niyet`, `ses_tekbir`, `ses_semi`, `ses_selam`: Diyanet'in sitelerinde ayrı kayıt olarak yok.
+  Bunlar açık kaynak Piper ses üretme aracıyla bilgisayarda üretildi (niyet: Türkçe `tr_TR-dfki-medium`
+  sesi; diğer üçü: Arapça `ar_JO-kareem-medium` sesi, harekeli Arapça metinden). Yapay sestir;
+  gerçek bir okuyuş kaydı bulunursa aynı adla değiştirilmesi yeterli.
+  Not: Türkçe sesin eğitim verisinin lisansı CC BY-NC-SA 4.0'dır (ticari olmayan kullanım).
 
 ## Liste
 
