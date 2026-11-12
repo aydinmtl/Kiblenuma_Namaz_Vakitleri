@@ -35,9 +35,12 @@ object Store {
 
     fun autoLocation(ctx: Context): Boolean = prefs(ctx).getBoolean("autoLocation", false)
     fun setAutoLocation(ctx: Context, on: Boolean) {
-        val e = prefs(ctx).edit().putBoolean("autoLocation", on)
-        if (!on) e.remove("autoLat").remove("autoLon")
-        e.apply()
+        // Açarken de kapatırken de eski "son otomatik nokta" silinir. Böylece otomatik konum
+        // her açıldığında konum mutlaka yeniden kontrol edilir (eski kayıt yüzünden atlanmaz).
+        prefs(ctx).edit()
+            .putBoolean("autoLocation", on)
+            .remove("autoLat").remove("autoLon").remove("autoDistrict")
+            .apply()
     }
 
     /** Konum izni açıklaması bir kez gösterilir. */
@@ -46,16 +49,26 @@ object Store {
         prefs(ctx).edit().putBoolean("locIntro", true).apply()
     }
 
-    /** Vakitlerin en son otomatik olarak belirlendiği nokta (enlem, boylam). */
+    /**
+     * Vakitlerin en son otomatik olarak belirlendiği nokta (enlem, boylam).
+     * Bu nokta yalnızca o sırada bulunan yer HÂLÂ seçili yerse geçerlidir. Yer sonradan
+     * elle değiştirildiyse (ör. Cenevre'deyken İstanbul seçildiyse) null döner; böylece
+     * otomatik konum "yer değişmedi" deyip yanlış şehirde kalmaz.
+     */
     fun autoPoint(ctx: Context): Pair<Double, Double>? {
         val p = prefs(ctx)
+        if (p.getString("autoDistrict", null) != districtId(ctx)) return null
         val lat = p.getString("autoLat", null)?.toDoubleOrNull() ?: return null
         val lon = p.getString("autoLon", null)?.toDoubleOrNull() ?: return null
         return Pair(lat, lon)
     }
 
+    /** Konumu kaydeder; o anki seçili yerle birlikte (bkz. [autoPoint]). */
     fun saveAutoPoint(ctx: Context, lat: Double, lon: Double) {
-        prefs(ctx).edit().putString("autoLat", lat.toString()).putString("autoLon", lon.toString()).apply()
+        prefs(ctx).edit()
+            .putString("autoLat", lat.toString()).putString("autoLon", lon.toString())
+            .putString("autoDistrict", districtId(ctx))
+            .apply()
     }
 
     fun lastDay(ctx: Context): LocalDate? = days(ctx).lastOrNull()?.date

@@ -55,8 +55,17 @@ object AutoLocation {
         "KR" to listOf("Güney Kore", "South Korea"),
     )
 
+    /** Son başarısız denemenin zamanı. Başarısızlıkta hemen tekrar tekrar denememek için. */
+    @Volatile
+    var lastFailAt = 0L
+
+    /** Başarısız denemeden sonra bu kadar süre beklenir (uygulama açıldıkça yeniden dener). */
+    private const val RETRY_AFTER_FAIL_MS = 60_000L
+
     fun needsCheck(ctx: Context, loc: Location): Boolean {
         if (Store.districtId(ctx) == null) return true
+        // Az önce başarısız olduysa bir dakika bekle; sonra uygulama her açıldığında yine dener.
+        if (System.currentTimeMillis() - lastFailAt < RETRY_AFTER_FAIL_MS) return false
         val p = Store.autoPoint(ctx) ?: return true
         val out = FloatArray(1)
         Location.distanceBetween(p.first, p.second, loc.latitude, loc.longitude, out)

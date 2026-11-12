@@ -223,6 +223,7 @@ class MainActivity : Activity() {
         when (r) {
             is AutoLocation.Result.Changed -> {
                 locationNote = null
+                AutoLocation.lastFailAt = 0L
                 Toast.makeText(this, "Konum güncellendi: ${r.label}", Toast.LENGTH_LONG).show()
                 shownNext = null
                 showTimes()
@@ -230,11 +231,16 @@ class MainActivity : Activity() {
                 if (Store.notificationsOn(this)) askNotificationPermission()
                 updateStatus()
             }
-            is AutoLocation.Result.Same -> locationNote = null
+            is AutoLocation.Result.Same -> {
+                locationNote = null
+                AutoLocation.lastFailAt = 0L
+            }
             is AutoLocation.Result.Failed -> {
                 locationNote = r.reason + " Son seçilen yer kullanılıyor."
-                // Aynı yerde her açılışta yeniden denemesin; 15 km yer değiştirince ya da ↻ ile tekrar dener.
-                Store.saveAutoPoint(this, loc.latitude, loc.longitude)
+                // ÖNEMLİ: Burada eskiden konum "kontrol edildi" diye kaydediliyordu. Bu yüzden tek bir
+                // başarısız denemeden sonra uygulama bir daha hiç denemiyor ve yanlış şehirde kalıyordu.
+                // Artık kaydedilmiyor: bir dakika sonra, uygulama yeniden açıldığında tekrar denenir.
+                AutoLocation.lastFailAt = System.currentTimeMillis()
                 noPlaceFallback(r.reason)
             }
         }
