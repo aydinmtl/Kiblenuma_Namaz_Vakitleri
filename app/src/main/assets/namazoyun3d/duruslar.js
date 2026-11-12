@@ -132,12 +132,18 @@ function duruslar(kiz) {
   D.a_sit = A({ aL: dizde });
   D.a_hands = A({ pp: 16, sp: 11, hp: 8, gz: [0, -0.7], aL: suda(0.012, 0.004), aR: elAyna(suda(-0.012, -0.004)) });
   D.a_hands2 = A({ pp: 16, sp: 11, hp: 8, gz: [0, -0.7], aL: suda(-0.016, -0.006), aR: elAyna(suda(0.016, 0.006)) });
-  // Sağ el avuç içiyle ağza / burna su götürür
-  const yuzeEl = (p, ek = {}) => ({ at: 'bas', p, f: [0.30, 0.86, -0.42], n: [0.25, 0.35, -1], k: [-0.7, -1, 0.1], c: 30, c2: 26, th: 14, ...ek });
-  D.a_mouth = A({ hp: 4, gz: [0, -0.3], lid: 0.3, aL: dizde, aR: yuzeEl([-0.045, 1.012, 0.178]) });
-  D.a_mouth2 = A({ hp: -5, gz: [0, 0], lid: 0.5, aL: dizde, aR: yuzeEl([-0.05, 1.0, 0.20], { c: 22 }) });
-  D.a_nose = A({ hp: 6, gz: [0, -0.3], lid: 0.4, aL: dizde, aR: yuzeEl([-0.042, 1.035, 0.186]) });
-  D.a_nose2 = A({ hp: 0, gz: [0, -0.2], lid: 0.55, aL: dizde, aR: yuzeEl([-0.046, 1.022, 0.20], { c: 24 }) });
+  // Avuç musluğun altında su alır: avuç içi yukarı bakar, parmaklar hafif kıvrık (çanak gibi)
+  const avucSol = { at: 'dunya', p: [0.050, SU[1] - 0.020, SU[2] - 0.075], f: [-0.30, 0.10, 1], n: [-0.30, 1, -0.05], k: [0.9, -0.7, -0.2], c: 24, c2: 26, th: 16, tf: 10 };
+  const avucSag = { ...elAyna(avucSol), p: [-0.030, SU[1] - 0.020, SU[2] - 0.075], f: [0.10, 0.10, 1], n: [0.10, 1, -0.05] };
+  D.a_cupr = A({ pp: 16, sp: 11, hp: 8, gz: [0, -0.7], aL: dizde, aR: avucSag });
+  D.a_cup = A({ pp: 16, sp: 11, hp: 8, gz: [0, -0.7], aL: avucSol });
+  // Sağ el avucundaki suyu ağza / burna götürür: önce avuç yukarı bakar (su içinde), sonra ağza doğru eğilir
+  const yuzeEl = (p, ek = {}) => ({ at: 'bas', p, f: [0.72, 0.30, -0.62], n: [-0.10, 0.92, 0.38], k: [-0.7, -1, 0.1], c: 26, c2: 26, th: 16, tf: 10, ...ek });
+  const yuzeDok = { f: [0.55, 0.66, -0.50], n: [0.30, 0.45, -0.84] };
+  D.a_mouth = A({ hp: 6, gz: [0, -0.4], lid: 0.3, aL: dizde, aR: yuzeEl([-0.085, 1.040, 0.215]) });
+  D.a_mouth2 = A({ hp: -4, gz: [0, 0], lid: 0.5, aL: dizde, aR: yuzeEl([-0.075, 1.035, 0.200], yuzeDok) });
+  D.a_nose = A({ hp: 8, gz: [0, -0.4], lid: 0.4, aL: dizde, aR: yuzeEl([-0.085, 1.068, 0.222]) });
+  D.a_nose2 = A({ hp: 2, gz: [0, -0.2], lid: 0.55, aL: dizde, aR: yuzeEl([-0.075, 1.062, 0.208], yuzeDok) });
   // Yüz: iki el alından çeneye iner
   const yuzde = (y, z) => ({ at: 'bas', p: [0.050, y, z], f: [-0.10, 1, -0.30], n: [0.05, 0.3, -1], k: [0.8, -1, 0.1], c: 10, c2: 12, th: 4 });
   D.a_face1 = A({ hp: 10, gz: [0, -0.2], lid: 1, aL: yuzde(1.090, 0.158) });
@@ -158,12 +164,12 @@ function duruslar(kiz) {
   D.a_ear = A({ hp: 4, lid: 0.25, aL: kulak(0, 0) });
   D.a_ear2 = A({ hp: 4, lid: 0.25, aL: kulak(0.014, 0.16) });
   // Ense meshi: ellerin dışı enseye
-  const ense = (x, y) => ({ at: 'bas', p: [x, y, -0.118], f: [-0.86, 0.22, -0.42], n: [0.35, 0.1, -1], k: [1, 0.15, -0.35], c: 12, c2: 14, th: 6 });
-  D.a_neck = A({ hp: 14, lid: 0.3, aL: ense(0.118, 1.058) });
-  D.a_neck2 = A({ hp: 14, lid: 0.3, aL: ense(0.134, 1.034) });
+  const ense = (x, y) => ({ at: 'bas', p: [x, y, -0.052], f: [-1, 0.10, -0.16], n: [0.12, 0.1, -1], k: [1, 0.15, -0.35], c: 10, c2: 12, th: 6 });
+  D.a_neck = A({ hp: 16, lid: 0.3, aL: ense(0.098, 1.030) });
+  D.a_neck2 = A({ hp: 16, lid: 0.3, aL: ense(0.122, 1.012) });
   // Ayak: ayak suyun altına uzatılır, sol el ovar (parmak aralarıyla birlikte)
   const ayakYika = (sag, ileri) => {
-    const uz = { b: [-0.06, 0.105, 0.455], p: -12, y: -4, r: 0, t: ileri ? -8 : 6, k: [-0.25, 1, 0.2] };
+    const uz = { b: [-0.004, 0.034, 0.478], p: -4, y: -3, r: 0, t: ileri ? -8 : 6, k: [-0.25, 1, 0.2] }; // ayağın üstü tam suyun altında
     const el = { at: 'ayakR', p: ileri ? [-0.052, 0.118, 0.045] : [-0.050, 0.150, -0.005], f: [-0.25, -0.55, 0.80], n: [0.1, -0.8, -0.55], k: [0.8, -0.6, -0.2], c: 30, c2: 30, th: 10 };
     const g = { pel: [0, 0.372, 0.01], pp: 40, sp: 17, cp: 12, np: -8, hp: 4, gz: [sag ? -0.2 : 0.2, -0.7] };
     return sag
