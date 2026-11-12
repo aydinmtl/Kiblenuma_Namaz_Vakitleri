@@ -40,7 +40,8 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `PrayerCalc.kt` | `CalcMethod` (Diyanet, MWL, ISNA, Mısır, Ümmü'l-Kurâ, Karaçi, Kuveyt, Katar, Singapur, UOIF) + astronomik hesap |
 | `Hijri.kt` | ICU Ümmü'l-Kurâ takvimi, Diyanet'e göre gün kaydırma, dini günler listesi |
 | `PlaceMatch.kt` | Yer adlarını Diyanet listesiyle eşleştirme (saf mantık, testli) |
-| `AutoLocation.kt` | Konum → Diyanet ilçesi: önce isim eşleştirme, olmazsa en yakın yer (Geocoder ile ileri arama, önbellekli); Geocoder yoksa Nominatim |
+| `AutoLocation.kt` | Otomatik konum. Sırayla: 1) yer adını Diyanet listesinde ara, 2) çevredeki yerleşimlerin adlarını ara (2-24 km halkalar, ülke sınırına bakmaz), 3) kısa listelerde en yakın yer (Geocoder ile ileri arama, önbellekli), 4) hiçbiri olmazsa vakitleri konumdan hesapla ("hesaplanan yer", `Store.COMPUTED_ID`). Geocoder yoksa Nominatim |
+| `GeoMath.kt` | Mesafe ve "şu yöne şu kadar git" hesabı (saf mantık, testli) |
 | `LocationHelper.kt` | Tek seferlik konum (fused/network/gps), zaman aşımlı |
 | `LocationConsent.kt` | Konum izni öncesi gerekçe penceresi |
 | `AlarmScheduler.kt` | Yalnızca SIRADAKİ olay için alarm (vakit girişi veya X dk önce hatırlatma) |
@@ -68,9 +69,13 @@ JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıklar
 
 ## Bilinen sorunlar ve şüpheler (öncelik sırasıyla)
 
-1. **Otomatik konum hiç telefonda doğrulanmadı.** v1.0.10'da kullanıcı (Cenevre/Thônex) yerin bulunamayıp
-   elle seçime gönderildiğini bildirdi. v1.0.11'de "en yakın yer" yedeği eklendi, sonucu bekleniyor.
-   Başarısızlık nedeni elle seçim ekranının üstünde yazıyor; kullanıcıdan o metni iste.
+1. **Otomatik konum, sınır bölgesi (v1.0.79 sonrası düzeltildi, telefonda doğrulanmalı).** Kullanıcı
+   Cenevre/Thônex'te; telefonun yaklaşık konumu sınırın öbür yanına (Ambilly, Fransa) düşüyor. Diyanet'te
+   Fransa tek "şehir" ve 582 "ilçe"; eski kod 150'den uzun listede en yakın yeri aramıyor ve
+   "bulunamadı, son seçilen yer kullanılıyor" diyordu. Şimdi çevredeki yerleşimler ülke sınırına
+   bakılmadan aranıyor; Diyanet'te yakın yer yoksa vakitler konumdan Diyanet ölçüleriyle hesaplanıyor
+   (`PrayerCalc.diyanetDay`, ekranda "Konumundan hesaplandı" yazar). Hesaplanan yerdeyken Diyanet
+   listesi 12 saatte bir (internet hatasından sonra 2 dakikada) yeniden aranır.
 2. **Saat dilimi:** Diyanet vakitleri o yerin yerel saatidir ama alarmlar telefonun saat diliminde kurulur.
    Elle uzak bir yer seçilirse (ör. İsviçre'deyken İstanbul) vakitler kayar. API'deki
    `GreenwichOrtalamaZamani` alanı kullanılabilir.

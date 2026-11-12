@@ -7,23 +7,50 @@ import android.location.Location
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Locale
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 /**
- * Konumdan Diyanet ilçesini bulur. Diyanet listesinde koordinat olmadığı için iki yol izlenir:
+ * Otomatik konum: telefonun bulunduğu yere geçer ve o yerin vakitlerini hazırlar.
+ *
+ * Diyanet'in listesinde koordinat yoktur, yalnızca yer adları vardır. Bu yüzden sırayla şunlar denenir:
  *   1) İsim: telefonun bulduğu yer adları (Thônex, Genève/Cenevre, İsviçre) listede aranır.
- *   2) Mesafe: isim tutmazsa listedeki yerlerin koordinatı bulunur ve EN YAKINI seçilir.
+ *   2) Çevre: isim tutmazsa bulunulan yerin ÇEVRESİNDEKİ yerleşimlerin adları öğrenilir
+ *      (2 km'den 24 km'ye kadar halkalar) ve onlar listede aranır. Ülke sınırına bakılmaz:
+ *      Fransa sınırındaki biri için hem Annemasse (Fransa) hem Cenevre (İsviçre) adaydır.
+ *   3) Mesafe: liste kısaysa listedeki yerlerin koordinatı bulunur ve en yakını seçilir.
+ *   4) Hesap: Diyanet'te yakın bir yer hiç yoksa (ya da sunucuya ulaşılamıyorsa) vakitler
+ *      konumun kendisinden, Diyanet'in ölçüleriyle hesaplanır (bkz. PrayerCalc.diyanetDay).
+ *      Ekranda bunun hesap olduğu yazılır (bkz. Times.sourceLabel).
+ *
+ * Böylece otomatik konum "bulunamadı, eski yer kullanılıyor" diyerek eski şehirde KALMAZ.
  */
 object AutoLocation {
 
     /** Bu kadar km'den az yer değiştirdiyse tekrar arama yapılmaz. */
     private const val MOVE_KM = 15f
 
-    /** En yakın yer bundan uzaksa kabul edilmez (yanlış ülke/şehir eşleşmesini önler). */
-    private const val NEAREST_MAX_KM = 150f
+    /** Bir ilçe bundan uzaksa kabul edilmez: o kadar uzağın vakti yerine hesap daha doğrudur. */
+    private const val DISTRICT_MAX_KM = 50f
+
+    /** Şehir (il, eyalet, kanton) merkezi için sınır; bunlar geniş bölgelerdir. */
+    private const val CITY_MAX_KM = 300f
+
+    /** Çevredeki yerleşimlerin arandığı halkalar (km). Yakından uzağa; ilk bulunan seçilir. */
+    private val RINGS_KM = doubleArrayOf(2.0, 4.0, 7.0, 11.0, 16.0, 24.0)
+
+    /** Hesaplanan yerdeyken Diyanet listesi bu aralıkla yeniden aranır. */
+    private const val COMPUTED_RECHECK_MS = 12 * 60 * 60_000L
+
+    /** Hesaba internet/sunucu hatası yüzünden düşüldüyse daha çabuk yeniden denenir. */
+    private const val COMPUTED_RECHECK_AFTER_ERROR_MS = 2 * 60_000L
+
+    /** Hesaplanan yerde konum bundan az değiştiyse nokta aynı kalır (vakitler oynamasın). */
+    private const val COMPUTED_SAME_KM = 5.0
 
     sealed class Result {
         data class Changed(val label: String) : Result()
@@ -38,6 +65,17 @@ object AutoLocation {
         val code: String?,
         val shown: String,
     )
+
+    /** Diyanet listesinde bulunan yer: ilçe, bağlı olduğu şehir ve ülke. */
+    private data class Found(val district: Diyanet.Place, val city: Diyanet.Place, val country: Diyanet.Place)
+
+    /** Bir arama boyunca indirilen şehir/ilçe listelerini saklar; aynı liste iki kez indirilmez. */
+    private class Lists {
+        private val cities = HashMap<String, List<Diyanet.Place>>()
+        private val districts = HashMap<String, List<Diyanet.Place>>()
+        fun cities(countryId: String): List<Diyanet.Place> = cities.getOrPut(countryId) { Diyanet.cities(countryId) }
+        fun districts(cityId: String): List<Diyanet.Place> = districts.getOrPut(cityId) { Diyanet.districts(cityId) }
+    }
 
     /** Ülke adları bazı ülkelerde telefon ile Diyanet arasında farklı; bilinen karşılıklar. */
     private val COUNTRY_ALIASES = mapOf(
@@ -66,6 +104,8 @@ object AutoLocation {
         if (Store.districtId(ctx) == null) return true
         // Az önce başarısız olduysa bir dakika bekle; sonra uygulama her açıldığında yine dener.
         if (System.currentTimeMillis() - lastFailAt < RETRY_AFTER_FAIL_MS) return false
+        // Hesaplanan yerdeyken arada bir Diyanet listesine yeniden bakılır (belki artık bulunur).
+        if (Store.isComputed(ctx) && System.currentTimeMillis() >= Store.computedRecheckAt(ctx)) return true
         val p = Store.autoPoint(ctx) ?: return true
         val out = FloatArray(1)
         Location.distanceBetween(p.first, p.second, loc.latitude, loc.longitude, out)
@@ -75,59 +115,175 @@ object AutoLocation {
     /**
      * Ağ kullanır: arka planda çağır.
      * [progress]: hangi adımda olunduğunu ekrana yazmak için (arka plan iş parçacığından çağrılır).
+     *
+     * Sonuç neredeyse her zaman Changed ya da Same olur. Failed yalnızca vakitlerin
+     * hesaplanamadığı kutup bölgelerinde döner.
      */
     fun resolve(ctx: Context, loc: Location, progress: (String) -> Unit = {}): Result {
         progress("Şehir adı bulunuyor…")
-        val names = namesFromGeocoder(ctx, loc) ?: namesFromOpenStreetMap(loc)
-            ?: return Result.Failed("Bulunduğun yerin adı alınamadı (internet bağlantısını kontrol et).")
-        val found = (names.places.take(3) + names.countries.take(1)).distinct().joinToString(", ")
+        val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(loc)
 
-        progress("Diyanet listesinde aranıyor: ${names.shown}")
-        val country = PlaceMatch.best(Diyanet.countries(), names.countries)
-            ?: return Result.Failed("Ülke Diyanet listesinde bulunamadı. (Bulunan: $found)")
+        // ---- 1-3) Diyanet listesinde ara ----
+        var found: Found? = null
+        var timesJson: String? = null
+        var hadError = names == null // yer adı alınamadıysa internet yok demektir
+        if (names != null) {
+            try {
+                progress("Diyanet listesinde aranıyor: ${names.shown}")
+                val lists = Lists()
+                found = byName(ctx, lists, names, loc, progress)
+                    ?: nearbyByName(ctx, lists, loc, progress)
+                if (found != null && found.district.id != Store.districtId(ctx)) {
+                    progress("${found.district.name} vakitleri indiriliyor…")
+                    timesJson = Diyanet.fetchTimes(found.district.id)
+                    if (Diyanet.parseDays(timesJson).isEmpty()) {
+                        found = null
+                        hadError = true
+                    }
+                }
+            } catch (e: Exception) {
+                // Diyanet sunucusuna ulaşılamadı: aşağıda konumdan hesaplanır, sonra yeniden denenir.
+                found = null
+                hadError = true
+            }
+        }
 
-        val cities = Diyanet.cities(country.id)
+        if (found != null) {
+            if (found.district.id == Store.districtId(ctx)) {
+                Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
+                Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
+                return Result.Same
+            }
+            val label = Diyanet.label(found.district, found.city, found.country)
+            Store.saveLocation(ctx, found.district.id, label, timesJson ?: "")
+            Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
+            Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
+            return Result.Changed(label)
+        }
+
+        // ---- 4) Diyanet'te yakın yer yok: konumdan hesapla ----
+        progress("Vakitler konumundan hesaplanıyor…")
+        val today = LocalDate.now()
+        if (PrayerCalc.diyanetDay(today, loc.latitude, loc.longitude, ZoneId.systemDefault()) == null) {
+            return Result.Failed("Bu konum için vakit hesaplanamadı (güneşin batmadığı ya da doğmadığı bölge).")
+        }
+        Store.setComputedRecheckAt(
+            ctx,
+            System.currentTimeMillis() + if (hadError) COMPUTED_RECHECK_AFTER_ERROR_MS else COMPUTED_RECHECK_MS,
+        )
+        // Zaten hesaplanan yerdeysek ve konum pek değişmediyse nokta aynı kalır.
+        val old = Store.placePoint(ctx)
+        if (Store.isComputed(ctx) && old != null &&
+            GeoMath.distanceKm(old.first, old.second, loc.latitude, loc.longitude) <= COMPUTED_SAME_KM
+        ) {
+            Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
+            return Result.Same
+        }
+        val label = computedLabel(names, loc)
+        Store.saveComputedLocation(ctx, label, Pair(loc.latitude, loc.longitude))
+        Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
+        return Result.Changed(label)
+    }
+
+    /** Hesaplanan yerin ekranda görünen adı: "Ambilly, Fransa"; ad yoksa koordinat. */
+    private fun computedLabel(names: Names?, loc: Location): String {
+        val place = names?.places?.firstOrNull { it.isNotBlank() }
+        val country = names?.countries?.firstOrNull { it.isNotBlank() }
+        val parts = listOfNotNull(place, country).distinctBy { norm(it) }
+        if (parts.isNotEmpty()) return parts.joinToString(", ")
+        return String.format(TR, "Konumun (%.2f°, %.2f°)", loc.latitude, loc.longitude)
+    }
+
+    // ---------------- Diyanet listesinde arama ----------------
+
+    /**
+     * 1. adım: bulunulan yerin kendi adlarıyla arama (ülke → şehir → ilçe).
+     * Adı tutmayan bir yer ancak yakın olduğu doğrulanırsa kabul edilir.
+     */
+    private fun byName(ctx: Context, lists: Lists, names: Names, loc: Location, progress: (String) -> Unit): Found? {
+        val country = PlaceMatch.best(Diyanet.countries(), names.countries) ?: return null
+        val cities = lists.cities(country.id)
         val city = PlaceMatch.best(cities, names.places)
             ?: cities.singleOrNull()
             ?: PlaceMatch.best(cities, names.countries)
             ?: run {
                 progress("En yakın şehir hesaplanıyor…")
-                nearest(ctx, cities, country.name, loc)
+                nearest(ctx, cities, country.name, loc, CITY_MAX_KM)
             }
-            ?: return Result.Failed("${country.name} içinde yakın bir Diyanet şehri bulunamadı. (Bulunan: $found)")
+            ?: return null
 
-        val districts = Diyanet.districts(city.id)
-        val district = PlaceMatch.best(districts, names.places)
-            ?: districts.singleOrNull()
-            ?: run {
-                progress("En yakın ilçe hesaplanıyor…")
-                nearest(ctx, districts, "${city.name}, ${country.name}", loc)
+        val districts = lists.districts(city.id)
+        PlaceMatch.best(districts, names.places)?.let { return Found(it, city, country) }
+
+        // Tek ilçesi olan şehir: adı tutmasa da yakınsa odur (ör. küçük ülkeler).
+        val context = "${city.name}, ${country.name}"
+        districts.singleOrNull()?.let { only ->
+            val p = Store.geoCache(ctx, only.id) ?: forward(ctx, "${only.name}, $context")
+            if (p != null && GeoMath.distanceKm(p.first, p.second, loc.latitude, loc.longitude) <= DISTRICT_MAX_KM) {
+                return Found(only, city, country)
             }
-            ?: PlaceMatch.best(districts, listOf(city.name, city.nameEn))
-            ?: return Result.Failed("${city.name} içinde yakın bir Diyanet ilçesi bulunamadı. (Bulunan: $found)")
-
-        if (district.id == Store.districtId(ctx)) {
-            Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
-            Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
-            return Result.Same
         }
+        // Kısa listelerde (ör. İsviçre: 147 yer) her yerin koordinatı bulunup en yakını seçilir.
+        // Uzun listelerde (ör. Fransa: 582 yer) bu çok uzun sürer; onlar için çevre araması var.
+        progress("En yakın ilçe hesaplanıyor…")
+        return nearest(ctx, districts, context, loc, DISTRICT_MAX_KM)?.let { Found(it, city, country) }
+    }
 
-        progress("${district.name} vakitleri indiriliyor…")
-        val json = Diyanet.fetchTimes(district.id)
-        if (Diyanet.parseDays(json).isEmpty()) return Result.Failed("${district.name} için vakit alınamadı.")
-        val label = Diyanet.label(district, city, country)
-        Store.saveLocation(ctx, district.id, label, json)
-        Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
-        Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
-        return Result.Changed(label)
+    /** Çevre aramasında kullanılan sade eşleştirme: ilçe adı mutlaka tutmalı. */
+    private fun strictByName(lists: Lists, names: Names): Found? {
+        val country = PlaceMatch.best(Diyanet.countries(), names.countries) ?: return null
+        val cities = lists.cities(country.id)
+        val city = PlaceMatch.best(cities, names.places)
+            ?: cities.singleOrNull()
+            ?: PlaceMatch.best(cities, names.countries)
+            ?: return null
+        val district = PlaceMatch.best(lists.districts(city.id), names.places) ?: return null
+        return Found(district, city, country)
+    }
+
+    /**
+     * 2. adım: bulunulan yerin çevresindeki yerleşimleri Diyanet listesinde arar.
+     *
+     * Her halkada 8 yöne bakılır (kuzey, kuzeydoğu, doğu…): o noktanın yer adı telefondan
+     * sorulur ve listede aranır. Yakın halkadan başlanır; ilk bulunan yer seçilir. Nokta
+     * başka ülkeye düşerse o ülkenin listesine bakılır, yani ülke sınırı engel olmaz.
+     * Telefonda yer adı hizmeti (Geocoder) yoksa bu adım atlanır.
+     */
+    private fun nearbyByName(ctx: Context, lists: Lists, loc: Location, progress: (String) -> Unit): Found? {
+        if (!Geocoder.isPresent()) return null
+        progress("Çevredeki yerler Diyanet listesinde aranıyor…")
+        val deadline = System.currentTimeMillis() + 25_000L
+        val tried = HashSet<String>() // aynı yer adı iki kez aranmasın
+        val pool = Executors.newFixedThreadPool(4)
+        try {
+            for ((i, km) in RINGS_KM.withIndex()) {
+                // Halkalar birbirine göre yarım adım döndürülür; böylece arada boşluk kalmaz.
+                val turn = if (i % 2 == 1) 22.5 else 0.0
+                val futures = (0 until 8).map { k ->
+                    val p = GeoMath.offset(loc.latitude, loc.longitude, km, k * 45.0 + turn)
+                    pool.submit(Callable<Names?> { namesFromGeocoder(ctx, p.first, p.second) })
+                }
+                for (f in futures) {
+                    val wait = (deadline - System.currentTimeMillis()).coerceAtLeast(1L)
+                    val n = (try { f.get(wait, TimeUnit.MILLISECONDS) } catch (e: Exception) { null }) ?: continue
+                    val key = "${n.code}|${n.places.take(2).joinToString("|") { norm(it) }}"
+                    if (!tried.add(key)) continue
+                    strictByName(lists, n)?.let { return it }
+                }
+                if (System.currentTimeMillis() >= deadline) break
+            }
+            return null
+        } finally {
+            pool.shutdownNow()
+        }
     }
 
     // ---------------- Yer adları ----------------
 
-    private fun namesFromGeocoder(ctx: Context, loc: Location): Names? {
+    private fun namesFromGeocoder(ctx: Context, lat: Double, lon: Double): Names? {
         if (!Geocoder.isPresent()) return null
-        val tr = geocode(ctx, loc, TR)
-        val en = geocode(ctx, loc, Locale.ENGLISH)
+        val tr = geocode(ctx, lat, lon, TR)
+        val en = geocode(ctx, lat, lon, Locale.ENGLISH)
         if (tr == null && en == null) return null
         val code = (tr?.countryCode ?: en?.countryCode)?.uppercase(Locale.ROOT)
         return Names(
@@ -192,8 +348,9 @@ object AutoLocation {
     /**
      * Listedeki her yerin koordinatını (adından) bulur ve [loc]'a en yakın olanı döndürür.
      * Bulunan koordinatlar saklanır; sonraki aramalar hızlı olur.
+     * En yakın yer [maxKm]'den uzaksa null döner. 150'den uzun listelerde denenmez (çok uzun sürer).
      */
-    private fun nearest(ctx: Context, list: List<Diyanet.Place>, context: String, loc: Location): Diyanet.Place? {
+    private fun nearest(ctx: Context, list: List<Diyanet.Place>, context: String, loc: Location, maxKm: Float): Diyanet.Place? {
         if (list.isEmpty() || list.size > 150 || !Geocoder.isPresent()) return null
         val pool = Executors.newFixedThreadPool(4)
         try {
@@ -221,7 +378,7 @@ object AutoLocation {
                     best = p
                 }
             }
-            return if (bestKm <= NEAREST_MAX_KM) best else null
+            return if (bestKm <= maxKm) best else null
         } finally {
             pool.shutdownNow()
         }
@@ -262,11 +419,11 @@ object AutoLocation {
 
     /** Şehir adı sorgusu bazı telefonlarda uzun süre takılabiliyor; en çok 8 sn bekle. */
     @Suppress("DEPRECATION")
-    private fun geocode(ctx: Context, loc: Location, locale: Locale): Address? {
+    private fun geocode(ctx: Context, lat: Double, lon: Double, locale: Locale): Address? {
         val executor = Executors.newSingleThreadExecutor()
         return try {
             executor.submit(Callable<Address?> {
-                Geocoder(ctx, locale).getFromLocation(loc.latitude, loc.longitude, 1)?.firstOrNull()
+                Geocoder(ctx, locale).getFromLocation(lat, lon, 1)?.firstOrNull()
             }).get(8, TimeUnit.SECONDS)
         } catch (e: Exception) {
             null

@@ -248,6 +248,34 @@ object Store {
         prefs(ctx).edit().putBoolean("askedNotif", true).apply()
     }
 
+    /**
+     * "Hesaplanan yer" için kullanılan sahte ilçe numarası. Diyanet'in listesinde bulunulan yere
+     * yakın bir ilçe yoksa vakitler konumdan hesaplanır; o zaman districtId bu değeri taşır.
+     */
+    const val COMPUTED_ID = "hesap"
+
+    /** Vakitler Diyanet listesinden değil, konumdan hesaplanarak mı gösteriliyor? */
+    fun isComputed(ctx: Context): Boolean = districtId(ctx) == COMPUTED_ID
+
+    /**
+     * Yeri "konumdan hesaplanan yer" olarak kaydeder (Diyanet listesi yok).
+     * Vakitler [point] koordinatından hesaplanır (bkz. Times.days).
+     */
+    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) {
+        prefs(ctx).edit()
+            .putString("districtId", COMPUTED_ID)
+            .putString("placeName", placeName)
+            .remove("times")
+            .putString("placeLat", point.first.toString()).putString("placeLon", point.second.toString())
+            .apply()
+    }
+
+    /** Hesaplanan yerdeyken Diyanet listesine en erken ne zaman yeniden bakılacağı (ms). */
+    fun computedRecheckAt(ctx: Context): Long = prefs(ctx).getLong("computedRecheckAt", 0L)
+    fun setComputedRecheckAt(ctx: Context, at: Long) {
+        prefs(ctx).edit().putLong("computedRecheckAt", at).apply()
+    }
+
     fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String) {
         prefs(ctx).edit()
             .putString("districtId", districtId)
@@ -270,6 +298,7 @@ object Store {
     /** Veri bitmek üzereyse ve kısa süre önce denenmediyse true. */
     fun needsRefresh(ctx: Context): Boolean {
         if (districtId(ctx) == null) return false
+        if (isComputed(ctx)) return false // hesaplanan yerde indirilecek liste yok
         // Diyanet dışı bir yöntem seçili olsa da Diyanet verisi güncel tutulur, çünkü:
         //  - yerin koordinatı bulunamazsa uygulama Diyanet vakitlerini gösterir (Times.effectiveMethod);
         //    önceden burada "yöntem Diyanet değil" diye yenileme yapılmıyordu ve ~30 gün sonra
@@ -285,6 +314,7 @@ object Store {
     /** Vakitleri internetten yeniler. Ağ kullanır: arka planda çağır. */
     fun refresh(ctx: Context): Boolean {
         val id = districtId(ctx) ?: return false
+        if (id == COMPUTED_ID) return true // hesaplanan yer: vakitler telefonda hesaplanır, indirme yok
         prefs(ctx).edit().putLong("lastAttempt", System.currentTimeMillis()).apply()
         return try {
             val json = Diyanet.fetchTimes(id)

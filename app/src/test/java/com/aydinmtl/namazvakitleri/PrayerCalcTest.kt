@@ -130,4 +130,42 @@ class PrayerCalcTest {
         // Her gün kendi sırasında: imsak, güneş, öğle, ikindi, akşam, yatsı, (ertesi gün) imsak...
         assertEquals((0 until m.size).map { it % 6 }, m.map { it.index })
     }
+
+    /**
+     * Diyanet ölçüleriyle hesap (diyanetDay), Diyanet'in Cenevre için yayımladığı gerçek listeyle
+     * karşılaştırılır (ezanvakti servisi, ilçe 14550, 7-11 Kasım 2026).
+     * İlk beş vakit en çok 1 dakika farklı olmalı; yatsı Diyanet'ten erken olmamalı,
+     * en çok 8 dakika geç olabilir. Akşam hiçbir gün Diyanet'ten erken olmamalı.
+     */
+    @Test
+    fun diyanet_olculeriyle_hesap_cenevre_listesine_yakin() {
+        val list = mapOf(
+            7 to listOf("05:42", "07:17", "12:24", "14:54", "17:21", "18:45"),
+            8 to listOf("05:43", "07:19", "12:24", "14:53", "17:19", "18:44"),
+            9 to listOf("05:44", "07:20", "12:24", "14:52", "17:18", "18:42"),
+            10 to listOf("05:46", "07:22", "12:24", "14:51", "17:17", "18:41"),
+            11 to listOf("05:47", "07:23", "12:24", "14:50", "17:16", "18:40"),
+        )
+        for ((dayOfMonth, expected) in list) {
+            val t = PrayerCalc.diyanetDay(LocalDate.of(2026, 11, dayOfMonth), 46.2044, 6.1432, zurich)!!
+            assertAscending(t)
+            for (i in 0..4) {
+                val diff = min(t[i]) - min(expected[i])
+                assertTrue(
+                    "$dayOfMonth Kasım ${PRAYER_NAMES[i]}: Diyanet ${expected[i]}, hesap ${t[i]}",
+                    abs(diff) <= 1,
+                )
+            }
+            val maghrib = min(t[4]) - min(expected[4])
+            assertTrue("$dayOfMonth Kasım akşam Diyanet'ten erken: ${t[4]}", maghrib >= 0)
+            val isha = min(t[5]) - min(expected[5])
+            assertTrue("$dayOfMonth Kasım yatsı: Diyanet ${expected[5]}, hesap ${t[5]}", isha in 0..8)
+        }
+    }
+
+    @Test
+    fun diyanet_olculeriyle_hesap_kutupta_null() {
+        // Güneşin batmadığı yerde hesap yapılamaz; otomatik konum bunu kullanıcıya söyler.
+        assertNull(PrayerCalc.diyanetDay(LocalDate.of(2026, 6, 21), 78.22, 15.65, ZoneId.of("Arctic/Longyearbyen")))
+    }
 }

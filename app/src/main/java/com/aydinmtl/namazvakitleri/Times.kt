@@ -8,6 +8,8 @@ import java.time.ZoneId
  * Uygulamanın her yerinde vakitler buradan alınır.
  * - Diyanet seçiliyse: Diyanet'ten indirilmiş resmi liste.
  * - Başka bir yöntem seçiliyse: seçili yerin koordinatıyla telefonda hesaplanır.
+ * - Diyanet seçili ama listede bulunulan yere yakın ilçe yoksa ("hesaplanan yer", bkz. AutoLocation):
+ *   Diyanet'in ölçüleriyle telefonda hesaplanır ve ekranda bunun hesap olduğu yazılır.
  */
 object Times {
     private var cacheKey: String? = null
@@ -19,6 +21,8 @@ object Times {
     /** Seçilen yöntem hesaplanamıyorsa (yerin koordinatı yok) Diyanet'e düşülür. */
     fun effectiveMethod(ctx: Context): CalcMethod {
         val m = Store.method(ctx)
+        // Hesaplanan yerde koordinat her zaman vardır; seçilen yöntem aynen kullanılır.
+        if (Store.isComputed(ctx)) return m
         return if (m != CalcMethod.DIYANET && Store.placePoint(ctx) == null) CalcMethod.DIYANET else m
     }
 
@@ -27,6 +31,12 @@ object Times {
     /** Ekranda gösterilecek kaynak satırı. */
     fun sourceLabel(ctx: Context): String {
         val m = effectiveMethod(ctx)
+        if (m == CalcMethod.DIYANET && Store.isComputed(ctx)) {
+            // Diyanet'in listesinde yakın yer yok: resmi liste değil, hesap olduğu açıkça yazılır.
+            return "Kaynak: Konumundan hesaplandı (Diyanet ölçüleriyle)\n" +
+                "Diyanet'in listesinde bu konuma yakın bir yer yok. " +
+                "Vakitler resmi listeden birkaç dakika farklı olabilir."
+        }
         val asr = if (m != CalcMethod.DIYANET && Store.asrHanafi(ctx)) " · İkindi: Hanefi" else ""
         // Seçilen yer başka bir saat dilimindeyse kullanıcıya söyle (bkz. PlaceZone)
         val shift = Prayers.day(days(ctx), LocalDate.now())?.shiftMinutes ?: 0
@@ -51,18 +61,23 @@ object Times {
         }
 
         val m = effectiveMethod(ctx)
-        if (m == CalcMethod.DIYANET) return withPlaceZone(ctx, diyanet)
+        // Hesaplanan yer + Diyanet yöntemi: liste yok, Diyanet ölçüleriyle telefonda hesaplanır.
+        val computedDiyanet = m == CalcMethod.DIYANET && Store.isComputed(ctx)
+        if (m == CalcMethod.DIYANET && !computedDiyanet) return withPlaceZone(ctx, diyanet)
 
         val point = Store.placePoint(ctx) ?: return diyanet
         val zone = ZoneId.systemDefault()
         val hanafi = Store.asrHanafi(ctx)
-        val key = "${m.id}|$hanafi|${point.first}|${point.second}|$today|${zone.id}|${Hijri.offsetDays}"
+        val key = "${m.id}|$computedDiyanet|$hanafi|${point.first}|${point.second}|$today|${zone.id}|${Hijri.offsetDays}"
         if (key == cacheKey) return cache
 
         val out = ArrayList<PrayerDay>()
         for (i in -1..30) {
             val date = today.plusDays(i.toLong())
-            val times = PrayerCalc.day(date, point.first, point.second, zone, m, if (hanafi) 2 else 1) ?: continue
+            val times = (
+                if (computedDiyanet) PrayerCalc.diyanetDay(date, point.first, point.second, zone)
+                else PrayerCalc.day(date, point.first, point.second, zone, m, if (hanafi) 2 else 1)
+                ) ?: continue
             out.add(PrayerDay(date, times, Hijri.format(date)))
         }
         cache = out
