@@ -59,8 +59,8 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `MosquesActivity.kt` | Yakındaki camiler ekranı (arama mantığı `MosqueSearch.kt`: OpenStreetMap Overpass, 3 yedek sunucu, 10 km) |
 | `KazaActivity.kt`, `ZikirActivity.kt` | Kaza çetelesi, zikirmatik |
 | `Quiz.kt`, `QuizActivity.kt`, `TreeView.kt` | Aile Halkası: bilgi yarışması, oturum kaydı, aile ağacı, aile hedefleri |
-| `PrayerGame.kt`, `PrayerGameActivity.kt` | Namaz Öğreniyorum: çocuklar için soru cevap oyunu (abdest + sabah namazının farzı), adımlar ve okunan dualar |
-| `PrayerStageView.kt` + `assets/namazoyun3d/` | Oyunun 3B sahnesi: kodla üretilen çocuk figürü (Ahmet/Zeynep), abdesthane ve namaz odası. WebView + WebGL2; hazır model, doku ya da kütüphane yok. `motor.js` çizim, `karakter.js` figür ve iskelet, `duruslar.js` duruşlar ve geçiş yolları, `sahne.js` sahneler, `oyun.js` oyunla köprü |
+| `PrayerGame.kt`, `PrayerGameActivity.kt` | Namaz Öğreniyorum: çocuklar için soru cevap oyunu (abdest + sabah namazının farzı), adımlar ve okunan dualar. Başlangıç ekranında Abdest ve Namaz ayrı düğmelerdir; kalınan adım bölüm bölüm kaydedilir (`Store.prayerStep(ctx, bölüm)`), yarım kalan bölümde "devam mı, baştan mı" diye sorulur. Abdesti hep Ahmet alır, Zeynep seçiliyken Abdest düğmesi kapalıdır. Abdest bitince "Namaza geçelim mi?" sorulur |
+| `PrayerStageView.kt` + `assets/namazoyun3d/` | Oyunun 3B sahnesi: kodla üretilen çocuk figürü (Ahmet/Zeynep), abdesthane ve namaz odası. WebView + WebGL2; hazır model, doku ya da kütüphane yok. `motor.js` çizim, `karakter.js` figür ve iskelet, `duruslar.js` duruşlar ve geçiş yolları, `sahne.js` sahneler, `oyun.js` oyunla köprü. Namaz, çocuğun rulo seccadeyi getirip serdiği giriş canlandırmasıyla başlar (`PrayerStageView.intro`, `N3.giris`, `duruslar.js` içinde `girisKur`); seccade ayrı bir örgüdür ve şerit şerit açılır |
 | `PrayerVoice.kt` | Oyundaki sesli okuma: `res/raw/ses_*.mp3` kayıtlarını çalar; dosya yoksa sessiz geçer. Dosya adları ve metinler: `docs/SES_DOSYALARI.md` |
 | `PrayerFigure.kt`, `PrayerFigureView.kt` | Eski 2B çizim; yalnızca 3B açılamayan cihazlarda yedek olarak kullanılır |
 

@@ -331,11 +331,25 @@ object Store {
 
     // ---------------- Namaz Öğreniyorum oyunu ----------------
 
-    /** Oyunda kaldığı adım (0 = en baş). Oyun bitince 0'a döner. */
-    fun prayerStep(ctx: Context): Int = prefs(ctx).getInt("prayerStep", 0)
-    fun setPrayerStep(ctx: Context, step: Int) {
-        prefs(ctx).edit().putInt("prayerStep", step).apply()
+    /**
+     * Oyunun bir bölümünde (abdest ya da namaz) kalınan adım. İki bölüm ayrı ayrı kaydedilir.
+     * Bölüme hiç başlanmadıysa ya da bölüm bittiyse bölümün ilk adımını verir.
+     * Eski sürümlerde tek bir sayaç ("prayerStep") vardı; yeni kayıt yoksa ondan okunur.
+     */
+    fun prayerStep(ctx: Context, chapter: PrayerChapter): Int {
+        val start = PrayerGame.chapterStart(chapter)
+        val p = prefs(ctx)
+        val key = prayerStepKey(chapter)
+        val saved = if (p.contains(key)) p.getInt(key, start) else p.getInt("prayerStep", 0)
+        return if (saved >= start && saved < PrayerGame.chapterEnd(chapter)) saved else start
     }
+
+    fun setPrayerStep(ctx: Context, chapter: PrayerChapter, step: Int) {
+        prefs(ctx).edit().putInt(prayerStepKey(chapter), step).apply()
+    }
+
+    private fun prayerStepKey(chapter: PrayerChapter): String =
+        if (chapter == PrayerChapter.ABDEST) "prayerStepAbdest" else "prayerStepNamaz"
 
     /** Seçilen figür: true kız, false erkek, null henüz seçilmedi. */
     fun prayerGirl(ctx: Context): Boolean? =

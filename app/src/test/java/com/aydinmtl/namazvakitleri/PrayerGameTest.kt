@@ -69,8 +69,18 @@ class PrayerGameTest {
     @Test
     fun durakVeSahne() {
         assertEquals("a_sit", PrayerGame.restingPose(0))
-        assertEquals(PrayerChapter.ABDEST, PrayerGame.sceneAt(PrayerGame.NAMAZ_START))
+        // Abdestin son sorusu abdesthanede, namazın ilk sorusu namaz odasında sorulur
+        assertEquals(PrayerChapter.ABDEST, PrayerGame.sceneAt(PrayerGame.NAMAZ_START - 1))
+        assertEquals(PrayerChapter.NAMAZ, PrayerGame.sceneAt(PrayerGame.NAMAZ_START))
         assertEquals(PrayerChapter.NAMAZ, PrayerGame.sceneAt(PrayerGame.NAMAZ_START + 1))
+        // Namaz başlarken çocuk seccadesini sermiş bekliyordur; sonraki adımda ayakta kıbleye dönüktür
+        assertEquals(PrayerGame.NAMAZ_READY_POSE, PrayerGame.restingPose(PrayerGame.NAMAZ_START))
+        assertEquals("stand", PrayerGame.restingPose(PrayerGame.NAMAZ_START + 1))
+        // Bölüm sınırları: abdest 0..12, namaz 13..son
+        assertEquals(0, PrayerGame.chapterStart(PrayerChapter.ABDEST))
+        assertEquals(PrayerGame.NAMAZ_START, PrayerGame.chapterEnd(PrayerChapter.ABDEST))
+        assertEquals(PrayerGame.NAMAZ_START, PrayerGame.chapterStart(PrayerChapter.NAMAZ))
+        assertEquals(PrayerGame.STEPS.size, PrayerGame.chapterEnd(PrayerChapter.NAMAZ))
         assertEquals(Pair(1, 13), PrayerGame.positionInChapter(0))
         assertEquals(Pair(1, PrayerGame.STEPS.size - 13), PrayerGame.positionInChapter(PrayerGame.NAMAZ_START))
     }

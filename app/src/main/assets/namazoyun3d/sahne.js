@@ -19,6 +19,9 @@ function boru(m, noktalar, r, o) {
   m.tube(halkalar, { n: 12, capA: true, capB: true, ...o });
 }
 
+/** Seccadenin kaç enine şeritten oluştuğu (rulo açılırken şeritler sırayla görünür). */
+const HALI_SERIT = 24;
+
 const SAHNELER = {
   // ------------------------------------------------------------------ Namaz odası
   NAMAZ: {
@@ -35,14 +38,6 @@ const SAHNELER = {
       m.plane([x0, 0, z1], [x1, 0, z1], [x1, 0, z0], [x0, 0, z0], { col: hex('#8a5a33'), mat: MAT.AHSAP });
       m.plane([x0, 0, z0], [x1, 0, z0], [x1, H, z0], [x0, H, z0], { col: duvar, mat: MAT.DUVAR });
       m.plane([x0, 0, z1], [x0, 0, z0], [x0, H, z0], [x0, H, z1], { col: duvar, mat: MAT.DUVAR });
-      // seccade ve iki ucundaki saçaklar
-      const [hx, hz, hw, hl] = this.hali;
-      m.box([hx, 0.004, hz], [hw, 0.004, hl], { col: hex('#7d1220'), mat: MAT.HALI });
-      for (const s of [1, -1]) {
-        const za = hz + s * hl, zb = hz + s * (hl + 0.055);
-        const p = s > 0 ? [[hx - hw, 0.003, zb], [hx + hw, 0.003, zb], [hx + hw, 0.005, za], [hx - hw, 0.005, za]] : [[hx - hw, 0.005, za], [hx + hw, 0.005, za], [hx + hw, 0.003, zb], [hx - hw, 0.003, zb]];
-        m.plane(...p, { col: hex('#EFE6CF'), mat: MAT.SACAK });
-      }
       // pencere: sabah namazı vakti — gökyüzü lacivertten şafak kızıllığına
       const px = -1.15, py = 1.25, pw = 0.50, ph = 0.72, pz = z0 + 0.012;
       const gokUst = hex('#16234f'), gokOrta = hex('#5b5a8c'), gokAlt = hex('#f0a060');
@@ -89,7 +84,34 @@ const SAHNELER = {
       boru(m, [[-0.2, H, -0.9], [-0.2, 2.42, -0.9]], 0.006, { col: hex('#3a2a18') });
       m.tube([[2.44, 0.02], [2.40, 0.10], [2.30, 0.15], [2.22, 0.16]].map(([y, r]) => ({ c: [-0.2, y, -0.9], rx: r, rz: r })), { n: 20, col: hex('#b8862e'), mat: MAT.PARLAK, capA: true });
       m.ball([-0.2, 2.24, -0.9], [0.09, 0.07, 0.09], { col: hex('#ffe2a0'), mat: MAT.ISIK, lat: 8, lon: 14 });
-      return { ana: m.build() };
+      // Seccade ayrı bir parçadır: namazın başında çocuk onu rulo halinde getirip serer.
+      // Enine şeritlere bölünür; her şerit ayrı bir "kemiğe" bağlıdır, böylece rulo açıldıkça
+      // şeritler sırayla ortaya çıkar (bkz. oyun.js, haliKemik).
+      const [hx, hz, hw, hl] = this.hali, hm = new Mesh(), NS = HALI_SERIT, za = hz - hl, boy = 2 * hl / NS;
+      for (let i = 0; i < NS; i++) {
+        const z0s = za + i * boy, z1s = z0s + boy, b = [i + 1, i + 1, 1];
+        const id = [[hx - hw, 0.008, z1s], [hx + hw, 0.008, z1s], [hx + hw, 0.008, z0s], [hx - hw, 0.008, z0s]].map((p) => hm.vert(p, hex('#7d1220'), MAT.HALI, b[0], b[1], b[2]));
+        hm.quad(id[0], id[1], id[2], id[3]);
+        // iki yan kenar (seccadenin kalınlığı)
+        for (const s of [1, -1]) {
+          const k = [[hx + s * hw, 0, z0s], [hx + s * hw, 0, z1s], [hx + s * hw, 0.008, z1s], [hx + s * hw, 0.008, z0s]].map((p) => hm.vert(p, hex('#5e0e18'), MAT.KUMAS, b[0], b[1], b[2]));
+          if (s > 0) hm.quad(k[0], k[3], k[2], k[1]); else hm.quad(k[0], k[1], k[2], k[3]);
+        }
+      }
+      // saçaklar: arkadaki (çocuğa yakın uç) hep görünür, öndeki rulo sonuna kadar açılınca
+      for (const s of [1, -1]) {
+        const zk = hz + s * hl, zu = hz + s * (hl + 0.055), kemik = s > 0 ? NS + 1 : NS + 2;
+        const p = s > 0 ? [[hx - hw, 0.003, zu], [hx + hw, 0.003, zu], [hx + hw, 0.007, zk], [hx - hw, 0.007, zk]] : [[hx - hw, 0.007, zk], [hx + hw, 0.007, zk], [hx + hw, 0.003, zu], [hx - hw, 0.003, zu]];
+        const id = p.map((q) => hm.vert(q, hex('#EFE6CF'), MAT.SACAK, kemik, kemik, 1));
+        hm.quad(id[0], id[1], id[2], id[3]);
+      }
+      // Rulo (sarılı seccade): x ekseni boyunca yatan, yarıçapı 1 olan silindir; oyun.js büyüklüğünü ayarlar
+      const rm = new Mesh(), halka = [];
+      for (const [x, k, renk] of [[-hw, 0.0, '#EFE6CF'], [-hw, 0.55, '#EFE6CF'], [-hw, 1, '#5e0e18'], [hw, 1, '#5e0e18'], [hw, 0.55, '#EFE6CF'], [hw, 0.0, '#EFE6CF']]) {
+        halka.push({ c: [x, 0, 0], ax: [0, 1, 0], az: [0, 0, 1], rx: Math.max(k, 0.02), rz: Math.max(k, 0.02), col: hex(renk) });
+      }
+      rm.tube(halka, { n: 18, capA: true, capB: true, col: hex('#5e0e18') });
+      return { ana: m.build(), hali: hm.build(), rulo: rm.build() };
     },
   },
 

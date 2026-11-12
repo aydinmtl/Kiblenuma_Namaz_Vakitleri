@@ -2,6 +2,7 @@ package com.aydinmtl.namazvakitleri
 
 import android.animation.ObjectAnimator
 import android.app.Activity
+import android.app.AlertDialog
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +18,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
@@ -30,7 +32,9 @@ import java.util.Locale
  * Yanlış cevapta ceza yok: figür başını sallar, çocuk tekrar dener; iki yanlıştan sonra doğru
  * şık altın çerçeveyle belli olur. Selamla namaz biter, konfeti yağar.
  *
- * Kaldığı adım kaydedilir; çıkıp girince "Kaldığın yerden devam et" denebilir.
+ * Başlangıç ekranında Abdest ve Namaz ayrı düğmelerdir. Her bölümde kalınan adım ayrı kaydedilir;
+ * yarım kalmış bölüme basınca "kaldığın yerden mi, baştan mı" diye sorulur. Namaz, çocuğun
+ * seccadesini serdiği kısa bir canlandırmayla başlar. Abdest bitince "Namaza geçelim mi?" diye sorulur.
  * Adımlar ve sorular PrayerGame.kt'de; 3B sahne PrayerStageView.kt ve assets/namazoyun3d/ içindedir
  * (3B çalışmayan cihazlar için eski 2B çizim PrayerFigureView.kt'de durur).
  */
@@ -67,7 +71,8 @@ class PrayerGameActivity : Activity() {
     private var soundOn = true    // sesli mod: kayıtlar çalınır; sessiz modda yalnızca yazı ilerler
     private var skipStep = false  // "Okunuşu atla"ya basıldı: bu adımın kalan okumaları da atlanır
     private lateinit var btnSkip: TextView
-    private lateinit var btnSound: TextView
+    private lateinit var swSound: Switch
+    private lateinit var btnLater: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,7 +102,8 @@ class PrayerGameActivity : Activity() {
         soundOn = Store.prayerSound(this)
         volumeControlStream = AudioManager.STREAM_MUSIC // ses tuşları oyundayken medya sesini ayarlasın
         btnSkip = findViewById(R.id.btnSkip)
-        btnSound = findViewById(R.id.btnSound)
+        swSound = findViewById(R.id.swSound)
+        btnLater = findViewById(R.id.btnLater)
         figure.onRecite = { r, n ->
             if (n == 1) {
                 if (skipStep) {
@@ -118,9 +124,10 @@ class PrayerGameActivity : Activity() {
             btnSkip.visibility = View.GONE
             figure.fastForward()
         }
-        btnSound.setOnClickListener {
-            soundOn = !soundOn
-            Store.setPrayerSound(this, soundOn)
+        swSound.isChecked = soundOn
+        swSound.setOnCheckedChangeListener { _, on ->
+            soundOn = on
+            Store.setPrayerSound(this, on)
             showSoundChoice()
         }
         showSoundChoice()
@@ -132,12 +139,16 @@ class PrayerGameActivity : Activity() {
         choose(girl, save = false)
 
         findViewById<View>(R.id.btnBack).setOnClickListener { goBack() }
-        findViewById<View>(R.id.btnStart).setOnClickListener { startGame(Store.prayerStep(this)) }
-        findViewById<View>(R.id.btnRestart).setOnClickListener { startGame(0) }
-        findViewById<View>(R.id.btnNamazOnly).setOnClickListener { startGame(PrayerGame.NAMAZ_START) }
-        btnNext.setOnClickListener { showStep(index + 1) }
+        findViewById<View>(R.id.btnAbdest).setOnClickListener { openChapter(PrayerChapter.ABDEST) }
+        findViewById<View>(R.id.btnNamaz).setOnClickListener { openChapter(PrayerChapter.NAMAZ) }
+        btnNext.setOnClickListener {
+            // Abdestin son adımından sonra "Namaza geçelim mi?" sorulur; evet denince namaz başlar
+            if (index + 1 == PrayerGame.NAMAZ_START) startGame(PrayerGame.NAMAZ_START, fromAbdest = true)
+            else showStep(index + 1)
+        }
+        btnLater.setOnClickListener { showStart() }
         btnSpeak.setOnClickListener { speakCurrent() }
-        findViewById<View>(R.id.btnAgain).setOnClickListener { startGame(0) }
+        findViewById<View>(R.id.btnAgain).setOnClickListener { startGame(PrayerGame.NAMAZ_START) }
         findViewById<View>(R.id.btnExit).setOnClickListener { finish() }
 
         showStart()
@@ -165,10 +176,10 @@ class PrayerGameActivity : Activity() {
 
     // ---------------- Başlangıç ----------------
 
-    /** Sesli / sessiz düğmesinin yazısı. */
+    /** Sesli okuma anahtarının altındaki açıklama. */
     private fun showSoundChoice() {
-        btnSound.text = if (soundOn) "🔊  Sesli: dualar ve sureler sesli okunur" else "🔇  Sessiz: yalnızca yazı ilerler"
-        btnSound.contentDescription = (if (soundOn) "Sesli okuma açık" else "Sesli okuma kapalı") + ". Değiştirmek için dokun."
+        findViewById<TextView>(R.id.tvSoundInfo).text =
+            if (soundOn) "Açık: dualar ve sureler sesli okunur." else "Kapalı: ses yok, yalnızca yazı ilerler."
     }
 
     private fun choose(g: Boolean, save: Boolean = true) {
@@ -181,6 +192,54 @@ class PrayerGameActivity : Activity() {
         // Seçilen kart hafifçe büyür
         boy.animate().scaleX(if (!g) 1.03f else 0.97f).scaleY(if (!g) 1.03f else 0.97f).setDuration(180).start()
         gl.animate().scaleX(if (g) 1.03f else 0.97f).scaleY(if (g) 1.03f else 0.97f).setDuration(180).start()
+        showChapterButtons()
+    }
+
+    /**
+     * Abdest ve Namaz düğmelerinin yazısı: üstte bölümün adı, altında kalınan yer.
+     * Abdesti her zaman Ahmet alır; Zeynep seçiliyken Abdest düğmesi kapalıdır. Böylece
+     * abdest alan Ahmet'ten namaz kılan Zeynep'e geçiş olmaz.
+     */
+    private fun showChapterButtons() {
+        for (ch in PrayerChapter.values()) {
+            val btn = findViewById<Button>(if (ch == PrayerChapter.ABDEST) R.id.btnAbdest else R.id.btnNamaz)
+            val start = PrayerGame.chapterStart(ch)
+            val saved = Store.prayerStep(this, ch)
+            val total = PrayerGame.chapterEnd(ch) - start
+            val status = if (saved > start) "Kaldığın yer: adım ${saved - start + 1} / $total" else "$total adım"
+            val sb = SpannableStringBuilder("${ch.icon}  ${ch.title}")
+            sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            sb.setSpan(RelativeSizeSpan(1.2f), 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val from = sb.length
+            sb.append("\n").append(status)
+            sb.setSpan(RelativeSizeSpan(0.85f), from, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            btn.text = sb
+            btn.contentDescription = "${ch.title}. $status"
+        }
+        val abdest = findViewById<Button>(R.id.btnAbdest)
+        abdest.isEnabled = !girl
+        abdest.alpha = if (girl) 0.4f else 1f
+        findViewById<View>(R.id.tvAbdestNote).visibility = if (girl) View.VISIBLE else View.GONE
+    }
+
+    /**
+     * Abdest ya da Namaz düğmesine basıldı. O bölümde yarım kalmış oyun varsa
+     * "kaldığın yerden mi, baştan mı" diye sorar; yoksa doğrudan baştan başlar.
+     */
+    private fun openChapter(ch: PrayerChapter) {
+        val start = PrayerGame.chapterStart(ch)
+        val saved = Store.prayerStep(this, ch)
+        if (saved <= start) {
+            startGame(start)
+            return
+        }
+        val total = PrayerGame.chapterEnd(ch) - start
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle("${ch.icon} ${ch.title}")
+            .setMessage("Bu bölümde ${saved - start + 1}. adımda kalmıştın ($total adım). Nereden başlayalım?")
+            .setPositiveButton("Kaldığım yerden devam et") { _, _ -> startGame(saved) }
+            .setNegativeButton("Baştan başla") { _, _ -> startGame(start) }
+            .show()
     }
 
     private fun showStart() {
@@ -190,26 +249,56 @@ class PrayerGameActivity : Activity() {
         startPane.visibility = View.VISIBLE
         btnSpeak.visibility = View.GONE
         fadeIn(startPane)
-        val saved = Store.prayerStep(this).coerceIn(0, PrayerGame.STEPS.size - 1)
-        val btn = findViewById<Button>(R.id.btnStart)
-        btn.text = if (saved > 0) "▶  Kaldığın yerden devam et" else "▶  Başla"
-        findViewById<View>(R.id.btnRestart).visibility = if (saved > 0) View.VISIBLE else View.GONE
+        showChapterButtons()
         val wins = Store.prayerWins(this)
         val tvWins = findViewById<TextView>(R.id.tvWins)
         tvWins.visibility = if (wins > 0) View.VISIBLE else View.GONE
         tvWins.text = "🏆 Namazı $wins kez tamamladın"
     }
 
-    private fun startGame(from: Int) {
+    /**
+     * Oyunu [from]. adımdan başlatır. Namazın ilk adımından başlanıyorsa önce giriş
+     * canlandırması oynar (çocuk seccadesini serer), ilk soru ondan sonra gelir.
+     * [fromAbdest]: abdest yeni bitti ve aynı oyunda namaza geçiliyor.
+     */
+    private fun startGame(from: Int, fromAbdest: Boolean = false) {
         val i = from.coerceIn(0, PrayerGame.STEPS.size - 1)
-        Store.setPrayerStep(this, i)
+        Store.setPrayerStep(this, PrayerGame.STEPS[i].chapter, i)
         startPane.visibility = View.GONE
         gamePane.visibility = View.VISIBLE
         btnSpeak.visibility = View.VISIBLE
-        fadeIn(gamePane)
+        if (!fromAbdest) fadeIn(gamePane)
         figure.girl = girl
-        figure.show(PrayerGame.restingPose(i), PrayerGame.sceneAt(i))
-        showStep(i)
+        if (i == PrayerGame.NAMAZ_START) {
+            showIntro()
+            figure.intro(fromAbdest) {
+                // Giriş sürerken geri dönüldüyse soru gösterilmez
+                if (!isFinishing && gamePane.visibility == View.VISIBLE) showStep(i)
+            }
+        } else {
+            figure.show(PrayerGame.restingPose(i), PrayerGame.sceneAt(i))
+            showStep(i)
+        }
+    }
+
+    /** Giriş canlandırması oynarken ekran: soru yok, yalnızca ne olduğunu anlatan başlık. */
+    private fun showIntro() {
+        index = PrayerGame.NAMAZ_START
+        busy = true
+        tts?.stop()
+        voice.stop()
+        val ch = PrayerChapter.NAMAZ
+        tvChapter.text = "${ch.icon} ${ch.title} · Hazırlık"
+        bar.progress = 0
+        finishBox.visibility = View.GONE
+        tvRecite.visibility = View.GONE
+        btnSkip.visibility = View.GONE
+        questionBox.visibility = View.GONE
+        tvStepTitle.text = "Seccademizi kıbleye doğru seriyoruz\n(geçmek için resme dokun)"
+        tvStepTitle.alpha = 1f
+        tvStepTitle.scaleX = 1f
+        tvStepTitle.scaleY = 1f
+        tvStepTitle.visibility = View.VISIBLE
     }
 
     private fun fadeIn(v: View) {
@@ -230,8 +319,9 @@ class PrayerGameActivity : Activity() {
         val step = PrayerGame.STEPS[i]
         val (n, total) = PrayerGame.positionInChapter(i)
         tvChapter.text = "${step.chapter.icon} ${step.chapter.title} · Adım $n / $total"
-        bar.max = PrayerGame.STEPS.size * 100
-        ObjectAnimator.ofInt(bar, "progress", bar.progress, i * 100).setDuration(450).start()
+        // İlerleme çubuğu bölümün kendi içindeki ilerlemeyi gösterir
+        bar.max = total * 100
+        ObjectAnimator.ofInt(bar, "progress", bar.progress.coerceAtMost(bar.max), (n - 1) * 100).setDuration(450).start()
 
         finishBox.visibility = View.GONE
         tvRecite.visibility = View.GONE
@@ -242,6 +332,8 @@ class PrayerGameActivity : Activity() {
         tvStepTitle.visibility = View.INVISIBLE
         tvInfo.visibility = View.GONE
         btnNext.visibility = View.GONE
+        btnNext.text = "Devam ›"
+        btnLater.visibility = View.GONE
 
         tvQuestion.text = step.question
         tvQuestion.alpha = 0f
@@ -327,7 +419,16 @@ class PrayerGameActivity : Activity() {
             if (last) {
                 finishGame()
             } else {
-                Store.setPrayerStep(this, index + 1)
+                if (index + 1 == PrayerGame.NAMAZ_START) {
+                    // Abdest bitti: kayıt başa döner ve "Namaza geçelim mi?" diye sorulur
+                    Store.setPrayerStep(this, PrayerChapter.ABDEST, PrayerGame.chapterStart(PrayerChapter.ABDEST))
+                    bar.progress = bar.max
+                    tvInfo.text = tvInfo.text.toString() + "\n\nAbdestimiz tamam! Namaza geçelim mi?"
+                    btnNext.text = "🕌  Evet, namaza geçelim"
+                    btnLater.visibility = View.VISIBLE
+                } else {
+                    Store.setPrayerStep(this, step.chapter, index + 1)
+                }
                 btnNext.visibility = View.VISIBLE
                 btnNext.alpha = 0f
                 btnNext.animate().alpha(1f).setStartDelay(0).setDuration(250).start()
@@ -372,7 +473,7 @@ class PrayerGameActivity : Activity() {
     }
 
     private fun finishGame() {
-        Store.setPrayerStep(this, 0)
+        Store.setPrayerStep(this, PrayerChapter.NAMAZ, PrayerGame.NAMAZ_START)
         Store.addPrayerWin(this)
         bar.progress = bar.max
         figure.celebrate()
@@ -382,8 +483,7 @@ class PrayerGameActivity : Activity() {
         val name = if (girl) "Zeynep" else "Ahmet"
         findViewById<TextView>(R.id.tvFinishTitle).text = "Maşallah! 🎉"
         findViewById<TextView>(R.id.tvFinishText).text =
-            (if (girl) "Bütün soruları bildin. Ahmet abdest aldı, Zeynep de sabah namazını baştan sona kıldı.\n\n"
-            else "Bütün soruları bildin. $name seninle birlikte abdest aldı ve sabah namazını baştan sona kıldı.\n\n") +
+            "Bütün soruları bildin. $name seninle birlikte sabah namazını baştan sona kıldı.\n\n" +
             "Şimdi sıra sende: bir dahaki namazda bunları birlikte yapalım!"
         finishBox.visibility = View.VISIBLE
         fadeIn(finishBox)

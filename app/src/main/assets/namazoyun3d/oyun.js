@@ -5,6 +5,7 @@
 //   N3.kiz(true/false)             → Zeynep / Ahmet
 //   N3.goster("kiyam", "NAMAZ")    → figürü hemen bir duruşa koyar
 //   N3.oynat(hareketler, "NAMAZ", "HANDS") → doğru cevaptan sonraki hareketler
+//   N3.giris(oyunNo, gecis)        → namazın başlangıcı: çocuk seccadesini getirip serer
 //   N3.yanlis()  N3.kutla()  N3.hizli()
 // Sayfa Android'e şunları bildirir (window.Android varsa):
 //   Android.hazir()  Android.okuma(hareketSırası, kelimeSayısı)  Android.soz(hareketSırası)  Android.bitti(oyunNo)  Android.hata(mesaj)
@@ -36,7 +37,13 @@ const N3 = (function () {
   const kizSahnede = () => kizMi && sahneAd !== 'ABDEST';
   const durusAl = (ad) => { const k = kizSahnede(), D = DR[k] || (DR[k] = duruslar(k)); return D[ad] || D.stand; };
   const sahneAl = (ad) => {
-    if (!sahne[ad]) { const b = SAHNELER[ad].kur(); sahne[ad] = { ana: ciz.upload(b.ana), su: b.su ? ciz.upload(b.su, { blend: true, noShadow: true }) : null }; }
+    if (!sahne[ad]) {
+      const b = SAHNELER[ad].kur();
+      sahne[ad] = {
+        ana: ciz.upload(b.ana), su: b.su ? ciz.upload(b.su, { blend: true, noShadow: true }) : null,
+        hali: b.hali ? ciz.upload(b.hali) : null, rulo: b.rulo ? ciz.upload(b.rulo) : null,
+      };
+    }
     return sahne[ad];
   };
   // Abdest sahnesinde figürün kolları sıvalıdır (erkekte takke de çıkmıştır): ayrı bir örgü
@@ -47,6 +54,31 @@ const N3 = (function () {
   const AVUC_SU = { a_cupr: 'R', a_mouth: 'R', a_nose: 'R', a_cup: 'LR', a_face1: 'LR' };
   // Suyun çarpıp sıçradığı yükseklik: eller musluğun altında, ayak daha aşağıda
   const SU_Y = { a_rfoot: 0.085, a_rfoot2: 0.085, a_lfoot: 0.085, a_lfoot2: 0.085 };
+
+  // ---- Seccade ve rulo ----
+  // ser: seccadenin ne kadarı açık (0 = hiç, 1 = tamamen). Giriş canlandırması dışında hep 1'dir.
+  let ser = 1, serCizilen = -1;
+  const olcek = (x, y, z) => [x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1];
+  const haliKemik = new Float32Array(KEMIK_SAYISI * 16), ruloKemik = new Float32Array(KEMIK_SAYISI * 16);
+  for (let i = 0; i < KEMIK_SAYISI; i++) { haliKemik.set(M.ident(), i * 16); ruloKemik.set(M.ident(), i * 16); }
+  /** Seccadenin şeritlerini açıklığa göre ayarlar: açılmamış şeritler sıfıra küçülür (görünmez). */
+  function haliAyarla() {
+    if (ser === serCizilen) return;
+    serCizilen = ser;
+    const N = HALI_SERIT, boy = SECCADE.boy / N;
+    for (let i = 0; i < N; i++) {
+      const k = clamp(ser * N - i, 0, 1), z0 = SECCADE.arka + i * boy;
+      // şerit kendi arka kenarından öne doğru uzar
+      const m = k >= 1 ? M.ident() : M.mul(M.trans(0, 0, z0), M.mul(olcek(k > 0 ? 1 : 0, k > 0 ? 1 : 0, k), M.trans(0, 0, -z0)));
+      haliKemik.set(m, (i + 1) * 16);
+    }
+    haliKemik.set(ser >= 1 ? M.ident() : olcek(0, 0, 0), (N + 1) * 16); // öndeki saçak en sonda görünür
+    haliKemik.set(ser > 0 ? M.ident() : olcek(0, 0, 0), (N + 2) * 16); // arkadaki saçak rulo açılmaya başlayınca
+  }
+  /** Ruloyu verilen yere koyar; r: yarıçap (açıldıkça incelir). */
+  function ruloKoy(yer, r, donus) {
+    ruloKemik.set(M.mul(M.trans(yer[0], yer[1], yer[2]), M.mul(donus || M.ident(), olcek(1, r, r))), 0);
+  }
 
   // ---- Parçacıklar: su damlası (0), ışıltı (1), konfeti (2) ----
   const P = [], PV = new Float32Array(600 * 9);
@@ -77,7 +109,7 @@ const N3 = (function () {
   // ---- Dışarıdan çağrılanlar ----
   function kiz(v) { kizMi = !!v; simdi = durusAl(simdiAd); }
   function goster(ad, sAd) {
-    oyun = null; simdiAd = ad; yazi = null;
+    oyun = null; simdiAd = ad; yazi = null; ser = 1;
     if (sAd && sAd !== sahneAd) { sahneAd = sAd; kam.ilk = true; }
     simdi = durusAl(ad);
     soluk = 0; solukHedef = 0; bekleyenSahne = null;
@@ -92,6 +124,18 @@ const N3 = (function () {
     yuz.mutlu = 1;
     if (sAd && sAd !== sahneAd) { bekleyenSahne = sAd; solukHedef = 1; } // sahne değişecek: önce karar
     else sonraki();
+    return oyun.no;
+  }
+  /**
+   * Namazın başlangıcı: çocuk rulo seccadeyle odaya girer, serer ve bize dönüp bekler.
+   * gecis: true ise önceki sahneden (abdesthane) kararıp açılarak geçilir; false ise doğrudan başlar.
+   */
+  function giris(no, gecis) {
+    oyun = { no: no === undefined ? ++oyunNo : no, liste: [{ pose: 'wait', ms: 600 }], i: -1, parca: null, t0: 0, yol: [], yolSure: 0, sure: 0, kelime: -1, hizli: false, giris: true, bas: 'g0' };
+    yazi = null; yuz.mutlu = 1; ser = 0;
+    if (gecis && sahneAd !== 'NAMAZ') { bekleyenSahne = 'NAMAZ'; solukHedef = 1; return oyun.no; }
+    sahneAd = 'NAMAZ'; kam.ilk = true; soluk = 1; solukHedef = 0; bekleyenSahne = null;
+    simdiAd = 'g0'; simdi = durusAl('g0'); sonraki();
     return oyun.no;
   }
   function sonraki() {
@@ -119,7 +163,11 @@ const N3 = (function () {
     bildir('bitti', o.no);
     if (window.N3_bitti) window.N3_bitti(o.no);
   }
-  function hizli() { if (oyun && oyun.i >= 0 && oyun.liste[oyun.i].recite) oyun.hizli = true; }
+  function hizli() {
+    if (!oyun || oyun.i < 0) return;
+    if (oyun.giris) oyun.t0 = Math.min(oyun.t0, zaman - oyun.yolSure); // girişe dokunulursa sonuna atlar
+    else if (oyun.liste[oyun.i].recite) oyun.hizli = true;
+  }
   function yanlis() { yuz.sasir = 1.3; yuz.sallaT = zaman; }
   function kutla() {
     const renk = [[0.91, 0.76, 0.35], [0.44, 0.83, 0.63], [0.95, 0.55, 0.69], [0.5, 0.72, 0.94], [1, 1, 1]];
@@ -152,7 +200,7 @@ const N3 = (function () {
       soluk = solukHedef > soluk ? Math.min(1, soluk + dt / 0.45) : Math.max(0, soluk - dt / 0.55);
       if (soluk >= 1 && bekleyenSahne) {
         sahneAd = bekleyenSahne; bekleyenSahne = null; solukHedef = 0; kam.ilk = true;
-        if (oyun) { const ilk = oyun.liste[0]; simdiAd = ilk.pose; simdi = durusAl(ilk.pose); sonraki(); }
+        if (oyun) { const ilk = oyun.bas || oyun.liste[0].pose; simdiAd = ilk; simdi = durusAl(ilk); sonraki(); }
       }
     }
     // Hareket sırası
@@ -180,6 +228,13 @@ const N3 = (function () {
         sonraki();
       }
     }
+    // Giriş: rulo önce çocuğun elinde, sonra yerde açılır
+    let ruloDurum = null; // null: rulo yok; yoksa { t: yere inme oranı, ac: açılma oranı }
+    if (oyun && oyun.giris && oyun.i >= 0) {
+      const t = zaman - oyun.t0, an = GIRIS.an;
+      ser = smooth((t - an.ac0) / (an.ac1 - an.ac0));
+      if (ser < 1) ruloDurum = { t: smooth((t - an.koy0) / (an.koy1 - an.koy0)) };
+    } else if (!oyun || !oyun.giris) ser = 1;
     if (deneme) { su = !!deneme.su; avucSu = deneme.avuc || ''; suY = deneme.suY || 0.36; } // deneme için elle ayar
     // Yüz: göz kırpma, konuşma, gülümseme
     yuz.sonrakiKirp -= dt;
@@ -217,6 +272,21 @@ const N3 = (function () {
       blobs.set([p[0], 0, p[2], p[1] < 0.2 ? rad * clamp(1.4 - p[1] * 4, 0.3, 1) : 0], i * 4);
     });
     const sah = sahneAl(sahneAd), kar = govdeAl();
+    if (sah.hali) { haliAyarla(); sah.hali.bones = haliKemik; }
+    if (sah.rulo) {
+      sah.rulo.visible = !!ruloDurum;
+      if (ruloDurum) {
+        // elde: göğse bağlı; yerde: seccadenin açılan ucunda, açıldıkça incelir ve ilerler
+        const gogus = r.deri.subarray(K.GOGUS * 16, K.GOGUS * 16 + 16), elde = M.tp(gogus, RULO.tasima);
+        const rr = Math.max(0.012, RULO.r * Math.sqrt(1 - ser));
+        const yerde = [0, rr + 0.008, SECCADE.arka + rr + ser * (SECCADE.boy - rr)];
+        const k = ruloDurum.t;
+        // elde taşınırken çocuğun baktığı yöne göre döner; yere inerken kıbleye hizalanır
+        const donus = M.rotY(lerp(G.py || 0, 0, k) * RAD);
+        ruloKoy(V.lerp(elde, yerde, k), rr, donus);
+        sah.rulo.bones = ruloKemik;
+      }
+    }
     kar.bones = r.deri;
     if (sah.su) sah.su.visible = su;
     const av = avucAl();
@@ -228,7 +298,7 @@ const N3 = (function () {
       face: [Math.max(D.lid, kirpma, yuz.sasir > 0 ? 0 : 0), konus, clamp(D.sm + (yuz.mutlu > 0 ? 0.4 : 0) - (yuz.sasir > 0 ? 0.6 : 0), 0, 1), yuz.sasir > 0 ? 1 : 0],
       gaze: [D.gz[0], D.gz[1], kizSahnede() ? 1 : 0, 0], head: E.basMerkez, scarf: renkler(true).ortu, rug: S.hali, blobs, fade: smooth(soluk), projScale: 1 / Math.tan(fov / 2),
     };
-    ciz.draw([sah.ana, kar, sah.su, av.L, av.R].filter(Boolean), env, PV, n);
+    ciz.draw([sah.ana, sah.hali, sah.rulo, kar, sah.su, av.L, av.R].filter(Boolean), env, PV, n);
 
     // Konuşma balonu: başın üstünde, ekrandaki yerine göre konur
     if (yazi && soluk < 0.3) {
@@ -246,7 +316,7 @@ const N3 = (function () {
   setTimeout(() => bildir('hazir'), 0);
 
   return {
-    kiz, goster, oynat, hizli, yanlis, kutla,
+    kiz, goster, oynat, giris, hizli, yanlis, kutla,
     // deneme için: kamerayı elle ayarla, zamanı elle ilerlet
     _kam: (k) => { ozelKam = k; }, _su: (d) => { deneme = d; }, _adim: (dt) => { zaman += dt; adim(dt); }, _durum: () => ({ oyun: !!oyun, ad: simdiAd, sahne: sahneAd }),
   };

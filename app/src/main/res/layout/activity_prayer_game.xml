@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Soruları bildikçe arkadaşın abdest alıp namaz kılacak. Bakalım sabah namazını sonuna kadar kıldırabilecek misin?"
+                android:text="Soruları bildikçe arkadaşın abdest alacak ya da namaz kılacak. Bakalım sabah namazını sonuna kadar kıldırabilecek misin?"
                 android:textColor="@color/muted"
                 android:textSize="15sp" />
 
@@ -142,48 +142,65 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Sesli / sessiz: sesli modda dualar ve sureler kayıttan okunur; sessizde yalnızca yazı ilerler -->
+            <!-- Zeynep seçiliyken: abdesti Ahmet aldığı için Abdest düğmesi kapalıdır -->
             <TextView
-                android:id="@+id/btnSound"
+                android:id="@+id/tvAbdestNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Abdesti Ahmet alıyor. Abdest bölümünü oynamak için Ahmet'i seç."
+                android:textColor="@color/muted"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <!-- İki bölüm ayrı düğmelerde. Yazıları (başlık + kalınan yer) kodda doldurulur.
+                 Yarım kalmış bölüme basınca "devam mı, baştan mı" diye sorulur. -->
+            <Button
+                android:id="@+id/btnAbdest"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:lineSpacingExtra="3dp"
+                android:minHeight="68dp"
+                android:paddingVertical="10dp" />
+
+            <Button
+                android:id="@+id/btnNamaz"
+                style="@style/Btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:lineSpacingExtra="3dp"
+                android:minHeight="68dp"
+                android:paddingVertical="10dp" />
+
+            <!-- Sesli okuma: açık/kapalı anahtarı ve altında ne yaptığını anlatan satır -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:background="@drawable/card"
-                android:gravity="center"
-                android:minHeight="48dp"
-                android:padding="12dp"
-                android:textColor="@color/text"
-                android:textSize="16sp" />
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="10dp">
 
-            <Button
-                android:id="@+id/btnStart"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:minHeight="58dp"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <Switch
+                    android:id="@+id/swSound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="🔊  Sesli okuma"
+                    android:textColor="@color/text"
+                    android:textSize="17sp" />
 
-            <Button
-                android:id="@+id/btnNamazOnly"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:text="🕌  Abdesti biliyorum, namazdan başla" />
-
-            <TextView
-                android:id="@+id/btnRestart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:padding="10dp"
-                android:text="Baştan başla"
-                android:textColor="@color/muted"
-                android:textSize="15sp"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/tvSoundInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/muted"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvWins"
@@ -321,6 +338,22 @@
                     android:layout_width="match_parent"
                     android:layout_marginTop="12dp"
                     android:text="Devam ›"
+                    android:visibility="gone" />
+
+                <!-- Abdest bitince "Namaza geçelim mi?" sorusunun "hayır" cevabı -->
+                <TextView
+                    android:id="@+id/btnLater"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:minHeight="44dp"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Şimdi değil"
+                    android:textColor="@color/muted"
+                    android:textSize="15sp"
                     android:visibility="gone" />
             </LinearLayout>
 
