@@ -369,7 +369,7 @@ object PrayerGame {
             PrayerChapter.NAMAZ, "Kıbleye döndük",
             "Namaz kılarken hangi yöne döneriz?",
             listOf("Kıbleye, yani Kâbe'ye doğru", "Güneşe doğru", "Pencereye doğru"),
-            "Namazda Mekke'deki Kâbe'ye doğru döneriz. Buna kıble denir. Seccademizdeki mihrap deseninin ucu kıbleyi gösteriyor.",
+            "Namazda Mekke'deki Kâbe'ye doğru döneriz. Buna kıble denir. Seccademizi kıbleye doğru serdik; üstündeki mihrap deseninin ucu kıbleyi gösteriyor.",
             listOf(Move("stand", 1200)),
             "Bakara suresi, 144. ayet",
         ),
@@ -565,19 +565,34 @@ object PrayerGame {
         ),
     )
 
-    /** Namaz bölümünün ilk adımının sırası ("Yalnız namaz" ile buradan başlanır). */
+    /**
+     * Namaz başlarken çocuğun durduğu duruş: seccadesini sermiş, bize dönmüş bekliyor.
+     * 3B sahnede (assets/namazoyun3d/duruslar.js) tanımlıdır; 2B çizimde "stand" kullanılır.
+     */
+    const val NAMAZ_READY_POSE = "wait"
+
+    /** Namaz bölümünün ilk adımının sırası. */
     val NAMAZ_START: Int = STEPS.indexOfFirst { it.chapter == PrayerChapter.NAMAZ }
 
     /**
      * [index]. adıma gelindiğinde figürün durduğu duruş: bir önceki adımın son hareketi.
      * İlk adımda abdest taburesinde oturuyordur.
      */
-    fun restingPose(index: Int): String =
-        if (index <= 0) "a_sit" else STEPS[minOf(index, STEPS.size) - 1].moves.last().pose
+    fun restingPose(index: Int): String = when {
+        index <= 0 -> "a_sit"
+        // Namazın ilk sorusunda çocuk seccadesini sermiş, bize dönmüş bekliyordur
+        index == NAMAZ_START -> NAMAZ_READY_POSE
+        else -> STEPS[minOf(index, STEPS.size) - 1].moves.last().pose
+    }
 
-    /** [index]. adım gösterilirken sahne: önceki adımın bölümü (kıbleye dönünce sahne değişir). */
-    fun sceneAt(index: Int): PrayerChapter =
-        if (index <= 0) PrayerChapter.ABDEST else STEPS[minOf(index, STEPS.size) - 1].chapter
+    /** [index]. adım gösterilirken sahne: adımın kendi bölümü (abdesthane ya da namaz odası). */
+    fun sceneAt(index: Int): PrayerChapter = STEPS[index.coerceIn(0, STEPS.size - 1)].chapter
+
+    /** Bir bölümün ilk adımının sırası. */
+    fun chapterStart(chapter: PrayerChapter): Int = STEPS.indexOfFirst { it.chapter == chapter }
+
+    /** Bir bölümün son adımından sonraki sıra (bölümün adımları: chapterStart until chapterEnd). */
+    fun chapterEnd(chapter: PrayerChapter): Int = STEPS.indexOfLast { it.chapter == chapter } + 1
 
     /** Bölüm içindeki sıra: (bu bölümde kaçıncı adım, bölümdeki adım sayısı). */
     fun positionInChapter(index: Int): Pair<Int, Int> {

@@ -159,7 +159,8 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         val cb = playDone
         if (cb != null) {
             playDone = null
-            f.play(playMoves, lastScene, null, cb)
+            // Giriş canlandırması sürüyorduysa (hareket listesi boş) 2B çizimde doğrudan biter
+            if (playMoves.isEmpty()) cb() else f.play(playMoves, lastScene, null, cb)
         }
     }
 
@@ -210,7 +211,29 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         js("N3.oynat(${arr}, ${JSONObject.quote(newScene.name)}, $partJs, $playId)")
     }
 
-    /** Okuma sürerken dokunulursa okumayı hemen bitirir. */
+    /**
+     * Namazın başlangıcı: çocuk rulo seccadesiyle odaya girer, seccadeyi kıbleye doğru serer,
+     * sonra bize dönüp bekler. Bitince [done] çağrılır. Dokununca sonuna atlar.
+     * [fromAbdest]: abdesthaneden geliniyorsa ekran önce kararır, sonra oda açılır.
+     * Eski 2B çizimde bu canlandırma yoktur; çocuk doğrudan seccadede durur.
+     */
+    fun intro(fromAbdest: Boolean, done: () -> Unit) {
+        lastScene = PrayerChapter.NAMAZ
+        lastPose = PrayerGame.NAMAZ_READY_POSE
+        val f = flat
+        if (f != null) {
+            f.girl = girl
+            f.show(PrayerGame.NAMAZ_READY_POSE, PrayerChapter.NAMAZ)
+            done()
+            return
+        }
+        playId++
+        playMoves = emptyList()
+        playDone = done
+        js("N3.giris($playId, $fromAbdest)")
+    }
+
+    /** Okuma sürerken dokunulursa okumayı hemen bitirir (giriş canlandırmasında sonuna atlar). */
     fun fastForward() {
         onSkip?.invoke()
         flat?.fastForward()

@@ -192,6 +192,7 @@ function duruslar(kiz) {
     const r = coz(D.secde), bas = M.tp(r.W[K.BAS], [0, 0.11, 0.008]);
     for (const s of ['aL', 'aR']) D.secde[s] = { ...D.secde[s], p: [D.secde[s].p[0], 0.021, bas[2] - 0.075] };
   }
+  girisKur(D);
   return D;
 }
 
@@ -244,7 +245,8 @@ function yolBul(from, to, ms) {
 /** İki duruşun arası. t: 0..1. gec: bölümlerin zaman pencereleri. */
 function karistir(A, B, t, gec) {
   gec = gec || {};
-  const pen = (ad) => { const g = gec[ad]; return smooth(g ? (t - g[0]) / (g[1] - g[0]) : t); };
+  // gec.duz: yumuşatma yok (yürüyüş kareleri arasında dur kalk olmasın diye)
+  const pen = (ad) => { const g = gec[ad], x = g ? (t - g[0]) / (g[1] - g[0]) : t; return gec.duz ? clamp(x, 0, 1) : smooth(x); };
   const tg = pen('govde'), tb = pen('bas'), tk = pen('kol'), tl = pen('bacak');
   const L = (k, tt) => lerp(A[k], B[k], tt);
   const ayak = (a, b) => ({ b: V.lerp(a.b, b.b, tl), p: lerp(a.p, b.p, tl), y: lerp(a.y, b.y, tl), r: lerp(a.r, b.r, tl), t: lerp(a.t, b.t, tl), k: V.lerp(a.k, b.k, tl) });
@@ -255,4 +257,116 @@ function karistir(A, B, t, gec) {
     fL: ayak(A.fL, B.fL), fR: ayak(A.fR, B.fR),
     aL: { A: A.aL, B: B.aL, t: tk }, aR: { A: A.aR, B: B.aR, t: tk },
   };
+}
+
+
+// =====================================================================================
+// Namazın başlangıcı: çocuk rulo seccadeyle odaya girer, seccadeyi kıbleye doğru serer.
+// Sonra bize döner ve bekler ("wait"); kıble sorusu bilinince kıbleye dönüp seccadeye çıkar.
+//
+// Yürüyüş "kare kare" kurulur: her adımda bir ayak kalkar, öne konur; gövde iki ayağın
+// ortasında durur. Kareler birer duruştur (g1, g2, ...) ve sırayla oynatılır.
+// =====================================================================================
+
+/** Bir duruşu odanın başka bir yerine taşır ve [psi] derece döndürür (0 = kıbleye dönük). */
+function tasi(D, x, z, psi) {
+  const R = M.rotY(psi * RAD), yer = (p) => { const q = M.td(R, p); return [q[0] + x, q[1], q[2] + z]; };
+  const ayak = (f) => ({ ...f, b: yer(f.b), y: f.y + psi, k: M.td(R, f.k) });
+  const el = (a) => (a.at === 'dunya' ? { ...a, p: yer(a.p), f: M.td(R, a.f), n: M.td(R, a.n) } : a);
+  return { ...D, pel: yer(D.pel), py: D.py + psi, fL: ayak(D.fL), fR: ayak(D.fR), aL: el(D.aL), aR: el(D.aR) };
+}
+
+/** Seccadenin serildiği yer (sahne.js'teki NAMAZ.hali ile aynı): arka kenarın z'si ve boyu. */
+const SECCADE = { arka: 0.42 - 0.66, boy: 1.32 };
+/** Çocuğun seccadeyi sererken durduğu yer (seccadenin hemen arkası) ve odaya girdiği yer. */
+const GIRIS_YER = { x: 0, z: -0.47 }, GIRIS_BAS = { x: -1.50, z: -0.40 };
+/** Rulonun taşınırken durduğu yer ("bağ duruşu" koordinatı, göğse bağlı) ve yarıçapı. */
+const RULO = { tasima: [0, 0.800, 0.185], r: 0.055 };
+/** Giriş canlandırmasının yolu ve önemli anları (saniye); girisKur doldurur. */
+const GIRIS = { yol: null, an: null };
+
+/**
+ * Giriş duruşlarını D'ye ekler; yolları YOLLAR'a yazar.
+ * "Durak" {x, z, psi}: çocuğun durduğu yer ve baktığı yön.
+ */
+function girisKur(D) {
+  // Ruloyu iki eliyle önünde taşır (avuçlar yukarı, rulonun altında)
+  const tasiyan = { at: 'gogus', p: [0.150, 0.752, 0.165], f: [-0.25, 0.05, 1], n: [0, 1, 0], k: [0.7, -1, -0.5], c: 18, c2: 22, th: 10 };
+  const yuk = { hp: 4, gz: [0, -0.2], lid: 0.12, sm: 0.7, aL: tasiyan };
+  const bos = { hp: 4, gz: [0, -0.2], lid: 0.12, sm: 0.7 };
+
+  // Bir ayağın, verilen durakta yere bastığı yer (kalk > 0: ayak havada)
+  const ayakYer = (S, sol, kalk = 0) => {
+    const Rm = M.rotY(S.psi * RAD), q = M.td(Rm, [sol ? 0.085 : -0.085, 0, 0.095]);
+    return { b: [S.x + q[0], 0.014 + kalk, S.z + q[2]], p: kalk ? 24 : 0, y: (sol ? 7 : -7) + S.psi, r: 0, t: kalk ? -10 : 0, k: M.td(Rm, [sol ? 0.1 : -0.1, 0, 1]) };
+  };
+  const ara = (A, B, t) => ({ x: lerp(A.x, B.x, t), z: lerp(A.z, B.z, t), psi: lerp(A.psi, B.psi, t) });
+  let sayac = 0;
+  /**
+   * Duraklar arasında yürür: her adımda bir ayak bir sonraki durağa konur.
+   * Döndürdüğü: [[duruşAdı, süre, gec], ...]
+   */
+  const yuru = (duraklar, ust, hiz = 0.17) => {
+    const yol = [];
+    let sol = duraklar[0], sag = duraklar[0], solSira = true;
+    const kare = (l, r, kalkan) => {
+      const ad = 'g' + (++sayac), orta = ara(l, r, 0.5);
+      D[ad] = durus({ ...ust, pel: [orta.x, 0.715, orta.z], py: orta.psi, fL: ayakYer(l, true, kalkan === 'L' ? 0.055 : 0), fR: ayakYer(r, false, kalkan === 'R' ? 0.055 : 0) });
+      yol.push([ad, hiz, { duz: true }]);
+    };
+    // son adım: geride kalan ayak öbürünün yanına gelir
+    const hedefler = duraklar.slice(1).concat([duraklar[duraklar.length - 1]]);
+    for (const H of hedefler) {
+      if (solSira) { kare(ara(sol, H, 0.5), sag, 'L'); sol = H; } else { kare(sol, ara(sag, H, 0.5), 'R'); sag = H; }
+      kare(sol, sag, null);
+      solSira = !solSira;
+    }
+    return yol;
+  };
+  const dur = (S, ust) => durus({ ...ust, pel: [S.x, 0.72, S.z], py: S.psi, fL: ayakYer(S, true), fR: ayakYer(S, false) });
+  const sure = (y) => y.reduce((t, q) => t + q[1], 0);
+
+  // ---- Odaya gir, seccadenin serileceği yerin arkasına gel, kıbleye dön ----
+  const yon = Math.atan2(GIRIS_YER.x - GIRIS_BAS.x, GIRIS_YER.z - GIRIS_BAS.z) / RAD; // yürüdüğü yön
+  const A = { ...GIRIS_BAS, psi: yon }, B = { ...GIRIS_YER, psi: yon }, C = { ...GIRIS_YER, psi: 0 };
+  const adimSay = 5, ilerle = [];
+  for (let i = 1; i <= adimSay; i++) ilerle.push(ara(A, B, i / adimSay));
+  D.g0 = dur(A, yuk);
+  const gel = yuru([A, ...ilerle], yuk).concat(yuru([B, ara(B, C, 0.5), C], yuk, 0.17));
+
+  // ---- Çömel, ruloyu yere koy, it: seccade açılır ----
+  const yerde = (z, x = 0.16) => ({ at: 'dunya', p: [x, RULO.r * 2 + 0.012, z], f: [-0.10, -0.35, 1], n: [0, -1, -0.25], k: [1, -0.5, -0.4], c: 14, c2: 16, th: 14 });
+  const comel = (ek) => tasi(durus({ ...D.comel, sm: 0.7, ...ek }), C.x, C.z, 0);
+  const ruloZ = SECCADE.arka - C.z + RULO.r; // rulonun yere konduğu yer (çocuğa göre)
+  D.g_comel = comel({ aL: tasiyan, aR: elAyna(tasiyan), gz: [0, -0.6] });
+  D.g_koy = comel({ pel: [0, 0.40, -0.03], pp: 52, sp: 12, cp: 8, hp: 0, gz: [0, -0.8], aL: yerde(ruloZ - 0.01), aR: elAyna(yerde(ruloZ - 0.01)) });
+  D.g_it = comel({ pel: [0, 0.37, 0.02], pp: 64, sp: 14, cp: 9, hp: -8, gz: [0, -0.6], aL: yerde(ruloZ + 0.13), aR: elAyna(yerde(ruloZ + 0.13)) });
+  D.g_bak = comel({ hp: -10, gz: [0, -0.3], lid: 0.1, sm: 1 });
+  D.g_kalk = dur(C, { ...bos, hp: 8, gz: [0, -0.5] });
+  // Bize döner ve bekler: "Hangi yöne döneceğiz?"
+  const Bek = { ...C, psi: 34 };
+  D.wait = dur(Bek, { hp: 0, hy: 10, gz: [0.1, -0.05], lid: 0.08, sm: 1 });
+  const don = yuru([C, Bek], bos, 0.2);
+  don[don.length - 1] = ['wait', 0.3];
+
+  const t0 = sure(gel);
+  const sira = [
+    ...gel,
+    ['g_comel', 0.8, { kol: [0, 0.6] }],
+    ['g_koy', 0.6],
+    ['g_it', 0.5],
+    ['g_bak', 0.9, { kol: [0.2, 1] }],
+    ['g_kalk', 1.0, { bas: [0.2, 1] }],
+    ...don,
+  ];
+  YOLLAR['g0>wait'] = sira;
+  GIRIS.yol = sira;
+  // Rulo ne zaman yere iner (koy0..koy1) ve ne zaman açılır (ac0..ac1)
+  GIRIS.an = { koy0: t0 + 0.35, koy1: t0 + 1.4, ac0: t0 + 1.45, ac1: t0 + 2.85, son: sure(sira) };
+
+  // ---- Kıble sorusu bilinince: kıbleye dön, seccadenin üstüne yürü ----
+  const S0 = { x: 0, z: 0, psi: 0 };
+  const cik = yuru([Bek, C, ara(C, S0, 0.5), S0], bos, 0.2);
+  cik[cik.length - 1] = ['stand', 0.3];
+  YOLLAR['wait>stand'] = cik;
 }
