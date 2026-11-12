@@ -16,8 +16,23 @@ uygulamanın içindeki ses kaydı çalınır. Kayıtlar uygulamayla birlikte gel
 
 - Her dosyada yalnızca o söz olsun; başında ve sonunda en fazla yarım saniye sessizlik.
 - Tek kanal (mono), 44,1 kHz, 64-96 kbps yeterli. 18 dosyanın toplamı 2 MB'ı geçmez.
-- Kaynak: yalnızca kendi kaydımız ya da kullanım izni yazılı olarak belli olan kayıtlar.
-  Başka uygulamalardan ya da izni belli olmayan sitelerden ses kopyalanmaz.
+
+## Kayıtların kaynağı
+
+Kayıtlar Diyanet İşleri Başkanlığı'nın kendi sitelerinden alındı (proje sahibinin kararı, 2026-11-12):
+
+- Sureler ve ayetler (`ses_besmele`, `ses_euzu`, `ses_fatiha`, `ses_ihlas`, `ses_kevser`):
+  kuran.diyanet.gov.tr, ayet ayet okuyuş (Osman Şahin). Ayet dosyaları sırayla birleştirildi.
+- Dualar (`ses_subhaneke`, `ses_ruku`, `ses_rabbena_lekel`, `ses_secde`, `ses_tahiyyat`, `ses_salli`,
+  `ses_barik`, `ses_rabbena`): namaz.diyanet.gov.tr, "Sureler ve Dualar" bölümü, Hanefi duaları.
+  Rükû ve secde tesbihi kayıtta bir kez okunuyor; üç kez art arda eklendi.
+- `ses_sehadet`: Ettehiyyâtü kaydının son bölümü (kelime-i şehâdet) kesilerek elde edildi.
+
+Dosyalar tek kanala ve 64 kbps'e indirildi, baştaki ve sondaki sessizlik kırpıldı, ses düzeyleri eşitlendi.
+
+**Henüz olmayan dört kayıt:** `ses_niyet` (Türkçe niyet), `ses_tekbir` (Allâhu Ekber), `ses_semi`
+(Semi'allâhü limen hamideh), `ses_selam`. Bunlar Diyanet'in bu iki sitesinde ayrı kayıt olarak yok;
+eklenene kadar oyunda sessiz geçer.
 
 ## Liste
 
