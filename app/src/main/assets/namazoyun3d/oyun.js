@@ -32,13 +32,15 @@ const N3 = (function () {
   let ozelKam = null, deneme = null;
   let yazi = null, yaziBitis = 0;
 
-  const durusAl = (ad) => { const D = DR[kizMi] || (DR[kizMi] = duruslar(kizMi)); return D[ad] || D.stand; };
+  // Abdesti her zaman Ahmet alır; Zeynep seçildiyse namaz sahnesinde Zeynep görünür
+  const kizSahnede = () => kizMi && sahneAd !== 'ABDEST';
+  const durusAl = (ad) => { const k = kizSahnede(), D = DR[k] || (DR[k] = duruslar(k)); return D[ad] || D.stand; };
   const sahneAl = (ad) => {
     if (!sahne[ad]) { const b = SAHNELER[ad].kur(); sahne[ad] = { ana: ciz.upload(b.ana), su: b.su ? ciz.upload(b.su, { blend: true, noShadow: true }) : null }; }
     return sahne[ad];
   };
   // Abdest sahnesinde figürün kolları sıvalıdır (erkekte takke de çıkmıştır): ayrı bir örgü
-  const govdeAl = () => { const a = sahneAd === 'ABDEST', an = kizMi + '|' + a; return govde[an] || (govde[an] = ciz.upload(karakterKur(kizMi, a))); };
+  const govdeAl = () => { const a = sahneAd === 'ABDEST', k = kizSahnede(), an = k + '|' + a; return govde[an] || (govde[an] = ciz.upload(karakterKur(k, a))); };
   let avuc = null;
   const avucAl = () => avuc || (avuc = { L: ciz.upload(avucSuKur(true), { blend: true, noShadow: true }), R: ciz.upload(avucSuKur(false), { blend: true, noShadow: true }) });
   // Hangi duruşa giderken avuçta su var: R sağ el, LR iki el
@@ -75,8 +77,9 @@ const N3 = (function () {
   // ---- Dışarıdan çağrılanlar ----
   function kiz(v) { kizMi = !!v; simdi = durusAl(simdiAd); }
   function goster(ad, sAd) {
-    oyun = null; simdiAd = ad; simdi = durusAl(ad); yazi = null;
+    oyun = null; simdiAd = ad; yazi = null;
     if (sAd && sAd !== sahneAd) { sahneAd = sAd; kam.ilk = true; }
+    simdi = durusAl(ad);
     soluk = 0; solukHedef = 0; bekleyenSahne = null;
   }
   /**
@@ -223,7 +226,7 @@ const N3 = (function () {
     const env = {
       vp, lightVP, cam: goz, sun: I.sun, sunCol: I.sunCol, sky: I.sky, gnd: I.gnd, fill: I.fill, fillCol: I.fillCol, time: zaman,
       face: [Math.max(D.lid, kirpma, yuz.sasir > 0 ? 0 : 0), konus, clamp(D.sm + (yuz.mutlu > 0 ? 0.4 : 0) - (yuz.sasir > 0 ? 0.6 : 0), 0, 1), yuz.sasir > 0 ? 1 : 0],
-      gaze: [D.gz[0], D.gz[1], kizMi ? 1 : 0, 0], head: E.basMerkez, scarf: renkler(true).ortu, rug: S.hali, blobs, fade: smooth(soluk), projScale: 1 / Math.tan(fov / 2),
+      gaze: [D.gz[0], D.gz[1], kizSahnede() ? 1 : 0, 0], head: E.basMerkez, scarf: renkler(true).ortu, rug: S.hali, blobs, fade: smooth(soluk), projScale: 1 / Math.tan(fov / 2),
     };
     ciz.draw([sah.ana, kar, sah.su, av.L, av.R].filter(Boolean), env, PV, n);
 

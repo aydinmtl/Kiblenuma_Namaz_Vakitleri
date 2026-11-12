@@ -382,7 +382,8 @@ class PrayerGameActivity : Activity() {
         val name = if (girl) "Zeynep" else "Ahmet"
         findViewById<TextView>(R.id.tvFinishTitle).text = "Maşallah! 🎉"
         findViewById<TextView>(R.id.tvFinishText).text =
-            "Bütün soruları bildin. $name seninle birlikte abdest aldı ve sabah namazını baştan sona kıldı.\n\n" +
+            (if (girl) "Bütün soruları bildin. Ahmet abdest aldı, Zeynep de sabah namazını baştan sona kıldı.\n\n"
+            else "Bütün soruları bildin. $name seninle birlikte abdest aldı ve sabah namazını baştan sona kıldı.\n\n") +
             "Şimdi sıra sende: bir dahaki namazda bunları birlikte yapalım!"
         finishBox.visibility = View.VISIBLE
         fadeIn(finishBox)

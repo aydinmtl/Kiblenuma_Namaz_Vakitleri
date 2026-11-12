@@ -28,11 +28,11 @@ import org.json.JSONObject
  */
 class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
-    /** true: Zeynep, false: Ahmet. */
+    /** true: Zeynep, false: Ahmet. Abdest bölümünü her zaman Ahmet alır; Zeynep namaz bölümünde görünür. */
     var girl = false
         set(v) {
             field = v
-            flat?.girl = v
+            flat?.girl = v && lastScene != PrayerChapter.ABDEST
             js("N3.kiz($v)")
         }
 
@@ -150,7 +150,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         web = null
         pending.clear()
         val f = PrayerFigureView(context, null)
-        f.girl = girl
+        f.girl = girl && lastScene != PrayerChapter.ABDEST
         f.onRecite = onRecite
         f.setOnClickListener { f.fastForward() }
         addView(f, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
@@ -172,6 +172,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         playDone = null
         playMoves = emptyList()
         playId++
+        flat?.girl = girl && sceneNow != PrayerChapter.ABDEST
         flat?.show(poseName, sceneNow)
         js("N3.goster(${JSONObject.quote(poseName)}, ${JSONObject.quote(sceneNow.name)})")
     }
@@ -184,6 +185,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         lastScene = newScene
         val f = flat
         if (f != null) {
+            f.girl = girl && newScene != PrayerChapter.ABDEST
             f.play(list, newScene, part, done)
             return
         }
