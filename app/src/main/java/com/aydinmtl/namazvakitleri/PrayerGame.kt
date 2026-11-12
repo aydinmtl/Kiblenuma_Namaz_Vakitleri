@@ -256,9 +256,10 @@ object PrayerGame {
             listOf("Üç kez çalkalarız", "Yutarız", "Hiçbir şey yapmayız"),
             "Sağ elimizle ağzımıza su alır, üç kez çalkalayıp dökeriz.",
             listOf(
-                Move("a_hands", 500, null, true), Move("a_mouth", 450, "1"), Move("a_mouth2", 300, "1"),
-                Move("a_hands", 450, "2", true), Move("a_mouth", 450, "2"), Move("a_mouth2", 300, "2"),
-                Move("a_hands", 450, "3", true), Move("a_mouth", 450, "3"), Move("a_mouth2", 300, "3"),
+                // Her seferinde: sağ avuca su al, yüze götür, ağza ver
+                Move("a_cupr", 650, "1", true), Move("a_mouth", 600, "1"), Move("a_mouth2", 450, "1"),
+                Move("a_cupr", 600, "2", true), Move("a_mouth", 600, "2"), Move("a_mouth2", 450, "2"),
+                Move("a_cupr", 600, "3", true), Move("a_mouth", 600, "3"), Move("a_mouth2", 450, "3"),
                 Move("a_sit", 500),
             ),
             BUHARI_ABDEST, BodyPart.MOUTH,
@@ -269,9 +270,10 @@ object PrayerGame {
             listOf("Burnumuza", "Kulağımıza", "Gözümüze"),
             "Burnumuza üç kez su çekip temizleriz.",
             listOf(
-                Move("a_hands", 500, null, true), Move("a_nose", 450, "1"), Move("a_nose2", 300, "1"),
-                Move("a_hands", 450, "2", true), Move("a_nose", 450, "2"), Move("a_nose2", 300, "2"),
-                Move("a_hands", 450, "3", true), Move("a_nose", 450, "3"), Move("a_nose2", 300, "3"),
+                // Her seferinde: sağ avuca su al, yüze götür, burna ver
+                Move("a_cupr", 650, "1", true), Move("a_nose", 600, "1"), Move("a_nose2", 450, "1"),
+                Move("a_cupr", 600, "2", true), Move("a_nose", 600, "2"), Move("a_nose2", 450, "2"),
+                Move("a_cupr", 600, "3", true), Move("a_nose", 600, "3"), Move("a_nose2", 450, "3"),
                 Move("a_sit", 500),
             ),
             BUHARI_ABDEST, BodyPart.NOSE,
@@ -284,8 +286,14 @@ object PrayerGame {
                 "Yalnız burnumuzu",
                 "Yalnız alnımızı",
             ),
-            "Yüzümüzün tamamını üç kez yıkarız. Yüzü yıkamak abdestin farzlarındandır.",
-            listOf(Move("a_hands", 500, null, true)) + three("a_face1", "a_face2", false) + Move("a_sit", 500),
+            "Yüzümüzün tamamını üç kez yıkarız: her seferinde avuçlarımıza yeniden su alırız. Yüzü yıkamak abdestin farzlarındandır.",
+            listOf(
+                // Üç kez: iki avuca su al, alından çeneye yıka
+                Move("a_cup", 650, "1", true), Move("a_face1", 550, "1"), Move("a_face2", 450, "1"),
+                Move("a_cup", 600, "2", true), Move("a_face1", 550, "2"), Move("a_face2", 450, "2"),
+                Move("a_cup", 600, "3", true), Move("a_face1", 550, "3"), Move("a_face2", 450, "3"),
+                Move("a_sit", 500),
+            ),
             MAIDE_6, BodyPart.FACE,
         ),
         PrayerStep(

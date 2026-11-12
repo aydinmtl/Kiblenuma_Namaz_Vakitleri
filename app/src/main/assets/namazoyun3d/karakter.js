@@ -45,7 +45,7 @@ function renkler(kiz) {
 }
 
 /** Çocuğun gövdesini kurar (bağ duruşunda). kiz: true ise Zeynep. */
-function karakterKur(kiz) {
+function karakterKur(kiz, abdest = false) {
   const R = renkler(kiz), m = new Mesh(), TEN = MAT.TEN;
   const yum = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
@@ -91,11 +91,19 @@ function karakterKur(kiz) {
     const PA = L ? K.PA_L : K.PA_R, PB = L ? K.PB_L : K.PB_R, BA = L ? K.BA_L : K.BA_R, BB = L ? K.BB_L : K.BB_R;
     // ---- Kol (gömlek kolu): omuzdan bileğe ----
     const kol = [[0.990, 0.014], [0.983, 0.032], [0.965, 0.044], [0.93, 0.046], [0.87, 0.044], [0.825, 0.042], [0.785, 0.041], [0.745, 0.040], [0.70, 0.038], [0.655, 0.035], [0.632, 0.035]];
-    m.tube(kol.map(([y, r]) => {
+    const kolHalka = ([y, r]) => {
       const t = yum(0.825, 0.745, y); // dirsek çevresinde üst kol → ön kol geçişi
       return { c: [x, y, 0], rx: r, rz: r * 1.04, b: [UK, OK, 1 - t] };
-    }), { n: 14, col: R.ust, capA: true });
-    m.tube([{ c: [x, 0.632, 0], rx: 0.035, rz: 0.036 }, { c: [x, 0.640, 0], rx: 0.027, rz: 0.028 }], { n: 14, col: R.ustKoyu, b: [OK, OK, 1], capB: true, flip: true });
+    };
+    if (!abdest) {
+      m.tube(kol.map(kolHalka), { n: 14, col: R.ust, capA: true });
+      m.tube([{ c: [x, 0.632, 0], rx: 0.035, rz: 0.036 }, { c: [x, 0.640, 0], rx: 0.027, rz: 0.028 }], { n: 14, col: R.ustKoyu, b: [OK, OK, 1], capB: true, flip: true });
+    } else {
+      // Abdestte kollar sıvalı: kol ağzı dirseğin üstünde kıvrılmış, dirsek ve ön kol açıkta
+      m.tube([[0.990, 0.014], [0.983, 0.032], [0.965, 0.044], [0.93, 0.046], [0.875, 0.045], [0.862, 0.052], [0.846, 0.054], [0.832, 0.052]].map(kolHalka), { n: 14, col: R.ust, capA: true });
+      m.tube([[0.832, 0.052], [0.838, 0.036]].map(kolHalka), { n: 14, col: R.ustKoyu, capB: true, flip: true });
+      m.tube([[0.85, 0.036], [0.825, 0.0365], [0.785, 0.0355], [0.745, 0.034], [0.70, 0.031], [0.655, 0.0265], [0.636, 0.024]].map(kolHalka), { n: 14, col: R.ten, mat: TEN });
+    }
     // ---- El: avuç + dört parmak + başparmak ----
     m.tube([[0.642, 0.016, 0.021], [0.625, 0.0135, 0.023], [0.60, 0.0135, 0.031], [0.578, 0.0125, 0.0335], [0.566, 0.0105, 0.032]].map(([y, rx, rz]) =>
       ({ c: [x, y, 0.001], rx, rz, e: 2.7 })), { n: 12, col: R.ten, mat: TEN, b: [EL, EL, 1], capA: true, capB: true });
@@ -166,13 +174,15 @@ function karakterKur(kiz) {
   if (!kiz) {
     // kulaklar
     for (const s of [1, -1]) m.ball([0.117 * s, 1.137, -0.004], [0.013, 0.029, 0.021], { col: hex('#EDB692'), mat: TEN, b: [K.BAS, K.BAS, 1], lat: 8, lon: 10 });
-    // takke: başın tepesinde, hafif arkaya yatık örgü başlık
-    const egim = 13 * RAD, eks = [0, Math.cos(egim), -Math.sin(egim)], az = [0, Math.sin(egim), Math.cos(egim)];
-    const hal = [[5, 1.125], [16, 1.125], [28, 1.125], [40, 1.122], [50, 1.118], [58, 1.112], [63, 1.115], [65, 1.07]];
-    m.tube(hal.map(([a, g]) => {
-      const c = Math.cos(a * RAD), sn = Math.sin(a * RAD);
-      return { c: V.add(hc, V.mul(eks, hr[1] * g * c)), ax: [1, 0, 0], az, rx: hr[0] * g * sn, rz: hr[2] * g * sn };
-    }), { n: 36, col: R.ortu, mat: MAT.ORGU, b: [K.BAS, K.BAS, 1], capA: true });
+    // takke: başın tepesinde, hafif arkaya yatık örgü başlık (abdestte çıkarılır: baş meshi saça yapılır)
+    if (!abdest) {
+      const egim = 13 * RAD, eks = [0, Math.cos(egim), -Math.sin(egim)], az = [0, Math.sin(egim), Math.cos(egim)];
+      const hal = [[5, 1.125], [16, 1.125], [28, 1.125], [40, 1.122], [50, 1.118], [58, 1.112], [63, 1.115], [65, 1.07]];
+      m.tube(hal.map(([a, g]) => {
+        const c = Math.cos(a * RAD), sn = Math.sin(a * RAD);
+        return { c: V.add(hc, V.mul(eks, hr[1] * g * c)), ax: [1, 0, 0], az, rx: hr[0] * g * sn, rz: hr[2] * g * sn };
+      }), { n: 36, col: R.ortu, mat: MAT.ORGU, b: [K.BAS, K.BAS, 1], capA: true });
+    }
   } else {
     // başörtüsünün boyun ve omuzlara inen kısmı
     const ortu = [[1.085, 0.108, 0.088, -0.028, K.BAS, K.BAS, 1], [1.05, 0.097, 0.086, -0.016, K.BAS, K.BOYUN, 0.6], [1.01, 0.098, 0.082, -0.004, K.BOYUN, K.GOGUS, 0.6],
@@ -181,6 +191,17 @@ function karakterKur(kiz) {
     m.tube(ortu.map(([y, rx, rz, z, b0, b1, w], i) => ({ c: [0, y, z], rx, rz, b: [b0, b1, w], f: i >= 5 ? (x, zz) => [x, zz] : null })), { n: 28, col: R.ortu });
     m.tube([{ c: [0, 0.875, 0.004], rx: 0.150, rz: 0.108 }, { c: [0, 0.89, 0.004], rx: 0.13, rz: 0.09 }], { n: 28, col: R.ustKoyu, b: [K.GOGUS, K.GOGUS, 1], flip: true });
   }
+  return m.build();
+}
+
+/**
+ * Avuçtaki su: avuç içine oturan yassı, parlak bir su birikintisi. Karakterle aynı iskeleti kullanır
+ * (el kemiğine bağlıdır); yalnızca figür avucunda su taşırken çizilir. sol: sol el mi.
+ */
+function avucSuKur(sol) {
+  const m = new Mesh(), s = sol ? 1 : -1, EL = sol ? K.EL_L : K.EL_R;
+  // Bağ duruşunda kollar aşağıda, avuç içi gövdeye (içe) bakar
+  m.ball([0.14 * s - s * 0.018, 0.598, 0.004], [0.0095, 0.032, 0.026], { col: hex('#bfe6fb'), mat: MAT.SU, b: [EL, EL, 1], lat: 8, lon: 12 });
   return m.build();
 }
 
