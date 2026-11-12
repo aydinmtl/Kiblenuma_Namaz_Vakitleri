@@ -24,7 +24,7 @@ class RefreshActivity : Activity() {
 
     companion object {
         private const val LOCATION_TIMEOUT_MS = 8_000L   // konum için en çok bekleme
-        private const val TOTAL_TIMEOUT_MS = 45_000L     // tüm iş için güvenlik sınırı
+        private const val TOTAL_TIMEOUT_MS = 75_000L     // tüm iş için güvenlik sınırı
         private const val CLOSE_AFTER_MS = 3_000L        // sonucu bu kadar göster
     }
 

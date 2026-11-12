@@ -263,6 +263,7 @@ class MainActivity : Activity() {
             !LocationHelper.hasPermission(this) -> "⚠ Otomatik konum için izin gerekli. Ayarlar'a gitmek için dokun."
             checkingLocation -> "📡 Otomatik konum · kontrol ediliyor…"
             locationNote != null -> "📡 Otomatik konum · $locationNote"
+            Store.isComputed(this) -> "📡 Otomatik konum açık · vakitler konumundan hesaplanıyor"
             else -> "📡 Otomatik konum açık"
         }
     }

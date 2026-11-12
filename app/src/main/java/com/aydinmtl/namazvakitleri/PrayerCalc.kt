@@ -8,6 +8,7 @@ import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan
 import kotlin.math.atan2
+import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -100,6 +101,50 @@ object PrayerCalc {
      * [asrFactor]: 1 = standart (Şafii, Maliki, Hanbeli ve Diyanet), 2 = Hanefi (asr-ı sani).
      */
     fun day(date: LocalDate, lat: Double, lon: Double, zone: ZoneId, method: CalcMethod, asrFactor: Int): List<LocalTime>? {
+        // Saat 24'ü geçen vakit (ör. 24:20) 00:20 olarak yazılır. Hangi güne ait olduğunu
+        // Prayers.dayMoments sıralamaya bakarak bulur (akşamdan önce görünen yatsı = ertesi gün).
+        return rawMinutes(date, lat, lon, zone, method, asrFactor)?.map { toClock(it.roundToInt()) }
+    }
+
+    /**
+     * Diyanet'in temkin (ihtiyat) süreleri, dakika: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı.
+     * Güneş 7 dk erken; öğle 5, ikindi 4, akşam 7 dk geç yazılır. Diyanet'in kendi listesinde de
+     * böyledir: listede "GunesDogus" ile "Gunes" arasında ve "GunesBatis" ile "Aksam" arasında
+     * tam 7 dakika vardır.
+     *
+     * Akşam burada 7 değil 8 alınır: Diyanet'in gün batımı bizim hesabımızdan yaklaşık 1 dakika
+     * geç çıkıyor (Cenevre listesiyle karşılaştırıldı). Hesaplanan akşam vakti resmi listeden
+     * ERKEN olmasın diye (iftar için önemli) 1 dakika daha ihtiyat eklenir.
+     */
+    private val DIYANET_TEMKIN = intArrayOf(0, -7, 5, 4, 8, 0)
+
+    /**
+     * Diyanet'in ölçüleriyle (imsak 18°, yatsı 17°, temkin süreleri) HESAPLANMIŞ vakitler.
+     *
+     * Ne zaman kullanılır: Diyanet'in listesinde bulunulan yere yakın bir ilçe yoksa
+     * (bkz. AutoLocation). Resmi liste değildir; ekranda hesap olduğu yazılır.
+     * Cenevre'nin Kasım 2026 Diyanet listesiyle karşılaştırıldı (bkz. PrayerCalcTest):
+     * imsak, güneş, öğle, ikindi ve akşam en çok 1 dakika farklı; yatsı 5-6 dakika daha GEÇ
+     * (Diyanet yüksek enlemlerde yatsı için ayrı bir kural uyguluyor; geç olan ihtiyatlı yöndür).
+     *
+     * Yuvarlama ihtiyatlı yöne yapılır: imsak ve güneş aşağı, diğerleri yukarı.
+     */
+    fun diyanetDay(date: LocalDate, lat: Double, lon: Double, zone: ZoneId): List<LocalTime>? {
+        val raw = rawMinutes(date, lat, lon, zone, CalcMethod.DIYANET, 1) ?: return null
+        return raw.mapIndexed { i, m ->
+            val t = m + DIYANET_TEMKIN[i]
+            toClock(if (i <= SUNRISE) floor(t).toInt() else ceil(t).toInt())
+        }
+    }
+
+    /** Gün içindeki dakikayı saate çevirir; 24:00'ı geçerse başa sarar. */
+    private fun toClock(minutes: Int): LocalTime {
+        val m = ((minutes % 1440) + 1440) % 1440
+        return LocalTime.of(m / 60, m % 60)
+    }
+
+    /** 6 vaktin yuvarlanmamış hali: yerel saatle, gece yarısından itibaren dakika. */
+    private fun rawMinutes(date: LocalDate, lat: Double, lon: Double, zone: ZoneId, method: CalcMethod, asrFactor: Int): List<Double>? {
         val tz = zone.rules.getOffset(date.atTime(12, 0)).totalSeconds / 3600.0
         val jd = date.toEpochDay() + 2440587.5 - lon / (15.0 * 24.0)
 
@@ -152,11 +197,6 @@ object PrayerCalc {
             if (times[5].isNaN() || (times[5] - sunset) > ishaPortion) times[5] = sunset + ishaPortion
         }
 
-        // Saat 24'ü geçen vakit (ör. 24:20) 00:20 olarak yazılır. Hangi güne ait olduğunu
-        // Prayers.dayMoments sıralamaya bakarak bulur (akşamdan önce görünen yatsı = ertesi gün).
-        return times.map { t ->
-            val minutes = (fixHour(t + tz - lon / 15.0) * 60.0).roundToInt() % 1440
-            LocalTime.of(minutes / 60, minutes % 60)
-        }
+        return times.map { t -> fixHour(t + tz - lon / 15.0) * 60.0 }
     }
 }

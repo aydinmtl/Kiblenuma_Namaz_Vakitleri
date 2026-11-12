@@ -185,7 +185,12 @@ class SettingsActivity : Activity() {
 
         val m = Store.method(this)
         rowMethod.text = row("Hesaplama yöntemi", m.title)
-        tvMethodInfo.text = m.details() + if (Times.isFallback(this)) "\n⚠ Bu yerin koordinatı bulunamadı; şimdilik Diyanet vakitleri gösteriliyor." else ""
+        tvMethodInfo.text = if (m == CalcMethod.DIYANET && Store.isComputed(this)) {
+            // Hesaplanan yer: Diyanet'in listesi yok, bunu burada da açıkça söyle.
+            "Diyanet'in listesinde bulunduğun konuma yakın bir yer yok. Vakitler konumundan, Diyanet'in " +
+                "ölçüleriyle (imsak 18°, yatsı 17°, temkin süreleri) telefonda hesaplanıyor. " +
+                "Resmi listeden birkaç dakika farklı olabilir."
+        } else m.details() + if (Times.isFallback(this)) "\n⚠ Bu yerin koordinatı bulunamadı; şimdilik Diyanet vakitleri gösteriliyor." else ""
         rowAsr.text = row("İkindi hesabı", if (Store.asrHanafi(this)) "Hanefi (asr-ı sani)" else "Standart (asr-ı evvel)")
         rowAsr.isEnabled = m != CalcMethod.DIYANET
         rowAsr.alpha = if (m != CalcMethod.DIYANET) 1f else 0.5f
@@ -218,7 +223,8 @@ class SettingsActivity : Activity() {
         tvPermissions.visibility = if (warnings.isEmpty()) View.GONE else View.VISIBLE
 
         val last = Store.lastDay(this)
-        tvData.text = if (last == null) "Kayıtlı Diyanet vakti yok."
+        tvData.text = if (Store.isComputed(this)) "Vakitler konumundan telefonda hesaplanıyor; indirilen liste yok."
+        else if (last == null) "Kayıtlı Diyanet vakti yok."
         else "Kayıtlı Diyanet vakitleri: ${last.format(DateTimeFormatter.ofPattern("d MMMM yyyy", TR))} tarihine kadar. " +
             "Süre azalınca kendiliğinden yenilenir."
         binding = false
