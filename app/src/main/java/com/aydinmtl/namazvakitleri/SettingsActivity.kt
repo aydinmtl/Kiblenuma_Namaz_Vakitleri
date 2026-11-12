@@ -75,10 +75,11 @@ class SettingsActivity : Activity() {
                 Store.setAutoLocation(this, false)
             } else if (LocationHelper.hasPermission(this)) {
                 Store.setAutoLocation(this, true)
-                Toast.makeText(this, "Ana ekrana dönünce konumun kontrol edilecek.", Toast.LENGTH_SHORT).show()
+                // Ana ekrana dönmeyi beklemeden konumu hemen bul.
+                checkLocationNow()
             } else {
                 // İzin yok: önce nedenini anlat, sonra iste.
-                LocationConsent.show(this, onReady = { bind() }, onManual = { bind() })
+                LocationConsent.show(this, onReady = { bind(); checkLocationNow() }, onManual = { bind() })
             }
         }
         findViewById<Button>(R.id.btnManual).setOnClickListener {
@@ -179,7 +180,7 @@ class SettingsActivity : Activity() {
     /** Ekrandaki tüm değerleri kayıtlı ayarlardan doldurur. */
     private fun bind() {
         binding = true
-        tvCurrentPlace.text = "📍 " + Store.placeName(this).ifEmpty { "Yer seçilmedi" }
+        if (!locating) tvCurrentPlace.text = "📍 " + Store.placeName(this).ifEmpty { "Yer seçilmedi" }
         swAuto.isChecked = Store.autoLocation(this) && LocationHelper.hasPermission(this)
 
         val m = Store.method(this)
@@ -394,9 +395,62 @@ class SettingsActivity : Activity() {
         if (requestCode == LocationConsent.REQUEST_CODE) {
             val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
             Store.setAutoLocation(this, granted)
-            if (granted) Toast.makeText(this, "Ana ekrana dönünce konumun kontrol edilecek.", Toast.LENGTH_SHORT).show()
-            else Toast.makeText(this, "Konum izni verilmedi.", Toast.LENGTH_SHORT).show()
+            if (!granted) Toast.makeText(this, "Konum izni verilmedi.", Toast.LENGTH_SHORT).show()
+            bind()
+            if (granted) checkLocationNow()
+            return
         }
         bind()
+    }
+
+    /** Konum kontrolü sürüyor mu (aynı anda iki kez başlamasın). */
+    private var locating = false
+
+    /**
+     * Otomatik konum açılır açılmaz telefonun konumunu alır, Diyanet'te karşılığını bulur ve
+     * vakitleri indirir. Sonuç üstteki "📍 yer" satırında ve kısa bir mesajla gösterilir.
+     */
+    private fun checkLocationNow() {
+        if (locating) return
+        if (!LocationHelper.isLocationOn(this)) {
+            Toast.makeText(this, "Telefonun konum servisi kapalı. Açınca konumun bulunacak.", Toast.LENGTH_LONG).show()
+            return
+        }
+        locating = true
+        tvCurrentPlace.text = "📡 Konumun bulunuyor…"
+        LocationHelper.current(this, timeoutMs = 10_000L) { loc ->
+            if (loc == null) {
+                locating = false
+                if (!isFinishing && !isDestroyed) {
+                    bind()
+                    Toast.makeText(this, "Konum alınamadı. Ana ekranda tekrar denenecek.", Toast.LENGTH_LONG).show()
+                }
+                return@current
+            }
+            val app = applicationContext
+            Thread {
+                val r = try {
+                    AutoLocation.resolve(app, loc) { msg -> runOnUiThread { if (locating) tvCurrentPlace.text = "📡 $msg" } }
+                } catch (e: Exception) {
+                    AutoLocation.Result.Failed("İnternete bağlanılamadı.")
+                }
+                if (r !is AutoLocation.Result.Failed) {
+                    AutoLocation.lastFailAt = 0L
+                    AlarmScheduler.schedule(app)
+                    PrayerWidget.updateAll(app)
+                }
+                runOnUiThread {
+                    locating = false
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+                    bind()
+                    val text = when (r) {
+                        is AutoLocation.Result.Changed -> "Konum güncellendi: ${r.label}"
+                        is AutoLocation.Result.Same -> "Konum aynı: ${Store.placeName(this)}"
+                        is AutoLocation.Result.Failed -> r.reason + " Ana ekranda tekrar denenecek."
+                    }
+                    Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+                }
+            }.start()
+        }
     }
 }
