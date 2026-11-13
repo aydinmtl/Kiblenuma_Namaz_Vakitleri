@@ -31,8 +31,23 @@ import org.json.JSONObject
  */
 object AutoLocation {
 
-    /** Bu kadar km'den az yer değiştirdiyse tekrar arama yapılmaz. */
-    private const val MOVE_KM = 15f
+    /**
+     * Bu kadar km'den az yer değiştirdiyse tekrar arama yapılmaz.
+     *
+     * Eskiden 15 km idi. Bu, komşu şehirler arasındaki mesafeden büyüktü: Annemasse ile Cenevre
+     * merkezi arası yaklaşık 7 km, Vernier ile Cenevre arası 5 km'dir. Yani kullanıcı başka bir
+     * şehre geçse de uygulama "yer değişmedi" deyip eski yerde kalıyordu. Yeni değer bir yerleşimin
+     * boyutu kadardır. Daha küçüğü işe yaramaz: uygulama yalnızca YAKLAŞIK konum izni kullanır
+     * ve Android bu konumu yaklaşık 2 km'lik karelere yuvarlar; 2 km'lik oynama hareket değildir.
+     */
+    private const val MOVE_KM = 3f
+
+    /**
+     * Yer adlarının yazım kuralının sürümü. Kural her düzeltildiğinde 1 artırılır; böylece
+     * otomatik konum bir kez yeniden çalışır ve eski kuralla kaydedilmiş adı düzeltir.
+     * 1: yabancı adlarda I -> i ("Vernıer" değil "Vernier").
+     */
+    private const val NAME_RULES = 1
 
     /** Bir ilçe bundan uzaksa kabul edilmez: o kadar uzağın vakti yerine hesap daha doğrudur. */
     private const val DISTRICT_MAX_KM = 50f
@@ -104,6 +119,8 @@ object AutoLocation {
         if (Store.districtId(ctx) == null) return true
         // Az önce başarısız olduysa bir dakika bekle; sonra uygulama her açıldığında yine dener.
         if (System.currentTimeMillis() - lastFailAt < RETRY_AFTER_FAIL_MS) return false
+        // Yer adı eski yazım kuralıyla kaydedilmişse bir kez yeniden bulunur (ad düzelsin diye).
+        if (Store.nameRules(ctx) < NAME_RULES) return true
         // Hesaplanan yerdeyken arada bir Diyanet listesine yeniden bakılır (belki artık bulunur).
         if (Store.isComputed(ctx) && System.currentTimeMillis() >= Store.computedRecheckAt(ctx)) return true
         val p = Store.autoPoint(ctx) ?: return true
@@ -149,12 +166,15 @@ object AutoLocation {
         }
 
         if (found != null) {
+            val label = Diyanet.label(found.district, found.city, found.country)
+            Store.setNameRules(ctx, NAME_RULES)
             if (found.district.id == Store.districtId(ctx)) {
                 Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
                 Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
+                // Yer aynı ama kayıtlı ad farklıysa (eski sürüm "Vernıer" yazmıştı) adı düzelt.
+                if (label != Store.placeName(ctx)) Store.setPlaceName(ctx, label)
                 return Result.Same
             }
-            val label = Diyanet.label(found.district, found.city, found.country)
             Store.saveLocation(ctx, found.district.id, label, timesJson ?: "")
             Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
             Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
@@ -180,6 +200,8 @@ object AutoLocation {
             return Result.Same
         }
         val label = computedLabel(names, loc)
+        // Hesaplanan yerin adı telefondan gelir, Diyanet listesinden değil; yazım kuralı onu etkilemez.
+        if (!hadError) Store.setNameRules(ctx, NAME_RULES)
         Store.saveComputedLocation(ctx, label, Pair(loc.latitude, loc.longitude))
         Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
         return Result.Changed(label)

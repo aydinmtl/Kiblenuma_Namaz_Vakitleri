@@ -72,6 +72,12 @@ class MainActivity : Activity() {
 
         tvPlace.setOnClickListener { startActivity(Intent(this, LocationActivity::class.java)) }
         tvLocMode.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        // ↻ düğmesi: widget'taki yenile düğmesiyle aynı pencereyi açar. O pencere konumu
+        // (otomatik konum açıksa) yeniden bulur ve vakitleri Diyanet'ten indirir. Pencere
+        // kapanınca bu ekran yeniden öne gelir (onResume) ve yeni yer ile vakitler gösterilir.
+        findViewById<View>(R.id.btnRefresh).setOnClickListener {
+            startActivity(Intent(this, RefreshActivity::class.java))
+        }
         findViewById<View>(R.id.btnSettings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
@@ -187,7 +193,9 @@ class MainActivity : Activity() {
         }
         checkingLocation = true
         updateLocMode()
-        LocationHelper.current(this, timeoutMs = 10_000L) { loc ->
+        // En çok 3 dakikalık kayıtlı konum kabul edilir (eskiden 10 dakikaydı). Yolda giderken
+        // 10 dakika önceki konum eski şehri gösterebilir; daha eskiyse telefondan yenisi istenir.
+        LocationHelper.current(this, maxAgeMs = 3 * 60_000L, timeoutMs = 10_000L) { loc ->
             if (isFinishing || isDestroyed) return@current
             if (loc == null) {
                 checkingLocation = false
@@ -234,6 +242,11 @@ class MainActivity : Activity() {
             is AutoLocation.Result.Same -> {
                 locationNote = null
                 AutoLocation.lastFailAt = 0L
+                // Yer aynı kalsa da adının yazımı düzeltilmiş olabilir: ekranı ve widget'ı tazele.
+                if (Store.districtId(this) != null) {
+                    render()
+                    PrayerWidget.updateAll(this)
+                }
             }
             is AutoLocation.Result.Failed -> {
                 locationNote = r.reason + " Son seçilen yer kullanılıyor."

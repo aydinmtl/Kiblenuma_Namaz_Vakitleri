@@ -109,8 +109,43 @@ fun norm(s: String?): String {
     return noAccents.replace("ß", "ss").replace(Regex("[^a-z0-9]"), "")
 }
 
-/** "İSVİÇRE" -> "İsviçre", "CENEVRE" -> "Cenevre" (Türkçe harf kurallarıyla). */
-fun titleCase(s: String): String =
-    s.trim().lowercase(TR).split(" ").joinToString(" ") { w ->
-        if (w.isEmpty()) w else w.substring(0, 1).uppercase(TR) + w.substring(1)
+/**
+ * Tamamı büyük harfle yazılmış bir yer adını okunur hâle getirir: "İSVİÇRE" -> "İsviçre".
+ *
+ * Buradaki incelik I harfidir. Türkçede büyük I'nın küçüğü "ı", büyük İ'nin küçüğü "i"dir;
+ * diğer dillerde ise büyük I'nın küçüğü "i"dir. Diyanet listesi her adı büyük harfle verir:
+ *   - Türkçe adlar iki harfi ayırır: "KADIKÖY" (ı) ve "İSTANBUL" (i).
+ *   - Yabancı adlar düz I ile yazılır: "VERNIER", "WINTERTHUR". Bunlara Türkçe kural
+ *     uygulanırsa "Vernıer" gibi yanlış bir ad çıkar; doğrusu "Vernier"dir.
+ *
+ * [turkish] true ise ad Türkçe yazılmıştır (ülke adları, Türkiye'deki yerler): Türkçe kural.
+ * false ise ad yabancıdır: I -> i. Yabancı bir ülkedeki ad yine de Türkçe yazılmış olabilir
+ * (ör. Bulgaristan'da "KIRCAALİ"). Bu yüzden karar kelime kelime verilir: kelimede yalnızca
+ * Türkçede bulunan bir harf (İ, Ş, Ğ, ı) varsa o kelime Türkçe sayılır.
+ *
+ * Ayrıca fazla boşluklar atılır ve parantez, tire, noktadan sonraki harf de büyük yazılır:
+ * "RUTI (B)" -> "Ruti (B)", "ST. MORITZ" -> "St. Moritz".
+ */
+fun titleCase(s: String, turkish: Boolean = true): String =
+    s.trim().split(Regex("\\s+")).joinToString(" ") { word -> titleCaseWord(word, turkish) }
+
+/** Yalnızca Türkçe (ve Azerbaycan) yazımında bulunan harfler: kelimenin Türkçe yazıldığını gösterir. */
+private const val TURKISH_ONLY_LETTERS = "İŞĞışğ"
+
+private fun titleCaseWord(word: String, turkish: Boolean): String {
+    val tr = turkish || word.any { it in TURKISH_ONLY_LETTERS }
+    val locale = if (tr) TR else Locale.ROOT
+    // Yabancı kelimede noktalı İ de sıradan "i" olur (Locale.ROOT onu iki karaktere bölerdi).
+    val lower = if (tr) word.lowercase(TR) else word.replace('İ', 'I').lowercase(Locale.ROOT)
+    val out = StringBuilder()
+    var prev = ' ' // kelimenin başı: ilk harf büyük yazılır
+    for (c in lower) {
+        // Kesme işaretinden sonra yalnızca yabancı adlarda büyük harf gelir ("L'Isle");
+        // Türkçede kesme işareti ek ayırır, ek küçük kalır.
+        val afterApostrophe = prev == '\'' || prev == '’'
+        val startsPart = !prev.isLetter() && (!afterApostrophe || !tr)
+        out.append(if (c.isLetter() && startsPart) c.toString().uppercase(locale) else c.toString())
+        prev = c
     }
+    return out.toString()
+}

@@ -24,6 +24,41 @@ class PlaceMatchTest {
         assertEquals("İsviçre", titleCase("İSVİÇRE"))
         assertEquals("Kadıköy", titleCase("KADIKÖY"))
         assertEquals("Bosna Hersek", titleCase("BOSNA HERSEK"))
+        assertEquals("Irak", titleCase("IRAK"))
+        assertEquals("Isparta", titleCase("ISPARTA"))
+        assertEquals("İstanbul", titleCase("İSTANBUL"))
+        assertEquals("Kuzey Kıbrıs", titleCase("KUZEY KIBRIS"))
+    }
+
+    @Test
+    fun titleCase_yabanci_adlarda_I_harfi_i_olur() {
+        // Diyanet listesi İsviçre'deki yerleri düz I ile verir; Türkçe kural "Vernıer" yapardı.
+        assertEquals("Vernier", titleCase("VERNIER", turkish = false))
+        assertEquals("Winterthur", titleCase("WINTERTHUR", turkish = false))
+        assertEquals("Zurih", titleCase("ZURIH", turkish = false))
+        assertEquals("Interlaken", titleCase("INTERLAKEN", turkish = false))
+        assertEquals("Biel", titleCase("BIEL", turkish = false))
+        assertEquals("Yverdon Les Bains", titleCase("YVERDON LES BAINS", turkish = false))
+        // Noktalı İ yabancı adda da sıradan i olur.
+        assertEquals("Berlin", titleCase("BERLİN", turkish = false))
+    }
+
+    @Test
+    fun titleCase_yabanci_ulkede_turkce_yazilmis_ad() {
+        // Kelimede yalnızca Türkçede olan harf (İ, Ş, Ğ) varsa o kelime Türkçe kuralla yazılır.
+        assertEquals("Kırcaali", titleCase("KIRCAALİ", turkish = false))
+        assertEquals("Şamahı", titleCase("ŞAMAHI", turkish = false))
+    }
+
+    @Test
+    fun titleCase_bosluk_parantez_ve_nokta() {
+        assertEquals("Biberist", titleCase("BIBERIST ", turkish = false))
+        assertEquals("Ruti (B)", titleCase("RUTI (B)", turkish = false))
+        assertEquals("Au (Zurih)", titleCase("AU (Zurih)", turkish = false))
+        assertEquals("St. Moritz", titleCase("ST. MORITZ", turkish = false))
+        assertEquals("Wil (Sg)", titleCase("WIL (SG)", turkish = false))
+        assertEquals("L'Isle", titleCase("L'ISLE", turkish = false))
+        assertEquals("Ağrı'nın", titleCase("AĞRI'NIN"))
     }
 
     private val cities = listOf(
