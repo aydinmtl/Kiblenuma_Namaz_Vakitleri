@@ -1,6 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
-/**
+/*
  * "Namaz Öğreniyorum" oyunu: çocuk her soruyu bildikçe figür bir adım ilerler.
  * Abdestle başlar, sabah namazının farzı (2 rekat) selamla biter. Adam asmacanın tersi:
  * bilinen her soru figürü namazın sonuna bir adım daha yaklaştırır.

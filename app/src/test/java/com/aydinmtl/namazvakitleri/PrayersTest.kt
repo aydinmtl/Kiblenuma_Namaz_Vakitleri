@@ -1,11 +1,11 @@
 package com.aydinmtl.namazvakitleri
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Test
 
 /** Prayers.next (sıradaki vakit) ve Prayers.current (içinde bulunulan vakit). */
 class PrayersTest {

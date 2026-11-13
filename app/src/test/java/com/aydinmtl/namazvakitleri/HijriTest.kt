@@ -1,12 +1,12 @@
 package com.aydinmtl.namazvakitleri
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.chrono.HijrahDate
 import java.time.temporal.ChronoField
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 /**
  * Dini günler listesi. Uygulama Android'in Ümmü'l-Kurâ takvimini kullanır; bilgisayarda o yok.

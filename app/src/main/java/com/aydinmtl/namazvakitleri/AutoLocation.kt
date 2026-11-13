@@ -4,7 +4,6 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDate
@@ -13,6 +12,7 @@ import java.util.Locale
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import org.json.JSONObject
 
 /**
  * Otomatik konum: telefonun bulunduğu yere geçer ve o yerin vakitlerini hazırlar.
@@ -61,7 +61,7 @@ object AutoLocation {
     /** Bulunulan yerin adları (Türkçe ve İngilizce karışık). */
     private data class Names(
         val countries: List<String>,
-        val places: List<String>,   // öncelik sırasıyla: şehir/kasaba, ilçe, il/kanton/eyalet, semt
+        val places: List<String>, // öncelik sırasıyla: şehir/kasaba, ilçe, il/kanton/eyalet, semt
         val code: String?,
         val shown: String,
     )

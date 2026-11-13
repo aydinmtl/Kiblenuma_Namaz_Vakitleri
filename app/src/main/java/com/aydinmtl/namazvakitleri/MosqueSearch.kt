@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import org.json.JSONObject
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -9,6 +8,7 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import org.json.JSONObject
 
 /**
  * Yakındaki camileri OpenStreetMap'ten (Overpass API) bulan saf mantık.
@@ -50,7 +50,7 @@ object MosqueSearch {
             ");out center tags;"
     }
 
-    /** Sunucu cevabını (JSON) cami listesine çevirir; [lat],[lon] aramanın merkezidir. */
+    /** Sunucu cevabını (JSON) cami listesine çevirir; [lat], [lon] aramanın merkezidir. */
     fun parse(body: String, lat: Double, lon: Double): List<Mosque> {
         val arr = try {
             JSONObject(body).optJSONArray("elements")

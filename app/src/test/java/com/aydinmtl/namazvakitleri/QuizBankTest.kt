@@ -1,10 +1,10 @@
 package com.aydinmtl.namazvakitleri
 
+import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.io.File
 
 /** Soru bankası (assets/sorular.json) ve "bu soruda hata var" işaretleri. */
 class QuizBankTest {

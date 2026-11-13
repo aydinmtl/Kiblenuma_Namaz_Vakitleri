@@ -76,6 +76,7 @@ object LocationHelper {
                 // Android 10 ve öncesinde 4 metodun hepsi yazılmalı, yoksa uygulama çöker.
                 val l = object : LocationListener {
                     override fun onLocationChanged(location: Location) = deliver(location)
+
                     @Deprecated("Deprecated in Java")
                     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
                     override fun onProviderEnabled(provider: String) {}

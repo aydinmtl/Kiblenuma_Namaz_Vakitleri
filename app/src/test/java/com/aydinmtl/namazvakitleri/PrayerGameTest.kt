@@ -1,9 +1,9 @@
 package com.aydinmtl.namazvakitleri
 
+import kotlin.math.abs
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.abs
 
 /** Namaz oyununun adımları ve figür duruşları. */
 class PrayerGameTest {

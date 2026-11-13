@@ -1,10 +1,10 @@
 package com.aydinmtl.namazvakitleri
 
+import java.time.LocalDate
+import java.time.LocalTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.time.LocalDate
-import java.time.LocalTime
 
 /** Diyanet servisinden gelen JSON'un ayrıştırılması (internet gerekmez, örnek veri kullanılır). */
 class DiyanetParseTest {

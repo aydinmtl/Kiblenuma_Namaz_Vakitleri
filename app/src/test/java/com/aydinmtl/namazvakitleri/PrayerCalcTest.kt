@@ -1,13 +1,13 @@
 package com.aydinmtl.namazvakitleri
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import kotlin.math.abs
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 /**
  * PrayerCalc'ın astronomik hesabını, bağımsız bir kaynakla (Python "astral" kütüphanesi,

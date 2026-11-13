@@ -1,9 +1,9 @@
 package com.aydinmtl.namazvakitleri
 
 import android.content.Context
+import kotlin.random.Random
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.random.Random
 
 /**
  * Bir soru. [options] içinde ilk şık her zaman doğru cevaptır; ekranda karıştırılır.

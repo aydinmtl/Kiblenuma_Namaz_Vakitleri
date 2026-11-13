@@ -1,0 +1,78 @@
+name: Kod denetimi
+
+# İki denetim çalıştırır. İkisi de yalnızca burada (GitHub Actions'ta) çalışır;
+# uygulamanın içine girmez, telefona giden APK'ya hiçbir şey eklemez.
+#
+# 1) ktlint   : Kotlin kodunun düzenine bakar (boşluklar, import sırası, adlandırma...).
+#               Kurallar depodaki .editorconfig dosyasındadır.
+# 2) gitleaks : Depoya yanlışlıkla şifre, anahtar ya da gizli bilgi konmuş mu diye
+#               bütün dosyalara ve bütün geçmiş commit'lere bakar.
+#
+# Bu dosya "APK derle" iş akışından ayrıdır: buradaki bir kırmızı işaret
+# APK derlemesini ve main'den sürüm çıkmasını ENGELLEMEZ, yalnızca uyarır.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Yalnızca okuma izni: bu denetimler depoda hiçbir şeyi değiştiremez.
+permissions:
+  contents: read
+
+env:
+  # Araç sürümleri sabittir; yükseltmek için yalnızca bu satırlar değişir.
+  KTLINT_VERSION: "1.8.0"
+  # İndirilen ktlint dosyasının parmak izi (SHA-256). Dosya değiştirilmişse denetim durur.
+  KTLINT_SHA256: "369ad2b789f95a011f807e1fcb690ccef80bd7cd014fd139e73ae82dcc0baeab"
+  GITLEAKS_VERSION: "v8.30.1"
+
+jobs:
+  ktlint:
+    name: Kod düzeni (ktlint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: ktlint'i indir ve parmak izini doğrula
+        run: |
+          curl -sSfL -o "$RUNNER_TEMP/ktlint.jar" \
+            "https://repo1.maven.org/maven2/com/pinterest/ktlint/ktlint-cli/${KTLINT_VERSION}/ktlint-cli-${KTLINT_VERSION}-all.jar"
+          echo "${KTLINT_SHA256}  $RUNNER_TEMP/ktlint.jar" | sha256sum --check
+
+      # Hata çıkarsa dosya adı, satır numarası ve kuralın adı bu adımın çıktısında yazar.
+      - name: Kotlin kod düzenini denetle
+        run: java -jar "$RUNNER_TEMP/ktlint.jar" --relative "app/src/**/*.kt" "*.kts" "app/*.kts"
+
+  gitleaks:
+    name: Şifre ve anahtar taraması (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 -> yalnızca son hâli değil, bütün geçmişi indir (eski commit'ler de taransın).
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache: false
+
+      # gitleaks kaynak kodundan, sabit sürümle kurulur. Go, indirdiği kodun parmak izini
+      # kendi denetim kaydıyla (sum.golang.org) karşılaştırır.
+      - name: gitleaks'i kur
+        run: go install "github.com/zricethezav/gitleaks/v8@${GITLEAKS_VERSION}"
+
+      # --redact: bir sır bulunursa kendisi çıktıya YAZILMAZ, yalnızca yeri (dosya, satır) yazılır.
+      - name: Geçmiş commit'leri tara
+        run: |
+          "$(go env GOPATH)/bin/gitleaks" git --redact --no-banner --verbose .
+
+      - name: Şu anki dosyaları tara
+        run: |
+          "$(go env GOPATH)/bin/gitleaks" dir --redact --no-banner --verbose .
