@@ -50,7 +50,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `Notifications.kt` | 4 kanal: vakit, vakit (sessiz), hatırlatma, ezan |
 | `AdhanService.kt` | Kullanıcının seçtiği ses dosyasını ön plan servisiyle çalar |
 | `PrayerWidget.kt` | 4x2 ve 4x1 widget'lar (`PrayerWidgetSmall`), ↻ yenile düğmesi |
-| `RefreshActivity.kt` | Widget'tan açılan küçük pencere: konum + vakit yenileme (kilit ekranında da görünür) |
+| `RefreshActivity.kt` | Widget'taki ve ana ekrandaki ↻ düğmesinin açtığı küçük pencere: konum + vakit yenileme (kilit ekranında da görünür) |
 | `MainActivity.kt` | Ana ekran, ilk açılış akışı (`resumeFlow`), otomatik konum kontrolü |
 | `SettingsActivity.kt` | Konum, yöntem, ikindi, bildirimler, hatırlatma, ezan sesi, hakkında |
 | `LocationActivity.kt` | Ülke → şehir → ilçe elle seçim |
@@ -97,6 +97,14 @@ birleştirilmeden önce ikisinin de yeşil olması beklenir. Sürümler dosyanı
    bakılmadan aranıyor; Diyanet'te yakın yer yoksa vakitler konumdan Diyanet ölçüleriyle hesaplanıyor
    (`PrayerCalc.diyanetDay`, ekranda "Konumundan hesaplandı" yazar). Hesaplanan yerdeyken Diyanet
    listesi 12 saatte bir (internet hatasından sonra 2 dakikada) yeniden aranır.
+   **Yer değişimini algılama:** uygulama her öne geldiğinde konuma bakılır; son bulunan noktadan
+   3 km'den fazla uzaklaşıldıysa yer yeniden aranır (`AutoLocation.MOVE_KM`; eskiden 15 km idi ve
+   Annemasse → Cenevre gibi komşu şehir geçişleri algılanmıyordu). Uygulama kapalıyken (widget) konum
+   kendiliğinden yenilenemez: Android bunun için "her zaman konum" iznini şart koşar ve uygulama bu
+   izni istemez. Widget'taki ve ana ekrandaki ↻ düğmesi (`RefreshActivity`) elle yeniler.
+   **Yer adlarının yazımı:** Diyanet adları büyük harfle verir; yabancı adlarda I harfi "i" olur
+   ("VERNIER" → "Vernier"), Türkiye, Kuzey Kıbrıs ve Azerbaycan'da Türkçe kural geçerlidir
+   (`titleCase(ad, turkish)`, `Diyanet.turkishSpelling`).
 2. **Saat dilimi:** Diyanet vakitleri o yerin yerel saatidir ama alarmlar telefonun saat diliminde kurulur.
    Elle uzak bir yer seçilirse (ör. İsviçre'deyken İstanbul) vakitler kayar. API'deki
    `GreenwichOrtalamaZamani` alanı kullanılabilir.

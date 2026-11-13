@@ -20,6 +20,20 @@ object Store {
     fun districtId(ctx: Context): String? = prefs(ctx).getString("districtId", null)
     fun placeName(ctx: Context): String = prefs(ctx).getString("placeName", "") ?: ""
 
+    /** Yalnızca görünen adı düzeltir (yer aynı kalır). Ör. eski sürümün yazdığı "Vernıer" -> "Vernier". */
+    fun setPlaceName(ctx: Context, name: String) {
+        prefs(ctx).edit().putString("placeName", name).apply()
+    }
+
+    /**
+     * Otomatik konumun yer adını en son hangi yazım kuralıyla kaydettiği. Kural değişince
+     * (bkz. AutoLocation.NAME_RULES) konum bir kez yeniden bulunur ve eski yanlış ad düzelir.
+     */
+    fun nameRules(ctx: Context): Int = prefs(ctx).getInt("nameRules", 0)
+    fun setNameRules(ctx: Context, v: Int) {
+        prefs(ctx).edit().putInt("nameRules", v).apply()
+    }
+
     fun notificationsOn(ctx: Context): Boolean = prefs(ctx).getBoolean("notify", true)
     fun setNotificationsOn(ctx: Context, on: Boolean) {
         prefs(ctx).edit().putBoolean("notify", on).apply()

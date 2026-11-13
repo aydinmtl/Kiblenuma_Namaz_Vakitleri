@@ -29,6 +29,15 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <!-- Konumu ve vakitleri yenile (widget'taki ↻ ile aynı iş) -->
+            <ImageButton
+                android:id="@+id/btnRefresh"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Konumu ve vakitleri yenile"
+                android:src="@drawable/ic_refresh" />
+
             <ImageButton
                 android:id="@+id/btnSettings"
                 android:layout_width="48dp"
