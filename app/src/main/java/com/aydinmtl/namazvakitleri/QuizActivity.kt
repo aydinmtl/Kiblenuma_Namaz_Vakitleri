@@ -75,6 +75,7 @@ class QuizActivity : Activity() {
     }
 
     private var session: QuizSession? = null
+
     /** Sonuç ekranında gösterilen, biten tur ("Yeni tur" aynı seviyeden başlasın diye). */
     private var lastResult: QuizSession? = null
     private val dp: Float by lazy { resources.displayMetrics.density }

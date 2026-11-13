@@ -208,7 +208,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
             arr.put(o)
         }
         val partJs = if (part == null) "null" else JSONObject.quote(part.name)
-        js("N3.oynat(${arr}, ${JSONObject.quote(newScene.name)}, $partJs, $playId)")
+        js("N3.oynat($arr, ${JSONObject.quote(newScene.name)}, $partJs, $playId)")
     }
 
     /**

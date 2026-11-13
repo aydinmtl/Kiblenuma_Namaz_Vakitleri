@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import org.json.JSONArray
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -8,6 +7,7 @@ import java.text.Collator
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import org.json.JSONArray
 
 /**
  * Diyanet İşleri Başkanlığı'nın vakitlerini, aynı verileri anahtarsız sunan

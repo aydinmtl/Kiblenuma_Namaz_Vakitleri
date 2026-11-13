@@ -1,0 +1,29 @@
+# ktlint (Kotlin kod düzeni denetimi) ayarları.
+# ktlint yalnızca GitHub Actions'ta çalışır; uygulamaya ve APK'ya hiçbir şey eklemez.
+# Bu dosya ona "hangi kurallara bakacağını" söyler. Ayrıntı: docs/DEVIR_NOTLARI.md
+root = true
+
+[*.{kt,kts}]
+# Android Studio'nun kendi biçimlendirmesiyle uyumlu kural takımı.
+ktlint_code_style = android_studio
+
+# Satır uzunluğu sınırı yok (uzun Türkçe metinler ve açıklamalar bölünmesin).
+max_line_length = off
+
+# Aşağıdaki kurallar BİLİNÇLİ olarak kapalı. Bunlar hata bulmaz, yalnızca
+# "satırı nerede böleceğin" ile ilgilidir. Mevcut kod kısa ve sıkı yazıldığı için
+# açılsalar 600'den fazla satırın yeniden dizilmesi gerekirdi. İleride istenirse
+# tek tek açılabilir.
+ktlint_standard_argument-list-wrapping = disabled
+ktlint_standard_parameter-list-wrapping = disabled
+ktlint_standard_statement-wrapping = disabled
+ktlint_standard_wrapping = disabled
+ktlint_standard_function-signature = disabled
+ktlint_standard_class-signature = disabled
+ktlint_standard_multiline-if-else = disabled
+ktlint_standard_multiline-loop = disabled
+ktlint_standard_blank-line-between-when-conditions = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+# Açıklamaları alt alta hizalamak için konan fazladan boşluklara izin ver.
+ktlint_standard_no-multi-spaces = disabled

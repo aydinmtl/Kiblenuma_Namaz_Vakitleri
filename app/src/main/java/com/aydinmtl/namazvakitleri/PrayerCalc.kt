@@ -167,7 +167,8 @@ object PrayerCalc {
 
         val ishaAngle = method.ishaAngle
         var times = doubleArrayOf(5.0, 6.0, 12.0, 13.0, 18.0, 18.0)
-        repeat(2) { // ikinci tur, ilk turun sonucunu başlangıç alarak hassasiyeti artırır
+        repeat(2) {
+            // ikinci tur, ilk turun sonucunu başlangıç alarak hassasiyeti artırır
             val p = times.map { it / 24.0 }
             times = doubleArrayOf(
                 sunAngleTime(method.fajr, p[0], true),

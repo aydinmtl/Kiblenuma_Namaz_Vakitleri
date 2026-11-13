@@ -15,6 +15,7 @@ import kotlin.math.abs
 class ArOverlayView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     var offset: Float? = null
+
     /**
      * Kameranın, telefon dik tutulunca tam yatay görüş açısı (derece). QiblaArActivity bunu
      * kameranın kendi bilgilerinden okur; okuyamazsa varsayılan kalır.

@@ -1,16 +1,16 @@
 package com.aydinmtl.namazvakitleri
 
+import java.time.LocalDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.time.LocalDateTime
 
 /** Alarm sırası ve geciken alarm kuralları (AlarmPlan). */
 class AlarmPlanTest {
 
-    private val OGLE = 2 // Öğle
+    private val ogle = 2 // Öğle
 
     private fun t(hhmm: String) = LocalDateTime.parse("2026-11-11T$hhmm")
 
@@ -18,7 +18,7 @@ class AlarmPlanTest {
     private val moments = listOf(
         Moment(0, t("06:00")),
         Moment(SUNRISE, t("07:30")),
-        Moment(OGLE, t("12:20")),
+        Moment(ogle, t("12:20")),
     )
 
     @Test
@@ -32,14 +32,14 @@ class AlarmPlanTest {
     fun hatirlatma_vakitten_once_gelir() {
         val e = AlarmPlan.next(moments, 15, { true }, t("08:00"))!!
         assertTrue(e.reminder)
-        assertEquals(OGLE, e.moment.index)
+        assertEquals(ogle, e.moment.index)
         assertEquals(t("12:05"), e.fireAt)
     }
 
     @Test
     fun yalnizca_istenen_vakit_icin_hatirlatma() {
         // Öğle için hatırlatma kapalı: sıradaki olay öğlenin kendisi
-        val e = AlarmPlan.next(moments, 15, { it != OGLE }, t("08:00"))!!
+        val e = AlarmPlan.next(moments, 15, { it != ogle }, t("08:00"))!!
         assertFalse(e.reminder)
         assertEquals(t("12:20"), e.fireAt)
     }
@@ -47,11 +47,11 @@ class AlarmPlanTest {
     @Test
     fun ayni_ana_denk_gelen_hatirlatma_bir_dakika_one_alinir() {
         // Güneş 07:30. Öğle hatırlatması 07:30'a denk gelecek şekilde: 12:20 - 290 dk = 07:30
-        val first = AlarmPlan.next(moments, 290, { it == OGLE }, t("07:00"))!!
+        val first = AlarmPlan.next(moments, 290, { it == ogle }, t("07:00"))!!
         assertTrue(first.reminder)
         assertEquals(t("07:29"), first.fireAt)
         // Hatırlatmadan sonra güneş girişi de atlanmadan gelir
-        val second = AlarmPlan.next(moments, 290, { it == OGLE }, first.fireAt)!!
+        val second = AlarmPlan.next(moments, 290, { it == ogle }, first.fireAt)!!
         assertFalse(second.reminder)
         assertEquals(SUNRISE, second.moment.index)
     }

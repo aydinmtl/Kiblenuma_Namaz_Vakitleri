@@ -24,6 +24,7 @@ Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. 
 | İmza | `app/debug.keystore` yalnızca elden kurulum içindir; Play için ayrı upload key gerekecek |
 | Lint | `abortOnError=false`, `checkReleaseBuilds=false` (bilinçli olarak gevşek; sıkılaştırılabilir) |
 | Test | `app/src/test/`: JVM birim testleri (`./gradlew testDebugUnitTest`), yalnızca JUnit + org.json (test için) |
+| Kod denetimi | `.github/workflows/denetim.yml`: her PR'da ve `main`'e her push'ta **ktlint** (Kotlin kod düzeni, kurallar `.editorconfig`'te) ve **gitleaks** (şifre/anahtar sızıntısı taraması, bütün geçmiş dahil). İkisi de yalnızca GitHub Actions'ta çalışır; Gradle'a, uygulamaya ve APK'ya hiçbir şey eklemez. Ayrıntı aşağıda |
 
 Bulut çalışma ortamında Google Maven / Android SDK sunucularına erişim yok: **derleme yalnızca
 GitHub Actions'ta** yapılabiliyor. Ortamdan ezanvakti.emushaf.net, Nominatim ve Overpass'a da
@@ -66,6 +67,26 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 
 Soru bankası: `tools/sorular.py` → `python3 tools/sorular.py app/src/main/assets/sorular.json`.
 JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıkları karıştırır.
+
+## Kod denetimi (ktlint ve gitleaks)
+
+İkisi de `.github/workflows/denetim.yml` içinde, "APK derle" iş akışından **ayrı** çalışır. Bu yüzden
+buradaki kırmızı işaret APK derlemesini ve `main`'den sürüm çıkmasını engellemez; ama bir PR
+birleştirilmeden önce ikisinin de yeşil olması beklenir. Sürümler dosyanın başında sabittir
+(ktlint 1.8.0, gitleaks v8.30.1).
+
+- **ktlint** Kotlin dosyalarının düzenine bakar. Kurallar `.editorconfig` dosyasındadır: Android Studio
+  kural takımı; yalnızca "satırı nerede böleceğin" ile ilgili kurallar ve satır uzunluğu sınırı
+  bilinçli olarak kapalıdır (açılsalar 600'den fazla satır yeniden dizilirdi). Kırmızı olursa:
+  PR sayfası → Checks → "Kod düzeni (ktlint)" çıktısında dosya, satır ve kural adı yazar.
+  Çoğu hatayı ktlint kendisi düzeltebilir: `java -jar ktlint.jar --format "app/src/**/*.kt"`.
+- **gitleaks** depoda şifre, anahtar, jeton gibi gizli bilgi var mı diye hem şu anki dosyalara hem
+  bütün geçmiş commit'lere bakar. İlk tarama (45 commit) temiz çıktı. Kırmızı olursa **sırrı
+  commit geçmişinden silmeye çalışmadan önce o şifreyi/anahtarı geçersiz kıl ve yenisini üret**;
+  bir kez GitHub'a çıkan sır sızmış sayılır. Play yükleme anahtarı ve şifreleri yalnızca GitHub
+  Secrets'ta durmalı, depoya hiçbir zaman dosya olarak konmamalı.
+- `app/debug.keystore` (şifresi `android`) bir sır **değildir**: yalnızca elden kurulan APK'yı
+  imzalayan, herkese açık deneme anahtarıdır. Play anahtarıyla ilgisi yoktur.
 
 ## Bilinen sorunlar ve şüpheler (öncelik sırasıyla)
 
