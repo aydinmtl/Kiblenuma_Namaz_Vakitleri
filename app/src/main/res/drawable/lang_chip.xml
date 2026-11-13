@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ana ekrandaki dil düğmesi: altın renkli ince çerçeveli küçük hap. Dokunma alanı
+     48dp kalsın diye çerçeve üstten ve alttan 10dp içeride çizilir. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33E8C15A">
+    <item>
+        <inset
+            android:insetBottom="10dp"
+            android:insetTop="10dp">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/card" />
+                <stroke
+                    android:width="1dp"
+                    android:color="@color/gold" />
+                <corners android:radius="14dp" />
+            </shape>
+        </inset>
+    </item>
+</ripple>

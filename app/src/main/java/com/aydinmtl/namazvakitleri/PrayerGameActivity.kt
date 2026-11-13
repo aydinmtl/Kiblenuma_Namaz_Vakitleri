@@ -1,7 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.app.AlertDialog
 import android.media.AudioManager
 import android.os.Build
@@ -38,7 +37,7 @@ import java.util.Locale
  * Adımlar ve sorular PrayerGame.kt'de; 3B sahne PrayerStageView.kt ve assets/namazoyun3d/ içindedir
  * (3B çalışmayan cihazlar için eski 2B çizim PrayerFigureView.kt'de durur).
  */
-class PrayerGameActivity : Activity() {
+class PrayerGameActivity : LangActivity() {
 
     private lateinit var startPane: View
     private lateinit var gamePane: View

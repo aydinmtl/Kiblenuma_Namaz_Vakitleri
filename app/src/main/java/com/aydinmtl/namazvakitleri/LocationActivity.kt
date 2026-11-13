@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -15,7 +14,7 @@ import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 
 /** Ülke → Şehir → İlçe seçimi. Seçimden sonra 30 günlük vakitleri indirir. */
-class LocationActivity : Activity() {
+class LocationActivity : LangActivity() {
 
     companion object {
         const val EXTRA_REASON = "reason"

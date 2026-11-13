@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import android.app.Activity
 import android.content.Intent
 import android.location.Location
 import android.os.Build
@@ -20,7 +19,7 @@ import android.widget.Toast
  * konuma erişmesine "her zaman konum" izni olmadan izin vermez. Ekranda görünen bir pencere
  * açıkken uygulama ön planda sayılır ve normal konum izni yeterli olur.
  */
-class RefreshActivity : Activity() {
+class RefreshActivity : LangActivity() {
 
     companion object {
         private const val LOCATION_TIMEOUT_MS = 8_000L   // konum için en çok bekleme
@@ -41,7 +40,7 @@ class RefreshActivity : Activity() {
         override fun run() {
             if (finished) return
             val sec = (System.currentTimeMillis() - stepStartedAt) / 1000
-            tvStatus.text = if (sec >= 1) "$step  $sec sn" else step
+            tvStatus.text = if (sec >= 1) getString(R.string.refresh_seconds, step, sec.toInt()) else step
             handler.postDelayed(this, 1000)
         }
     }
@@ -66,19 +65,19 @@ class RefreshActivity : Activity() {
 
         // Ne olursa olsun bu sürede bitmezse kullanıcıyı bekletme.
         handler.postDelayed({
-            done("Zaman aşımı: işlem çok uzun sürdü. İnternet ve konum bağlantını kontrol et.", ok = false)
+            done(getString(R.string.refresh_timeout), ok = false)
         }, TOTAL_TIMEOUT_MS)
 
         if (canLocate) {
-            setStep("Konum bulunuyor…")
+            setStep(getString(R.string.refresh_finding_location))
             LocationHelper.current(this, maxAgeMs = 2 * 60_000L, timeoutMs = LOCATION_TIMEOUT_MS) { loc ->
-                work(loc, if (loc == null) "Konum alınamadı; son yer kullanıldı." else null)
+                work(loc, if (loc == null) getString(R.string.refresh_loc_failed) else null)
             }
         } else {
             val note = when {
-                !autoOn -> "Otomatik konum kapalı (Ayarlar'dan açabilirsin)."
-                !LocationHelper.hasPermission(this) -> "Konum izni yok; son yer kullanıldı."
-                else -> "Telefonun konum servisi kapalı; son yer kullanıldı."
+                !autoOn -> getString(R.string.refresh_auto_off)
+                !LocationHelper.hasPermission(this) -> getString(R.string.refresh_no_perm)
+                else -> getString(R.string.refresh_service_off)
             }
             work(null, note)
         }
@@ -104,29 +103,32 @@ class RefreshActivity : Activity() {
                 val r = try {
                     AutoLocation.resolve(app, loc) { msg -> runOnUiThread { setStep(msg) } }
                 } catch (e: Exception) {
-                    AutoLocation.Result.Failed("İnternete bağlanılamadı.")
+                    AutoLocation.Result.Failed(getString(R.string.no_internet))
                 }
                 when (r) {
                     is AutoLocation.Result.Changed -> newPlace = r.label
                     is AutoLocation.Result.Same -> {}
-                    is AutoLocation.Result.Failed -> note = r.reason + " Son yer kullanıldı."
+                    is AutoLocation.Result.Failed -> note = getString(R.string.refresh_failed_last, r.reason)
                 }
             }
 
             // Yer değiştiyse vakitler zaten yeni indirildi; değilse şimdi yenile.
             var ok = newPlace != null
             if (!ok) {
-                runOnUiThread { setStep("Vakitler indiriliyor…") }
+                runOnUiThread { setStep(getString(R.string.refresh_downloading)) }
                 ok = Store.refresh(app)
             }
             AlarmScheduler.schedule(app)
             PrayerWidget.updateAll(app)
 
             val text = buildString {
-                append(if (ok) "✓ Vakitler güncellendi" else "✗ Vakitler güncellenemedi. İnternet bağlantını kontrol et.")
+                append(getString(if (ok) R.string.refresh_ok else R.string.refresh_fail))
                 append("\n📍 ").append(Store.placeName(app))
-                if (newPlace != null) append("  (yeni konum)")
-                else if (loc != null && note == null) append("  (konum aynı)")
+                if (newPlace != null) {
+                    append(getString(R.string.refresh_new_place))
+                } else if (loc != null && note == null) {
+                    append(getString(R.string.refresh_same_place))
+                }
                 if (note != null) append("\n").append(note)
             }
             runOnUiThread { done(text, ok) }

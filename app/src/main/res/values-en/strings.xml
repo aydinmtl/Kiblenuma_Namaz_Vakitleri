@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- İngilizce çeviri. tools/diller.py ile üretilir, elle düzenleme. -->
+<resources>
+
+    <!-- Genel -->
+    <string name="widget_desc">Next prayer, time left and the day\'s 6 times</string>
+    <string name="widget_small_desc">Next prayer and time left on one line</string>
+    <string name="notify">Prayer notifications</string>
+    <string name="imsakiye">Monthly timetable</string>
+    <string name="qibla">Qibla</string>
+    <string name="search_hint">Search…</string>
+    <string-array name="prayer_names">
+        <item>Fajr</item>
+        <item>Sunrise</item>
+        <item>Dhuhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Isha</item>
+    </string-array>
+    <string-array name="prayer_names_short">
+        <item>Fajr</item>
+        <item>Sunrise</item>
+        <item>Dhuhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Isha</item>
+    </string-array>
+    <string-array name="hijri_months">
+        <item>Muharram</item>
+        <item>Safar</item>
+        <item>Rabi al-Awwal</item>
+        <item>Rabi al-Thani</item>
+        <item>Jumada al-Ula</item>
+        <item>Jumada al-Akhirah</item>
+        <item>Rajab</item>
+        <item>Shaban</item>
+        <item>Ramadan</item>
+        <item>Shawwal</item>
+        <item>Dhu al-Qadah</item>
+        <item>Dhu al-Hijjah</item>
+    </string-array>
+    <string name="hijri_date">%1$d %2$s %3$d AH</string>
+    <string name="no_internet">Could not connect to the internet.</string>
+
+    <!-- Ana ekran -->
+    <string name="lang_button_desc">Language: English. Tap to change.</string>
+    <string name="refresh_desc">Refresh location and prayer times</string>
+    <string name="settings_desc">Settings</string>
+    <string name="btn_mosques">Mosques</string>
+    <string name="btn_holy_days">Religious days</string>
+    <string name="btn_kaza">Missed prayers</string>
+    <string name="btn_zikir">Dhikr counter</string>
+    <string name="btn_quiz">🌳  Aile Halkası · Family quiz</string>
+    <string name="btn_prayer_game">🕌  Learning to pray · Game for children</string>
+    <string name="btn_namaz3d">🎬  Watch the prayer in 3D</string>
+    <string name="btn_daily">💡  Question of the day</string>
+    <string name="btn_daily_done">💡  Question of the day ✓</string>
+    <string name="place_label">📍 %1$s  ›</string>
+    <string name="place_searching">📍 Finding your location…</string>
+    <string name="place_finding">Finding where you are…</string>
+    <string name="next_label">Time until %1$s</string>
+    <string name="times_updating">Updating prayer times…</string>
+    <string name="times_refreshing">Updating prayer times from Diyanet…</string>
+    <string name="offline_cached">No internet connection; showing saved prayer times.</string>
+    <string name="loc_service_off_note">Phone location is off; using the last chosen place.</string>
+    <string name="loc_service_off_reason">phone location is off.</string>
+    <string name="loc_unavailable_note">Could not get location; using the last chosen place.</string>
+    <string name="loc_no_report_reason">the phone did not report a location (within 10 s).</string>
+    <string name="loc_updated">Location updated: %1$s</string>
+    <string name="loc_failed_last_chosen">%1$s Using the last chosen place.</string>
+    <string name="locmode_need_perm">⚠ Automatic location needs permission. Tap to open settings.</string>
+    <string name="locmode_checking">📡 Automatic location · checking…</string>
+    <string name="locmode_note">📡 Automatic location · %1$s</string>
+    <string name="locmode_computed">📡 Automatic location on · times calculated from your location</string>
+    <string name="locmode_on">📡 Automatic location on</string>
+    <string name="notif_perm_off">⚠ Notification permission is off. Tap to turn it on.</string>
+    <string name="exact_alarm_needed">⚠ For notifications at the exact time, allow \"Alarms &amp; reminders\". Tap.</string>
+    <string name="loc_perm_denied">Location permission not granted. You can choose your city manually.</string>
+
+    <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
+    <string name="src_computed">Source: calculated from your location (Diyanet parameters)\nDiyanet\'s list has no place near this location. Times may differ from the official list by a few minutes.</string>
+    <string name="src_label">Source: %1$s</string>
+    <string name="src_asr_hanafi"> · Asr: Hanafi</string>
+    <string name="src_fallback">\n⚠ No coordinates for this place with the chosen method; showing Diyanet times.</string>
+    <string name="src_zone_note">\nTimes are in the chosen place\'s time zone. Alarms and countdown follow the phone\'s clock.</string>
+
+    <!-- Otomatik konum adımları (AutoLocation) -->
+    <string name="progress_city_name">Finding the city name…</string>
+    <string name="progress_search_list">Searching Diyanet\'s list: %1$s</string>
+    <string name="progress_downloading">Downloading prayer times for %1$s…</string>
+    <string name="progress_computing">Calculating times from your location…</string>
+    <string name="progress_nearest_city">Finding the nearest city…</string>
+    <string name="progress_nearest_district">Finding the nearest district…</string>
+    <string name="progress_nearby">Searching nearby places in Diyanet\'s list…</string>
+    <string name="fail_no_sun">Prayer times cannot be calculated here (region where the sun does not set or rise).</string>
+    <string name="your_location_coords">Your location (%1$.2f°, %2$.2f°)</string>
+    <string name="here_place">Your place</string>
+
+    <!-- Yenile penceresi (RefreshActivity) -->
+    <string name="refresh_updating">Updating…</string>
+    <string name="refresh_seconds">%1$s  %2$d s</string>
+    <string name="refresh_timeout">Timed out: this took too long. Check your internet and location.</string>
+    <string name="refresh_finding_location">Finding location…</string>
+    <string name="refresh_loc_failed">Could not get location; used the last place.</string>
+    <string name="refresh_auto_off">Automatic location is off (you can turn it on in Settings).</string>
+    <string name="refresh_no_perm">No location permission; used the last place.</string>
+    <string name="refresh_service_off">Phone location is off; used the last place.</string>
+    <string name="refresh_failed_last">%1$s Used the last place.</string>
+    <string name="refresh_downloading">Downloading prayer times…</string>
+    <string name="refresh_ok">✓ Prayer times updated</string>
+    <string name="refresh_fail">✗ Could not update prayer times. Check your internet connection.</string>
+    <string name="refresh_new_place">  (new location)</string>
+    <string name="refresh_same_place">  (same location)</string>
+
+    <!-- Konum izni açıklaması (LocationConsent) -->
+    <string name="consent_title">Why is location access needed?</string>
+    <string name="consent_message">Your location is used to:\n\n• Find your city and show its Diyanet prayer times\n• Update the times and the city/country name automatically when you travel\n• Calculate the Qibla direction\n\nOnly approximate location (city level) is requested. It is checked when you open the app and stays on your phone; the app has no server of its own.\n\nTo find the city name, the phone\'s own location service is asked first. If that fails, the coordinates are sent to OpenStreetMap without any identity information. The \"Mosques\" screen also sends the coordinates to OpenStreetMap to find mosques.\n\nYou can also choose your city manually without giving permission.</string>
+    <string name="consent_yes">Use my location</string>
+    <string name="consent_no">I\'ll choose manually</string>
+
+    <!-- Bildirimler ve ezan -->
+    <string name="ch_prayer">Prayer times</string>
+    <string name="ch_prayer_desc">Notification when a prayer time begins. You can change the sound here.</string>
+    <string name="ch_silent">Prayer times (while adhan plays)</string>
+    <string name="ch_silent_desc">Silent notification shown while the adhan plays.</string>
+    <string name="ch_reminder">Prayer reminder</string>
+    <string name="ch_reminder_desc">Reminder before a prayer time begins.</string>
+    <string name="ch_daily">Question of the day</string>
+    <string name="ch_daily_desc">Aile Halkası: question of the day at Maghrib (silent).</string>
+    <string name="ch_adhan">Adhan</string>
+    <string name="ch_adhan_desc">Stop button while the adhan plays.</string>
+    <string name="notif_prayer_title">%1$s time</string>
+    <string name="notif_prayer_text">%1$s time has begun: %2$s</string>
+    <plurals name="notif_reminder_title">
+        <item quantity="one">%2$d minute until %1$s</item>
+        <item quantity="other">%2$d minutes until %1$s</item>
+    </plurals>
+    <string name="notif_daily_title">🌳 Question of the day</string>
+    <string name="adhan_test">Test</string>
+    <string name="adhan_default">Adhan</string>
+    <string name="adhan_playing">%1$s · Adhan playing</string>
+    <string name="adhan_tap_stop">Tap to stop</string>
+    <string name="adhan_stop">Stop</string>
+
+    <!-- Widget -->
+    <string name="widget_open_app">Open the app for prayer times</string>
+    <string name="widget_until">Until %1$s: %2$s</string>
+</resources>

@@ -17,46 +17,42 @@ object Notifications {
     const val CHANNEL_ADHAN = "ezan"          // ezan çalarken görünen "Durdur" bildirimi
     const val CHANNEL_DAILY = "gunun_sorusu"  // Aile Halkası: günün sorusu (sessiz)
 
+    /**
+     * Bildirim kanallarını kurar. Kanal zaten varsa yeniden "kurmak" yalnızca adını ve
+     * açıklamasını günceller (sesi, önemi kullanıcının ayarı olarak kalır). Böylece dil
+     * değişince telefonun bildirim ayarlarında kanal adları da yeni dilde görünür.
+     */
     fun createChannel(ctx: Context) {
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
-        if (nm.getNotificationChannel(CHANNEL) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL, "Namaz vakitleri", NotificationManager.IMPORTANCE_HIGH).apply {
-                    description = "Vakit girdiğinde bildirim. Sesi buradan değiştirebilirsin."
-                },
-            )
-        }
-        if (nm.getNotificationChannel(CHANNEL_SILENT) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL_SILENT, "Namaz vakitleri (ezan çalarken)", NotificationManager.IMPORTANCE_DEFAULT).apply {
-                    description = "Ezan sesi çalarken gösterilen sessiz vakit bildirimi."
-                    setSound(null, null)
-                },
-            )
-        }
-        if (nm.getNotificationChannel(CHANNEL_REMINDER) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL_REMINDER, "Vakit hatırlatması", NotificationManager.IMPORTANCE_HIGH).apply {
-                    description = "Vakit girmeden önce hatırlatma."
-                },
-            )
-        }
-        if (nm.getNotificationChannel(CHANNEL_DAILY) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL_DAILY, "Günün sorusu", NotificationManager.IMPORTANCE_LOW).apply {
-                    description = "Aile Halkası: akşam vaktinde günün sorusu (sessiz)."
-                    setSound(null, null)
-                },
-            )
-        }
-        if (nm.getNotificationChannel(CHANNEL_ADHAN) == null) {
-            nm.createNotificationChannel(
-                NotificationChannel(CHANNEL_ADHAN, "Ezan sesi", NotificationManager.IMPORTANCE_LOW).apply {
-                    description = "Ezan çalarken durdurma düğmesi."
-                    setSound(null, null)
-                },
-            )
-        }
+        val c = Lang.wrap(ctx)
+        nm.createNotificationChannel(
+            NotificationChannel(CHANNEL, c.getString(R.string.ch_prayer), NotificationManager.IMPORTANCE_HIGH).apply {
+                description = c.getString(R.string.ch_prayer_desc)
+            },
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CHANNEL_SILENT, c.getString(R.string.ch_silent), NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = c.getString(R.string.ch_silent_desc)
+                setSound(null, null)
+            },
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CHANNEL_REMINDER, c.getString(R.string.ch_reminder), NotificationManager.IMPORTANCE_HIGH).apply {
+                description = c.getString(R.string.ch_reminder_desc)
+            },
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CHANNEL_DAILY, c.getString(R.string.ch_daily), NotificationManager.IMPORTANCE_LOW).apply {
+                description = c.getString(R.string.ch_daily_desc)
+                setSound(null, null)
+            },
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CHANNEL_ADHAN, c.getString(R.string.ch_adhan), NotificationManager.IMPORTANCE_LOW).apply {
+                description = c.getString(R.string.ch_adhan_desc)
+                setSound(null, null)
+            },
+        )
     }
 
     fun canPost(ctx: Context): Boolean =
@@ -74,10 +70,15 @@ object Notifications {
         createChannel(ctx)
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
         val place = Store.placeName(ctx)
+        val c = Lang.wrap(ctx)
+        val name = Lang.prayerName(ctx, m.index)
         val n = Notification.Builder(ctx, if (silent) CHANNEL_SILENT else CHANNEL)
             .setSmallIcon(R.drawable.ic_stat_hilal)
-            .setContentTitle("${m.name} vakti")
-            .setContentText("${m.name} vakti girdi: ${m.at.toLocalTime().format(HHMM)}" + if (place.isNotEmpty()) " · $place" else "")
+            .setContentTitle(c.getString(R.string.notif_prayer_title, name))
+            .setContentText(
+                c.getString(R.string.notif_prayer_text, name, m.at.toLocalTime().format(HHMM)) +
+                    if (place.isNotEmpty()) " · $place" else "",
+            )
             .setContentIntent(openAppIntent(ctx))
             .setAutoCancel(true)
             .setCategory(Notification.CATEGORY_REMINDER)
@@ -90,10 +91,12 @@ object Notifications {
         if (!canPost(ctx)) return
         createChannel(ctx)
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
+        val name = Lang.prayerName(ctx, m.index)
+        val title = Lang.wrap(ctx).resources.getQuantityString(R.plurals.notif_reminder_title, minutes, name, minutes)
         val n = Notification.Builder(ctx, CHANNEL_REMINDER)
             .setSmallIcon(R.drawable.ic_stat_hilal)
-            .setContentTitle("${m.name} vaktine $minutes dakika kaldı")
-            .setContentText("${m.name}: ${m.at.toLocalTime().format(HHMM)}")
+            .setContentTitle(title)
+            .setContentText("$name: ${m.at.toLocalTime().format(HHMM)}")
             .setContentIntent(openAppIntent(ctx))
             .setAutoCancel(true)
             .setCategory(Notification.CATEGORY_REMINDER)
@@ -116,7 +119,7 @@ object Notifications {
         )
         val n = Notification.Builder(ctx, CHANNEL_DAILY)
             .setSmallIcon(R.drawable.ic_stat_hilal)
-            .setContentTitle("🌳 Günün sorusu")
+            .setContentTitle(Lang.str(ctx, R.string.notif_daily_title))
             .setContentText(questionText)
             .setStyle(Notification.BigTextStyle().bigText(questionText))
             .setContentIntent(open)

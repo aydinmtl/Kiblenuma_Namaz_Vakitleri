@@ -17,6 +17,12 @@ object Store {
     private fun prefs(ctx: Context): SharedPreferences =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
+    /** Uygulamanın dili ("tr", "fr", "en", "de"); hiç seçilmediyse Türkçe. Bkz. Lang. */
+    fun language(ctx: Context): String = prefs(ctx).getString("language", "tr") ?: "tr"
+    fun setLanguage(ctx: Context, code: String) {
+        prefs(ctx).edit().putString("language", code).apply()
+    }
+
     fun districtId(ctx: Context): String? = prefs(ctx).getString("districtId", null)
     fun placeName(ctx: Context): String = prefs(ctx).getString("placeName", "") ?: ""
 

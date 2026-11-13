@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 /** Önümüzdeki bir yılın dini günleri ve kandilleri. */
-class HolyDaysActivity : Activity() {
+class HolyDaysActivity : LangActivity() {
 
     private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", TR)
 

@@ -2,7 +2,6 @@ package com.aydinmtl.namazvakitleri
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
@@ -40,7 +39,7 @@ import java.util.Locale
  * - Her gün bir "günün sorusu" (ana ekrandan ya da akşam bildiriminden açılır).
  * - "🔊 Oku": soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
  */
-class QuizActivity : Activity() {
+class QuizActivity : LangActivity() {
 
     private lateinit var homePane: View
     private lateinit var playPane: View
