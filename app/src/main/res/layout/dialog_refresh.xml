@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:lineSpacingExtra="4dp"
-        android:text="Güncelleniyor…"
+        android:text="@string/refresh_updating"
         android:textColor="@color/text"
         android:textSize="16sp" />
 </LinearLayout>

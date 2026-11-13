@@ -1,7 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,6 +12,7 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import java.time.Duration
@@ -20,7 +20,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class MainActivity : Activity() {
+class MainActivity : LangActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var tvPlace: TextView
@@ -39,7 +39,8 @@ class MainActivity : Activity() {
     private var locationNote: String? = null
     private var dialogOpen = false
 
-    private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", TR)
+    // Tarih seçili dilde yazılır: "13 Kasım 2026, Cuma" / "13 novembre 2026, vendredi"
+    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
 
     private val ticker = object : Runnable {
         override fun run() {
@@ -63,7 +64,8 @@ class MainActivity : Activity() {
         tvStatus = findViewById(R.id.tvStatus)
 
         val rows = findViewById<LinearLayout>(R.id.rows)
-        for (name in PRAYER_NAMES) {
+        // Vakit adları seçili dilde (res/values*/strings.xml içindeki "prayer_names" listesi)
+        for (name in resources.getStringArray(R.array.prayer_names)) {
             val row = layoutInflater.inflate(R.layout.item_prayer, rows, false)
             row.findViewById<TextView>(R.id.name).text = name
             rows.addView(row)
@@ -78,6 +80,10 @@ class MainActivity : Activity() {
         findViewById<View>(R.id.btnRefresh).setOnClickListener {
             startActivity(Intent(this, RefreshActivity::class.java))
         }
+        // Dil düğmesi: seçili dilin kısaltmasını gösterir, dokununca öteki diller açılır.
+        val btnLang = findViewById<TextView>(R.id.btnLang)
+        btnLang.text = Lang.code(this).uppercase(java.util.Locale.ROOT)
+        btnLang.setOnClickListener { showLanguageMenu(it) }
         findViewById<View>(R.id.btnSettings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
@@ -116,7 +122,7 @@ class MainActivity : Activity() {
     /** "Günün sorusu" düğmesi: bugün cevaplandıysa ✓ işareti. */
     private fun updateDailyButton() {
         val done = Store.dailyDoneDate(this) == LocalDate.now().toString()
-        findViewById<Button>(R.id.btnDaily).text = if (done) "💡  Günün sorusu ✓" else "💡  Günün sorusu"
+        findViewById<Button>(R.id.btnDaily).setText(if (done) R.string.btn_daily_done else R.string.btn_daily)
     }
 
     override fun onResume() {
@@ -165,9 +171,9 @@ class MainActivity : Activity() {
             showTimes()
             if (Store.notificationsOn(this)) askNotificationPermission()
         } else {
-            tvPlace.text = "📍 Konum aranıyor…"
+            tvPlace.text = getString(R.string.place_searching)
             tvDate.text = LocalDate.now().format(dateFormat)
-            tvNextLabel.text = "Bulunduğun yer bulunuyor…"
+            tvNextLabel.text = getString(R.string.place_finding)
         }
         updateLocMode()
         updateStatus()
@@ -187,8 +193,8 @@ class MainActivity : Activity() {
     private fun checkLocation() {
         if (checkingLocation) return
         if (!LocationHelper.isLocationOn(this)) {
-            locationNote = "Telefonun konum servisi kapalı; son seçilen yer kullanılıyor."
-            noPlaceFallback("telefonun konum servisi kapalı.")
+            locationNote = getString(R.string.loc_service_off_note)
+            noPlaceFallback(getString(R.string.loc_service_off_reason))
             return
         }
         checkingLocation = true
@@ -199,9 +205,9 @@ class MainActivity : Activity() {
             if (isFinishing || isDestroyed) return@current
             if (loc == null) {
                 checkingLocation = false
-                locationNote = "Konum alınamadı; son seçilen yer kullanılıyor."
+                locationNote = getString(R.string.loc_unavailable_note)
                 updateLocMode()
-                noPlaceFallback("telefon konumu bildirmedi (10 sn içinde).")
+                noPlaceFallback(getString(R.string.loc_no_report_reason))
                 return@current
             }
             if (!AutoLocation.needsCheck(this, loc)) {
@@ -218,7 +224,7 @@ class MainActivity : Activity() {
                         runOnUiThread { if (Store.districtId(app) == null) tvNextLabel.text = msg }
                     }
                 } catch (e: Exception) {
-                    AutoLocation.Result.Failed("İnternete bağlanılamadı.")
+                    AutoLocation.Result.Failed(Lang.str(app, R.string.no_internet))
                 }
                 runOnUiThread { onLocationResult(result, loc) }
             }.start()
@@ -232,7 +238,7 @@ class MainActivity : Activity() {
             is AutoLocation.Result.Changed -> {
                 locationNote = null
                 AutoLocation.lastFailAt = 0L
-                Toast.makeText(this, "Konum güncellendi: ${r.label}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.loc_updated, r.label), Toast.LENGTH_LONG).show()
                 shownNext = null
                 showTimes()
                 // İlk kurulumda yer ancak şimdi bulundu: bildirim iznini şimdi sor.
@@ -249,7 +255,7 @@ class MainActivity : Activity() {
                 }
             }
             is AutoLocation.Result.Failed -> {
-                locationNote = r.reason + " Son seçilen yer kullanılıyor."
+                locationNote = getString(R.string.loc_failed_last_chosen, r.reason)
                 // ÖNEMLİ: Burada eskiden konum "kontrol edildi" diye kaydediliyordu. Bu yüzden tek bir
                 // başarısız denemeden sonra uygulama bir daha hiç denemiyor ve yanlış şehirde kalıyordu.
                 // Artık kaydedilmiyor: bir dakika sonra, uygulama yeniden açıldığında tekrar denenir.
@@ -273,12 +279,54 @@ class MainActivity : Activity() {
         }
         tvLocMode.visibility = View.VISIBLE
         tvLocMode.text = when {
-            !LocationHelper.hasPermission(this) -> "⚠ Otomatik konum için izin gerekli. Ayarlar'a gitmek için dokun."
-            checkingLocation -> "📡 Otomatik konum · kontrol ediliyor…"
-            locationNote != null -> "📡 Otomatik konum · $locationNote"
-            Store.isComputed(this) -> "📡 Otomatik konum açık · vakitler konumundan hesaplanıyor"
-            else -> "📡 Otomatik konum açık"
+            !LocationHelper.hasPermission(this) -> getString(R.string.locmode_need_perm)
+            checkingLocation -> getString(R.string.locmode_checking)
+            locationNote != null -> getString(R.string.locmode_note, locationNote)
+            Store.isComputed(this) -> getString(R.string.locmode_computed)
+            else -> getString(R.string.locmode_on)
         }
+    }
+
+    // ---------------- Dil ----------------
+
+    /**
+     * Dil düğmesine dokununca açılan küçük liste: "TR · Türkçe", "FR · Français" …
+     * Seçili dilin yanında işaret durur. Başka bir dil seçilince ayar kaydedilir ve ekran
+     * yeni dille baştan kurulur (recreate). Widget ve bildirim kanallarının adları da yenilenir.
+     */
+    private fun showLanguageMenu(anchor: View) {
+        val current = Lang.code(this)
+        val menu = PopupMenu(this, anchor)
+        Lang.CODES.forEachIndexed { i, code ->
+            val title = code.uppercase(java.util.Locale.ROOT) + " · " + Lang.NATIVE_NAMES[code]
+            menu.menu.add(0, i, i, title).isChecked = code == current
+        }
+        // Tek seçimli liste: seçili dilin yanında yuvarlak işaret görünür.
+        menu.menu.setGroupCheckable(0, true, true)
+        menu.setOnMenuItemClickListener { item ->
+            val code = Lang.CODES[item.itemId]
+            if (code != current) {
+                Lang.set(this, code)
+                Notifications.createChannel(applicationContext)
+                PrayerWidget.updateAll(applicationContext)
+                recreate()
+            }
+            true
+        }
+        menu.show()
+    }
+
+    /**
+     * Hicri tarih satırı. Türkçede Diyanet'in yazdığı hâli aynen gösterilir.
+     * Öteki dillerde aynı gün (Diyanet'e göre hizalanmış takvim, bkz. Hijri) ay adları
+     * o dilde yazılarak gösterilir: "5 Jumada al-Ula 1448 AH".
+     */
+    private fun hijriText(day: PrayerDay?): String {
+        if (Lang.code(this) == "tr") return day?.hijri ?: ""
+        if (day == null) return ""
+        val h = Hijri.of(day.date)
+        val month = resources.getStringArray(R.array.hijri_months)[h.month - 1]
+        return getString(R.string.hijri_date, h.day, month, h.year)
     }
 
     // ---------------- Ekran ----------------
@@ -290,13 +338,13 @@ class MainActivity : Activity() {
         val day = Prayers.day(days, today)
         shownDate = today
 
-        tvPlace.text = "📍 ${Store.placeName(this)}  ›"
+        tvPlace.text = getString(R.string.place_label, Store.placeName(this))
         tvDate.text = today.format(dateFormat)
-        tvHijri.text = day?.hijri ?: ""
+        tvHijri.text = hijriText(day)
         for (i in 0..5) {
             rowViews[i].findViewById<TextView>(R.id.time).text = day?.times?.get(i)?.format(HHMM) ?: "--:--"
         }
-        if (day == null) tvNextLabel.text = "Vakitler güncelleniyor…"
+        if (day == null) tvNextLabel.text = getString(R.string.times_updating)
     }
 
     /** Her saniye: geri sayımı ve o anki vakit vurgusunu günceller. */
@@ -311,7 +359,7 @@ class MainActivity : Activity() {
         if (next == null) {
             tvCountdown.text = "--:--:--"
         } else {
-            tvNextLabel.text = "${next.name} vaktine kalan"
+            tvNextLabel.text = getString(R.string.next_label, Lang.prayerName(this, next.index))
             tvCountdown.text = formatDuration(Duration.between(now, next.at).seconds + 1)
             if (next.at != shownNext) {
                 shownNext = next.at
@@ -329,7 +377,7 @@ class MainActivity : Activity() {
     private fun maybeRefresh() {
         if (refreshing || !Store.needsRefresh(this)) return
         refreshing = true
-        tvStatus.text = "Vakitler Diyanet'ten güncelleniyor…"
+        tvStatus.text = getString(R.string.times_refreshing)
         val app = applicationContext
         Thread {
             val ok = Store.refresh(app)
@@ -341,7 +389,7 @@ class MainActivity : Activity() {
                 refreshing = false
                 if (!isFinishing) {
                     render()
-                    updateStatus(if (ok) null else "İnternete bağlanılamadı; kayıtlı vakitler gösteriliyor.")
+                    updateStatus(if (ok) null else getString(R.string.offline_cached))
                 }
             }
         }.start()
@@ -354,14 +402,14 @@ class MainActivity : Activity() {
         var action: (() -> Unit)? = null
         if (Store.notificationsOn(this)) {
             if (!Notifications.canPost(this)) {
-                lines.add("⚠ Bildirim izni kapalı. Açmak için dokun.")
+                lines.add(getString(R.string.notif_perm_off))
                 action = {
                     startActivity(
                         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName),
                     )
                 }
             } else if (!AlarmScheduler.canExact(this)) {
-                lines.add("⚠ Bildirimlerin tam vaktinde gelmesi için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.")
+                lines.add(getString(R.string.exact_alarm_needed))
                 action = {
                     if (Build.VERSION.SDK_INT >= 31) {
                         startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
@@ -391,7 +439,7 @@ class MainActivity : Activity() {
             val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
             if (!granted) {
                 Store.setAutoLocation(this, false)
-                Toast.makeText(this, "Konum izni verilmedi. Şehrini elle seçebilirsin.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.loc_perm_denied), Toast.LENGTH_LONG).show()
             }
             // Sonrası onResume -> resumeFlow ile devam eder.
         }

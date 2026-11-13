@@ -1,0 +1,168 @@
+[
+  {
+    "section": "Genel",
+    "strings": {
+      "app_name": "Kıblenüma",
+      "widget_desc": ["Sıradaki vakit, kalan süre ve günün 6 vakti", "Prochaine prière, temps restant et les 6 horaires du jour", "Next prayer, time left and the day's 6 times", "Nächstes Gebet, Restzeit und die 6 Zeiten des Tages"],
+      "widget_small_desc": ["Tek satırda sıradaki vakit ve kalan süre", "Prochaine prière et temps restant sur une ligne", "Next prayer and time left on one line", "Nächstes Gebet und Restzeit in einer Zeile"],
+      "widget_big_label": "Kıblenüma (4x2)",
+      "widget_small_label": "Kıblenüma (4x1)",
+      "notify": ["Vakit bildirimleri", "Notifications des prières", "Prayer notifications", "Gebetsbenachrichtigungen"],
+      "imsakiye": ["İmsakiye", "Horaires du mois", "Monthly timetable", "Monatsübersicht"],
+      "qibla": ["Kıble", "Qibla", "Qibla", "Qibla"],
+      "search_hint": ["Ara…", "Rechercher…", "Search…", "Suchen…"],
+      "prayer_names": {"array": {
+        "tr": ["İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"],
+        "fr": ["Fajr", "Lever du soleil", "Dhuhr", "Asr", "Maghrib", "Isha"],
+        "en": ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"],
+        "de": ["Fadschr", "Sonnenaufgang", "Dhuhr", "Asr", "Maghrib", "Ischa"]
+      }},
+      "prayer_names_short": {"array": {
+        "tr": ["İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"],
+        "fr": ["Fajr", "Soleil", "Dhuhr", "Asr", "Maghrib", "Isha"],
+        "en": ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"],
+        "de": ["Fadschr", "Sonne", "Dhuhr", "Asr", "Maghrib", "Ischa"]
+      }},
+      "hijri_months": {"array": {
+        "tr": ["Muharrem", "Safer", "Rebiülevvel", "Rebiülahir", "Cemaziyelevvel", "Cemaziyelahir", "Recep", "Şaban", "Ramazan", "Şevval", "Zilkade", "Zilhicce"],
+        "fr": ["Mouharram", "Safar", "Rabi al-awwal", "Rabi ath-thani", "Joumada al-oula", "Joumada ath-thania", "Rajab", "Chaabane", "Ramadan", "Chawwal", "Dhou al-qi'da", "Dhou al-hijja"],
+        "en": ["Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani", "Jumada al-Ula", "Jumada al-Akhirah", "Rajab", "Shaban", "Ramadan", "Shawwal", "Dhu al-Qadah", "Dhu al-Hijjah"],
+        "de": ["Muharram", "Safar", "Rabi al-awwal", "Rabi ath-thani", "Dschumada al-ula", "Dschumada ath-thaniya", "Radschab", "Schaban", "Ramadan", "Schawwal", "Dhu l-qada", "Dhu l-hiddscha"]
+      }},
+      "hijri_date": ["%1$d %2$s %3$d", "%1$d %2$s %3$d H", "%1$d %2$s %3$d AH", "%1$d. %2$s %3$d n. H."],
+      "no_internet": ["İnternete bağlanılamadı.", "Connexion Internet impossible.", "Could not connect to the internet.", "Keine Internetverbindung."]
+    }
+  },
+  {
+    "section": "Ana ekran",
+    "strings": {
+      "lang_button_desc": ["Dil: Türkçe. Değiştirmek için dokun.", "Langue : français. Touchez pour changer.", "Language: English. Tap to change.", "Sprache: Deutsch. Zum Ändern tippen."],
+      "refresh_desc": ["Konumu ve vakitleri yenile", "Actualiser la position et les horaires", "Refresh location and prayer times", "Standort und Gebetszeiten aktualisieren"],
+      "settings_desc": ["Ayarlar", "Paramètres", "Settings", "Einstellungen"],
+      "btn_mosques": ["Camiler", "Mosquées", "Mosques", "Moscheen"],
+      "btn_holy_days": ["Dini Günler", "Jours religieux", "Religious days", "Religiöse Tage"],
+      "btn_kaza": ["Kaza Çetelesi", "Prières manquées", "Missed prayers", "Verpasste Gebete"],
+      "btn_zikir": ["Zikirmatik", "Compteur de dhikr", "Dhikr counter", "Dhikr-Zähler"],
+      "btn_quiz": ["🌳  Aile Halkası · Bilgi Yarışması", "🌳  Aile Halkası · Quiz en famille", "🌳  Aile Halkası · Family quiz", "🌳  Aile Halkası · Familienquiz"],
+      "btn_prayer_game": ["🕌  Namaz Öğreniyorum · Çocuklar için oyun", "🕌  J'apprends la prière · Jeu pour enfants", "🕌  Learning to pray · Game for children", "🕌  Ich lerne beten · Spiel für Kinder"],
+      "btn_namaz3d": ["🎬  Namazı 3B izle", "🎬  Voir la prière en 3D", "🎬  Watch the prayer in 3D", "🎬  Das Gebet in 3D ansehen"],
+      "btn_daily": ["💡  Günün sorusu", "💡  Question du jour", "💡  Question of the day", "💡  Frage des Tages"],
+      "btn_daily_done": ["💡  Günün sorusu ✓", "💡  Question du jour ✓", "💡  Question of the day ✓", "💡  Frage des Tages ✓"],
+      "place_label": ["📍 %1$s  ›", "📍 %1$s  ›", "📍 %1$s  ›", "📍 %1$s  ›"],
+      "place_searching": ["📍 Konum aranıyor…", "📍 Recherche de la position…", "📍 Finding your location…", "📍 Standort wird gesucht…"],
+      "place_finding": ["Bulunduğun yer bulunuyor…", "Recherche du lieu où vous êtes…", "Finding where you are…", "Dein Ort wird ermittelt…"],
+      "next_label": ["%1$s vaktine kalan", "Temps restant avant %1$s", "Time until %1$s", "Zeit bis %1$s"],
+      "times_updating": ["Vakitler güncelleniyor…", "Mise à jour des horaires…", "Updating prayer times…", "Gebetszeiten werden aktualisiert…"],
+      "times_refreshing": ["Vakitler Diyanet'ten güncelleniyor…", "Mise à jour des horaires depuis la Diyanet…", "Updating prayer times from Diyanet…", "Gebetszeiten werden von der Diyanet aktualisiert…"],
+      "offline_cached": ["İnternete bağlanılamadı; kayıtlı vakitler gösteriliyor.", "Pas de connexion Internet ; horaires enregistrés affichés.", "No internet connection; showing saved prayer times.", "Keine Internetverbindung; gespeicherte Gebetszeiten werden angezeigt."],
+      "loc_service_off_note": ["Telefonun konum servisi kapalı; son seçilen yer kullanılıyor.", "La localisation du téléphone est désactivée ; le dernier lieu choisi est utilisé.", "Phone location is off; using the last chosen place.", "Die Standortfunktion des Telefons ist aus; der zuletzt gewählte Ort wird verwendet."],
+      "loc_service_off_reason": ["telefonun konum servisi kapalı.", "la localisation du téléphone est désactivée.", "phone location is off.", "die Standortfunktion des Telefons ist aus."],
+      "loc_unavailable_note": ["Konum alınamadı; son seçilen yer kullanılıyor.", "Position introuvable ; le dernier lieu choisi est utilisé.", "Could not get location; using the last chosen place.", "Standort nicht verfügbar; der zuletzt gewählte Ort wird verwendet."],
+      "loc_no_report_reason": ["telefon konumu bildirmedi (10 sn içinde).", "le téléphone n'a pas donné de position (en 10 s).", "the phone did not report a location (within 10 s).", "das Telefon hat keinen Standort gemeldet (innerhalb von 10 s)."],
+      "loc_updated": ["Konum güncellendi: %1$s", "Position mise à jour : %1$s", "Location updated: %1$s", "Standort aktualisiert: %1$s"],
+      "loc_failed_last_chosen": ["%1$s Son seçilen yer kullanılıyor.", "%1$s Le dernier lieu choisi est utilisé.", "%1$s Using the last chosen place.", "%1$s Der zuletzt gewählte Ort wird verwendet."],
+      "locmode_need_perm": ["⚠ Otomatik konum için izin gerekli. Ayarlar'a gitmek için dokun.", "⚠ La position automatique demande une autorisation. Touchez pour ouvrir les paramètres.", "⚠ Automatic location needs permission. Tap to open settings.", "⚠ Automatischer Standort braucht eine Berechtigung. Zum Öffnen der Einstellungen tippen."],
+      "locmode_checking": ["📡 Otomatik konum · kontrol ediliyor…", "📡 Position automatique · vérification…", "📡 Automatic location · checking…", "📡 Automatischer Standort · wird geprüft…"],
+      "locmode_note": ["📡 Otomatik konum · %1$s", "📡 Position automatique · %1$s", "📡 Automatic location · %1$s", "📡 Automatischer Standort · %1$s"],
+      "locmode_computed": ["📡 Otomatik konum açık · vakitler konumundan hesaplanıyor", "📡 Position automatique activée · horaires calculés à partir de votre position", "📡 Automatic location on · times calculated from your location", "📡 Automatischer Standort an · Zeiten werden aus deinem Standort berechnet"],
+      "locmode_on": ["📡 Otomatik konum açık", "📡 Position automatique activée", "📡 Automatic location on", "📡 Automatischer Standort an"],
+      "notif_perm_off": ["⚠ Bildirim izni kapalı. Açmak için dokun.", "⚠ Les notifications sont désactivées. Touchez pour les activer.", "⚠ Notification permission is off. Tap to turn it on.", "⚠ Benachrichtigungen sind deaktiviert. Zum Aktivieren tippen."],
+      "exact_alarm_needed": ["⚠ Bildirimlerin tam vaktinde gelmesi için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.", "⚠ Pour des notifications à l'heure exacte, autorisez « Alarmes et rappels ». Touchez.", "⚠ For notifications at the exact time, allow \"Alarms & reminders\". Tap.", "⚠ Damit Benachrichtigungen pünktlich kommen, erlaube „Wecker und Erinnerungen“. Tippen."],
+      "loc_perm_denied": ["Konum izni verilmedi. Şehrini elle seçebilirsin.", "Autorisation de position refusée. Vous pouvez choisir votre ville à la main.", "Location permission not granted. You can choose your city manually.", "Standortberechtigung nicht erteilt. Du kannst deine Stadt von Hand wählen."]
+    }
+  },
+  {
+    "section": "Vakit kaynağı satırı (Times.sourceLabel)",
+    "strings": {
+      "src_computed": ["Kaynak: Konumundan hesaplandı (Diyanet ölçüleriyle)\nDiyanet'in listesinde bu konuma yakın bir yer yok. Vakitler resmi listeden birkaç dakika farklı olabilir.", "Source : calculé à partir de votre position (paramètres de la Diyanet)\nLa liste de la Diyanet n'a pas de lieu proche de cette position. Les horaires peuvent différer de quelques minutes de la liste officielle.", "Source: calculated from your location (Diyanet parameters)\nDiyanet's list has no place near this location. Times may differ from the official list by a few minutes.", "Quelle: aus deinem Standort berechnet (Diyanet-Parameter)\nDie Diyanet-Liste hat keinen Ort in der Nähe. Die Zeiten können um einige Minuten von der offiziellen Liste abweichen."],
+      "src_label": ["Kaynak: %1$s", "Source : %1$s", "Source: %1$s", "Quelle: %1$s"],
+      "src_asr_hanafi": [" · İkindi: Hanefi", " · Asr : hanafite", " · Asr: Hanafi", " · Asr: hanafitisch"],
+      "src_fallback": ["\n⚠ Seçilen yöntem için yerin koordinatı bulunamadı; Diyanet gösteriliyor.", "\n⚠ Coordonnées du lieu introuvables pour la méthode choisie ; horaires de la Diyanet affichés.", "\n⚠ No coordinates for this place with the chosen method; showing Diyanet times.", "\n⚠ Für die gewählte Methode fehlen die Koordinaten des Ortes; Diyanet-Zeiten werden angezeigt."],
+      "src_zone_note": ["\nSaatler seçilen yerin saatiyle. Alarm ve geri sayım telefonun saatine göre.", "\nHeures dans le fuseau du lieu choisi. Alarmes et compte à rebours selon l'heure du téléphone.", "\nTimes are in the chosen place's time zone. Alarms and countdown follow the phone's clock.", "\nZeiten in der Zeitzone des gewählten Ortes. Alarme und Countdown nach der Uhr des Telefons."]
+    }
+  },
+  {
+    "section": "Otomatik konum adımları (AutoLocation)",
+    "strings": {
+      "progress_city_name": ["Şehir adı bulunuyor…", "Recherche du nom de la ville…", "Finding the city name…", "Stadtname wird gesucht…"],
+      "progress_search_list": ["Diyanet listesinde aranıyor: %1$s", "Recherche dans la liste de la Diyanet : %1$s", "Searching Diyanet's list: %1$s", "Suche in der Diyanet-Liste: %1$s"],
+      "progress_downloading": ["%1$s vakitleri indiriliyor…", "Téléchargement des horaires de %1$s…", "Downloading prayer times for %1$s…", "Gebetszeiten für %1$s werden geladen…"],
+      "progress_computing": ["Vakitler konumundan hesaplanıyor…", "Calcul des horaires à partir de votre position…", "Calculating times from your location…", "Zeiten werden aus deinem Standort berechnet…"],
+      "progress_nearest_city": ["En yakın şehir hesaplanıyor…", "Recherche de la ville la plus proche…", "Finding the nearest city…", "Nächste Stadt wird gesucht…"],
+      "progress_nearest_district": ["En yakın ilçe hesaplanıyor…", "Recherche de la commune la plus proche…", "Finding the nearest district…", "Nächster Bezirk wird gesucht…"],
+      "progress_nearby": ["Çevredeki yerler Diyanet listesinde aranıyor…", "Recherche des lieux voisins dans la liste de la Diyanet…", "Searching nearby places in Diyanet's list…", "Orte in der Nähe werden in der Diyanet-Liste gesucht…"],
+      "fail_no_sun": ["Bu konum için vakit hesaplanamadı (güneşin batmadığı ya da doğmadığı bölge).", "Impossible de calculer les horaires ici (région où le soleil ne se couche pas ou ne se lève pas).", "Prayer times cannot be calculated here (region where the sun does not set or rise).", "Hier lassen sich keine Zeiten berechnen (Gebiet, in dem die Sonne nicht unter- oder aufgeht)."],
+      "your_location_coords": ["Konumun (%1$.2f°, %2$.2f°)", "Votre position (%1$.2f°, %2$.2f°)", "Your location (%1$.2f°, %2$.2f°)", "Dein Standort (%1$.2f°, %2$.2f°)"],
+      "here_place": ["Bulunduğun yer", "Votre lieu", "Your place", "Dein Ort"]
+    }
+  },
+  {
+    "section": "Yenile penceresi (RefreshActivity)",
+    "strings": {
+      "refresh_updating": ["Güncelleniyor…", "Mise à jour…", "Updating…", "Wird aktualisiert…"],
+      "refresh_seconds": ["%1$s  %2$d sn", "%1$s  %2$d s", "%1$s  %2$d s", "%1$s  %2$d s"],
+      "refresh_timeout": ["Zaman aşımı: işlem çok uzun sürdü. İnternet ve konum bağlantını kontrol et.", "Délai dépassé : l'opération a pris trop de temps. Vérifiez Internet et la localisation.", "Timed out: this took too long. Check your internet and location.", "Zeitüberschreitung: Das hat zu lange gedauert. Prüfe Internet und Standort."],
+      "refresh_finding_location": ["Konum bulunuyor…", "Recherche de la position…", "Finding location…", "Standort wird gesucht…"],
+      "refresh_loc_failed": ["Konum alınamadı; son yer kullanıldı.", "Position introuvable ; dernier lieu utilisé.", "Could not get location; used the last place.", "Kein Standort; der letzte Ort wurde verwendet."],
+      "refresh_auto_off": ["Otomatik konum kapalı (Ayarlar'dan açabilirsin).", "Position automatique désactivée (activable dans les paramètres).", "Automatic location is off (you can turn it on in Settings).", "Automatischer Standort ist aus (in den Einstellungen einschaltbar)."],
+      "refresh_no_perm": ["Konum izni yok; son yer kullanıldı.", "Pas d'autorisation de position ; dernier lieu utilisé.", "No location permission; used the last place.", "Keine Standortberechtigung; der letzte Ort wurde verwendet."],
+      "refresh_service_off": ["Telefonun konum servisi kapalı; son yer kullanıldı.", "Localisation du téléphone désactivée ; dernier lieu utilisé.", "Phone location is off; used the last place.", "Standortfunktion des Telefons ist aus; der letzte Ort wurde verwendet."],
+      "refresh_failed_last": ["%1$s Son yer kullanıldı.", "%1$s Dernier lieu utilisé.", "%1$s Used the last place.", "%1$s Der letzte Ort wurde verwendet."],
+      "refresh_downloading": ["Vakitler indiriliyor…", "Téléchargement des horaires…", "Downloading prayer times…", "Gebetszeiten werden geladen…"],
+      "refresh_ok": ["✓ Vakitler güncellendi", "✓ Horaires mis à jour", "✓ Prayer times updated", "✓ Gebetszeiten aktualisiert"],
+      "refresh_fail": ["✗ Vakitler güncellenemedi. İnternet bağlantını kontrol et.", "✗ Mise à jour impossible. Vérifiez votre connexion Internet.", "✗ Could not update prayer times. Check your internet connection.", "✗ Gebetszeiten konnten nicht aktualisiert werden. Prüfe deine Internetverbindung."],
+      "refresh_new_place": ["  (yeni konum)", "  (nouvelle position)", "  (new location)", "  (neuer Standort)"],
+      "refresh_same_place": ["  (konum aynı)", "  (même position)", "  (same location)", "  (gleicher Standort)"]
+    }
+  },
+  {
+    "section": "Konum izni açıklaması (LocationConsent)",
+    "strings": {
+      "consent_title": ["Konum izni neden isteniyor?", "Pourquoi l'accès à la position ?", "Why is location access needed?", "Warum wird der Standort benötigt?"],
+      "consent_message": [
+        "Konumun şunlar için kullanılır:\n\n• Bulunduğun şehri bulup oranın Diyanet vakitlerini göstermek\n• Seyahat ettiğinde vakitleri ve ekrandaki şehir/ülke adını kendiliğinden değiştirmek\n• Kıble yönünü hesaplamak\n\nYalnızca yaklaşık konum (şehir düzeyi) istenir. Konum, uygulamayı açtığında kontrol edilir ve telefonunda saklanır; uygulamanın kendine ait bir sunucusu yoktur.\n\nŞehir adını bulmak için önce telefonunun kendi konum hizmetine sorulur. O çalışmazsa koordinat, kimlik bilgisi olmadan OpenStreetMap'e gönderilir. \"Yakındaki Camiler\" ekranı da camileri bulmak için koordinatı OpenStreetMap'e gönderir.\n\nİstersen izin vermeden şehrini elle de seçebilirsin.",
+        "Votre position sert à :\n\n• Trouver votre ville et afficher ses horaires de la Diyanet\n• Changer automatiquement les horaires et le nom de la ville ou du pays quand vous voyagez\n• Calculer la direction de la Qibla\n\nSeule une position approximative (au niveau de la ville) est demandée. Elle est vérifiée à l'ouverture de l'application et reste sur votre téléphone ; l'application n'a pas de serveur à elle.\n\nPour trouver le nom de la ville, le service de localisation du téléphone est consulté d'abord. S'il ne répond pas, les coordonnées sont envoyées sans aucune donnée d'identité à OpenStreetMap. L'écran « Mosquées » envoie aussi les coordonnées à OpenStreetMap pour trouver les mosquées.\n\nVous pouvez aussi choisir votre ville à la main sans donner d'autorisation.",
+        "Your location is used to:\n\n• Find your city and show its Diyanet prayer times\n• Update the times and the city/country name automatically when you travel\n• Calculate the Qibla direction\n\nOnly approximate location (city level) is requested. It is checked when you open the app and stays on your phone; the app has no server of its own.\n\nTo find the city name, the phone's own location service is asked first. If that fails, the coordinates are sent to OpenStreetMap without any identity information. The \"Mosques\" screen also sends the coordinates to OpenStreetMap to find mosques.\n\nYou can also choose your city manually without giving permission.",
+        "Dein Standort wird verwendet, um:\n\n• deine Stadt zu finden und ihre Diyanet-Gebetszeiten zu zeigen\n• auf Reisen die Zeiten und den Stadt-/Ländernamen automatisch anzupassen\n• die Qibla-Richtung zu berechnen\n\nEs wird nur der ungefähre Standort (Stadtebene) angefragt. Er wird beim Öffnen der App geprüft und bleibt auf deinem Telefon; die App hat keinen eigenen Server.\n\nUm den Stadtnamen zu finden, wird zuerst der Standortdienst des Telefons gefragt. Klappt das nicht, werden die Koordinaten ohne Identitätsdaten an OpenStreetMap gesendet. Auch der Bildschirm „Moscheen“ sendet die Koordinaten an OpenStreetMap, um Moscheen zu finden.\n\nDu kannst deine Stadt auch ohne Berechtigung von Hand wählen."
+      ],
+      "consent_yes": ["Konumumu kullan", "Utiliser ma position", "Use my location", "Meinen Standort verwenden"],
+      "consent_no": ["Elle seçeceğim", "Je choisis moi-même", "I'll choose manually", "Ich wähle selbst"]
+    }
+  },
+  {
+    "section": "Bildirimler ve ezan",
+    "strings": {
+      "ch_prayer": ["Namaz vakitleri", "Horaires de prière", "Prayer times", "Gebetszeiten"],
+      "ch_prayer_desc": ["Vakit girdiğinde bildirim. Sesi buradan değiştirebilirsin.", "Notification à l'entrée de chaque prière. Vous pouvez changer le son ici.", "Notification when a prayer time begins. You can change the sound here.", "Benachrichtigung zu Beginn jeder Gebetszeit. Den Ton kannst du hier ändern."],
+      "ch_silent": ["Namaz vakitleri (ezan çalarken)", "Horaires de prière (pendant l'adhan)", "Prayer times (while adhan plays)", "Gebetszeiten (während der Adhan läuft)"],
+      "ch_silent_desc": ["Ezan sesi çalarken gösterilen sessiz vakit bildirimi.", "Notification silencieuse affichée pendant l'adhan.", "Silent notification shown while the adhan plays.", "Stille Benachrichtigung, während der Adhan läuft."],
+      "ch_reminder": ["Vakit hatırlatması", "Rappel avant la prière", "Prayer reminder", "Gebetserinnerung"],
+      "ch_reminder_desc": ["Vakit girmeden önce hatırlatma.", "Rappel avant l'entrée de la prière.", "Reminder before a prayer time begins.", "Erinnerung vor Beginn einer Gebetszeit."],
+      "ch_daily": ["Günün sorusu", "Question du jour", "Question of the day", "Frage des Tages"],
+      "ch_daily_desc": ["Aile Halkası: akşam vaktinde günün sorusu (sessiz).", "Aile Halkası : la question du jour au Maghrib (silencieux).", "Aile Halkası: question of the day at Maghrib (silent).", "Aile Halkası: Frage des Tages zum Maghrib (lautlos)."],
+      "ch_adhan": ["Ezan sesi", "Adhan", "Adhan", "Adhan"],
+      "ch_adhan_desc": ["Ezan çalarken durdurma düğmesi.", "Bouton d'arrêt pendant l'adhan.", "Stop button while the adhan plays.", "Stopp-Taste, während der Adhan läuft."],
+      "notif_prayer_title": ["%1$s vakti", "Heure de %1$s", "%1$s time", "Zeit für %1$s"],
+      "notif_prayer_text": ["%1$s vakti girdi: %2$s", "L'heure de %1$s est entrée : %2$s", "%1$s time has begun: %2$s", "Die Zeit für %1$s hat begonnen: %2$s"],
+      "notif_reminder_title": {"plural": {
+        "tr": {"one": "%1$s vaktine %2$d dakika kaldı", "other": "%1$s vaktine %2$d dakika kaldı"},
+        "fr": {"one": "%1$s dans %2$d minute", "other": "%1$s dans %2$d minutes"},
+        "en": {"one": "%2$d minute until %1$s", "other": "%2$d minutes until %1$s"},
+        "de": {"one": "Noch %2$d Minute bis %1$s", "other": "Noch %2$d Minuten bis %1$s"}
+      }},
+      "notif_daily_title": ["🌳 Günün sorusu", "🌳 Question du jour", "🌳 Question of the day", "🌳 Frage des Tages"],
+      "adhan_test": ["Deneme", "Essai", "Test", "Test"],
+      "adhan_default": ["Ezan", "Adhan", "Adhan", "Adhan"],
+      "adhan_playing": ["%1$s · Ezan okunuyor", "%1$s · Adhan en cours", "%1$s · Adhan playing", "%1$s · Adhan läuft"],
+      "adhan_tap_stop": ["Durdurmak için dokun", "Touchez pour arrêter", "Tap to stop", "Zum Stoppen tippen"],
+      "adhan_stop": ["Durdur", "Arrêter", "Stop", "Stopp"]
+    }
+  },
+  {
+    "section": "Widget",
+    "strings": {
+      "widget_open_app": ["Vakitler için uygulamayı aç", "Ouvrez l'application pour les horaires", "Open the app for prayer times", "App für die Gebetszeiten öffnen"],
+      "widget_until": ["%1$s vaktine kalan: %2$s", "Avant %1$s : %2$s", "Until %1$s: %2$s", "Bis %1$s: %2$s"]
+    }
+  }
+]

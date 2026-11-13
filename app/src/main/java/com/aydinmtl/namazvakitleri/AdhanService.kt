@@ -47,7 +47,7 @@ class AdhanService : Service() {
             return startIntent(
                 ctx,
                 Intent(ctx, AdhanService::class.java)
-                    .putExtra(EXTRA_TITLE, m.name)
+                    .putExtra(EXTRA_TITLE, Lang.prayerName(ctx, m.index))
                     .putExtra(EXTRA_INDEX, m.index)
                     .putExtra(EXTRA_AT, atMs),
             )
@@ -55,7 +55,7 @@ class AdhanService : Service() {
 
         /** Ayarlar'daki "Dinle" düğmesi: bildirimle ilgisi yok, yalnızca sesi dener. */
         fun startTest(ctx: Context): Boolean =
-            startIntent(ctx, Intent(ctx, AdhanService::class.java).putExtra(EXTRA_TITLE, "Deneme"))
+            startIntent(ctx, Intent(ctx, AdhanService::class.java).putExtra(EXTRA_TITLE, Lang.str(ctx, R.string.adhan_test)))
 
         private fun startIntent(ctx: Context, i: Intent): Boolean = try {
             ctx.startForegroundService(i)
@@ -84,7 +84,7 @@ class AdhanService : Service() {
             stopEverything()
             return START_NOT_STICKY
         }
-        val title = intent?.getStringExtra(EXTRA_TITLE) ?: "Ezan"
+        val title = intent?.getStringExtra(EXTRA_TITLE) ?: Lang.str(this, R.string.adhan_default)
         val index = intent?.getIntExtra(EXTRA_INDEX, -1) ?: -1
         val atMs = intent?.getLongExtra(EXTRA_AT, 0L) ?: 0L
         moment = if (index in PRAYER_NAMES.indices) {
@@ -100,11 +100,11 @@ class AdhanService : Service() {
         )
         val n = Notification.Builder(this, Notifications.CHANNEL_ADHAN)
             .setSmallIcon(R.drawable.ic_stat_hilal)
-            .setContentTitle("$title · Ezan okunuyor")
-            .setContentText("Durdurmak için dokun")
+            .setContentTitle(Lang.str(this, R.string.adhan_playing, title))
+            .setContentText(Lang.str(this, R.string.adhan_tap_stop))
             .setContentIntent(stopPi)
             .setDeleteIntent(stopPi)
-            .addAction(Notification.Action.Builder(null, "Durdur", stopPi).build())
+            .addAction(Notification.Action.Builder(null, Lang.str(this, R.string.adhan_stop), stopPi).build())
             .setOngoing(true)
             .build()
         try {

@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.InputType
@@ -10,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 /** Kaza namazı borcu: her namaz için sayaç. */
-class KazaActivity : Activity() {
+class KazaActivity : LangActivity() {
 
     private val names = listOf("Sabah", "Öğle", "İkindi", "Akşam", "Yatsı", "Vitir")
     private val countViews = ArrayList<TextView>()

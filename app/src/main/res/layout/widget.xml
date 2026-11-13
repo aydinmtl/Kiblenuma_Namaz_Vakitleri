@@ -38,7 +38,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginStart="6dp"
-            android:contentDescription="Konumu ve vakitleri yenile"
+            android:contentDescription="@string/refresh_desc"
             android:padding="6dp"
             android:src="@drawable/ic_refresh" />
     </LinearLayout>

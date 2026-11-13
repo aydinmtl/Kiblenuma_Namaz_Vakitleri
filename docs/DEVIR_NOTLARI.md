@@ -8,7 +8,8 @@ Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. 
 - Reklamsız, ücretsiz, kişisel veri toplamayan Android namaz vakti uygulaması.
 - Sahibi: Aydın (1. sınıf bilgisayar öğrencisi, C ve Linux biliyor, Kotlin/Android'de yeni).
   **Kod okunur ve Türkçe yorumlu kalmalı**; her değişiklik sade Türkçeyle açıklanmalı.
-- Arayüz dili: Türkçe. Yorumlar: Türkçe.
+- Arayüz dili: Türkçe (varsayılan), Fransızca, İngilizce, Almanca. Ana ekranın sağ üstündeki dil
+  düğmesiyle (TR/FR/EN/DE) seçilir. Yorumlar: Türkçe. Ayrıntı: aşağıdaki "Diller" bölümü.
 - Mağaza başlığı (kesin): **Kıblenüma: Namaz Vakitleri**. Yeni uygulama/modül adları Osmanlıca seçilir.
 
 ## Teknik yapı
@@ -51,6 +52,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `AdhanService.kt` | Kullanıcının seçtiği ses dosyasını ön plan servisiyle çalar |
 | `PrayerWidget.kt` | 4x2 ve 4x1 widget'lar (`PrayerWidgetSmall`), ↻ yenile düğmesi |
 | `RefreshActivity.kt` | Widget'taki ve ana ekrandaki ↻ düğmesinin açtığı küçük pencere: konum + vakit yenileme (kilit ekranında da görünür) |
+| `Lang.kt` | Uygulama dili: seçili dil (`Store.language`), `Lang.wrap` (her ekran ve bildirim/widget yazısı seçili dilde), `LangActivity` (bütün ekranların atası), `Lang.prayerName` |
 | `MainActivity.kt` | Ana ekran, ilk açılış akışı (`resumeFlow`), otomatik konum kontrolü |
 | `SettingsActivity.kt` | Konum, yöntem, ikindi, bildirimler, hatırlatma, ezan sesi, hakkında |
 | `LocationActivity.kt` | Ülke → şehir → ilçe elle seçim |
@@ -67,6 +69,29 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 
 Soru bankası: `tools/sorular.py` → `python3 tools/sorular.py app/src/main/assets/sorular.json`.
 JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıkları karıştırır.
+
+## Diller
+
+- Yazılar `res/values/strings.xml` (Türkçe) ve `values-fr`, `values-en`, `values-de` içindedir. Bu dosyalar
+  **elle düzenlenmez**: kaynak `tools/diller.json`, üretmek için `python3 tools/diller.py`.
+- Her yeni ekran `LangActivity`'den türer; ekransız yerler (bildirim, widget, servis) yazıyı
+  `Lang.str(ctx, R.string.x)` ya da `Lang.wrap(ctx)` ile alır. Widget'taki yazılar XML'de değil kodda verilir
+  (widget'ı telefonun ana ekranı, telefonun kendi diliyle çizer).
+- `LangResourcesTest` dört dosyada aynı yazıların ve aynı yer tutucuların (`%1$s`) olduğunu denetler.
+- Vakit adları: İngilizce/Fransızca/Almancada "İmsak" yerine "Fajr" yazılır; Diyanet'in imsak vakti fecr-i
+  sadıkın, yani sabah namazı vaktinin başlangıcıdır. Hicri tarih Türkçede Diyanet'in yazdığı gibi, öteki
+  dillerde aynı gün o dilin ay adlarıyla gösterilir.
+- Büyük/küçük harf dönüşümünde dilden bağımsız işler (yer adları, `norm`) sabit `TR`/`Locale.ROOT` kullanır;
+  seçili dile bakmaz. Tarih biçimi `Lang.locale(ctx)` ile yazılır.
+- Henüz çevrilmeyenler bu bölümün altında, "Çeviri durumu" başlığında listelenir.
+
+### Çeviri durumu
+
+- Çevrildi: ana ekran, vakit adları, bildirimler, ezan bildirimi, widget, yenile penceresi, konum izni
+  penceresi, kaynak satırı, otomatik konum adımları.
+- Henüz Türkçe: Ayarlar, konum seçimi, imsakiye, dini günler, kıble, camiler, kaza, zikir, Aile Halkası
+  (bilgi yarışması ve soru bankası), Namaz Öğreniyorum oyunu ve 3B canlandırma.
+- Diyanet'ten gelen yer adları (ör. "İsviçre") her dilde Diyanet'in yazdığı gibi kalır.
 
 ## Kod denetimi (ktlint ve gitleaks)
 

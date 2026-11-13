@@ -1,7 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
 import android.Manifest
-import android.app.Activity
 import android.content.pm.PackageManager
 import android.hardware.GeomagneticField
 import android.hardware.Sensor
@@ -22,7 +21,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class QiblaActivity : Activity(), SensorEventListener {
+class QiblaActivity : LangActivity(), SensorEventListener {
 
     companion object {
         private const val KAABA_LAT = 21.422487

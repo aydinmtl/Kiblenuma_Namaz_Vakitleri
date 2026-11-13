@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Türkçe (varsayılan) yazılar. Çevirileri values-fr, values-en, values-de klasörlerinde. -->
+<!-- Bu dosya elle değil tools/diller.json + tools/diller.py ile üretilir. -->
 <resources>
+
+    <!-- Genel -->
     <string name="app_name">Kıblenüma</string>
     <string name="widget_desc">Sıradaki vakit, kalan süre ve günün 6 vakti</string>
     <string name="widget_small_desc">Tek satırda sıradaki vakit ve kalan süre</string>
@@ -9,4 +13,140 @@
     <string name="imsakiye">İmsakiye</string>
     <string name="qibla">Kıble</string>
     <string name="search_hint">Ara…</string>
+    <string-array name="prayer_names">
+        <item>İmsak</item>
+        <item>Güneş</item>
+        <item>Öğle</item>
+        <item>İkindi</item>
+        <item>Akşam</item>
+        <item>Yatsı</item>
+    </string-array>
+    <string-array name="prayer_names_short">
+        <item>İmsak</item>
+        <item>Güneş</item>
+        <item>Öğle</item>
+        <item>İkindi</item>
+        <item>Akşam</item>
+        <item>Yatsı</item>
+    </string-array>
+    <string-array name="hijri_months">
+        <item>Muharrem</item>
+        <item>Safer</item>
+        <item>Rebiülevvel</item>
+        <item>Rebiülahir</item>
+        <item>Cemaziyelevvel</item>
+        <item>Cemaziyelahir</item>
+        <item>Recep</item>
+        <item>Şaban</item>
+        <item>Ramazan</item>
+        <item>Şevval</item>
+        <item>Zilkade</item>
+        <item>Zilhicce</item>
+    </string-array>
+    <string name="hijri_date">%1$d %2$s %3$d</string>
+    <string name="no_internet">İnternete bağlanılamadı.</string>
+
+    <!-- Ana ekran -->
+    <string name="lang_button_desc">Dil: Türkçe. Değiştirmek için dokun.</string>
+    <string name="refresh_desc">Konumu ve vakitleri yenile</string>
+    <string name="settings_desc">Ayarlar</string>
+    <string name="btn_mosques">Camiler</string>
+    <string name="btn_holy_days">Dini Günler</string>
+    <string name="btn_kaza">Kaza Çetelesi</string>
+    <string name="btn_zikir">Zikirmatik</string>
+    <string name="btn_quiz">🌳  Aile Halkası · Bilgi Yarışması</string>
+    <string name="btn_prayer_game">🕌  Namaz Öğreniyorum · Çocuklar için oyun</string>
+    <string name="btn_namaz3d">🎬  Namazı 3B izle</string>
+    <string name="btn_daily">💡  Günün sorusu</string>
+    <string name="btn_daily_done">💡  Günün sorusu ✓</string>
+    <string name="place_label">📍 %1$s  ›</string>
+    <string name="place_searching">📍 Konum aranıyor…</string>
+    <string name="place_finding">Bulunduğun yer bulunuyor…</string>
+    <string name="next_label">%1$s vaktine kalan</string>
+    <string name="times_updating">Vakitler güncelleniyor…</string>
+    <string name="times_refreshing">Vakitler Diyanet\'ten güncelleniyor…</string>
+    <string name="offline_cached">İnternete bağlanılamadı; kayıtlı vakitler gösteriliyor.</string>
+    <string name="loc_service_off_note">Telefonun konum servisi kapalı; son seçilen yer kullanılıyor.</string>
+    <string name="loc_service_off_reason">telefonun konum servisi kapalı.</string>
+    <string name="loc_unavailable_note">Konum alınamadı; son seçilen yer kullanılıyor.</string>
+    <string name="loc_no_report_reason">telefon konumu bildirmedi (10 sn içinde).</string>
+    <string name="loc_updated">Konum güncellendi: %1$s</string>
+    <string name="loc_failed_last_chosen">%1$s Son seçilen yer kullanılıyor.</string>
+    <string name="locmode_need_perm">⚠ Otomatik konum için izin gerekli. Ayarlar\'a gitmek için dokun.</string>
+    <string name="locmode_checking">📡 Otomatik konum · kontrol ediliyor…</string>
+    <string name="locmode_note">📡 Otomatik konum · %1$s</string>
+    <string name="locmode_computed">📡 Otomatik konum açık · vakitler konumundan hesaplanıyor</string>
+    <string name="locmode_on">📡 Otomatik konum açık</string>
+    <string name="notif_perm_off">⚠ Bildirim izni kapalı. Açmak için dokun.</string>
+    <string name="exact_alarm_needed">⚠ Bildirimlerin tam vaktinde gelmesi için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.</string>
+    <string name="loc_perm_denied">Konum izni verilmedi. Şehrini elle seçebilirsin.</string>
+
+    <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
+    <string name="src_computed">Kaynak: Konumundan hesaplandı (Diyanet ölçüleriyle)\nDiyanet\'in listesinde bu konuma yakın bir yer yok. Vakitler resmi listeden birkaç dakika farklı olabilir.</string>
+    <string name="src_label">Kaynak: %1$s</string>
+    <string name="src_asr_hanafi"> · İkindi: Hanefi</string>
+    <string name="src_fallback">\n⚠ Seçilen yöntem için yerin koordinatı bulunamadı; Diyanet gösteriliyor.</string>
+    <string name="src_zone_note">\nSaatler seçilen yerin saatiyle. Alarm ve geri sayım telefonun saatine göre.</string>
+
+    <!-- Otomatik konum adımları (AutoLocation) -->
+    <string name="progress_city_name">Şehir adı bulunuyor…</string>
+    <string name="progress_search_list">Diyanet listesinde aranıyor: %1$s</string>
+    <string name="progress_downloading">%1$s vakitleri indiriliyor…</string>
+    <string name="progress_computing">Vakitler konumundan hesaplanıyor…</string>
+    <string name="progress_nearest_city">En yakın şehir hesaplanıyor…</string>
+    <string name="progress_nearest_district">En yakın ilçe hesaplanıyor…</string>
+    <string name="progress_nearby">Çevredeki yerler Diyanet listesinde aranıyor…</string>
+    <string name="fail_no_sun">Bu konum için vakit hesaplanamadı (güneşin batmadığı ya da doğmadığı bölge).</string>
+    <string name="your_location_coords">Konumun (%1$.2f°, %2$.2f°)</string>
+    <string name="here_place">Bulunduğun yer</string>
+
+    <!-- Yenile penceresi (RefreshActivity) -->
+    <string name="refresh_updating">Güncelleniyor…</string>
+    <string name="refresh_seconds">%1$s  %2$d sn</string>
+    <string name="refresh_timeout">Zaman aşımı: işlem çok uzun sürdü. İnternet ve konum bağlantını kontrol et.</string>
+    <string name="refresh_finding_location">Konum bulunuyor…</string>
+    <string name="refresh_loc_failed">Konum alınamadı; son yer kullanıldı.</string>
+    <string name="refresh_auto_off">Otomatik konum kapalı (Ayarlar\'dan açabilirsin).</string>
+    <string name="refresh_no_perm">Konum izni yok; son yer kullanıldı.</string>
+    <string name="refresh_service_off">Telefonun konum servisi kapalı; son yer kullanıldı.</string>
+    <string name="refresh_failed_last">%1$s Son yer kullanıldı.</string>
+    <string name="refresh_downloading">Vakitler indiriliyor…</string>
+    <string name="refresh_ok">✓ Vakitler güncellendi</string>
+    <string name="refresh_fail">✗ Vakitler güncellenemedi. İnternet bağlantını kontrol et.</string>
+    <string name="refresh_new_place">  (yeni konum)</string>
+    <string name="refresh_same_place">  (konum aynı)</string>
+
+    <!-- Konum izni açıklaması (LocationConsent) -->
+    <string name="consent_title">Konum izni neden isteniyor?</string>
+    <string name="consent_message">Konumun şunlar için kullanılır:\n\n• Bulunduğun şehri bulup oranın Diyanet vakitlerini göstermek\n• Seyahat ettiğinde vakitleri ve ekrandaki şehir/ülke adını kendiliğinden değiştirmek\n• Kıble yönünü hesaplamak\n\nYalnızca yaklaşık konum (şehir düzeyi) istenir. Konum, uygulamayı açtığında kontrol edilir ve telefonunda saklanır; uygulamanın kendine ait bir sunucusu yoktur.\n\nŞehir adını bulmak için önce telefonunun kendi konum hizmetine sorulur. O çalışmazsa koordinat, kimlik bilgisi olmadan OpenStreetMap\'e gönderilir. \"Yakındaki Camiler\" ekranı da camileri bulmak için koordinatı OpenStreetMap\'e gönderir.\n\nİstersen izin vermeden şehrini elle de seçebilirsin.</string>
+    <string name="consent_yes">Konumumu kullan</string>
+    <string name="consent_no">Elle seçeceğim</string>
+
+    <!-- Bildirimler ve ezan -->
+    <string name="ch_prayer">Namaz vakitleri</string>
+    <string name="ch_prayer_desc">Vakit girdiğinde bildirim. Sesi buradan değiştirebilirsin.</string>
+    <string name="ch_silent">Namaz vakitleri (ezan çalarken)</string>
+    <string name="ch_silent_desc">Ezan sesi çalarken gösterilen sessiz vakit bildirimi.</string>
+    <string name="ch_reminder">Vakit hatırlatması</string>
+    <string name="ch_reminder_desc">Vakit girmeden önce hatırlatma.</string>
+    <string name="ch_daily">Günün sorusu</string>
+    <string name="ch_daily_desc">Aile Halkası: akşam vaktinde günün sorusu (sessiz).</string>
+    <string name="ch_adhan">Ezan sesi</string>
+    <string name="ch_adhan_desc">Ezan çalarken durdurma düğmesi.</string>
+    <string name="notif_prayer_title">%1$s vakti</string>
+    <string name="notif_prayer_text">%1$s vakti girdi: %2$s</string>
+    <plurals name="notif_reminder_title">
+        <item quantity="one">%1$s vaktine %2$d dakika kaldı</item>
+        <item quantity="other">%1$s vaktine %2$d dakika kaldı</item>
+    </plurals>
+    <string name="notif_daily_title">🌳 Günün sorusu</string>
+    <string name="adhan_test">Deneme</string>
+    <string name="adhan_default">Ezan</string>
+    <string name="adhan_playing">%1$s · Ezan okunuyor</string>
+    <string name="adhan_tap_stop">Durdurmak için dokun</string>
+    <string name="adhan_stop">Durdur</string>
+
+    <!-- Widget -->
+    <string name="widget_open_app">Vakitler için uygulamayı aç</string>
+    <string name="widget_until">%1$s vaktine kalan: %2$s</string>
 </resources>

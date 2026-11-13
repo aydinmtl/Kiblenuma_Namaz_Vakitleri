@@ -29,13 +29,28 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <!-- Dil seçici: seçili dilin kısaltması (TR, FR, EN, DE) görünür; dokununca
+                 öteki diller açılır ve biri seçilir (MainActivity.showLanguageMenu). -->
+            <TextView
+                android:id="@+id/btnLang"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/lang_chip"
+                android:contentDescription="@string/lang_button_desc"
+                android:gravity="center"
+                android:minWidth="48dp"
+                android:paddingHorizontal="8dp"
+                android:textColor="@color/gold"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
             <!-- Konumu ve vakitleri yenile (widget'taki ↻ ile aynı iş) -->
             <ImageButton
                 android:id="@+id/btnRefresh"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Konumu ve vakitleri yenile"
+                android:contentDescription="@string/refresh_desc"
                 android:src="@drawable/ic_refresh" />
 
             <ImageButton
@@ -43,7 +58,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Ayarlar"
+                android:contentDescription="@string/settings_desc"
                 android:src="@drawable/ic_settings" />
         </LinearLayout>
 
@@ -140,7 +155,7 @@
                 android:layout_width="0dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:text="Camiler" />
+                android:text="@string/btn_mosques" />
 
             <Button
                 android:id="@+id/btnHolyDays"
@@ -148,7 +163,7 @@
                 android:layout_width="0dp"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:text="Dini Günler" />
+                android:text="@string/btn_holy_days" />
         </LinearLayout>
 
         <LinearLayout
@@ -163,7 +178,7 @@
                 android:layout_width="0dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
-                android:text="Kaza Çetelesi" />
+                android:text="@string/btn_kaza" />
 
             <Button
                 android:id="@+id/btnZikir"
@@ -171,7 +186,7 @@
                 android:layout_width="0dp"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
-                android:text="Zikirmatik" />
+                android:text="@string/btn_zikir" />
         </LinearLayout>
 
         <Button
@@ -179,7 +194,7 @@
             style="@style/Btn"
             android:layout_width="match_parent"
             android:layout_marginTop="12dp"
-            android:text="🌳  Aile Halkası · Bilgi Yarışması" />
+            android:text="@string/btn_quiz" />
 
         <!-- Çocuklar için: soruları bildikçe abdest alıp namaz kılan figür -->
         <Button
@@ -187,7 +202,7 @@
             style="@style/Btn"
             android:layout_width="match_parent"
             android:layout_marginTop="12dp"
-            android:text="🕌  Namaz Öğreniyorum · Çocuklar için oyun" />
+            android:text="@string/btn_prayer_game" />
 
         <!-- Kodla üretilmiş 3B canlandırma: namazın hareketleri sırayla -->
         <Button
@@ -195,7 +210,7 @@
             style="@style/Btn"
             android:layout_width="match_parent"
             android:layout_marginTop="12dp"
-            android:text="🎬  Namazı 3B izle" />
+            android:text="@string/btn_namaz3d" />
 
         <!-- Aile Halkası: her gün bir soru -->
         <Button
@@ -203,7 +218,7 @@
             style="@style/Btn"
             android:layout_width="match_parent"
             android:layout_marginTop="12dp"
-            android:text="💡  Günün sorusu" />
+            android:text="@string/btn_daily" />
 
         <TextView
             android:id="@+id/tvStatus"

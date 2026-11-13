@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Almanca çeviri. tools/diller.py ile üretilir, elle düzenleme. -->
+<resources>
+
+    <!-- Genel -->
+    <string name="widget_desc">Nächstes Gebet, Restzeit und die 6 Zeiten des Tages</string>
+    <string name="widget_small_desc">Nächstes Gebet und Restzeit in einer Zeile</string>
+    <string name="notify">Gebetsbenachrichtigungen</string>
+    <string name="imsakiye">Monatsübersicht</string>
+    <string name="qibla">Qibla</string>
+    <string name="search_hint">Suchen…</string>
+    <string-array name="prayer_names">
+        <item>Fadschr</item>
+        <item>Sonnenaufgang</item>
+        <item>Dhuhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Ischa</item>
+    </string-array>
+    <string-array name="prayer_names_short">
+        <item>Fadschr</item>
+        <item>Sonne</item>
+        <item>Dhuhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Ischa</item>
+    </string-array>
+    <string-array name="hijri_months">
+        <item>Muharram</item>
+        <item>Safar</item>
+        <item>Rabi al-awwal</item>
+        <item>Rabi ath-thani</item>
+        <item>Dschumada al-ula</item>
+        <item>Dschumada ath-thaniya</item>
+        <item>Radschab</item>
+        <item>Schaban</item>
+        <item>Ramadan</item>
+        <item>Schawwal</item>
+        <item>Dhu l-qada</item>
+        <item>Dhu l-hiddscha</item>
+    </string-array>
+    <string name="hijri_date">%1$d. %2$s %3$d n. H.</string>
+    <string name="no_internet">Keine Internetverbindung.</string>
+
+    <!-- Ana ekran -->
+    <string name="lang_button_desc">Sprache: Deutsch. Zum Ändern tippen.</string>
+    <string name="refresh_desc">Standort und Gebetszeiten aktualisieren</string>
+    <string name="settings_desc">Einstellungen</string>
+    <string name="btn_mosques">Moscheen</string>
+    <string name="btn_holy_days">Religiöse Tage</string>
+    <string name="btn_kaza">Verpasste Gebete</string>
+    <string name="btn_zikir">Dhikr-Zähler</string>
+    <string name="btn_quiz">🌳  Aile Halkası · Familienquiz</string>
+    <string name="btn_prayer_game">🕌  Ich lerne beten · Spiel für Kinder</string>
+    <string name="btn_namaz3d">🎬  Das Gebet in 3D ansehen</string>
+    <string name="btn_daily">💡  Frage des Tages</string>
+    <string name="btn_daily_done">💡  Frage des Tages ✓</string>
+    <string name="place_label">📍 %1$s  ›</string>
+    <string name="place_searching">📍 Standort wird gesucht…</string>
+    <string name="place_finding">Dein Ort wird ermittelt…</string>
+    <string name="next_label">Zeit bis %1$s</string>
+    <string name="times_updating">Gebetszeiten werden aktualisiert…</string>
+    <string name="times_refreshing">Gebetszeiten werden von der Diyanet aktualisiert…</string>
+    <string name="offline_cached">Keine Internetverbindung; gespeicherte Gebetszeiten werden angezeigt.</string>
+    <string name="loc_service_off_note">Die Standortfunktion des Telefons ist aus; der zuletzt gewählte Ort wird verwendet.</string>
+    <string name="loc_service_off_reason">die Standortfunktion des Telefons ist aus.</string>
+    <string name="loc_unavailable_note">Standort nicht verfügbar; der zuletzt gewählte Ort wird verwendet.</string>
+    <string name="loc_no_report_reason">das Telefon hat keinen Standort gemeldet (innerhalb von 10 s).</string>
+    <string name="loc_updated">Standort aktualisiert: %1$s</string>
+    <string name="loc_failed_last_chosen">%1$s Der zuletzt gewählte Ort wird verwendet.</string>
+    <string name="locmode_need_perm">⚠ Automatischer Standort braucht eine Berechtigung. Zum Öffnen der Einstellungen tippen.</string>
+    <string name="locmode_checking">📡 Automatischer Standort · wird geprüft…</string>
+    <string name="locmode_note">📡 Automatischer Standort · %1$s</string>
+    <string name="locmode_computed">📡 Automatischer Standort an · Zeiten werden aus deinem Standort berechnet</string>
+    <string name="locmode_on">📡 Automatischer Standort an</string>
+    <string name="notif_perm_off">⚠ Benachrichtigungen sind deaktiviert. Zum Aktivieren tippen.</string>
+    <string name="exact_alarm_needed">⚠ Damit Benachrichtigungen pünktlich kommen, erlaube „Wecker und Erinnerungen“. Tippen.</string>
+    <string name="loc_perm_denied">Standortberechtigung nicht erteilt. Du kannst deine Stadt von Hand wählen.</string>
+
+    <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
+    <string name="src_computed">Quelle: aus deinem Standort berechnet (Diyanet-Parameter)\nDie Diyanet-Liste hat keinen Ort in der Nähe. Die Zeiten können um einige Minuten von der offiziellen Liste abweichen.</string>
+    <string name="src_label">Quelle: %1$s</string>
+    <string name="src_asr_hanafi"> · Asr: hanafitisch</string>
+    <string name="src_fallback">\n⚠ Für die gewählte Methode fehlen die Koordinaten des Ortes; Diyanet-Zeiten werden angezeigt.</string>
+    <string name="src_zone_note">\nZeiten in der Zeitzone des gewählten Ortes. Alarme und Countdown nach der Uhr des Telefons.</string>
+
+    <!-- Otomatik konum adımları (AutoLocation) -->
+    <string name="progress_city_name">Stadtname wird gesucht…</string>
+    <string name="progress_search_list">Suche in der Diyanet-Liste: %1$s</string>
+    <string name="progress_downloading">Gebetszeiten für %1$s werden geladen…</string>
+    <string name="progress_computing">Zeiten werden aus deinem Standort berechnet…</string>
+    <string name="progress_nearest_city">Nächste Stadt wird gesucht…</string>
+    <string name="progress_nearest_district">Nächster Bezirk wird gesucht…</string>
+    <string name="progress_nearby">Orte in der Nähe werden in der Diyanet-Liste gesucht…</string>
+    <string name="fail_no_sun">Hier lassen sich keine Zeiten berechnen (Gebiet, in dem die Sonne nicht unter- oder aufgeht).</string>
+    <string name="your_location_coords">Dein Standort (%1$.2f°, %2$.2f°)</string>
+    <string name="here_place">Dein Ort</string>
+
+    <!-- Yenile penceresi (RefreshActivity) -->
+    <string name="refresh_updating">Wird aktualisiert…</string>
+    <string name="refresh_seconds">%1$s  %2$d s</string>
+    <string name="refresh_timeout">Zeitüberschreitung: Das hat zu lange gedauert. Prüfe Internet und Standort.</string>
+    <string name="refresh_finding_location">Standort wird gesucht…</string>
+    <string name="refresh_loc_failed">Kein Standort; der letzte Ort wurde verwendet.</string>
+    <string name="refresh_auto_off">Automatischer Standort ist aus (in den Einstellungen einschaltbar).</string>
+    <string name="refresh_no_perm">Keine Standortberechtigung; der letzte Ort wurde verwendet.</string>
+    <string name="refresh_service_off">Standortfunktion des Telefons ist aus; der letzte Ort wurde verwendet.</string>
+    <string name="refresh_failed_last">%1$s Der letzte Ort wurde verwendet.</string>
+    <string name="refresh_downloading">Gebetszeiten werden geladen…</string>
+    <string name="refresh_ok">✓ Gebetszeiten aktualisiert</string>
+    <string name="refresh_fail">✗ Gebetszeiten konnten nicht aktualisiert werden. Prüfe deine Internetverbindung.</string>
+    <string name="refresh_new_place">  (neuer Standort)</string>
+    <string name="refresh_same_place">  (gleicher Standort)</string>
+
+    <!-- Konum izni açıklaması (LocationConsent) -->
+    <string name="consent_title">Warum wird der Standort benötigt?</string>
+    <string name="consent_message">Dein Standort wird verwendet, um:\n\n• deine Stadt zu finden und ihre Diyanet-Gebetszeiten zu zeigen\n• auf Reisen die Zeiten und den Stadt-/Ländernamen automatisch anzupassen\n• die Qibla-Richtung zu berechnen\n\nEs wird nur der ungefähre Standort (Stadtebene) angefragt. Er wird beim Öffnen der App geprüft und bleibt auf deinem Telefon; die App hat keinen eigenen Server.\n\nUm den Stadtnamen zu finden, wird zuerst der Standortdienst des Telefons gefragt. Klappt das nicht, werden die Koordinaten ohne Identitätsdaten an OpenStreetMap gesendet. Auch der Bildschirm „Moscheen“ sendet die Koordinaten an OpenStreetMap, um Moscheen zu finden.\n\nDu kannst deine Stadt auch ohne Berechtigung von Hand wählen.</string>
+    <string name="consent_yes">Meinen Standort verwenden</string>
+    <string name="consent_no">Ich wähle selbst</string>
+
+    <!-- Bildirimler ve ezan -->
+    <string name="ch_prayer">Gebetszeiten</string>
+    <string name="ch_prayer_desc">Benachrichtigung zu Beginn jeder Gebetszeit. Den Ton kannst du hier ändern.</string>
+    <string name="ch_silent">Gebetszeiten (während der Adhan läuft)</string>
+    <string name="ch_silent_desc">Stille Benachrichtigung, während der Adhan läuft.</string>
+    <string name="ch_reminder">Gebetserinnerung</string>
+    <string name="ch_reminder_desc">Erinnerung vor Beginn einer Gebetszeit.</string>
+    <string name="ch_daily">Frage des Tages</string>
+    <string name="ch_daily_desc">Aile Halkası: Frage des Tages zum Maghrib (lautlos).</string>
+    <string name="ch_adhan">Adhan</string>
+    <string name="ch_adhan_desc">Stopp-Taste, während der Adhan läuft.</string>
+    <string name="notif_prayer_title">Zeit für %1$s</string>
+    <string name="notif_prayer_text">Die Zeit für %1$s hat begonnen: %2$s</string>
+    <plurals name="notif_reminder_title">
+        <item quantity="one">Noch %2$d Minute bis %1$s</item>
+        <item quantity="other">Noch %2$d Minuten bis %1$s</item>
+    </plurals>
+    <string name="notif_daily_title">🌳 Frage des Tages</string>
+    <string name="adhan_test">Test</string>
+    <string name="adhan_default">Adhan</string>
+    <string name="adhan_playing">%1$s · Adhan läuft</string>
+    <string name="adhan_tap_stop">Zum Stoppen tippen</string>
+    <string name="adhan_stop">Stopp</string>
+
+    <!-- Widget -->
+    <string name="widget_open_app">App für die Gebetszeiten öffnen</string>
+    <string name="widget_until">Bis %1$s: %2$s</string>
+</resources>

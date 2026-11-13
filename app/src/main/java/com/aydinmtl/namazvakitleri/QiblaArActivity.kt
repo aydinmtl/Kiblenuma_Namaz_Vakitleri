@@ -1,6 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.GeomagneticField
 import android.hardware.Sensor
@@ -43,6 +44,12 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
 
     private val askCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) startCamera() else tvInfo.text = "Kamera izni verilmedi. Pusulalı kıble ekranını kullanabilirsin."
+    }
+
+    // Seçili dili uygula (bu ekran kamera için ComponentActivity'den türediğinden
+    // LangActivity'yi kullanamıyor; aynı işi burada yapıyoruz).
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(Lang.wrap(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

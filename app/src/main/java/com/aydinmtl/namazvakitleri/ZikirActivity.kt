@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
@@ -12,7 +11,7 @@ import android.view.View
 import android.widget.TextView
 
 /** Basit zikirmatik: dokun = +1, hedefe ulaşınca uzun titreşim ve yeni tur. */
-class ZikirActivity : Activity() {
+class ZikirActivity : LangActivity() {
 
     private val targets = intArrayOf(33, 99, 100, 500, 1000, 0) // 0 = sınırsız
 

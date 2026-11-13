@@ -33,17 +33,14 @@ object Times {
         val m = effectiveMethod(ctx)
         if (m == CalcMethod.DIYANET && Store.isComputed(ctx)) {
             // Diyanet'in listesinde yakın yer yok: resmi liste değil, hesap olduğu açıkça yazılır.
-            return "Kaynak: Konumundan hesaplandı (Diyanet ölçüleriyle)\n" +
-                "Diyanet'in listesinde bu konuma yakın bir yer yok. " +
-                "Vakitler resmi listeden birkaç dakika farklı olabilir."
+            return Lang.str(ctx, R.string.src_computed)
         }
-        val asr = if (m != CalcMethod.DIYANET && Store.asrHanafi(ctx)) " · İkindi: Hanefi" else ""
+        val asr = if (m != CalcMethod.DIYANET && Store.asrHanafi(ctx)) Lang.str(ctx, R.string.src_asr_hanafi) else ""
         // Seçilen yer başka bir saat dilimindeyse kullanıcıya söyle (bkz. PlaceZone)
         val shift = Prayers.day(days(ctx), LocalDate.now())?.shiftMinutes ?: 0
-        val zoneNote = if (shift == 0) "" else
-            "\nSaatler seçilen yerin saatiyle. Alarm ve geri sayım telefonun saatine göre."
-        return "Kaynak: ${m.title}$asr" +
-            (if (isFallback(ctx)) "\n⚠ Seçilen yöntem için yerin koordinatı bulunamadı; Diyanet gösteriliyor." else "") +
+        val zoneNote = if (shift == 0) "" else Lang.str(ctx, R.string.src_zone_note)
+        return Lang.str(ctx, R.string.src_label, m.title) + asr +
+            (if (isFallback(ctx)) Lang.str(ctx, R.string.src_fallback) else "") +
             zoneNote
     }
 

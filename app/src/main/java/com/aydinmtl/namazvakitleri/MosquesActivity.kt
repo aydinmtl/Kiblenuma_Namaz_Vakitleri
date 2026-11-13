@@ -1,6 +1,5 @@
 package com.aydinmtl.namazvakitleri
 
-import android.app.Activity
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
@@ -20,7 +19,7 @@ import kotlin.math.roundToInt
  * Arama ve ayrıştırma MosqueSearch.kt dosyasında.
  * Bir camiye dokununca telefonun harita uygulamasında açılır.
  */
-class MosquesActivity : Activity() {
+class MosquesActivity : LangActivity() {
 
     private companion object {
         /** Listede en çok bu kadar yer gösterilir (en yakınlar). */

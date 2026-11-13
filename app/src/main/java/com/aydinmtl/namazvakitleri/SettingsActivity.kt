@@ -1,7 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -23,7 +22,7 @@ import android.widget.TextView
 import android.widget.Toast
 import java.time.format.DateTimeFormatter
 
-class SettingsActivity : Activity() {
+class SettingsActivity : LangActivity() {
 
     companion object {
         private const val REQ_PICK_ADHAN = 21

@@ -1,7 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.webkit.WebView
@@ -14,7 +13,7 @@ import android.widget.FrameLayout
  * WebGL2 ile çizilir). Bu ekran yalnızca Android'in kendi WebView'ini açıp o dosyayı yükler;
  * yeni bir kütüphane eklenmez, internet gerekmez.
  */
-class Namaz3dActivity : Activity() {
+class Namaz3dActivity : LangActivity() {
 
     private lateinit var web: WebView
 

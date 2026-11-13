@@ -40,20 +40,27 @@ class PrayerWidget : AppWidgetProvider() {
             val text = ctx.getColor(R.color.text)
             val muted = ctx.getColor(R.color.muted)
 
+            // Widget'ı telefonun ana ekranı çizer; yazıları seçili dilde biz veriyoruz.
+            val res = Lang.wrap(ctx)
+            val shortNames = res.resources.getStringArray(R.array.prayer_names_short)
+            for (i in 0..5) v.setTextViewText(NAME_IDS[i], shortNames[i])
+
             val days = Times.days(ctx)
             val next = Prayers.next(days, LocalDateTime.now())
             v.setTextViewText(R.id.w_place, Store.placeName(ctx))
 
             if (next == null) {
-                v.setTextViewText(R.id.w_next, "Vakitler için uygulamayı aç")
+                v.setTextViewText(R.id.w_next, res.getString(R.string.widget_open_app))
                 v.setViewVisibility(R.id.w_countdown, View.GONE)
             } else {
-                v.setTextViewText(R.id.w_next, "${next.name} ${next.clock.format(HHMM)}")
+                val nextName = Lang.prayerName(ctx, next.index)
+                v.setTextViewText(R.id.w_next, "$nextName ${next.clock.format(HHMM)}")
                 val targetMs = next.at.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 val base = SystemClock.elapsedRealtime() + (targetMs - System.currentTimeMillis())
                 v.setViewVisibility(R.id.w_countdown, View.VISIBLE)
                 // Küçük widget'ta sayaç cümle içinde: "Öğle vaktine kalan: 3:40:51"
-                val format = if (small) "${next.name} vaktine kalan: %s" else null
+                // (%s: sayacın kendisinin yerine geçer)
+                val format = if (small) res.getString(R.string.widget_until, nextName, "%s") else null
                 v.setChronometer(R.id.w_countdown, base, format, true)
                 v.setChronometerCountDown(R.id.w_countdown, true)
 
