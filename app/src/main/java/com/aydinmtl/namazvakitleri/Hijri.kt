@@ -54,7 +54,20 @@ object Hijri {
 
     // ---------------- Dini günler ----------------
 
-    data class HolyDay(val date: LocalDate, val name: String, val night: Boolean)
+    /** Dini günün türü: ekranda seçili dildeki adı bununla bulunur (bkz. Lang.holyDayName). */
+    enum class HolyKind { NEW_YEAR, ASHURA, THREE_MONTHS, RAMADAN_START, ADHA_EVE, MAWLID, MIRAJ, BARAAT, QADR, FITR_EVE, RAGHAIB, FITR_DAY, ADHA_DAY }
+
+    /**
+     * [name]: Türkçe adı (testler ve Türkçe ekran bunu kullanır).
+     * [kind] ve [n]: öteki dillerde adı kurmak için tür ve sayı (bayramın kaçıncı günü, Hicri yıl).
+     */
+    data class HolyDay(
+        val date: LocalDate,
+        val name: String,
+        val night: Boolean,
+        val kind: HolyKind = HolyKind.NEW_YEAR,
+        val n: Int = 0,
+    )
 
     /**
      * Bugünden itibaren [days] gün içindeki dini günler.
@@ -73,25 +86,25 @@ object Hijri {
             val nmd = next.month to next.day
 
             when (md) {
-                1 to 1 -> out.add(HolyDay(d, "Hicri Yılbaşı (${h.year})", false))
-                1 to 10 -> out.add(HolyDay(d, "Aşure Günü", false))
-                7 to 1 -> out.add(HolyDay(d, "Üç Ayların Başlangıcı", false))
-                9 to 1 -> out.add(HolyDay(d, "Ramazan Başlangıcı", false))
-                12 to 9 -> out.add(HolyDay(d, "Kurban Bayramı Arefesi", false))
+                1 to 1 -> out.add(HolyDay(d, "Hicri Yılbaşı (${h.year})", false, HolyKind.NEW_YEAR, h.year))
+                1 to 10 -> out.add(HolyDay(d, "Aşure Günü", false, HolyKind.ASHURA))
+                7 to 1 -> out.add(HolyDay(d, "Üç Ayların Başlangıcı", false, HolyKind.THREE_MONTHS))
+                9 to 1 -> out.add(HolyDay(d, "Ramazan Başlangıcı", false, HolyKind.RAMADAN_START))
+                12 to 9 -> out.add(HolyDay(d, "Kurban Bayramı Arefesi", false, HolyKind.ADHA_EVE))
             }
             when (nmd) {
-                3 to 12 -> out.add(HolyDay(d, "Mevlid Kandili", true))
-                7 to 27 -> out.add(HolyDay(d, "Miraç Kandili", true))
-                8 to 15 -> out.add(HolyDay(d, "Berat Kandili", true))
-                9 to 27 -> out.add(HolyDay(d, "Kadir Gecesi", true))
-                10 to 1 -> out.add(HolyDay(d, "Ramazan Bayramı Arefesi", false))
+                3 to 12 -> out.add(HolyDay(d, "Mevlid Kandili", true, HolyKind.MAWLID))
+                7 to 27 -> out.add(HolyDay(d, "Miraç Kandili", true, HolyKind.MIRAJ))
+                8 to 15 -> out.add(HolyDay(d, "Berat Kandili", true, HolyKind.BARAAT))
+                9 to 27 -> out.add(HolyDay(d, "Kadir Gecesi", true, HolyKind.QADR))
+                10 to 1 -> out.add(HolyDay(d, "Ramazan Bayramı Arefesi", false, HolyKind.FITR_EVE))
             }
             // Regaib: Recep ayının ilk cuma gecesi (perşembeyi cumaya bağlayan gece)
             if (d.dayOfWeek == DayOfWeek.THURSDAY && next.month == 7 && next.day <= 7) {
-                out.add(HolyDay(d, "Regaib Kandili", true))
+                out.add(HolyDay(d, "Regaib Kandili", true, HolyKind.RAGHAIB))
             }
-            if (h.month == 10 && h.day in 1..3) out.add(HolyDay(d, "Ramazan Bayramı ${h.day}. Gün", false))
-            if (h.month == 12 && h.day in 10..13) out.add(HolyDay(d, "Kurban Bayramı ${h.day - 9}. Gün", false))
+            if (h.month == 10 && h.day in 1..3) out.add(HolyDay(d, "Ramazan Bayramı ${h.day}. Gün", false, HolyKind.FITR_DAY, h.day))
+            if (h.month == 12 && h.day in 10..13) out.add(HolyDay(d, "Kurban Bayramı ${h.day - 9}. Gün", false, HolyKind.ADHA_DAY, h.day - 9))
 
             h = next
         }

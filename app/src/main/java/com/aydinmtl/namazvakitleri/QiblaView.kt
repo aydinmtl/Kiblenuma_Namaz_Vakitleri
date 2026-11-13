@@ -76,7 +76,8 @@ class QiblaView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
             canvas.drawLine(sx, sy, ex, ey, tickPaint)
         }
 
-        val labels = arrayOf("K", "D", "G", "B") // Kuzey, Doğu, Güney, Batı
+        // Kuzey, Doğu, Güney, Batı harfleri seçili dilde (K D G B / N E S W …)
+        val labels = resources.getStringArray(R.array.qb_compass_letters)
         val lr = r - 40 * dp
         for (i in 0..3) {
             val a = Math.toRadians(i * 90.0)

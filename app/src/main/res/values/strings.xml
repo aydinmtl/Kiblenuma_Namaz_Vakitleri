@@ -149,4 +149,218 @@
     <!-- Widget -->
     <string name="widget_open_app">Vakitler için uygulamayı aç</string>
     <string name="widget_until">%1$s vaktine kalan: %2$s</string>
+
+    <!-- Ortak düğmeler -->
+    <string name="cancel">Vazgeç</string>
+    <string name="save">Kaydet</string>
+    <string name="reset">Sıfırla</string>
+    <string name="listen">Dinle</string>
+    <string name="unknown">bilinmiyor</string>
+
+    <!-- Ayarlar -->
+    <string name="set_title">Ayarlar</string>
+    <string name="set_sec_location">Konum</string>
+    <string name="set_auto_location">Otomatik konum</string>
+    <string name="set_auto_location_note">Seyahat ettiğinde bulunduğun şehri bulur; vakitleri ve ekrandaki şehir/ülke adını ona göre değiştirir. Konum, uygulamayı açtığında kontrol edilir ve yalnızca şehir adını bulmak için kullanılır; hiçbir sunucuya kaydedilmez.</string>
+    <string name="set_manual">Şehri elle seç</string>
+    <string name="set_manual_note">Elle seçim yaparsan otomatik konum kapanır.</string>
+    <string name="set_sec_calc">Vakit hesaplama</string>
+    <string name="set_asr_note">Standart: Şafii, Maliki, Hanbeli mezhepleri ve Diyanet. Hanefi: asr-ı sani (gölge boyun iki katı). Diyanet seçiliyken Diyanet\'in resmi vakti kullanılır.</string>
+    <string name="set_sec_notif">Bildirimler</string>
+    <string name="set_notify">Vakit bildirimleri</string>
+    <string name="set_which">Hangi vakitlerde bildirim gelsin?</string>
+    <string name="set_sound">Bildirim sesini değiştir</string>
+    <string name="set_adhan">Vakit girince ezan sesi çal</string>
+    <string name="set_adhan_pick">Ses dosyası seç</string>
+    <string name="set_adhan_silent">Telefon sessiz ya da titreşimdeyken ezan çalma</string>
+    <string name="set_sec_times">Vakitler</string>
+    <string name="set_refresh_now">Vakitleri şimdi güncelle</string>
+    <string name="set_sec_about">Hakkında</string>
+    <string name="set_about">Kıblenüma %1$s\nReklamsız ve ücretsiz. Kişisel veri toplamaz.\nDiyanet vakitleri ezanvakti.emushaf.net üzerinden alınır. Diğer yöntemler telefonda hesaplanır.\nŞehir adı (telefonun hizmeti çalışmazsa) ve yakındaki camiler için konum, kimlik bilgisi olmadan OpenStreetMap\'e gönderilir.\nCamiler: © OpenStreetMap katkıcıları.</string>
+    <string name="set_sunrise_note">%1$s (namaz vakti değil)</string>
+    <string name="set_pick_adhan_first">Önce bir ezan ses dosyası seç.</string>
+    <string name="set_no_place">Yer seçilmedi</string>
+    <string name="set_place">📍 %1$s</string>
+    <string name="set_method">Hesaplama yöntemi</string>
+    <string name="set_method_computed">Diyanet\'in listesinde bulunduğun konuma yakın bir yer yok. Vakitler konumundan, Diyanet\'in ölçüleriyle (imsak 18°, yatsı 17°, temkin süreleri) telefonda hesaplanıyor. Resmi listeden birkaç dakika farklı olabilir.</string>
+    <string name="set_method_fallback">\n⚠ Bu yerin koordinatı bulunamadı; şimdilik Diyanet vakitleri gösteriliyor.</string>
+    <string name="set_asr">İkindi hesabı</string>
+    <string name="set_asr_hanafi">Hanefi (asr-ı sani)</string>
+    <string name="set_asr_standard">Standart (asr-ı evvel)</string>
+    <string name="set_asr_standard_long">Standart (Şafii, Maliki, Hanbeli)</string>
+    <string name="set_reminder">Vakitten önce hatırlat</string>
+    <string name="set_off">Kapalı</string>
+    <plurals name="set_minutes_before">
+        <item quantity="one">%1$d dakika önce</item>
+        <item quantity="other">%1$d dakika önce</item>
+    </plurals>
+    <string name="set_adhan_none">Uygulamada hazır ezan sesi yok. Telefonundaki bir ezan ses dosyasını (mp3 vb.) seç. Ezan, vakit girince çalar; bildirimdeki \"Durdur\" ile susturabilirsin.</string>
+    <string name="set_adhan_file">Seçili dosya: %1$s</string>
+    <string name="set_exact_needed">⚠ Tam vaktinde bildirim için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.</string>
+    <string name="set_data_computed">Vakitler konumundan telefonda hesaplanıyor; indirilen liste yok.</string>
+    <string name="set_data_none">Kayıtlı Diyanet vakti yok.</string>
+    <string name="set_data_until">Kayıtlı Diyanet vakitleri: %1$s tarihine kadar. Süre azalınca kendiliğinden yenilenir.</string>
+    <string name="set_finding_point">Yerin koordinatı bulunuyor…</string>
+    <string name="set_point_failed">Koordinat bulunamadı. Otomatik konumu açmayı dene.</string>
+    <string name="set_picker_failed">Dosya seçici açılamadı.</string>
+    <string name="set_adhan_chosen">Ezan sesi seçildi.</string>
+    <string name="set_audio_file">ses dosyası</string>
+    <string name="set_adhan_failed">Ezan sesi başlatılamadı.</string>
+    <string name="set_updated">Vakitler güncellendi.</string>
+    <string name="set_update_failed">Güncellenemedi. İnternet bağlantını kontrol et.</string>
+    <string name="set_loc_perm_denied">Konum izni verilmedi.</string>
+    <string name="set_service_off">Telefonun konum servisi kapalı. Açınca konumun bulunacak.</string>
+    <string name="set_locating">📡 Konumun bulunuyor…</string>
+    <string name="set_progress">📡 %1$s</string>
+    <string name="set_loc_failed">Konum alınamadı. Ana ekranda tekrar denenecek.</string>
+    <string name="set_loc_same">Konum aynı: %1$s</string>
+    <string name="set_loc_retry">%1$s Ana ekranda tekrar denenecek.</string>
+    <string-array name="method_titles">
+        <item>Diyanet İşleri Başkanlığı</item>
+        <item>Muslim World League (Dünya İslam Birliği)</item>
+        <item>ISNA (Kuzey Amerika İslam Birliği)</item>
+        <item>Mısır Genel Araştırma Kurumu</item>
+        <item>Ümmü\'l-Kurâ Üniversitesi (Mekke)</item>
+        <item>Karaçi İslami İlimler Üniversitesi</item>
+        <item>Kuveyt</item>
+        <item>Katar</item>
+        <item>Singapur / Malezya (MUIS, JAKIM)</item>
+        <item>Fransa İslam Teşkilatları Birliği (UOIF)</item>
+    </string-array>
+    <string-array name="method_where">
+        <item>Türkiye ve Avrupa\'daki Türk camileri. Vakitler Diyanet\'in resmi listesinden indirilir; temkin (ihtiyat) süreleri dahildir.</item>
+        <item>Avrupa, Uzak Doğu ve Amerika\'nın bir kısmında yaygın.</item>
+        <item>ABD ve Kanada.</item>
+        <item>Mısır, Afrika, Suriye, Lübnan, Malezya.</item>
+        <item>Suudi Arabistan. Yatsı akşamdan 90 dk sonra (Ramazan\'da 120 dk).</item>
+        <item>Pakistan, Hindistan, Bangladeş, Afganistan.</item>
+        <item>Kuveyt.</item>
+        <item>Katar. Yatsı akşamdan 90 dk sonra.</item>
+        <item>Singapur, Malezya, Endonezya.</item>
+        <item>Fransa\'daki bazı camiler.</item>
+    </string-array>
+    <string name="method_isha_minutes">akşamdan %1$d dk sonra</string>
+    <string name="method_isha_angle">güneş ufkun %1$s° altında</string>
+    <string name="method_details">İmsak: güneş ufkun %1$s° altında. Yatsı: %2$s.\n%3$s\nVakitler telefonda astronomik formüllerle hesaplanır (internet gerekmez).</string>
+
+    <!-- Konum seçimi -->
+    <string name="loc_auto_failed">Konumun otomatik bulunamadı: %1$s\nŞimdilik şehrini elle seçebilirsin.</string>
+    <string name="loc_pick_country">Ülke seç</string>
+    <string name="loc_pick_city">%1$s: şehir seç</string>
+    <string name="loc_pick_district">%1$s: ilçe seç</string>
+    <string name="loc_conn_error">Bağlantı hatası (%1$s). Tekrar denemek için dokun.</string>
+    <string name="loc_no_times">bu yer için vakit bulunamadı</string>
+    <string name="loc_auto_turned_off">Otomatik konum kapatıldı. Ayarlar\'dan tekrar açabilirsin.</string>
+    <string name="loc_times_failed">Vakitler alınamadı (%1$s). Tekrar denemek için dokun.</string>
+
+    <!-- İmsakiye ve dini günler -->
+    <string name="ims_title">İmsakiye · %1$s</string>
+    <string name="ims_date">Tarih</string>
+    <string name="hd_title">Dini Günler</string>
+    <string name="hd_info">Bugün: %1$s\nHicri takvimle hesaplanır ve Diyanet takvimine göre ayarlanır. Resmi ilan edilen tarihten 1 gün sapabilir. Kandiller, tarihi verilen günü sonraki güne bağlayan gecedir.</string>
+    <string name="hd_night"> (gecesi)</string>
+    <string name="hd_today">Bugün</string>
+    <string name="hd_tomorrow">Yarın</string>
+    <plurals name="hd_in_days">
+        <item quantity="one">%1$d gün</item>
+        <item quantity="other">%1$d gün</item>
+    </plurals>
+    <string name="holy_new_year">Hicri Yılbaşı (%1$d)</string>
+    <string name="holy_ashura">Aşure Günü</string>
+    <string name="holy_three_months">Üç Ayların Başlangıcı</string>
+    <string name="holy_ramadan_start">Ramazan Başlangıcı</string>
+    <string name="holy_adha_eve">Kurban Bayramı Arefesi</string>
+    <string name="holy_mawlid">Mevlid Kandili</string>
+    <string name="holy_miraj">Miraç Kandili</string>
+    <string name="holy_baraat">Berat Kandili</string>
+    <string name="holy_qadr">Kadir Gecesi</string>
+    <string name="holy_fitr_eve">Ramazan Bayramı Arefesi</string>
+    <string name="holy_raghaib">Regaib Kandili</string>
+    <string name="holy_fitr_day">Ramazan Bayramı %1$d. Gün</string>
+    <string name="holy_adha_day">Kurban Bayramı %1$d. Gün</string>
+
+    <!-- Kıble -->
+    <string name="qb_title">Kıble Pusulası</string>
+    <string name="qb_hint">Telefonu yere paralel tut. Altın ok Kâbe\'yi gösterir; üstteki işaretle hizalanınca yeşile döner.</string>
+    <string name="qb_ar_button">📷  Kamerayla bul (AR)</string>
+    <string name="qb_no_compass">Bu telefonda pusula sensörü bulunamadı.</string>
+    <string name="qb_need_perm">Kıble yönünü hesaplamak için yaklaşık konum izni gerekli.</string>
+    <string name="qb_perm_denied">Konum izni verilmedi. Kıble yönü için ayarlardan izin verebilirsin.</string>
+    <string name="qb_searching">Konum aranıyor… (telefonun konum servisi açık olmalı)</string>
+    <string name="qb_service_off">Konum servisi kapalı. Açıp bu ekrana tekrar gel.</string>
+    <string name="qb_no_perm">Konum izni yok.</string>
+    <string name="qb_info">Kıble açısı: %1$.0f° (kuzeyden saat yönünde)\nKâbe\'ye uzaklık: %2$,.0f km</string>
+    <string name="qb_aligned">✓ Kıble yönündesin</string>
+    <string name="qb_turn_right">Sağa dön: %1$.0f°</string>
+    <string name="qb_turn_left">Sola dön: %1$.0f°</string>
+    <string name="qb_calibrate">Pusula hassasiyeti düşük: telefonu havada birkaç kez 8 çizerek kalibre et.</string>
+    <string-array name="qb_compass_letters">
+        <item>K</item>
+        <item>D</item>
+        <item>G</item>
+        <item>B</item>
+    </string-array>
+    <string name="ar_hint">Telefonu dik tut ve kamerayla etrafına bak.</string>
+    <string name="ar_cam_denied">Kamera izni verilmedi. Pusulalı kıble ekranını kullanabilirsin.</string>
+    <string name="ar_no_sensor">Bu telefonda yön sensörü bulunamadı.</string>
+    <string name="ar_cam_needed">Kâbe yönünü kamera görüntüsü üzerinde göstermek için kamera izni gerekli. Görüntü kaydedilmez ve hiçbir yere gönderilmez.</string>
+    <string name="ar_cam_failed">Kamera açılamadı.</string>
+    <string name="ar_no_location">Konum bulunamadı. Ayarlar\'dan konum iznini ver.</string>
+    <string name="ar_aligned">✓ Kâbe tam karşında</string>
+    <string name="ar_right">Kâbe sağında: %1$.0f°</string>
+    <string name="ar_left">Kâbe solunda: %1$.0f°</string>
+    <string name="ar_label_aligned">✓ Kıble</string>
+    <string name="ar_label_kaaba">Kâbe</string>
+    <string name="ar_turn_right">Sağa dön %1$d°</string>
+    <string name="ar_turn_left">Sola dön %1$d°</string>
+
+    <!-- Camiler -->
+    <string name="mq_title">Yakındaki Camiler</string>
+    <string name="mq_direction">Yön: %1$s · haritada açmak için dokun</string>
+    <string name="mq_finding">Konum bulunuyor…</string>
+    <string name="mq_no_location">Konum bulunamadı. Ayarlar\'dan otomatik konumu aç ya da konum iznini ver.</string>
+    <string name="mq_searching">Camiler aranıyor…</string>
+    <string name="mq_busy">Cami sunucuları şu an çok yoğun. Birkaç dakika sonra tekrar denemek için buraya dokun.</string>
+    <string name="mq_failed">Camiler alınamadı. İnternet bağlantını kontrol edip tekrar denemek için buraya dokun.</string>
+    <string name="mq_where_gps">bulunduğun yere</string>
+    <string name="mq_where_place">%1$s merkezine</string>
+    <string name="mq_none">%1$d km içinde kayıtlı cami bulunamadı. Veri: © OpenStreetMap katkıcıları (eksik olabilir).</string>
+    <string name="mq_found">%1$d yer, %2$s %3$d km içinde. Veri: © OpenStreetMap katkıcıları (eksik olabilir).</string>
+    <string name="mq_no_maps">Harita uygulaması bulunamadı.</string>
+    <string name="mq_unnamed">İsimsiz cami / mescit</string>
+    <string-array name="mq_directions">
+        <item>Kuzey</item>
+        <item>Kuzeydoğu</item>
+        <item>Doğu</item>
+        <item>Güneydoğu</item>
+        <item>Güney</item>
+        <item>Güneybatı</item>
+        <item>Batı</item>
+        <item>Kuzeybatı</item>
+    </string-array>
+
+    <!-- Kaza ve zikir -->
+    <string name="kz_title">Kaza Namazı Çetelesi</string>
+    <string name="kz_hint">Borcunu gir; kıldıkça − ile azalt. Sayıya dokunarak doğrudan yazabilirsin.</string>
+    <string-array name="kz_names">
+        <item>Sabah</item>
+        <item>Öğle</item>
+        <item>İkindi</item>
+        <item>Akşam</item>
+        <item>Yatsı</item>
+        <item>Vitir</item>
+    </string-array>
+    <string name="kz_dialog_title">%1$s kazası</string>
+    <string name="kz_none">Kaza borcu yok</string>
+    <plurals name="kz_total">
+        <item quantity="one">Toplam: %1$d vakit</item>
+        <item quantity="other">Toplam: %1$d vakit</item>
+    </plurals>
+    <string name="zk_title">Zikirmatik</string>
+    <string name="zk_hint">Saymak için dokun · ses açma tuşu da sayar</string>
+    <string name="zk_reset_q">Sayaç sıfırlansın mı?</string>
+    <string name="zk_unlimited">Sınırsız</string>
+    <string name="zk_target">Hedef</string>
+    <string name="zk_target_row">Hedef: %1$s  ›</string>
+    <string name="zk_rounds">Tamamlanan tur: %1$d  (toplam %2$d)</string>
 </resources>

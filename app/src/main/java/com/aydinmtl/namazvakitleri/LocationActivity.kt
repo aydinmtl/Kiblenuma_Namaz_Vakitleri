@@ -71,7 +71,7 @@ class LocationActivity : LangActivity() {
         // Ana ekran otomatik konumda başarısız olduysa nedenini göster.
         intent.getStringExtra(EXTRA_REASON)?.let { reason ->
             val tv = findViewById<TextView>(R.id.tvReason)
-            tv.text = "Konumun otomatik bulunamadı: $reason\nŞimdilik şehrini elle seçebilirsin."
+            tv.text = getString(R.string.loc_auto_failed, reason)
             tv.visibility = View.VISIBLE
         }
 
@@ -80,17 +80,17 @@ class LocationActivity : LangActivity() {
 
     private fun showCountries() {
         stage = Stage.COUNTRY
-        load("Ülke seç") { Diyanet.countries() }
+        load(getString(R.string.loc_pick_country)) { Diyanet.countries() }
     }
 
     private fun showCities(c: Diyanet.Place) {
         stage = Stage.CITY
-        load("${c.name}: şehir seç") { Diyanet.cities(c.id) }
+        load(getString(R.string.loc_pick_city, c.name)) { Diyanet.cities(c.id) }
     }
 
     private fun showDistricts(c: Diyanet.Place) {
         stage = Stage.DISTRICT
-        load("${c.name}: ilçe seç") { Diyanet.districts(c.id) }
+        load(getString(R.string.loc_pick_district, c.name)) { Diyanet.districts(c.id) }
     }
 
     private fun load(title: String, loader: () -> List<Diyanet.Place>) {
@@ -112,7 +112,7 @@ class LocationActivity : LangActivity() {
                     filter()
                 }
             } catch (e: Exception) {
-                runOnUiThread { showError("Bağlantı hatası (${e.message ?: "bilinmiyor"}). Tekrar denemek için dokun.") }
+                runOnUiThread { showError(getString(R.string.loc_conn_error, e.message ?: getString(R.string.unknown))) }
             }
         }.start()
     }
@@ -154,7 +154,7 @@ class LocationActivity : LangActivity() {
         Thread {
             try {
                 val json = Diyanet.fetchTimes(district.id)
-                if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException("bu yer için vakit bulunamadı")
+                if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException(getString(R.string.loc_no_times))
                 Store.saveLocation(app, district.id, label, json)
                 // Koordinat: hesaplama yöntemleri, kıble ve camiler için.
                 val c = city
@@ -171,14 +171,14 @@ class LocationActivity : LangActivity() {
                 PrayerWidget.updateAll(app)
                 runOnUiThread {
                     if (wasAuto) {
-                        Toast.makeText(this, "Otomatik konum kapatıldı. Ayarlar'dan tekrar açabilirsin.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.loc_auto_turned_off), Toast.LENGTH_LONG).show()
                     }
                     finish()
                 }
             } catch (e: Exception) {
                 runOnUiThread {
                     list.isEnabled = true
-                    showError("Vakitler alınamadı (${e.message ?: "bilinmiyor"}). Tekrar denemek için dokun.")
+                    showError(getString(R.string.loc_times_failed, e.message ?: getString(R.string.unknown)))
                 }
             }
         }.start()

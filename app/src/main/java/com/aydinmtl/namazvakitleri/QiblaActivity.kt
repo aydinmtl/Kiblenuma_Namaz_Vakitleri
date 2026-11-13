@@ -13,7 +13,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.widget.TextView
-import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.asin
 import kotlin.math.atan2
@@ -73,7 +72,7 @@ class QiblaActivity : LangActivity(), SensorEventListener {
         sm = getSystemService(SensorManager::class.java)
         sensor = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
             ?: sm.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)
-        if (sensor == null) tvHint.text = "Bu telefonda pusula sensörü bulunamadı."
+        if (sensor == null) tvHint.text = getString(R.string.qb_no_compass)
         findViewById<android.view.View>(R.id.btnAr).setOnClickListener {
             startActivity(android.content.Intent(this, QiblaArActivity::class.java))
         }
@@ -86,7 +85,7 @@ class QiblaActivity : LangActivity(), SensorEventListener {
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locate()
         } else {
-            tvInfo.text = "Kıble yönünü hesaplamak için yaklaşık konum izni gerekli."
+            tvInfo.text = getString(R.string.qb_need_perm)
             requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQ_LOCATION)
         }
     }
@@ -95,7 +94,7 @@ class QiblaActivity : LangActivity(), SensorEventListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_LOCATION) return
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) locate()
-        else tvInfo.text = "Konum izni verilmedi. Kıble yönü için ayarlardan izin verebilirsin."
+        else tvInfo.text = getString(R.string.qb_perm_denied)
     }
 
     override fun onResume() {
@@ -127,13 +126,13 @@ class QiblaActivity : LangActivity(), SensorEventListener {
 
         val stale = best == null || System.currentTimeMillis() - best.time > 60 * 60 * 1000L
         if (!stale) return
-        if (best == null) tvInfo.text = "Konum aranıyor… (telefonun konum servisi açık olmalı)"
+        if (best == null) tvInfo.text = getString(R.string.qb_searching)
 
         val provider = when {
             lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
             lm.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
             else -> {
-                if (best == null) tvInfo.text = "Konum servisi kapalı. Açıp bu ekrana tekrar gel."
+                if (best == null) tvInfo.text = getString(R.string.qb_service_off)
                 return
             }
         }
@@ -154,7 +153,7 @@ class QiblaActivity : LangActivity(), SensorEventListener {
         try {
             lm.requestLocationUpdates(provider, 0L, 0f, listener, Looper.getMainLooper())
         } catch (e: SecurityException) {
-            tvInfo.text = "Konum izni yok."
+            tvInfo.text = getString(R.string.qb_no_perm)
         }
     }
 
@@ -171,9 +170,8 @@ class QiblaActivity : LangActivity(), SensorEventListener {
             l.latitude.toFloat(), l.longitude.toFloat(), l.altitude.toFloat(), System.currentTimeMillis(),
         ).declination
         qv.qibla = q.toFloat()
-        tvInfo.text = String.format(
-            Locale.ROOT, "Kıble açısı: %.0f° (kuzeyden saat yönünde)\nKâbe'ye uzaklık: %,.0f km", q, km,
-        ).replace(',', '.')
+        // Sayılar seçili dilin yazımıyla: Türkçede "3.512 km", İngilizcede "3,512 km"
+        tvInfo.text = getString(R.string.qb_info, q, km)
         qv.invalidate()
     }
 
@@ -199,16 +197,16 @@ class QiblaActivity : LangActivity(), SensorEventListener {
         val off = qv.offset()
         if (off != null && sensor != null) {
             tvHint.text = when {
-                abs(off) < 3f -> "✓ Kıble yönündesin"
-                off > 0 -> String.format(Locale.ROOT, "Sağa dön: %.0f°", off)
-                else -> String.format(Locale.ROOT, "Sola dön: %.0f°", -off)
+                abs(off) < 3f -> getString(R.string.qb_aligned)
+                off > 0 -> getString(R.string.qb_turn_right, off)
+                else -> getString(R.string.qb_turn_left, -off)
             }
         }
     }
 
     override fun onAccuracyChanged(s: Sensor?, accuracy: Int) {
         if (accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
-            tvHint.text = "Pusula hassasiyeti düşük: telefonu havada birkaç kez 8 çizerek kalibre et."
+            tvHint.text = getString(R.string.qb_calibrate)
         }
     }
 }

@@ -16,13 +16,13 @@
             style="@style/Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kaza Namazı Çetelesi" />
+            android:text="@string/kz_title" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Borcunu gir; kıldıkça − ile azalt. Sayıya dokunarak doğrudan yazabilirsin."
+            android:text="@string/kz_hint"
             android:textColor="@color/muted"
             android:textSize="13sp" />
 

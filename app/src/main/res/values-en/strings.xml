@@ -145,4 +145,218 @@
     <!-- Widget -->
     <string name="widget_open_app">Open the app for prayer times</string>
     <string name="widget_until">Until %1$s: %2$s</string>
+
+    <!-- Ortak düğmeler -->
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="listen">Listen</string>
+    <string name="unknown">unknown</string>
+
+    <!-- Ayarlar -->
+    <string name="set_title">Settings</string>
+    <string name="set_sec_location">Location</string>
+    <string name="set_auto_location">Automatic location</string>
+    <string name="set_auto_location_note">When you travel, finds the city you are in and updates the times and the city/country name. Location is checked when you open the app, is only used to find the city name and is not stored on any server.</string>
+    <string name="set_manual">Choose city manually</string>
+    <string name="set_manual_note">Choosing manually turns automatic location off.</string>
+    <string name="set_sec_calc">Prayer time calculation</string>
+    <string name="set_asr_note">Standard: Shafi\'i, Maliki, Hanbali schools and Diyanet. Hanafi: second Asr (shadow twice the object\'s height). With Diyanet selected, Diyanet\'s official time is used.</string>
+    <string name="set_sec_notif">Notifications</string>
+    <string name="set_notify">Prayer notifications</string>
+    <string name="set_which">Which prayer times should notify you?</string>
+    <string name="set_sound">Change notification sound</string>
+    <string name="set_adhan">Play the adhan when a prayer time begins</string>
+    <string name="set_adhan_pick">Choose audio file</string>
+    <string name="set_adhan_silent">Don\'t play the adhan when the phone is on silent or vibrate</string>
+    <string name="set_sec_times">Prayer times</string>
+    <string name="set_refresh_now">Update prayer times now</string>
+    <string name="set_sec_about">About</string>
+    <string name="set_about">Kıblenüma %1$s\nNo ads and free. Collects no personal data.\nDiyanet times come from ezanvakti.emushaf.net. Other methods are calculated on the phone.\nFor the city name (if the phone\'s service fails) and nearby mosques, the location is sent to OpenStreetMap without identity information.\nMosques: © OpenStreetMap contributors.</string>
+    <string name="set_sunrise_note">%1$s (not a prayer time)</string>
+    <string name="set_pick_adhan_first">Choose an adhan audio file first.</string>
+    <string name="set_no_place">No place chosen</string>
+    <string name="set_place">📍 %1$s</string>
+    <string name="set_method">Calculation method</string>
+    <string name="set_method_computed">Diyanet\'s list has no place near your location. Times are calculated on the phone from your location with Diyanet\'s parameters (Fajr 18°, Isha 17°, safety margins). They may differ from the official list by a few minutes.</string>
+    <string name="set_method_fallback">\n⚠ No coordinates found for this place; showing Diyanet times for now.</string>
+    <string name="set_asr">Asr calculation</string>
+    <string name="set_asr_hanafi">Hanafi (second Asr)</string>
+    <string name="set_asr_standard">Standard (first Asr)</string>
+    <string name="set_asr_standard_long">Standard (Shafi\'i, Maliki, Hanbali)</string>
+    <string name="set_reminder">Remind before prayer time</string>
+    <string name="set_off">Off</string>
+    <plurals name="set_minutes_before">
+        <item quantity="one">%1$d minute before</item>
+        <item quantity="other">%1$d minutes before</item>
+    </plurals>
+    <string name="set_adhan_none">The app has no built-in adhan. Choose an adhan audio file (mp3, etc.) on your phone. It plays when a prayer time begins; tap \"Stop\" in the notification to silence it.</string>
+    <string name="set_adhan_file">Chosen file: %1$s</string>
+    <string name="set_exact_needed">⚠ For notifications at the exact time, allow \"Alarms &amp; reminders\". Tap.</string>
+    <string name="set_data_computed">Times are calculated on the phone from your location; no downloaded list.</string>
+    <string name="set_data_none">No saved Diyanet times.</string>
+    <string name="set_data_until">Saved Diyanet times until %1$s. They renew automatically when running low.</string>
+    <string name="set_finding_point">Finding the place\'s coordinates…</string>
+    <string name="set_point_failed">Coordinates not found. Try turning on automatic location.</string>
+    <string name="set_picker_failed">Could not open the file picker.</string>
+    <string name="set_adhan_chosen">Adhan selected.</string>
+    <string name="set_audio_file">audio file</string>
+    <string name="set_adhan_failed">Could not start the adhan.</string>
+    <string name="set_updated">Prayer times updated.</string>
+    <string name="set_update_failed">Update failed. Check your internet connection.</string>
+    <string name="set_loc_perm_denied">Location permission not granted.</string>
+    <string name="set_service_off">Phone location is off. Turn it on to find your location.</string>
+    <string name="set_locating">📡 Finding your location…</string>
+    <string name="set_progress">📡 %1$s</string>
+    <string name="set_loc_failed">Could not get location. It will be retried on the main screen.</string>
+    <string name="set_loc_same">Same location: %1$s</string>
+    <string name="set_loc_retry">%1$s It will be retried on the main screen.</string>
+    <string-array name="method_titles">
+        <item>Diyanet (Turkish Presidency of Religious Affairs)</item>
+        <item>Muslim World League</item>
+        <item>ISNA (Islamic Society of North America)</item>
+        <item>Egyptian General Authority of Survey</item>
+        <item>Umm al-Qura University (Makkah)</item>
+        <item>University of Islamic Sciences, Karachi</item>
+        <item>Kuwait</item>
+        <item>Qatar</item>
+        <item>Singapore / Malaysia (MUIS, JAKIM)</item>
+        <item>UOIF (Union of Islamic Organisations of France)</item>
+    </string-array>
+    <string-array name="method_where">
+        <item>Turkey and Turkish mosques in Europe. Times are downloaded from Diyanet\'s official list; safety margins (temkin) are included.</item>
+        <item>Common in Europe, the Far East and parts of America.</item>
+        <item>USA and Canada.</item>
+        <item>Egypt, Africa, Syria, Lebanon, Malaysia.</item>
+        <item>Saudi Arabia. Isha 90 min after Maghrib (120 min in Ramadan).</item>
+        <item>Pakistan, India, Bangladesh, Afghanistan.</item>
+        <item>Kuwait.</item>
+        <item>Qatar. Isha 90 min after Maghrib.</item>
+        <item>Singapore, Malaysia, Indonesia.</item>
+        <item>Some mosques in France.</item>
+    </string-array>
+    <string name="method_isha_minutes">%1$d min after Maghrib</string>
+    <string name="method_isha_angle">sun %1$s° below the horizon</string>
+    <string name="method_details">Fajr: sun %1$s° below the horizon. Isha: %2$s.\n%3$s\nTimes are calculated on the phone with astronomical formulas (no internet needed).</string>
+
+    <!-- Konum seçimi -->
+    <string name="loc_auto_failed">Your location could not be found automatically: %1$s\nYou can choose your city manually for now.</string>
+    <string name="loc_pick_country">Choose country</string>
+    <string name="loc_pick_city">%1$s: choose city</string>
+    <string name="loc_pick_district">%1$s: choose district</string>
+    <string name="loc_conn_error">Connection error (%1$s). Tap to try again.</string>
+    <string name="loc_no_times">no prayer times for this place</string>
+    <string name="loc_auto_turned_off">Automatic location turned off. You can turn it back on in Settings.</string>
+    <string name="loc_times_failed">Could not get prayer times (%1$s). Tap to try again.</string>
+
+    <!-- İmsakiye ve dini günler -->
+    <string name="ims_title">Monthly timetable · %1$s</string>
+    <string name="ims_date">Date</string>
+    <string name="hd_title">Religious days</string>
+    <string name="hd_info">Today: %1$s\nCalculated with the Hijri calendar and aligned with Diyanet\'s calendar. May differ by 1 day from the officially announced date. Blessed nights are the night between the given day and the next day.</string>
+    <string name="hd_night"> (night)</string>
+    <string name="hd_today">Today</string>
+    <string name="hd_tomorrow">Tomorrow</string>
+    <plurals name="hd_in_days">
+        <item quantity="one">in %1$d day</item>
+        <item quantity="other">in %1$d days</item>
+    </plurals>
+    <string name="holy_new_year">Islamic New Year (%1$d)</string>
+    <string name="holy_ashura">Day of Ashura</string>
+    <string name="holy_three_months">Start of the three months (Rajab, Shaban, Ramadan)</string>
+    <string name="holy_ramadan_start">Start of Ramadan</string>
+    <string name="holy_adha_eve">Eve of Eid al-Adha (Day of Arafah)</string>
+    <string name="holy_mawlid">Night of Mawlid</string>
+    <string name="holy_miraj">Night of Mi\'raj</string>
+    <string name="holy_baraat">Night of Bara\'ah (mid-Shaban)</string>
+    <string name="holy_qadr">Night of Power (Laylat al-Qadr)</string>
+    <string name="holy_fitr_eve">Eve of Eid al-Fitr</string>
+    <string name="holy_raghaib">Night of Raghaib</string>
+    <string name="holy_fitr_day">Eid al-Fitr, day %1$d</string>
+    <string name="holy_adha_day">Eid al-Adha, day %1$d</string>
+
+    <!-- Kıble -->
+    <string name="qb_title">Qibla compass</string>
+    <string name="qb_hint">Hold the phone flat. The gold arrow points to the Kaaba; it turns green when aligned with the top mark.</string>
+    <string name="qb_ar_button">📷  Find with the camera (AR)</string>
+    <string name="qb_no_compass">No compass sensor found on this phone.</string>
+    <string name="qb_need_perm">Approximate location permission is needed to calculate the Qibla.</string>
+    <string name="qb_perm_denied">Location permission not granted. You can allow it in settings for the Qibla.</string>
+    <string name="qb_searching">Finding location… (phone location must be on)</string>
+    <string name="qb_service_off">Location is off. Turn it on and come back to this screen.</string>
+    <string name="qb_no_perm">No location permission.</string>
+    <string name="qb_info">Qibla angle: %1$.0f° (clockwise from north)\nDistance to the Kaaba: %2$,.0f km</string>
+    <string name="qb_aligned">✓ You are facing the Qibla</string>
+    <string name="qb_turn_right">Turn right: %1$.0f°</string>
+    <string name="qb_turn_left">Turn left: %1$.0f°</string>
+    <string name="qb_calibrate">Low compass accuracy: move the phone in a figure 8 a few times to calibrate.</string>
+    <string-array name="qb_compass_letters">
+        <item>N</item>
+        <item>E</item>
+        <item>S</item>
+        <item>W</item>
+    </string-array>
+    <string name="ar_hint">Hold the phone upright and look around with the camera.</string>
+    <string name="ar_cam_denied">Camera permission not granted. You can use the Qibla compass screen.</string>
+    <string name="ar_no_sensor">No orientation sensor found on this phone.</string>
+    <string name="ar_cam_needed">Camera permission is needed to show the Kaaba direction on the camera image. The image is not saved or sent anywhere.</string>
+    <string name="ar_cam_failed">Could not open the camera.</string>
+    <string name="ar_no_location">Location not found. Allow location in Settings.</string>
+    <string name="ar_aligned">✓ The Kaaba is straight ahead</string>
+    <string name="ar_right">Kaaba to your right: %1$.0f°</string>
+    <string name="ar_left">Kaaba to your left: %1$.0f°</string>
+    <string name="ar_label_aligned">✓ Qibla</string>
+    <string name="ar_label_kaaba">Kaaba</string>
+    <string name="ar_turn_right">Turn right %1$d°</string>
+    <string name="ar_turn_left">Turn left %1$d°</string>
+
+    <!-- Camiler -->
+    <string name="mq_title">Nearby mosques</string>
+    <string name="mq_direction">Direction: %1$s · tap to open in maps</string>
+    <string name="mq_finding">Finding location…</string>
+    <string name="mq_no_location">Location not found. Turn on automatic location or allow location in Settings.</string>
+    <string name="mq_searching">Searching for mosques…</string>
+    <string name="mq_busy">The mosque servers are very busy right now. Tap here to try again in a few minutes.</string>
+    <string name="mq_failed">Could not get mosques. Check your internet connection and tap here to try again.</string>
+    <string name="mq_where_gps">of your location</string>
+    <string name="mq_where_place">of central %1$s</string>
+    <string name="mq_none">No mosques recorded within %1$d km. Data: © OpenStreetMap contributors (may be incomplete).</string>
+    <string name="mq_found">%1$d places within %3$d km %2$s. Data: © OpenStreetMap contributors (may be incomplete).</string>
+    <string name="mq_no_maps">No maps app found.</string>
+    <string name="mq_unnamed">Unnamed mosque / prayer room</string>
+    <string-array name="mq_directions">
+        <item>North</item>
+        <item>Northeast</item>
+        <item>East</item>
+        <item>Southeast</item>
+        <item>South</item>
+        <item>Southwest</item>
+        <item>West</item>
+        <item>Northwest</item>
+    </string-array>
+
+    <!-- Kaza ve zikir -->
+    <string name="kz_title">Missed prayers tracker</string>
+    <string name="kz_hint">Enter how many you owe; lower it with − as you pray them. Tap the number to type it.</string>
+    <string-array name="kz_names">
+        <item>Fajr</item>
+        <item>Dhuhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Isha</item>
+        <item>Witr</item>
+    </string-array>
+    <string name="kz_dialog_title">Missed %1$s</string>
+    <string name="kz_none">No missed prayers</string>
+    <plurals name="kz_total">
+        <item quantity="one">Total: %1$d prayer</item>
+        <item quantity="other">Total: %1$d prayers</item>
+    </plurals>
+    <string name="zk_title">Dhikr counter</string>
+    <string name="zk_hint">Tap to count · the volume-up key also counts</string>
+    <string name="zk_reset_q">Reset the counter?</string>
+    <string name="zk_unlimited">Unlimited</string>
+    <string name="zk_target">Target</string>
+    <string name="zk_target_row">Target: %1$s  ›</string>
+    <string name="zk_rounds">Rounds completed: %1$d  (total %2$d)</string>
 </resources>

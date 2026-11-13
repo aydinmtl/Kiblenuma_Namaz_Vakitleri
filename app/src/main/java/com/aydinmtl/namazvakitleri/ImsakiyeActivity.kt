@@ -14,14 +14,19 @@ import java.time.format.DateTimeFormatter
 class ImsakiyeActivity : LangActivity() {
 
     private val cellIds = intArrayOf(R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4, R.id.c5)
-    private val dateFormat = DateTimeFormatter.ofPattern("d MMM EEE", TR)
+    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMM EEE", Lang.locale(this)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_imsakiye)
         Ui.fitSystemBars(this, findViewById(R.id.root))
 
-        findViewById<TextView>(R.id.tvTitle).text = "İmsakiye · ${Store.placeName(this)}"
+        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.ims_title, Store.placeName(this))
+
+        // Tablo başlığındaki vakit adları (dar sütun: kısa adlar)
+        val heads = intArrayOf(R.id.h0, R.id.h1, R.id.h2, R.id.h3, R.id.h4, R.id.h5)
+        val shortNames = resources.getStringArray(R.array.prayer_names_short)
+        for (i in 0..5) findViewById<TextView>(heads[i]).text = shortNames[i]
 
         val days = Times.days(this)
         val today = LocalDate.now()

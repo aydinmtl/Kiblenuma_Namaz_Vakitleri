@@ -50,13 +50,13 @@ class ZikirActivity : LangActivity() {
         }
         findViewById<View>(R.id.btnReset).setOnClickListener {
             AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                .setTitle("Sayaç sıfırlansın mı?")
-                .setPositiveButton("Sıfırla") { _, _ ->
+                .setTitle(R.string.zk_reset_q)
+                .setPositiveButton(R.string.reset) { _, _ ->
                     count = 0
                     rounds = 0
                     save()
                 }
-                .setNegativeButton("Vazgeç", null)
+                .setNegativeButton(R.string.cancel, null)
                 .show()
         }
         rowTarget.setOnClickListener { chooseTarget() }
@@ -83,9 +83,9 @@ class ZikirActivity : LangActivity() {
     }
 
     private fun chooseTarget() {
-        val labels = targets.map { if (it == 0) "Sınırsız" else it.toString() }.toTypedArray()
+        val labels = targets.map { if (it == 0) getString(R.string.zk_unlimited) else it.toString() }.toTypedArray()
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Hedef")
+            .setTitle(R.string.zk_target)
             .setSingleChoiceItems(labels, targets.indexOf(target).coerceAtLeast(0)) { d, which ->
                 d.dismiss()
                 target = targets[which]
@@ -103,8 +103,8 @@ class ZikirActivity : LangActivity() {
 
     private fun show() {
         tvCount.text = count.toString()
-        rowTarget.text = "Hedef: " + (if (target == 0) "Sınırsız" else "$target") + "  ›"
-        tvRounds.text = if (target == 0) "" else "Tamamlanan tur: $rounds  (toplam ${rounds * target + count})"
+        rowTarget.text = getString(R.string.zk_target_row, if (target == 0) getString(R.string.zk_unlimited) else "$target")
+        tvRounds.text = if (target == 0) "" else getString(R.string.zk_rounds, rounds, rounds * target + count)
     }
 
     /** Ses açma tuşu da sayar (ekrana bakmadan çekmek için). */

@@ -36,7 +36,7 @@ class MosquesActivity : LangActivity() {
         setContentView(R.layout.activity_list)
         Ui.fitSystemBars(this, findViewById(R.id.root))
 
-        findViewById<TextView>(R.id.tvTitle).text = "Yakındaki Camiler"
+        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.mq_title)
         tvSubtitle = findViewById(R.id.tvSubtitle)
         progress = findViewById(R.id.progress)
         val list = findViewById<ListView>(R.id.list)
@@ -48,8 +48,8 @@ class MosquesActivity : LangActivity() {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
                 val v = convertView ?: layoutInflater.inflate(R.layout.item_two_line, parent, false)
                 val m = items[position]
-                v.findViewById<TextView>(R.id.line1).text = m.name
-                v.findViewById<TextView>(R.id.line2).text = "Yön: ${direction(m.bearing)} · haritada açmak için dokun"
+                v.findViewById<TextView>(R.id.line1).text = if (m.name == MosqueSearch.UNNAMED) getString(R.string.mq_unnamed) else m.name
+                v.findViewById<TextView>(R.id.line2).text = getString(R.string.mq_direction, direction(m.bearing))
                 v.findViewById<TextView>(R.id.right).text = formatDistance(m.distanceM)
                 return v
             }
@@ -58,7 +58,7 @@ class MosquesActivity : LangActivity() {
         list.setOnItemClickListener { _, _, position, _ -> openInMaps(items[position]) }
 
         progress.visibility = View.VISIBLE
-        tvSubtitle.text = "Konum bulunuyor…"
+        tvSubtitle.text = getString(R.string.mq_finding)
         if (LocationHelper.hasPermission(this)) {
             LocationHelper.current(this, maxAgeMs = 5 * 60_000L, timeoutMs = 8_000L) { loc -> start(loc) }
         } else {
@@ -70,13 +70,13 @@ class MosquesActivity : LangActivity() {
         val point = if (loc != null) Pair(loc.latitude, loc.longitude) else Store.placePoint(this)
         if (point == null) {
             progress.visibility = View.GONE
-            tvSubtitle.text = "Konum bulunamadı. Ayarlar'dan otomatik konumu aç ya da konum iznini ver."
+            tvSubtitle.text = getString(R.string.mq_no_location)
             return
         }
         val fromGps = loc != null
         progress.visibility = View.VISIBLE
         tvSubtitle.setOnClickListener(null)
-        tvSubtitle.text = "Camiler aranıyor…"
+        tvSubtitle.text = getString(R.string.mq_searching)
         Thread {
             // Tek seferde 10 km içinde ara, telefonda mesafeye göre sırala.
             // (Eskiden önce 3 km, az çıkarsa 10 km diye iki istek gidiyordu; az camili yerlerde,
@@ -97,9 +97,9 @@ class MosquesActivity : LangActivity() {
                 progress.visibility = View.GONE
                 if (result == null) {
                     tvSubtitle.text = if (error?.busy == true) {
-                        "Cami sunucuları şu an çok yoğun. Birkaç dakika sonra tekrar denemek için buraya dokun."
+                        getString(R.string.mq_busy)
                     } else {
-                        "Camiler alınamadı. İnternet bağlantını kontrol edip tekrar denemek için buraya dokun."
+                        getString(R.string.mq_failed)
                     }
                     // Yazıya dokununca aramayı yeniden başlat.
                     tvSubtitle.setOnClickListener { start(loc) }
@@ -108,11 +108,11 @@ class MosquesActivity : LangActivity() {
                 items.clear()
                 items.addAll(result)
                 adapter.notifyDataSetChanged()
-                val where = if (fromGps) "bulunduğun yere" else "${Store.placeName(this)} merkezine"
+                val where = if (fromGps) getString(R.string.mq_where_gps) else getString(R.string.mq_where_place, Store.placeName(this))
                 tvSubtitle.text = if (result.isEmpty()) {
-                    "$radiusKm km içinde kayıtlı cami bulunamadı. Veri: © OpenStreetMap katkıcıları (eksik olabilir)."
+                    getString(R.string.mq_none, radiusKm)
                 } else {
-                    "${result.size} yer, $where $radiusKm km içinde. Veri: © OpenStreetMap katkıcıları (eksik olabilir)."
+                    getString(R.string.mq_found, result.size, where, radiusKm)
                 }
             }
         }.start()
@@ -124,15 +124,15 @@ class MosquesActivity : LangActivity() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         } catch (e: Exception) {
-            Toast.makeText(this, "Harita uygulaması bulunamadı.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.mq_no_maps), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun formatDistance(m: Float): String =
-        if (m < 1000) "${(m / 10).roundToInt() * 10} m" else String.format(Locale.ROOT, "%.1f km", m / 1000).replace('.', ',')
+        if (m < 1000) "${(m / 10).roundToInt() * 10} m" else String.format(Lang.locale(this), "%.1f km", m / 1000)
 
     private fun direction(bearing: Float): String {
-        val names = arrayOf("Kuzey", "Kuzeydoğu", "Doğu", "Güneydoğu", "Güney", "Güneybatı", "Batı", "Kuzeybatı")
+        val names = resources.getStringArray(R.array.mq_directions)
         return names[(((bearing + 22.5f) % 360f) / 45f).toInt().coerceIn(0, 7)]
     }
 }

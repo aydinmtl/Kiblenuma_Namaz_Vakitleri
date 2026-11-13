@@ -12,7 +12,7 @@
         style="@style/Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Zikirmatik" />
+        android:text="@string/zk_title" />
 
     <TextView
         android:id="@+id/rowTarget"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="16dp"
-            android:text="Saymak için dokun · ses açma tuşu da sayar"
+            android:text="@string/zk_hint"
             android:textColor="@color/muted"
             android:textSize="13sp" />
     </FrameLayout>
@@ -78,6 +78,6 @@
             android:layout_width="0dp"
             android:layout_marginStart="6dp"
             android:layout_weight="1"
-            android:text="Sıfırla" />
+            android:text="@string/reset" />
     </LinearLayout>
 </LinearLayout>

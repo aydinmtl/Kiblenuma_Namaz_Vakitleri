@@ -12,7 +12,7 @@
         style="@style/Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kıble Pusulası" />
+        android:text="@string/qb_title" />
 
     <com.aydinmtl.namazvakitleri.QiblaView
         android:id="@+id/qibla"
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="Telefonu yere paralel tut. Altın ok Kâbe'yi gösterir; üstteki işaretle hizalanınca yeşile döner."
+        android:text="@string/qb_hint"
         android:textColor="@color/muted"
         android:textSize="14sp" />
 
@@ -43,5 +43,5 @@
         style="@style/Btn"
         android:layout_width="match_parent"
         android:layout_marginTop="12dp"
-        android:text="📷  Kamerayla bul (AR)" />
+        android:text="@string/qb_ar_button" />
 </LinearLayout>

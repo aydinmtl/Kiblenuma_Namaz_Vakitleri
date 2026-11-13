@@ -16,10 +16,10 @@
             style="@style/Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ayarlar" />
+            android:text="@string/set_title" />
 
         <!-- ============ KONUM ============ -->
-        <TextView style="@style/SectionHead" android:text="Konum" />
+        <TextView style="@style/SectionHead" android:text="@string/set_sec_location" />
 
         <LinearLayout style="@style/SectionCard">
 
@@ -34,27 +34,27 @@
             <Switch
                 android:id="@+id/swAuto"
                 style="@style/SettingSwitch"
-                android:text="Otomatik konum" />
+                android:text="@string/set_auto_location" />
 
             <TextView
                 android:id="@+id/tvAutoInfo"
                 style="@style/SettingNote"
-                android:text="Seyahat ettiğinde bulunduğun şehri bulur; vakitleri ve ekrandaki şehir/ülke adını ona göre değiştirir. Konum, uygulamayı açtığında kontrol edilir ve yalnızca şehir adını bulmak için kullanılır; hiçbir sunucuya kaydedilmez." />
+                android:text="@string/set_auto_location_note" />
 
             <Button
                 android:id="@+id/btnManual"
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="12dp"
-                android:text="Şehri elle seç" />
+                android:text="@string/set_manual" />
 
             <TextView
                 style="@style/SettingNote"
-                android:text="Elle seçim yaparsan otomatik konum kapanır." />
+                android:text="@string/set_manual_note" />
         </LinearLayout>
 
         <!-- ============ VAKİT HESAPLAMA ============ -->
-        <TextView style="@style/SectionHead" android:text="Vakit hesaplama" />
+        <TextView style="@style/SectionHead" android:text="@string/set_sec_calc" />
 
         <LinearLayout style="@style/SectionCard">
 
@@ -73,11 +73,11 @@
 
             <TextView
                 style="@style/SettingNote"
-                android:text="Standart: Şafii, Maliki, Hanbeli mezhepleri ve Diyanet. Hanefi: asr-ı sani (gölge boyun iki katı). Diyanet seçiliyken Diyanet'in resmi vakti kullanılır." />
+                android:text="@string/set_asr_note" />
         </LinearLayout>
 
         <!-- ============ BİLDİRİMLER ============ -->
-        <TextView style="@style/SectionHead" android:text="Bildirimler" />
+        <TextView style="@style/SectionHead" android:text="@string/set_sec_notif" />
 
         <LinearLayout
             android:id="@+id/notifyCard"
@@ -87,11 +87,11 @@
                 android:id="@+id/swNotify"
                 style="@style/SettingSwitch"
                 android:layout_marginTop="0dp"
-                android:text="Vakit bildirimleri" />
+                android:text="@string/set_notify" />
 
             <TextView
                 style="@style/SettingNote"
-                android:text="Hangi vakitlerde bildirim gelsin?" />
+                android:text="@string/set_which" />
 
             <LinearLayout
                 android:id="@+id/prayerChecks"
@@ -109,14 +109,14 @@
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="12dp"
-                android:text="Bildirim sesini değiştir" />
+                android:text="@string/set_sound" />
 
             <!-- Ezan sesi -->
             <Switch
                 android:id="@+id/swAdhan"
                 style="@style/SettingSwitch"
                 android:layout_marginTop="16dp"
-                android:text="Vakit girince ezan sesi çal" />
+                android:text="@string/set_adhan" />
 
             <TextView
                 android:id="@+id/tvAdhanFile"
@@ -134,7 +134,7 @@
                     android:layout_width="0dp"
                     android:layout_marginEnd="6dp"
                     android:layout_weight="1"
-                    android:text="Ses dosyası seç" />
+                    android:text="@string/set_adhan_pick" />
 
                 <Button
                     android:id="@+id/btnTestAdhan"
@@ -142,7 +142,7 @@
                     android:layout_width="0dp"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
-                    android:text="Dinle" />
+                    android:text="@string/listen" />
             </LinearLayout>
 
             <CheckBox
@@ -150,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Telefon sessiz ya da titreşimdeyken ezan çalma"
+                android:text="@string/set_adhan_silent"
                 android:textColor="@color/text" />
 
             <TextView
@@ -160,7 +160,7 @@
         </LinearLayout>
 
         <!-- ============ VAKİTLER ============ -->
-        <TextView style="@style/SectionHead" android:text="Vakitler" />
+        <TextView style="@style/SectionHead" android:text="@string/set_sec_times" />
 
         <LinearLayout style="@style/SectionCard">
 
@@ -174,11 +174,11 @@
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="12dp"
-                android:text="Vakitleri şimdi güncelle" />
+                android:text="@string/set_refresh_now" />
         </LinearLayout>
 
         <!-- ============ HAKKINDA ============ -->
-        <TextView style="@style/SectionHead" android:text="Hakkında" />
+        <TextView style="@style/SectionHead" android:text="@string/set_sec_about" />
 
         <LinearLayout style="@style/SectionCard">
 

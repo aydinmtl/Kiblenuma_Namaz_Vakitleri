@@ -39,7 +39,7 @@ object Times {
         // Seçilen yer başka bir saat dilimindeyse kullanıcıya söyle (bkz. PlaceZone)
         val shift = Prayers.day(days(ctx), LocalDate.now())?.shiftMinutes ?: 0
         val zoneNote = if (shift == 0) "" else Lang.str(ctx, R.string.src_zone_note)
-        return Lang.str(ctx, R.string.src_label, m.title) + asr +
+        return Lang.str(ctx, R.string.src_label, Lang.methodTitle(ctx, m)) + asr +
             (if (isFallback(ctx)) Lang.str(ctx, R.string.src_fallback) else "") +
             zoneNote
     }
