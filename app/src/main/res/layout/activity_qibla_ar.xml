@@ -23,7 +23,7 @@
         android:background="#CC0F1F1A"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Telefonu dik tut ve kamerayla etrafına bak."
+        android:text="@string/ar_hint"
         android:textColor="@color/text"
         android:textSize="16sp" />
 </FrameLayout>

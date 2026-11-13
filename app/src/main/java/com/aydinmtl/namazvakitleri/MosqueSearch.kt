@@ -73,13 +73,16 @@ object MosqueSearch {
         return dedupe(out).sortedBy { it.distanceM }
     }
 
+    /** Adı olmayan camiler için (ekranda seçili dile çevrilir: R.string.mq_unnamed). */
+    const val UNNAMED = "İsimsiz cami / mescit"
+
     /** Görünecek ad: önce Türkçe, sonra yerel ad, sonra diğer dillerdeki adlar. */
     fun nameOf(tags: JSONObject?): String {
         for (k in listOf("name:tr", "name", "official_name", "name:fr", "name:de", "name:en", "name:ar", "alt_name")) {
             val v = tags?.optString(k)?.trim()
             if (!v.isNullOrEmpty()) return v
         }
-        return "İsimsiz cami / mescit"
+        return UNNAMED
     }
 
     /**

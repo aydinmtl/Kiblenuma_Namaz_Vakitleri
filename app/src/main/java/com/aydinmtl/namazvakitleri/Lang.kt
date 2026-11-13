@@ -61,6 +61,56 @@ object Lang {
     /** Seçili dilde tek bir yazı. Ekransız yerler (bildirim, widget, konum) için kısayol. */
     fun str(ctx: Context, id: Int, vararg args: Any): String = wrap(ctx).getString(id, *args)
 
+    /** Hicri tarih seçili dilde: "5 Cemaziyelevvel 1448" / "5 Jumada al-Ula 1448 AH". */
+    fun hijriDate(ctx: Context, h: Hijri.HDate): String {
+        val c = wrap(ctx)
+        val month = c.resources.getStringArray(R.array.hijri_months)[h.month - 1]
+        return c.getString(R.string.hijri_date, h.day, month, h.year)
+    }
+
+    /** Dini günün seçili dildeki adı. */
+    fun holyDayName(ctx: Context, h: Hijri.HolyDay): String {
+        val c = wrap(ctx)
+        return when (h.kind) {
+            Hijri.HolyKind.NEW_YEAR -> c.getString(R.string.holy_new_year, h.n)
+            Hijri.HolyKind.ASHURA -> c.getString(R.string.holy_ashura)
+            Hijri.HolyKind.THREE_MONTHS -> c.getString(R.string.holy_three_months)
+            Hijri.HolyKind.RAMADAN_START -> c.getString(R.string.holy_ramadan_start)
+            Hijri.HolyKind.ADHA_EVE -> c.getString(R.string.holy_adha_eve)
+            Hijri.HolyKind.MAWLID -> c.getString(R.string.holy_mawlid)
+            Hijri.HolyKind.MIRAJ -> c.getString(R.string.holy_miraj)
+            Hijri.HolyKind.BARAAT -> c.getString(R.string.holy_baraat)
+            Hijri.HolyKind.QADR -> c.getString(R.string.holy_qadr)
+            Hijri.HolyKind.FITR_EVE -> c.getString(R.string.holy_fitr_eve)
+            Hijri.HolyKind.RAGHAIB -> c.getString(R.string.holy_raghaib)
+            Hijri.HolyKind.FITR_DAY -> c.getString(R.string.holy_fitr_day, h.n)
+            Hijri.HolyKind.ADHA_DAY -> c.getString(R.string.holy_adha_day, h.n)
+        }
+    }
+
+    /** Hesaplama yönteminin seçili dildeki adı (sıra CalcMethod'daki sırayla aynı). */
+    fun methodTitle(ctx: Context, m: CalcMethod): String =
+        wrap(ctx).resources.getStringArray(R.array.method_titles).getOrElse(m.ordinal) { m.title }
+
+    /** Ayarlar'da yöntemin altında görünen açıklama, seçili dilde. */
+    fun methodDetails(ctx: Context, m: CalcMethod): String {
+        val c = wrap(ctx)
+        val where = c.resources.getStringArray(R.array.method_where).getOrElse(m.ordinal) { m.where }
+        if (m == CalcMethod.DIYANET) return where
+        val isha = if (m.ishaMinutes != null) {
+            c.getString(R.string.method_isha_minutes, m.ishaMinutes)
+        } else {
+            c.getString(R.string.method_isha_angle, degrees(ctx, m.ishaAngle!!))
+        }
+        return c.getString(R.string.method_details, degrees(ctx, m.fajr), isha, where)
+    }
+
+    /** 18.0 -> "18", 19.5 -> "19,5" (İngilizcede "19.5"). */
+    private fun degrees(ctx: Context, d: Double): String {
+        if (d == kotlin.math.floor(d)) return d.toInt().toString()
+        return if (code(ctx) == "en") d.toString() else d.toString().replace('.', ',')
+    }
+
     /** Vaktin seçili dildeki adı: 0 İmsak … 5 Yatsı. */
     fun prayerName(ctx: Context, index: Int): String =
         wrap(ctx).resources.getStringArray(R.array.prayer_names).getOrElse(index) { PRAYER_NAMES[index] }

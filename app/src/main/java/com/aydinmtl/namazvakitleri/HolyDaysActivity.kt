@@ -13,7 +13,7 @@ import java.time.temporal.ChronoUnit
 /** Önümüzdeki bir yılın dini günleri ve kandilleri. */
 class HolyDaysActivity : LangActivity() {
 
-    private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", TR)
+    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,11 +24,8 @@ class HolyDaysActivity : LangActivity() {
         val today = LocalDate.now()
         val items = Hijri.holyDays(today)
 
-        findViewById<TextView>(R.id.tvTitle).text = "Dini Günler"
-        findViewById<TextView>(R.id.tvSubtitle).text =
-            "Bugün: ${Hijri.format(today)}\n" +
-            "Hicri takvimle hesaplanır ve Diyanet takvimine göre ayarlanır. Resmi ilan edilen tarihten 1 gün sapabilir. " +
-            "Kandiller, tarihi verilen günü sonraki güne bağlayan gecedir."
+        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.hd_title)
+        findViewById<TextView>(R.id.tvSubtitle).text = getString(R.string.hd_info, Lang.hijriDate(this, Hijri.of(today)))
 
         findViewById<ListView>(R.id.list).adapter = object : BaseAdapter() {
             override fun getCount() = items.size
@@ -38,13 +35,14 @@ class HolyDaysActivity : LangActivity() {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
                 val v = convertView ?: layoutInflater.inflate(R.layout.item_two_line, parent, false)
                 val h = items[position]
-                v.findViewById<TextView>(R.id.line1).text = if (h.night) "🌙 ${h.name}" else h.name
-                v.findViewById<TextView>(R.id.line2).text = h.date.format(dateFormat) + if (h.night) " (gecesi)" else ""
+                val name = Lang.holyDayName(this@HolyDaysActivity, h)
+                v.findViewById<TextView>(R.id.line1).text = if (h.night) "🌙 $name" else name
+                v.findViewById<TextView>(R.id.line2).text = h.date.format(dateFormat) + if (h.night) getString(R.string.hd_night) else ""
                 val days = ChronoUnit.DAYS.between(today, h.date)
                 v.findViewById<TextView>(R.id.right).text = when (days) {
-                    0L -> "Bugün"
-                    1L -> "Yarın"
-                    else -> "$days gün"
+                    0L -> getString(R.string.hd_today)
+                    1L -> getString(R.string.hd_tomorrow)
+                    else -> resources.getQuantityString(R.plurals.hd_in_days, days.toInt(), days.toInt())
                 }
                 return v
             }

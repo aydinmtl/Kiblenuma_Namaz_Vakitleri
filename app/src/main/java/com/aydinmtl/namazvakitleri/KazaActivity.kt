@@ -11,7 +11,8 @@ import android.widget.TextView
 /** Kaza namazı borcu: her namaz için sayaç. */
 class KazaActivity : LangActivity() {
 
-    private val names = listOf("Sabah", "Öğle", "İkindi", "Akşam", "Yatsı", "Vitir")
+    // Sabah, Öğle, İkindi, Akşam, Yatsı, Vitir (seçili dilde)
+    private val names by lazy { resources.getStringArray(R.array.kz_names).toList() }
     private val countViews = ArrayList<TextView>()
     private lateinit var tvTotal: TextView
 
@@ -46,9 +47,9 @@ class KazaActivity : LangActivity() {
         input.setText(Store.kaza(this, i).toString())
         input.setSelectAllOnFocus(true)
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("${names[i]} kazası")
+            .setTitle(getString(R.string.kz_dialog_title, names[i]))
             .setView(input)
-            .setPositiveButton("Kaydet") { _, _ ->
+            .setPositiveButton(R.string.save) { _, _ ->
                 // Çok büyük sayı yazılırsa eskiden sessizce 0 oluyordu; artık üst sınırda durur.
                 // (Bir vakit için 100.000 kaza ≈ 270 yıl; gerçekte bundan fazlası olmaz.)
                 // Boş bırakılırsa 0. Yalnızca rakam girilebildiği için sayıya çevrilemeyen bir
@@ -58,7 +59,7 @@ class KazaActivity : LangActivity() {
                 Store.setKaza(this, i, n.coerceIn(0L, KAZA_MAX.toLong()).toInt())
                 refresh()
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -69,7 +70,7 @@ class KazaActivity : LangActivity() {
             total += n
             countViews[i].text = n.toString()
         }
-        tvTotal.text = if (total == 0) "Kaza borcu yok" else "Toplam: $total vakit"
+        tvTotal.text = if (total == 0) getString(R.string.kz_none) else resources.getQuantityString(R.plurals.kz_total, total, total)
     }
 
     companion object {

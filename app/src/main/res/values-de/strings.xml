@@ -145,4 +145,218 @@
     <!-- Widget -->
     <string name="widget_open_app">App für die Gebetszeiten öffnen</string>
     <string name="widget_until">Bis %1$s: %2$s</string>
+
+    <!-- Ortak düğmeler -->
+    <string name="cancel">Abbrechen</string>
+    <string name="save">Speichern</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="listen">Anhören</string>
+    <string name="unknown">unbekannt</string>
+
+    <!-- Ayarlar -->
+    <string name="set_title">Einstellungen</string>
+    <string name="set_sec_location">Standort</string>
+    <string name="set_auto_location">Automatischer Standort</string>
+    <string name="set_auto_location_note">Findet auf Reisen die Stadt, in der du bist, und passt Zeiten sowie Stadt-/Ländernamen an. Der Standort wird beim Öffnen der App geprüft, nur zum Finden des Stadtnamens verwendet und auf keinem Server gespeichert.</string>
+    <string name="set_manual">Stadt von Hand wählen</string>
+    <string name="set_manual_note">Eine manuelle Auswahl schaltet den automatischen Standort aus.</string>
+    <string name="set_sec_calc">Berechnung der Gebetszeiten</string>
+    <string name="set_asr_note">Standard: schafiitische, malikitische, hanbalitische Rechtsschule und Diyanet. Hanafitisch: zweites Asr (Schatten doppelt so lang wie der Gegenstand hoch). Ist Diyanet gewählt, gilt die offizielle Diyanet-Zeit.</string>
+    <string name="set_sec_notif">Benachrichtigungen</string>
+    <string name="set_notify">Gebetsbenachrichtigungen</string>
+    <string name="set_which">Bei welchen Gebetszeiten benachrichtigen?</string>
+    <string name="set_sound">Benachrichtigungston ändern</string>
+    <string name="set_adhan">Adhan zu Beginn der Gebetszeit abspielen</string>
+    <string name="set_adhan_pick">Audiodatei wählen</string>
+    <string name="set_adhan_silent">Adhan nicht abspielen, wenn das Telefon lautlos oder auf Vibration ist</string>
+    <string name="set_sec_times">Gebetszeiten</string>
+    <string name="set_refresh_now">Gebetszeiten jetzt aktualisieren</string>
+    <string name="set_sec_about">Über</string>
+    <string name="set_about">Kıblenüma %1$s\nOhne Werbung und kostenlos. Sammelt keine persönlichen Daten.\nDiyanet-Zeiten kommen von ezanvakti.emushaf.net. Andere Methoden werden auf dem Telefon berechnet.\nFür den Stadtnamen (wenn der Dienst des Telefons nicht antwortet) und Moscheen in der Nähe wird der Standort ohne Identitätsdaten an OpenStreetMap gesendet.\nMoscheen: © OpenStreetMap-Mitwirkende.</string>
+    <string name="set_sunrise_note">%1$s (keine Gebetszeit)</string>
+    <string name="set_pick_adhan_first">Wähle zuerst eine Adhan-Audiodatei.</string>
+    <string name="set_no_place">Kein Ort gewählt</string>
+    <string name="set_place">📍 %1$s</string>
+    <string name="set_method">Berechnungsmethode</string>
+    <string name="set_method_computed">Die Diyanet-Liste hat keinen Ort in deiner Nähe. Die Zeiten werden auf dem Telefon aus deinem Standort mit den Diyanet-Parametern berechnet (Fadschr 18°, Ischa 17°, Sicherheitszuschläge). Sie können um einige Minuten von der offiziellen Liste abweichen.</string>
+    <string name="set_method_fallback">\n⚠ Für diesen Ort wurden keine Koordinaten gefunden; vorerst werden Diyanet-Zeiten angezeigt.</string>
+    <string name="set_asr">Asr-Berechnung</string>
+    <string name="set_asr_hanafi">Hanafitisch (zweites Asr)</string>
+    <string name="set_asr_standard">Standard (erstes Asr)</string>
+    <string name="set_asr_standard_long">Standard (schafiitisch, malikitisch, hanbalitisch)</string>
+    <string name="set_reminder">Vor der Gebetszeit erinnern</string>
+    <string name="set_off">Aus</string>
+    <plurals name="set_minutes_before">
+        <item quantity="one">%1$d Minute vorher</item>
+        <item quantity="other">%1$d Minuten vorher</item>
+    </plurals>
+    <string name="set_adhan_none">Die App enthält keinen Adhan. Wähle eine Adhan-Audiodatei (mp3 usw.) auf deinem Telefon. Sie wird zu Beginn der Gebetszeit abgespielt; mit „Stopp“ in der Benachrichtigung beendest du sie.</string>
+    <string name="set_adhan_file">Gewählte Datei: %1$s</string>
+    <string name="set_exact_needed">⚠ Für pünktliche Benachrichtigungen erlaube „Wecker und Erinnerungen“. Tippen.</string>
+    <string name="set_data_computed">Die Zeiten werden auf dem Telefon aus deinem Standort berechnet; keine heruntergeladene Liste.</string>
+    <string name="set_data_none">Keine gespeicherten Diyanet-Zeiten.</string>
+    <string name="set_data_until">Gespeicherte Diyanet-Zeiten bis %1$s. Sie werden rechtzeitig automatisch erneuert.</string>
+    <string name="set_finding_point">Koordinaten des Ortes werden gesucht…</string>
+    <string name="set_point_failed">Keine Koordinaten gefunden. Versuche, den automatischen Standort einzuschalten.</string>
+    <string name="set_picker_failed">Dateiauswahl konnte nicht geöffnet werden.</string>
+    <string name="set_adhan_chosen">Adhan ausgewählt.</string>
+    <string name="set_audio_file">Audiodatei</string>
+    <string name="set_adhan_failed">Adhan konnte nicht gestartet werden.</string>
+    <string name="set_updated">Gebetszeiten aktualisiert.</string>
+    <string name="set_update_failed">Aktualisierung fehlgeschlagen. Prüfe deine Internetverbindung.</string>
+    <string name="set_loc_perm_denied">Standortberechtigung nicht erteilt.</string>
+    <string name="set_service_off">Die Standortfunktion des Telefons ist aus. Schalte sie ein, um deinen Standort zu finden.</string>
+    <string name="set_locating">📡 Dein Standort wird gesucht…</string>
+    <string name="set_progress">📡 %1$s</string>
+    <string name="set_loc_failed">Kein Standort. Auf dem Hauptbildschirm wird es erneut versucht.</string>
+    <string name="set_loc_same">Gleicher Standort: %1$s</string>
+    <string name="set_loc_retry">%1$s Auf dem Hauptbildschirm wird es erneut versucht.</string>
+    <string-array name="method_titles">
+        <item>Diyanet (Türkisches Präsidium für Religionsangelegenheiten)</item>
+        <item>Islamische Weltliga (MWL)</item>
+        <item>ISNA (Islamische Gesellschaft Nordamerikas)</item>
+        <item>Ägyptische Generalbehörde für Vermessung</item>
+        <item>Umm-al-Qura-Universität (Mekka)</item>
+        <item>Universität für Islamische Wissenschaften, Karatschi</item>
+        <item>Kuwait</item>
+        <item>Katar</item>
+        <item>Singapur / Malaysia (MUIS, JAKIM)</item>
+        <item>UOIF (Union islamischer Organisationen Frankreichs)</item>
+    </string-array>
+    <string-array name="method_where">
+        <item>Türkei und türkische Moscheen in Europa. Die Zeiten werden aus der offiziellen Diyanet-Liste geladen; Sicherheitszuschläge (Temkin) sind enthalten.</item>
+        <item>Verbreitet in Europa, Fernost und Teilen Amerikas.</item>
+        <item>USA und Kanada.</item>
+        <item>Ägypten, Afrika, Syrien, Libanon, Malaysia.</item>
+        <item>Saudi-Arabien. Ischa 90 Min. nach Maghrib (im Ramadan 120 Min.).</item>
+        <item>Pakistan, Indien, Bangladesch, Afghanistan.</item>
+        <item>Kuwait.</item>
+        <item>Katar. Ischa 90 Min. nach Maghrib.</item>
+        <item>Singapur, Malaysia, Indonesien.</item>
+        <item>Einige Moscheen in Frankreich.</item>
+    </string-array>
+    <string name="method_isha_minutes">%1$d Min. nach Maghrib</string>
+    <string name="method_isha_angle">Sonne %1$s° unter dem Horizont</string>
+    <string name="method_details">Fadschr: Sonne %1$s° unter dem Horizont. Ischa: %2$s.\n%3$s\nDie Zeiten werden auf dem Telefon mit astronomischen Formeln berechnet (ohne Internet).</string>
+
+    <!-- Konum seçimi -->
+    <string name="loc_auto_failed">Dein Standort wurde nicht automatisch gefunden: %1$s\nDu kannst deine Stadt vorerst von Hand wählen.</string>
+    <string name="loc_pick_country">Land wählen</string>
+    <string name="loc_pick_city">%1$s: Stadt wählen</string>
+    <string name="loc_pick_district">%1$s: Bezirk wählen</string>
+    <string name="loc_conn_error">Verbindungsfehler (%1$s). Zum erneuten Versuch tippen.</string>
+    <string name="loc_no_times">keine Gebetszeiten für diesen Ort</string>
+    <string name="loc_auto_turned_off">Automatischer Standort ausgeschaltet. Du kannst ihn in den Einstellungen wieder einschalten.</string>
+    <string name="loc_times_failed">Gebetszeiten nicht abrufbar (%1$s). Zum erneuten Versuch tippen.</string>
+
+    <!-- İmsakiye ve dini günler -->
+    <string name="ims_title">Monatsübersicht · %1$s</string>
+    <string name="ims_date">Datum</string>
+    <string name="hd_title">Religiöse Tage</string>
+    <string name="hd_info">Heute: %1$s\nMit dem Hidschri-Kalender berechnet und an den Diyanet-Kalender angepasst. Kann um 1 Tag vom offiziell verkündeten Datum abweichen. Die gesegneten Nächte sind die Nacht vom angegebenen Tag auf den nächsten.</string>
+    <string name="hd_night"> (Nacht)</string>
+    <string name="hd_today">Heute</string>
+    <string name="hd_tomorrow">Morgen</string>
+    <plurals name="hd_in_days">
+        <item quantity="one">in %1$d Tag</item>
+        <item quantity="other">in %1$d Tagen</item>
+    </plurals>
+    <string name="holy_new_year">Islamisches Neujahr (%1$d)</string>
+    <string name="holy_ashura">Aschura-Tag</string>
+    <string name="holy_three_months">Beginn der drei Monate (Radschab, Schaban, Ramadan)</string>
+    <string name="holy_ramadan_start">Beginn des Ramadan</string>
+    <string name="holy_adha_eve">Vortag des Opferfestes (Tag von Arafat)</string>
+    <string name="holy_mawlid">Nacht des Maulid</string>
+    <string name="holy_miraj">Nacht der Himmelfahrt (Miradsch)</string>
+    <string name="holy_baraat">Nacht der Bara\'a (Mitte Schaban)</string>
+    <string name="holy_qadr">Nacht der Bestimmung (Laylat al-Qadr)</string>
+    <string name="holy_fitr_eve">Vortag des Ramadanfestes</string>
+    <string name="holy_raghaib">Nacht der Raghaib</string>
+    <string name="holy_fitr_day">Ramadanfest (Eid al-Fitr), Tag %1$d</string>
+    <string name="holy_adha_day">Opferfest (Eid al-Adha), Tag %1$d</string>
+
+    <!-- Kıble -->
+    <string name="qb_title">Qibla-Kompass</string>
+    <string name="qb_hint">Halte das Telefon waagerecht. Der goldene Pfeil zeigt zur Kaaba; mit der oberen Markierung ausgerichtet wird er grün.</string>
+    <string name="qb_ar_button">📷  Mit der Kamera finden (AR)</string>
+    <string name="qb_no_compass">Auf diesem Telefon wurde kein Kompasssensor gefunden.</string>
+    <string name="qb_need_perm">Für die Qibla-Berechnung wird die ungefähre Standortberechtigung benötigt.</string>
+    <string name="qb_perm_denied">Standortberechtigung nicht erteilt. Du kannst sie in den Einstellungen für die Qibla erlauben.</string>
+    <string name="qb_searching">Standort wird gesucht… (Standortfunktion muss an sein)</string>
+    <string name="qb_service_off">Standortfunktion ist aus. Schalte sie ein und komm zu diesem Bildschirm zurück.</string>
+    <string name="qb_no_perm">Keine Standortberechtigung.</string>
+    <string name="qb_info">Qibla-Winkel: %1$.0f° (von Norden im Uhrzeigersinn)\nEntfernung zur Kaaba: %2$,.0f km</string>
+    <string name="qb_aligned">✓ Du bist zur Qibla ausgerichtet</string>
+    <string name="qb_turn_right">Nach rechts drehen: %1$.0f°</string>
+    <string name="qb_turn_left">Nach links drehen: %1$.0f°</string>
+    <string name="qb_calibrate">Geringe Kompassgenauigkeit: Bewege das Telefon einige Male in Form einer 8, um ihn zu kalibrieren.</string>
+    <string-array name="qb_compass_letters">
+        <item>N</item>
+        <item>O</item>
+        <item>S</item>
+        <item>W</item>
+    </string-array>
+    <string name="ar_hint">Halte das Telefon aufrecht und schau dich mit der Kamera um.</string>
+    <string name="ar_cam_denied">Kameraberechtigung nicht erteilt. Du kannst den Qibla-Kompass verwenden.</string>
+    <string name="ar_no_sensor">Auf diesem Telefon wurde kein Lagesensor gefunden.</string>
+    <string name="ar_cam_needed">Die Kameraberechtigung wird benötigt, um die Kaaba-Richtung im Kamerabild zu zeigen. Das Bild wird weder gespeichert noch gesendet.</string>
+    <string name="ar_cam_failed">Kamera konnte nicht geöffnet werden.</string>
+    <string name="ar_no_location">Kein Standort gefunden. Erlaube den Standort in den Einstellungen.</string>
+    <string name="ar_aligned">✓ Die Kaaba ist direkt vor dir</string>
+    <string name="ar_right">Kaaba rechts: %1$.0f°</string>
+    <string name="ar_left">Kaaba links: %1$.0f°</string>
+    <string name="ar_label_aligned">✓ Qibla</string>
+    <string name="ar_label_kaaba">Kaaba</string>
+    <string name="ar_turn_right">Rechts %1$d°</string>
+    <string name="ar_turn_left">Links %1$d°</string>
+
+    <!-- Camiler -->
+    <string name="mq_title">Moscheen in der Nähe</string>
+    <string name="mq_direction">Richtung: %1$s · zum Öffnen der Karte tippen</string>
+    <string name="mq_finding">Standort wird gesucht…</string>
+    <string name="mq_no_location">Kein Standort. Schalte den automatischen Standort ein oder erlaube den Standort in den Einstellungen.</string>
+    <string name="mq_searching">Moscheen werden gesucht…</string>
+    <string name="mq_busy">Die Moschee-Server sind gerade stark ausgelastet. Tippe hier, um es in ein paar Minuten erneut zu versuchen.</string>
+    <string name="mq_failed">Moscheen konnten nicht geladen werden. Prüfe deine Internetverbindung und tippe hier für einen neuen Versuch.</string>
+    <string name="mq_where_gps">um deinen Standort</string>
+    <string name="mq_where_place">um das Zentrum von %1$s</string>
+    <string name="mq_none">Keine eingetragenen Moscheen im Umkreis von %1$d km. Daten: © OpenStreetMap-Mitwirkende (evtl. unvollständig).</string>
+    <string name="mq_found">%1$d Orte im Umkreis von %3$d km %2$s. Daten: © OpenStreetMap-Mitwirkende (evtl. unvollständig).</string>
+    <string name="mq_no_maps">Keine Karten-App gefunden.</string>
+    <string name="mq_unnamed">Moschee / Gebetsraum ohne Namen</string>
+    <string-array name="mq_directions">
+        <item>Norden</item>
+        <item>Nordosten</item>
+        <item>Osten</item>
+        <item>Südosten</item>
+        <item>Süden</item>
+        <item>Südwesten</item>
+        <item>Westen</item>
+        <item>Nordwesten</item>
+    </string-array>
+
+    <!-- Kaza ve zikir -->
+    <string name="kz_title">Nachzuholende Gebete</string>
+    <string name="kz_hint">Gib die Anzahl ein; verringere sie mit −, sobald du nachbetest. Tippe auf die Zahl, um sie einzugeben.</string>
+    <string-array name="kz_names">
+        <item>Fadschr</item>
+        <item>Dhuhr</item>
+        <item>Asr</item>
+        <item>Maghrib</item>
+        <item>Ischa</item>
+        <item>Witr</item>
+    </string-array>
+    <string name="kz_dialog_title">Nachzuholendes %1$s</string>
+    <string name="kz_none">Keine nachzuholenden Gebete</string>
+    <plurals name="kz_total">
+        <item quantity="one">Gesamt: %1$d Gebet</item>
+        <item quantity="other">Gesamt: %1$d Gebete</item>
+    </plurals>
+    <string name="zk_title">Dhikr-Zähler</string>
+    <string name="zk_hint">Zum Zählen tippen · auch die Lauter-Taste zählt</string>
+    <string name="zk_reset_q">Zähler zurücksetzen?</string>
+    <string name="zk_unlimited">Unbegrenzt</string>
+    <string name="zk_target">Ziel</string>
+    <string name="zk_target_row">Ziel: %1$s  ›</string>
+    <string name="zk_rounds">Abgeschlossene Runden: %1$d  (gesamt %2$d)</string>
 </resources>

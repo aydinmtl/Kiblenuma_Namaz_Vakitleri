@@ -60,7 +60,7 @@ class ArOverlayView(context: Context, attrs: AttributeSet?) : View(context, attr
             stroke.color = color
             canvas.drawRect(x - s, cy - s, x + s, cy + s, stroke)
             stroke.color = 0xAAFFFFFF.toInt()
-            canvas.drawText(if (aligned) "✓ Kıble" else "Kâbe", x, cy + s + 32 * dp, text)
+            canvas.drawText(context.getString(if (aligned) R.string.ar_label_aligned else R.string.ar_label_kaaba), x, cy + s + 32 * dp, text)
         } else {
             // Görüş alanı dışında: kenarda ok
             fill.color = gold
@@ -75,7 +75,7 @@ class ArOverlayView(context: Context, attrs: AttributeSet?) : View(context, attr
             }
             canvas.drawPath(p, fill)
             canvas.drawText(
-                if (right) "Sağa dön ${abs(off).toInt()}°" else "Sola dön ${abs(off).toInt()}°",
+                context.getString(if (right) R.string.ar_turn_right else R.string.ar_turn_left, abs(off).toInt()),
                 cx, cy - 60 * dp, text,
             )
         }

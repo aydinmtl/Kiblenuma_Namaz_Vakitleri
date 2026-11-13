@@ -19,7 +19,6 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import java.util.Locale
 import kotlin.math.abs
 
 /**
@@ -43,7 +42,7 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
     private val ori = FloatArray(3)
 
     private val askCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) startCamera() else tvInfo.text = "Kamera izni verilmedi. Pusulalı kıble ekranını kullanabilirsin."
+        if (granted) startCamera() else tvInfo.text = getString(R.string.ar_cam_denied)
     }
 
     // Seçili dili uygula (bu ekran kamera için ComponentActivity'den türediğinden
@@ -63,13 +62,12 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
         sm = getSystemService(SensorManager::class.java)
         sensor = sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
             ?: sm.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)
-        if (sensor == null) tvInfo.text = "Bu telefonda yön sensörü bulunamadı."
+        if (sensor == null) tvInfo.text = getString(R.string.ar_no_sensor)
 
         if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             startCamera()
         } else {
-            tvInfo.text = "Kâbe yönünü kamera görüntüsü üzerinde göstermek için kamera izni gerekli. " +
-                "Görüntü kaydedilmez ve hiçbir yere gönderilmez."
+            tvInfo.text = getString(R.string.ar_cam_needed)
             askCamera.launch(Manifest.permission.CAMERA)
         }
         findLocation()
@@ -86,7 +84,7 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
                 provider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, p)
                 overlay.cameraFov = backCameraFov()
             } catch (e: Exception) {
-                tvInfo.text = "Kamera açılamadı."
+                tvInfo.text = getString(R.string.ar_cam_failed)
             }
         }, ContextCompat.getMainExecutor(this))
     }
@@ -126,7 +124,7 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
     private fun usePlacePoint() {
         val p = Store.placePoint(this)
         if (p != null) setLocation(p.first, p.second, 0.0)
-        else tvInfo.text = "Konum bulunamadı. Ayarlar'dan konum iznini ver."
+        else tvInfo.text = getString(R.string.ar_no_location)
     }
 
     private fun setLocation(lat: Double, lon: Double, alt: Double) {
@@ -165,15 +163,15 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
         overlay.offset = off
         overlay.invalidate()
         tvInfo.text = when {
-            abs(off) < 3f -> "✓ Kâbe tam karşında"
-            off > 0 -> String.format(Locale.ROOT, "Kâbe sağında: %.0f°", off)
-            else -> String.format(Locale.ROOT, "Kâbe solunda: %.0f°", -off)
+            abs(off) < 3f -> getString(R.string.ar_aligned)
+            off > 0 -> getString(R.string.ar_right, off)
+            else -> getString(R.string.ar_left, -off)
         }
     }
 
     override fun onAccuracyChanged(s: Sensor?, accuracy: Int) {
         if (accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
-            tvInfo.text = "Pusula hassasiyeti düşük: telefonu havada birkaç kez 8 çizerek kalibre et."
+            tvInfo.text = getString(R.string.qb_calibrate)
         }
     }
 }

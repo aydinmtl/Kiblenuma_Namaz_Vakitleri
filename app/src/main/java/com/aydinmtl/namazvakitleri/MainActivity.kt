@@ -324,9 +324,7 @@ class MainActivity : LangActivity() {
     private fun hijriText(day: PrayerDay?): String {
         if (Lang.code(this) == "tr") return day?.hijri ?: ""
         if (day == null) return ""
-        val h = Hijri.of(day.date)
-        val month = resources.getStringArray(R.array.hijri_months)[h.month - 1]
-        return getString(R.string.hijri_date, h.day, month, h.year)
+        return Lang.hijriDate(this, Hijri.of(day.date))
     }
 
     // ---------------- Ekran ----------------

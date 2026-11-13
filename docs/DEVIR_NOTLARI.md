@@ -88,9 +88,15 @@ JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıklar
 ### Çeviri durumu
 
 - Çevrildi: ana ekran, vakit adları, bildirimler, ezan bildirimi, widget, yenile penceresi, konum izni
-  penceresi, kaynak satırı, otomatik konum adımları.
-- Henüz Türkçe: Ayarlar, konum seçimi, imsakiye, dini günler, kıble, camiler, kaza, zikir, Aile Halkası
-  (bilgi yarışması ve soru bankası), Namaz Öğreniyorum oyunu ve 3B canlandırma.
+  penceresi, kaynak satırı, otomatik konum adımları, Ayarlar (hesaplama yöntemleri dahil), konum seçimi,
+  imsakiye, dini günler, kıble pusulası ve AR kıble, yakındaki camiler, kaza çetelesi, zikirmatik.
+- Henüz Türkçe: Aile Halkası (bilgi yarışması ve soru bankası), Namaz Öğreniyorum oyunu ve 3B canlandırma.
+  Bunlar dua, sure ve dinî bilgi içerdiğinden ayrı ve dikkatli çevrilmeli.
+- Dini günlerin adları `Hijri.HolyKind` ile seçili dile çevrilir (`Lang.holyDayName`); `HolyDay.name` Türkçe
+  kalır (testler bunu kullanır). "Üç Aylar" bilinçli olarak "kutsal aylar" diye çevrilmedi: o terim İslam'da
+  başka dört ayı (eşhür-i hurum) anlatır; bunun yerine ayların adları yazıldı.
+- Hesaplama yöntemlerinin adları ve açıklamaları `method_titles` / `method_where` listelerindedir; sıra
+  `CalcMethod` sırasıyla aynı olmalı.
 - Diyanet'ten gelen yer adları (ör. "İsviçre") her dilde Diyanet'in yazdığı gibi kalır.
 
 ## Kod denetimi (ktlint ve gitleaks)

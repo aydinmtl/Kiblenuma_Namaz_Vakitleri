@@ -93,7 +93,8 @@ class SettingsActivity : LangActivity() {
         val box = findViewById<LinearLayout>(R.id.prayerChecks)
         for (i in PRAYER_NAMES.indices) {
             val cb = CheckBox(this)
-            cb.text = if (i == SUNRISE) "${PRAYER_NAMES[i]} (namaz vakti değil)" else PRAYER_NAMES[i]
+            val name = Lang.prayerName(this, i)
+            cb.text = if (i == SUNRISE) getString(R.string.set_sunrise_note, name) else name
             cb.textSize = 16f
             cb.setTextColor(getColor(R.color.text))
             cb.setOnCheckedChangeListener { _, on ->
@@ -128,7 +129,7 @@ class SettingsActivity : LangActivity() {
         swAdhan.setOnCheckedChangeListener { _, on ->
             if (binding) return@setOnCheckedChangeListener
             if (on && Store.adhanUri(this) == null) {
-                Toast.makeText(this, "Önce bir ezan ses dosyası seç.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.set_pick_adhan_first), Toast.LENGTH_SHORT).show()
                 pickAdhan()
             }
             Store.setAdhanOn(this, on)
@@ -144,13 +145,7 @@ class SettingsActivity : LangActivity() {
         // ---- Hakkında ----
         @Suppress("DEPRECATION")
         val version = try { packageManager.getPackageInfo(packageName, 0).versionName } catch (e: Exception) { "?" }
-        findViewById<TextView>(R.id.tvAbout).text =
-            "Kıblenüma $version\n" +
-            "Reklamsız ve ücretsiz. Kişisel veri toplamaz.\n" +
-            "Diyanet vakitleri ezanvakti.emushaf.net üzerinden alınır. Diğer yöntemler telefonda hesaplanır.\n" +
-            "Şehir adı (telefonun hizmeti çalışmazsa) ve yakındaki camiler için konum, kimlik bilgisi olmadan " +
-            "OpenStreetMap'e gönderilir.\n" +
-            "Camiler: © OpenStreetMap katkıcıları."
+        findViewById<TextView>(R.id.tvAbout).text = getString(R.string.set_about, version ?: "?")
     }
 
     override fun onResume() {
@@ -166,6 +161,10 @@ class SettingsActivity : LangActivity() {
         }
     }
 
+    /** Hatırlatma seçeneğinin yazısı: "Kapalı" ya da "10 dakika önce" (seçili dilde). */
+    private fun reminderLabel(min: Int): String =
+        if (min == 0) getString(R.string.set_off) else resources.getQuantityString(R.plurals.set_minutes_before, min, min)
+
     /** "Başlık" üstte, "değer ›" altta altın renkte. */
     private fun row(title: String, value: String): CharSequence {
         val s = SpannableStringBuilder(title).append("\n")
@@ -179,18 +178,21 @@ class SettingsActivity : LangActivity() {
     /** Ekrandaki tüm değerleri kayıtlı ayarlardan doldurur. */
     private fun bind() {
         binding = true
-        if (!locating) tvCurrentPlace.text = "📍 " + Store.placeName(this).ifEmpty { "Yer seçilmedi" }
+        if (!locating) tvCurrentPlace.text = getString(R.string.set_place, Store.placeName(this).ifEmpty { getString(R.string.set_no_place) })
         swAuto.isChecked = Store.autoLocation(this) && LocationHelper.hasPermission(this)
 
         val m = Store.method(this)
-        rowMethod.text = row("Hesaplama yöntemi", m.title)
+        rowMethod.text = row(getString(R.string.set_method), Lang.methodTitle(this, m))
         tvMethodInfo.text = if (m == CalcMethod.DIYANET && Store.isComputed(this)) {
             // Hesaplanan yer: Diyanet'in listesi yok, bunu burada da açıkça söyle.
-            "Diyanet'in listesinde bulunduğun konuma yakın bir yer yok. Vakitler konumundan, Diyanet'in " +
-                "ölçüleriyle (imsak 18°, yatsı 17°, temkin süreleri) telefonda hesaplanıyor. " +
-                "Resmi listeden birkaç dakika farklı olabilir."
-        } else m.details() + if (Times.isFallback(this)) "\n⚠ Bu yerin koordinatı bulunamadı; şimdilik Diyanet vakitleri gösteriliyor." else ""
-        rowAsr.text = row("İkindi hesabı", if (Store.asrHanafi(this)) "Hanefi (asr-ı sani)" else "Standart (asr-ı evvel)")
+            getString(R.string.set_method_computed)
+        } else {
+            Lang.methodDetails(this, m) + if (Times.isFallback(this)) getString(R.string.set_method_fallback) else ""
+        }
+        rowAsr.text = row(
+            getString(R.string.set_asr),
+            getString(if (Store.asrHanafi(this)) R.string.set_asr_hanafi else R.string.set_asr_standard),
+        )
         rowAsr.isEnabled = m != CalcMethod.DIYANET
         rowAsr.alpha = if (m != CalcMethod.DIYANET) 1f else 0.5f
 
@@ -201,31 +203,33 @@ class SettingsActivity : LangActivity() {
             checks[i].isEnabled = notifyOn
         }
         val rem = Store.reminderMinutes(this)
-        rowReminder.text = row("Vakitten önce hatırlat", if (rem == 0) "Kapalı" else "$rem dakika önce")
+        rowReminder.text = row(getString(R.string.set_reminder), reminderLabel(rem))
 
         val adhanName = Store.adhanName(this)
         swAdhan.isChecked = Store.adhanOn(this)
         tvAdhanFile.text = if (Store.adhanUri(this) == null) {
-            "Uygulamada hazır ezan sesi yok. Telefonundaki bir ezan ses dosyasını (mp3 vb.) seç. " +
-                "Ezan, vakit girince çalar; bildirimdeki \"Durdur\" ile susturabilirsin."
+            getString(R.string.set_adhan_none)
         } else {
-            "Seçili dosya: $adhanName"
+            getString(R.string.set_adhan_file, adhanName)
         }
         cbSilent.isChecked = Store.adhanRespectSilent(this)
 
         val warnings = ArrayList<String>()
-        if (notifyOn && !Notifications.canPost(this)) warnings.add("⚠ Bildirim izni kapalı. Açmak için dokun.")
+        if (notifyOn && !Notifications.canPost(this)) warnings.add(getString(R.string.notif_perm_off))
         else if (notifyOn && !AlarmScheduler.canExact(this)) {
-            warnings.add("⚠ Tam vaktinde bildirim için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.")
+            warnings.add(getString(R.string.set_exact_needed))
         }
         tvPermissions.text = warnings.joinToString("\n")
         tvPermissions.visibility = if (warnings.isEmpty()) View.GONE else View.VISIBLE
 
         val last = Store.lastDay(this)
-        tvData.text = if (Store.isComputed(this)) "Vakitler konumundan telefonda hesaplanıyor; indirilen liste yok."
-        else if (last == null) "Kayıtlı Diyanet vakti yok."
-        else "Kayıtlı Diyanet vakitleri: ${last.format(DateTimeFormatter.ofPattern("d MMMM yyyy", TR))} tarihine kadar. " +
-            "Süre azalınca kendiliğinden yenilenir."
+        tvData.text = if (Store.isComputed(this)) {
+            getString(R.string.set_data_computed)
+        } else if (last == null) {
+            getString(R.string.set_data_none)
+        } else {
+            getString(R.string.set_data_until, last.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Lang.locale(this))))
+        }
         binding = false
     }
 
@@ -235,12 +239,12 @@ class SettingsActivity : LangActivity() {
         val methods = CalcMethod.values()
         val current = methods.indexOf(Store.method(this))
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Hesaplama yöntemi")
-            .setSingleChoiceItems(methods.map { it.title }.toTypedArray(), current) { d, which ->
+            .setTitle(R.string.set_method)
+            .setSingleChoiceItems(methods.map { Lang.methodTitle(this, it) }.toTypedArray(), current) { d, which ->
                 d.dismiss()
                 applyMethod(methods[which])
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -249,7 +253,7 @@ class SettingsActivity : LangActivity() {
         val app = applicationContext
         if (m != CalcMethod.DIYANET && Store.placePoint(this) == null) {
             // Elle seçilmiş eski yerlerde koordinat yok: yer adından bul.
-            Toast.makeText(this, "Yerin koordinatı bulunuyor…", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.set_finding_point), Toast.LENGTH_SHORT).show()
             val name = Store.placeName(this)
             Thread {
                 val p = AutoLocation.geocodeName(app, listOf(name))
@@ -258,7 +262,7 @@ class SettingsActivity : LangActivity() {
                 PrayerWidget.updateAll(app)
                 runOnUiThread {
                     if (p == null) {
-                        Toast.makeText(this, "Koordinat bulunamadı. Otomatik konumu açmayı dene.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, getString(R.string.set_point_failed), Toast.LENGTH_LONG).show()
                     }
                     if (!isFinishing) bind()
                 }
@@ -271,9 +275,9 @@ class SettingsActivity : LangActivity() {
     }
 
     private fun chooseAsr() {
-        val items = arrayOf("Standart (Şafii, Maliki, Hanbeli)", "Hanefi (asr-ı sani)")
+        val items = arrayOf(getString(R.string.set_asr_standard_long), getString(R.string.set_asr_hanafi))
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("İkindi hesabı")
+            .setTitle(R.string.set_asr)
             .setSingleChoiceItems(items, if (Store.asrHanafi(this)) 1 else 0) { d, which ->
                 d.dismiss()
                 Store.setAsrHanafi(this, which == 1)
@@ -281,22 +285,22 @@ class SettingsActivity : LangActivity() {
                 PrayerWidget.updateAll(this)
                 bind()
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
     private fun chooseReminder() {
-        val labels = REMINDER_OPTIONS.map { if (it == 0) "Kapalı" else "$it dakika önce" }.toTypedArray()
+        val labels = REMINDER_OPTIONS.map { reminderLabel(it) }.toTypedArray()
         val current = REMINDER_OPTIONS.indexOf(Store.reminderMinutes(this)).coerceAtLeast(0)
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Vakitten önce hatırlat")
+            .setTitle(R.string.set_reminder)
             .setSingleChoiceItems(labels, current) { d, which ->
                 d.dismiss()
                 Store.setReminderMinutes(this, REMINDER_OPTIONS[which])
                 AlarmScheduler.schedule(this)
                 bind()
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -310,7 +314,7 @@ class SettingsActivity : LangActivity() {
             @Suppress("DEPRECATION")
             startActivityForResult(i, REQ_PICK_ADHAN)
         } catch (e: Exception) {
-            Toast.makeText(this, "Dosya seçici açılamadı.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.set_picker_failed), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -327,18 +331,18 @@ class SettingsActivity : LangActivity() {
         }
         Store.setAdhan(this, uri.toString(), fileName(uri))
         Store.setAdhanOn(this, true)
-        Toast.makeText(this, "Ezan sesi seçildi.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.set_adhan_chosen), Toast.LENGTH_SHORT).show()
         bind()
     }
 
     private fun fileName(uri: Uri): String {
         try {
             contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { c ->
-                if (c.moveToFirst()) return c.getString(0) ?: "ses dosyası"
+                if (c.moveToFirst()) return c.getString(0) ?: getString(R.string.set_audio_file)
             }
         } catch (e: Exception) {
         }
-        return "ses dosyası"
+        return getString(R.string.set_audio_file)
     }
 
     private fun testAdhan(btn: Button) {
@@ -349,13 +353,13 @@ class SettingsActivity : LangActivity() {
         if (adhanTesting) {
             AdhanService.stop(this)
             adhanTesting = false
-            btn.text = "Dinle"
+            btn.setText(R.string.listen)
         } else {
             if (AdhanService.startTest(this)) {
                 adhanTesting = true
-                btn.text = "Durdur"
+                btn.setText(R.string.adhan_stop)
             } else {
-                Toast.makeText(this, "Ezan sesi başlatılamadı.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.set_adhan_failed), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -373,7 +377,7 @@ class SettingsActivity : LangActivity() {
     private fun refreshNow() {
         if (Store.districtId(this) == null) return
         btnRefresh.isEnabled = false
-        btnRefresh.text = "Güncelleniyor…"
+        btnRefresh.setText(R.string.refresh_updating)
         val app = applicationContext
         Thread {
             val ok = Store.refresh(app)
@@ -384,10 +388,10 @@ class SettingsActivity : LangActivity() {
             runOnUiThread {
                 if (isFinishing) return@runOnUiThread
                 btnRefresh.isEnabled = true
-                btnRefresh.text = "Vakitleri şimdi güncelle"
+                btnRefresh.setText(R.string.set_refresh_now)
                 Toast.makeText(
                     this,
-                    if (ok) "Vakitler güncellendi." else "Güncellenemedi. İnternet bağlantını kontrol et.",
+                    getString(if (ok) R.string.set_updated else R.string.set_update_failed),
                     Toast.LENGTH_SHORT,
                 ).show()
                 bind()
@@ -400,7 +404,7 @@ class SettingsActivity : LangActivity() {
         if (requestCode == LocationConsent.REQUEST_CODE) {
             val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
             Store.setAutoLocation(this, granted)
-            if (!granted) Toast.makeText(this, "Konum izni verilmedi.", Toast.LENGTH_SHORT).show()
+            if (!granted) Toast.makeText(this, getString(R.string.set_loc_perm_denied), Toast.LENGTH_SHORT).show()
             bind()
             if (granted) checkLocationNow()
             return
@@ -418,26 +422,26 @@ class SettingsActivity : LangActivity() {
     private fun checkLocationNow() {
         if (locating) return
         if (!LocationHelper.isLocationOn(this)) {
-            Toast.makeText(this, "Telefonun konum servisi kapalı. Açınca konumun bulunacak.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.set_service_off), Toast.LENGTH_LONG).show()
             return
         }
         locating = true
-        tvCurrentPlace.text = "📡 Konumun bulunuyor…"
+        tvCurrentPlace.text = getString(R.string.set_locating)
         LocationHelper.current(this, timeoutMs = 10_000L) { loc ->
             if (loc == null) {
                 locating = false
                 if (!isFinishing && !isDestroyed) {
                     bind()
-                    Toast.makeText(this, "Konum alınamadı. Ana ekranda tekrar denenecek.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.set_loc_failed), Toast.LENGTH_LONG).show()
                 }
                 return@current
             }
             val app = applicationContext
             Thread {
                 val r = try {
-                    AutoLocation.resolve(app, loc) { msg -> runOnUiThread { if (locating) tvCurrentPlace.text = "📡 $msg" } }
+                    AutoLocation.resolve(app, loc) { msg -> runOnUiThread { if (locating) tvCurrentPlace.text = getString(R.string.set_progress, msg) } }
                 } catch (e: Exception) {
-                    AutoLocation.Result.Failed("İnternete bağlanılamadı.")
+                    AutoLocation.Result.Failed(getString(R.string.no_internet))
                 }
                 if (r !is AutoLocation.Result.Failed) {
                     AutoLocation.lastFailAt = 0L
@@ -449,9 +453,9 @@ class SettingsActivity : LangActivity() {
                     if (isFinishing || isDestroyed) return@runOnUiThread
                     bind()
                     val text = when (r) {
-                        is AutoLocation.Result.Changed -> "Konum güncellendi: ${r.label}"
-                        is AutoLocation.Result.Same -> "Konum aynı: ${Store.placeName(this)}"
-                        is AutoLocation.Result.Failed -> r.reason + " Ana ekranda tekrar denenecek."
+                        is AutoLocation.Result.Changed -> getString(R.string.loc_updated, r.label)
+                        is AutoLocation.Result.Same -> getString(R.string.set_loc_same, Store.placeName(this))
+                        is AutoLocation.Result.Failed -> getString(R.string.set_loc_retry, r.reason)
                     }
                     Toast.makeText(this, text, Toast.LENGTH_LONG).show()
                 }
