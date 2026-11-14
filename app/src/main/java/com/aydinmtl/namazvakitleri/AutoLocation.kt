@@ -137,6 +137,8 @@ object AutoLocation {
      * hesaplanamadığı kutup bölgelerinde döner.
      */
     fun resolve(ctx: Context, loc: Location, progress: (String) -> Unit = {}): Result {
+        val request = Store.placeRequest(ctx)
+        if (!Store.autoLocation(ctx)) return Result.Same
         progress(Lang.str(ctx, R.string.progress_city_name))
         val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(loc)
 
@@ -167,18 +169,19 @@ object AutoLocation {
 
         if (found != null) {
             val label = Diyanet.label(found.district, found.city, found.country)
-            Store.setNameRules(ctx, NAME_RULES)
-            if (found.district.id == Store.districtId(ctx)) {
+            var result: Result = Result.Same
+            Store.applyPlaceRequest(request) {
+                Store.setNameRules(ctx, NAME_RULES)
+                if (found.district.id == Store.districtId(ctx)) {
+                    Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
+                    if (label != Store.placeName(ctx)) Store.setPlaceName(ctx, label)
+                } else {
+                    Store.saveLocation(ctx, found.district.id, label, timesJson ?: "", Pair(loc.latitude, loc.longitude))
+                    result = Result.Changed(label)
+                }
                 Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
-                Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
-                // Yer aynı ama kayıtlı ad farklıysa (eski sürüm "Vernıer" yazmıştı) adı düzelt.
-                if (label != Store.placeName(ctx)) Store.setPlaceName(ctx, label)
-                return Result.Same
             }
-            Store.saveLocation(ctx, found.district.id, label, timesJson ?: "")
-            Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
-            Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
-            return Result.Changed(label)
+            return result
         }
 
         // ---- 4) Diyanet'te yakın yer yok: konumdan hesapla ----
@@ -187,24 +190,23 @@ object AutoLocation {
         if (PrayerCalc.diyanetDay(today, loc.latitude, loc.longitude, ZoneId.systemDefault()) == null) {
             return Result.Failed(Lang.str(ctx, R.string.fail_no_sun))
         }
-        Store.setComputedRecheckAt(
-            ctx,
-            System.currentTimeMillis() + if (hadError) COMPUTED_RECHECK_AFTER_ERROR_MS else COMPUTED_RECHECK_MS,
-        )
-        // Zaten hesaplanan yerdeysek ve konum pek değişmediyse nokta aynı kalır.
-        val old = Store.placePoint(ctx)
-        if (Store.isComputed(ctx) && old != null &&
-            GeoMath.distanceKm(old.first, old.second, loc.latitude, loc.longitude) <= COMPUTED_SAME_KM
-        ) {
+        var result: Result = Result.Same
+        Store.applyPlaceRequest(request) {
+            Store.setComputedRecheckAt(
+                ctx,
+                System.currentTimeMillis() + if (hadError) COMPUTED_RECHECK_AFTER_ERROR_MS else COMPUTED_RECHECK_MS,
+            )
+            val old = Store.placePoint(ctx)
+            if (!(Store.isComputed(ctx) && old != null &&
+                    GeoMath.distanceKm(old.first, old.second, loc.latitude, loc.longitude) <= COMPUTED_SAME_KM)) {
+                val label = computedLabel(ctx, names, loc)
+                if (!hadError) Store.setNameRules(ctx, NAME_RULES)
+                Store.saveComputedLocation(ctx, label, Pair(loc.latitude, loc.longitude))
+                result = Result.Changed(label)
+            }
             Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
-            return Result.Same
         }
-        val label = computedLabel(ctx, names, loc)
-        // Hesaplanan yerin adı telefondan gelir, Diyanet listesinden değil; yazım kuralı onu etkilemez.
-        if (!hadError) Store.setNameRules(ctx, NAME_RULES)
-        Store.saveComputedLocation(ctx, label, Pair(loc.latitude, loc.longitude))
-        Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
-        return Result.Changed(label)
+        return result
     }
 
     /** Hesaplanan yerin ekranda görünen adı: "Ambilly, Fransa"; ad yoksa koordinat. */

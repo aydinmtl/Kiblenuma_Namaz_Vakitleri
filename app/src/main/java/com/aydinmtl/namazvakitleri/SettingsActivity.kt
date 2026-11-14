@@ -254,10 +254,11 @@ class SettingsActivity : LangActivity() {
         if (m != CalcMethod.DIYANET && Store.placePoint(this) == null) {
             // Elle seçilmiş eski yerlerde koordinat yok: yer adından bul.
             Toast.makeText(this, getString(R.string.set_finding_point), Toast.LENGTH_SHORT).show()
+            val request = Store.placeRequest(this)
             val name = Store.placeName(this)
             Thread {
                 val p = AutoLocation.geocodeName(app, listOf(name))
-                Store.savePlacePoint(app, p)
+                if (!Store.applyPlaceRequest(request) { Store.savePlacePoint(app, p) }) return@Thread
                 AlarmScheduler.schedule(app)
                 PrayerWidget.updateAll(app)
                 runOnUiThread {

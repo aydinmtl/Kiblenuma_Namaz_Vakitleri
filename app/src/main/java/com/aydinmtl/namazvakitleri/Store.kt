@@ -3,13 +3,20 @@ package com.aydinmtl.namazvakitleri
 import android.content.Context
 import android.content.SharedPreferences
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 /** Seçilen yer, ayarlar ve 30 günlük vakit önbelleği (SharedPreferences). */
 object Store {
     private const val PREFS = "namaz"
     private const val MIN_RETRY_MS = 15 * 60 * 1000L        // başarısız denemeden sonra 15 dk bekle
-    private const val REFRESH_WHEN_DAYS_LEFT = 10            // 10 günden az veri kalınca yenile
+
+    private val selection = SelectionGuard()
+
+    fun placeRequest(ctx: Context): Pair<Long, String?> = selection.capture { districtId(ctx) }
+
+    fun invalidatePlaceRequests() = selection.change { }
+
+    fun applyPlaceRequest(request: Pair<Long, String?>, write: () -> Unit): Boolean =
+        selection.apply(request.first, write)
 
     private var cachedJson: String? = null
     private var cachedDays: List<PrayerDay> = emptyList()
@@ -54,7 +61,7 @@ object Store {
     // ---- Otomatik konum ----
 
     fun autoLocation(ctx: Context): Boolean = prefs(ctx).getBoolean("autoLocation", false)
-    fun setAutoLocation(ctx: Context, on: Boolean) {
+    fun setAutoLocation(ctx: Context, on: Boolean) = selection.change {
         // Açarken de kapatırken de eski "son otomatik nokta" silinir. Böylece otomatik konum
         // her açıldığında konum mutlaka yeniden kontrol edilir (eski kayıt yüzünden atlanmaz).
         prefs(ctx).edit()
@@ -114,7 +121,7 @@ object Store {
         return Pair(lat, lon)
     }
 
-    fun savePlacePoint(ctx: Context, point: Pair<Double, Double>?) {
+    fun savePlacePoint(ctx: Context, point: Pair<Double, Double>?) = selection.change {
         val e = prefs(ctx).edit()
         if (point == null) e.remove("placeLat").remove("placeLon")
         else e.putString("placeLat", point.first.toString()).putString("placeLon", point.second.toString())
@@ -281,7 +288,7 @@ object Store {
      * Yeri "konumdan hesaplanan yer" olarak kaydeder (Diyanet listesi yok).
      * Vakitler [point] koordinatından hesaplanır (bkz. Times.days).
      */
-    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) {
+    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) = selection.change {
         prefs(ctx).edit()
             .putString("districtId", COMPUTED_ID)
             .putString("placeName", placeName)
@@ -296,11 +303,13 @@ object Store {
         prefs(ctx).edit().putLong("computedRecheckAt", at).apply()
     }
 
-    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String) {
+    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String, point: Pair<Double, Double>? = null) = selection.change {
         prefs(ctx).edit()
             .putString("districtId", districtId)
             .putString("placeName", placeName)
             .putString("times", timesJson)
+            .putString("placeLat", point?.first?.toString())
+            .putString("placeLon", point?.second?.toString())
             .putLong("lastAttempt", System.currentTimeMillis())
             .apply()
     }
@@ -327,13 +336,13 @@ object Store {
         // Ayda bir kez küçük bir indirme; pil ve veri etkisi önemsiz.
         val sinceLast = System.currentTimeMillis() - prefs(ctx).getLong("lastAttempt", 0L)
         if (sinceLast < MIN_RETRY_MS) return false
-        val last = days(ctx).lastOrNull()?.date ?: return true
-        return ChronoUnit.DAYS.between(LocalDate.now(), last) < REFRESH_WHEN_DAYS_LEFT
+        return RefreshPolicy.needsData(districtId(ctx), isComputed(ctx), lastDay(ctx), LocalDate.now())
     }
 
     /** Vakitleri internetten yeniler. Ağ kullanır: arka planda çağır. */
     fun refresh(ctx: Context): Boolean {
-        val id = districtId(ctx) ?: return false
+        val request = placeRequest(ctx)
+        val id = request.second ?: return false
         if (id == COMPUTED_ID) return true // hesaplanan yer: vakitler telefonda hesaplanır, indirme yok
         prefs(ctx).edit().putLong("lastAttempt", System.currentTimeMillis()).apply()
         return try {
@@ -341,8 +350,9 @@ object Store {
             if (Diyanet.parseDays(json).isEmpty()) {
                 false
             } else {
-                prefs(ctx).edit().putString("times", json).apply()
-                true
+                applyPlaceRequest(request) {
+                    prefs(ctx).edit().putString("times", json).apply()
+                }
             }
         } catch (e: Exception) {
             false

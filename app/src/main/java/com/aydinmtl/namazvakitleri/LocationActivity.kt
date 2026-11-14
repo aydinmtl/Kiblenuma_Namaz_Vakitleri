@@ -147,7 +147,11 @@ class LocationActivity : LangActivity() {
         tvError.visibility = View.GONE
         progress.visibility = View.VISIBLE
         list.isEnabled = false
-        val label = Diyanet.label(district, city, country)
+        Store.invalidatePlaceRequests()
+        val request = Store.placeRequest(this)
+        val selectedCity = city
+        val selectedCountry = country
+        val label = Diyanet.label(district, selectedCity, selectedCountry)
         val fromAutoFailure = intent.hasExtra(EXTRA_REASON)
         val wasAuto = Store.autoLocation(this) && !fromAutoFailure
         val app = applicationContext
@@ -155,18 +159,24 @@ class LocationActivity : LangActivity() {
             try {
                 val json = Diyanet.fetchTimes(district.id)
                 if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException(getString(R.string.loc_no_times))
-                Store.saveLocation(app, district.id, label, json)
                 // Koordinat: hesaplama yöntemleri, kıble ve camiler için.
-                val c = city
-                val k = country
-                Store.savePlacePoint(app, AutoLocation.geocodeName(app, listOf(
+                val c = selectedCity
+                val k = selectedCountry
+                val point = AutoLocation.geocodeName(app, listOf(
                     listOfNotNull(district.name, c?.name, k?.name).joinToString(", "),
                     listOf(district.nameEn, c?.nameEn ?: "", k?.nameEn ?: "").filter { it.isNotBlank() }.joinToString(", "),
                     label,
-                )))
+                ))
                 // Elle seçilen yer otomatik konum tarafından ezilmesin. Ama bu ekran otomatik konum
                 // başarısız olduğu için açıldıysa otomatik konum açık kalır (yolculukta yine çalışsın).
-                if (!fromAutoFailure) Store.setAutoLocation(app, false)
+                val accepted = Store.applyPlaceRequest(request) {
+                    Store.saveLocation(app, district.id, label, json, point)
+                    if (!fromAutoFailure) Store.setAutoLocation(app, false)
+                }
+                if (!accepted) {
+                    runOnUiThread { finish() }
+                    return@Thread
+                }
                 AlarmScheduler.schedule(app)
                 PrayerWidget.updateAll(app)
                 runOnUiThread {
