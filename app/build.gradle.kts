@@ -78,6 +78,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.work:work-runtime:2.9.1")
+
     // Kamera ile (AR) kıble bulucu için CameraX
     implementation("androidx.activity:activity-ktx:1.9.3")
     implementation("androidx.camera:camera-camera2:1.4.2")
