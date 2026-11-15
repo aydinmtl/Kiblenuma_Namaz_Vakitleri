@@ -1,5 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
+import java.time.Duration
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -73,4 +75,50 @@ class PlaceZoneTest {
         // Cenevre'de saat 11:00 iken sıradaki vakit artık ikindi olmalı (İstanbul'da 13:00)
         assertEquals(3, Prayers.next(days, LocalDateTime.of(d, LocalTime.of(11, 0)))!!.index)
     }
+    @Test
+    fun tokyo_each_prayer_uses_phone_offset_at_its_own_instant() {
+        // Synthetic times, not a Diyanet timetable. Zurich changes to DST at 01:00 UTC.
+        val d = LocalDate.of(2026, 3, 29)
+        val times = listOf("04:30", "06:00", "11:51", "15:00", "18:00", "19:30").map(LocalTime::parse)
+        val moments = Prayers.moments(PlaceZone.apply(listOf(PrayerDay(d, times, "")), 139.6917, zurich))
+        val fajr = moments.first { it.index == 0 }
+        val dhuhr = moments.first { it.index == 2 }
+        assertEquals(LocalDateTime.parse("2026-03-28T20:30"), fajr.at)
+        assertEquals(Instant.parse("2026-03-28T19:30:00Z"), fajr.instant)
+        assertEquals(LocalDateTime.parse("2026-03-29T04:51"), dhuhr.at)
+        assertEquals(LocalTime.of(4, 30), fajr.clock)
+        assertEquals(d, fajr.day)
+        assertEquals(Prayers.next(PlaceZone.apply(listOf(PrayerDay(d, times, "")), 139.6917, zurich),
+            Instant.parse("2026-03-28T19:29:00Z")), fajr)
+    }
+
+    @Test
+    fun zone_cache_recomputes_corrected_times_with_unchanged_dates_and_size() {
+        val d = LocalDate.of(2026, 11, 8)
+        val times = listOf("06:09", "07:36", "12:53", "15:34", "18:00", "19:21").map(LocalTime::parse)
+        val cache = PlaceZoneCache()
+        cache.apply(listOf(PrayerDay(d, times, "")), istanbulLon, zurich)
+        val corrected = times.toMutableList().apply { this[0] = LocalTime.of(6, 10) }
+        val result = cache.apply(listOf(PrayerDay(d, corrected, "")), istanbulLon, zurich)
+        assertEquals(LocalTime.of(6, 10), Prayers.moments(result).first { it.index == 0 }.clock)
+        assertEquals(Instant.parse("2026-11-08T03:10:00Z"), Prayers.moments(result).first { it.index == 0 }.instant)
+    }
+
+    @Test
+    fun actual_instant_distinguishes_repeated_phone_hour() {
+        val before = Moment.fromEpochMillis(0, Instant.parse("2026-10-25T00:50:00Z").toEpochMilli(),
+            phone = zurich)
+        val after = Moment.fromEpochMillis(2, Instant.parse("2026-10-25T01:10:00Z").toEpochMilli(),
+            phone = zurich)
+        // 02:50 summer time precedes 02:10 winter time.
+        val day = PrayerDay(LocalDate.of(2026, 10, 25), listOf(before.clock, after.clock), "",
+            instants = listOf(before.instant, after.instant), phoneZone = zurich)
+        val moments = Prayers.moments(listOf(day))
+        assertEquals(listOf(before.instant, after.instant), moments.map { it.instant })
+        assertEquals(1, Prayers.next(listOf(day), Instant.parse("2026-10-25T01:00:00Z"))!!.index)
+        assertEquals(0, Prayers.current(listOf(day), Instant.parse("2026-10-25T01:00:00Z"))!!.index)
+        assertEquals(1, Prayers.current(listOf(day), Instant.parse("2026-10-25T01:10:00Z"))!!.index)
+        assertEquals(1200L, Duration.between(before.instant, after.instant).seconds)
+    }
+
 }

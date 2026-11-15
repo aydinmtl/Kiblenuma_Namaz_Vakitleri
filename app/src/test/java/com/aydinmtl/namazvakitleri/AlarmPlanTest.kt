@@ -1,6 +1,8 @@
 package com.aydinmtl.namazvakitleri
 
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -84,4 +86,17 @@ class AlarmPlanTest {
         assertTrue(AlarmPlan.adhanInTime(at + 2 * min, at))
         assertFalse(AlarmPlan.adhanInTime(at + 20 * min, at))
     }
+    @Test
+    fun reminder_subtraction_and_event_order_cross_repeated_dst_hour() {
+        val zone = ZoneId.of("Europe/Zurich")
+        val prayer = Moment.fromEpochMillis(2, Instant.parse("2026-10-25T01:10:00Z").toEpochMilli(), phone = zone)
+        val e = AlarmPlan.next(listOf(prayer), 20, { true }, Instant.parse("2026-10-25T00:45:00Z"))!!
+        assertTrue(e.reminder)
+        assertEquals(Instant.parse("2026-10-25T00:50:00Z"), e.fireInstant)
+        assertEquals(LocalDateTime.parse("2026-10-25T02:50"), e.fireAt)
+        val entry = AlarmPlan.next(listOf(prayer), 20, { true }, e.fireInstant)!!
+        assertFalse(entry.reminder)
+        assertEquals(Instant.parse("2026-10-25T01:10:00Z"), entry.fireInstant)
+    }
+
 }

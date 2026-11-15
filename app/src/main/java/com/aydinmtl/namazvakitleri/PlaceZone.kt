@@ -57,11 +57,35 @@ object PlaceZone {
         return phoneOffset - place
     }
 
-    /** Her günün [PrayerDay.shiftMinutes] değerini doldurur. Öğle vakti index 2'dir. */
+    /**
+     * Her vaktin gerçek anını hesaplar; telefonun UTC farkı o anda kurallardan okunur.
+     * Sağlayıcı IANA saat dilimi vermediği için yerin UTC farkı günlük öğle tahminidir.
+     */
     fun apply(days: List<PrayerDay>, lon: Double, phone: ZoneId): List<PrayerDay> =
         days.map { d ->
             val dhuhr = d.times.getOrNull(2) ?: return@map d
-            val shift = shiftMinutes(d.date, dhuhr, lon, phone)
-            if (shift == d.shiftMinutes) d else d.copy(shiftMinutes = shift)
+            val offset = offsetMinutes(d.date, dhuhr, lon) ?: return@map d
+            val place = ZoneOffset.ofTotalSeconds(offset * 60)
+            val localMoments = Prayers.dayMoments(d.copy(shiftMinutes = 0, instants = null, phoneZone = place))
+            val instants = localMoments.map { it.instant }
+            d.copy(shiftMinutes = shiftMinutes(d.date, dhuhr, lon, phone), instants = instants, phoneZone = phone)
         }
+}
+
+/** Türetilmiş verinin anahtarı tarih aralığı değil, bütün kaynak içeriğidir. */
+internal class PlaceZoneCache {
+    private var source: List<PrayerDay>? = null
+    private var longitude: Double? = null
+    private var zone: ZoneId? = null
+    private var result: List<PrayerDay> = emptyList()
+
+    fun apply(days: List<PrayerDay>, lon: Double, phone: ZoneId): List<PrayerDay> {
+        if (source == days && longitude == lon && zone == phone) return result
+        // Bir çağıran listeyi sonradan değiştirirse de yeni içeriği fark et.
+        source = days.map { it.copy(times = it.times.toList(), instants = it.instants?.toList()) }
+        longitude = lon
+        zone = phone
+        result = PlaceZone.apply(days, lon, phone)
+        return result
+    }
 }
