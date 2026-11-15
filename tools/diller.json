@@ -1912,6 +1912,23 @@
     }
   },
   {
+    "section": "3B izleme (Namaz3dActivity)",
+    "strings": {
+      "n3d_unavailable": [
+        "3B görünüm bu telefonda açılamadı.",
+        "La vue 3D n'a pas pu s'ouvrir sur ce téléphone.",
+        "The 3D view could not be opened on this phone.",
+        "Die 3D-Ansicht konnte auf diesem Telefon nicht geöffnet werden."
+      ],
+      "n3d_stopped": [
+        "3B görünüm durdu. Yeniden açmak için dokun.",
+        "La vue 3D s'est arrêtée. Touchez pour la rouvrir.",
+        "The 3D view stopped. Tap to open it again.",
+        "Die 3D-Ansicht wurde beendet. Tippe, um sie erneut zu öffnen."
+      ]
+    }
+  },
+  {
     "section": "Learning labels",
     "strings": {
       "learn_static_00": [

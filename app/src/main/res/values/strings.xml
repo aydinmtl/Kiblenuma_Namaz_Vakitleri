@@ -365,6 +365,10 @@
     <string name="zk_target_row">Hedef: %1$s  ›</string>
     <string name="zk_rounds">Tamamlanan tur: %1$d  (toplam %2$d)</string>
 
+    <!-- 3B izleme (Namaz3dActivity) -->
+    <string name="n3d_unavailable">3B görünüm bu telefonda açılamadı.</string>
+    <string name="n3d_stopped">3B görünüm durdu. Yeniden açmak için dokun.</string>
+
     <!-- Learning labels -->
     <string name="learn_static_00">Geri</string>
     <string name="learn_static_01">Sesli oku</string>

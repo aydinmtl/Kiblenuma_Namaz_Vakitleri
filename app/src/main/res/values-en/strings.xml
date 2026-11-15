@@ -361,6 +361,10 @@
     <string name="zk_target_row">Target: %1$s  ›</string>
     <string name="zk_rounds">Rounds completed: %1$d  (total %2$d)</string>
 
+    <!-- 3B izleme (Namaz3dActivity) -->
+    <string name="n3d_unavailable">The 3D view could not be opened on this phone.</string>
+    <string name="n3d_stopped">The 3D view stopped. Tap to open it again.</string>
+
     <!-- Learning labels -->
     <string name="learn_static_00">Back</string>
     <string name="learn_static_01">Read aloud</string>

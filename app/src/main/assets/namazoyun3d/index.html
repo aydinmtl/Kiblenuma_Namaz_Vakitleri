@@ -26,6 +26,12 @@
 <body>
 <canvas id="tuval"></canvas>
 <div id="balon"></div>
+<script>
+  // Herhangi bir betikte yakalanmamış hata olursa uygulamaya haber ver: 2B çizime geçilir.
+  window.onerror = function (ileti) {
+    try { if (window.Android && window.Android.hata) window.Android.hata(String(ileti)); } catch (e) { /* tarayıcıda Android yok */ }
+  };
+</script>
 <script src="motor.js"></script>
 <script src="karakter.js"></script>
 <script src="duruslar.js"></script>

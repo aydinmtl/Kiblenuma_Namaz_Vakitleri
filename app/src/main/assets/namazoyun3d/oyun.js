@@ -188,9 +188,19 @@ const N3 = (function () {
   }
 
   // ---- Her kare ----
+  // durdu: çizim sürdürülemiyor (hata ya da çizim bağlamı kayboldu). Android'e haber verilir;
+  // o da 2B çizime geçer. Haber verilmezse oyun "bitti" haberini sonsuza kadar beklerdi.
+  let durdu = false;
+  function dur(neden) {
+    if (durdu) return;
+    durdu = true; document.body.classList.add('hata'); bildir('hata', String(neden));
+  }
+  // Çizim bağlamı kaybolabilir (bellek azaldı, uygulama uzun süre arkada kaldı): sahne siyah kalırdı.
+  tuval.addEventListener('webglcontextlost', (e) => { e.preventDefault(); dur('webglcontextlost'); });
   function kare(ms) {
+    if (durdu) return;
     const dt = Math.min(0.05, sonKare ? (ms - sonKare) / 1000 : 0.016); sonKare = ms; zaman += dt;
-    adim(dt);
+    try { adim(dt); } catch (e) { dur(e && e.message || e); return; }
     requestAnimationFrame(kare);
   }
 
