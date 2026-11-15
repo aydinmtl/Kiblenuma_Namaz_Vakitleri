@@ -3,6 +3,7 @@ package com.aydinmtl.namazvakitleri
 import android.content.Context
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 /**
  * Uygulamanın her yerinde vakitler buradan alınır.
@@ -32,11 +33,14 @@ object Times {
         }
         val asr = if (m != CalcMethod.DIYANET && state.hanafi) Lang.str(ctx, R.string.src_asr_hanafi) else ""
         // Seçilen yer başka bir saat dilimindeyse kullanıcıya söyle (bkz. PlaceZone)
-        val shift = Prayers.day(days(state), LocalDate.now())?.shiftMinutes ?: 0
+        val today = Prayers.day(days(state), LocalDate.now())
+        val shift = today?.shiftMinutes ?: 0
         val zoneNote = if (shift == 0) "" else Lang.str(ctx, R.string.src_zone_note)
+        // Diyanet listesi bitti ve yenilenemedi: bugünün vakitleri hesaptır, bunu açıkça söyle.
+        val listEnded = if (today?.computed == true) Lang.str(ctx, R.string.src_list_ended) else ""
         return Lang.str(ctx, R.string.src_label, Lang.methodTitle(ctx, m)) + asr +
             (if (state.effectiveMethod != state.method) Lang.str(ctx, R.string.src_fallback) else "") +
-            zoneNote
+            zoneNote + listEnded
     }
 
     fun days(ctx: Context): List<PrayerDay> = days(Store.prayerSnapshot(ctx).second)
@@ -92,7 +96,12 @@ internal class PrayerTimeReader(private val hijriFormat: (LocalDate) -> String =
         val point = state.point
         val out = when {
             m == CalcMethod.DIYANET && !computedDiyanet ->
-                if (point == null) diyanet else PlaceZone.apply(diyanet, point.second, zone)
+                if (point == null) {
+                    diyanet
+                } else {
+                    val listed = PlaceZone.apply(diyanet, point.second, zone)
+                    listed + listContinuation(listed, point, today, zone)
+                }
             point == null -> diyanet
             else -> (-1..30).mapNotNull { i ->
                 val date = today.plusDays(i.toLong())
@@ -103,6 +112,54 @@ internal class PrayerTimeReader(private val hijriFormat: (LocalDate) -> String =
         cache = immutableDays(out)
         cacheKey = key
         return cache
+    }
+
+    /**
+     * Diyanet listesinin bittiği yerden sonrası.
+     *
+     * Liste uzun süre yenilenemezse (internet yok, sunucu kapalı) eskiden vakitler "--:--" olur,
+     * alarm da kurulamazdı. Yerin koordinatı biliniyorsa eksik günler Diyanet'in ölçüleriyle
+     * HESAPLANIR ve [PrayerDay.computed] ile işaretlenir; ekranda bunun hesap olduğu yazılır.
+     * Liste yenilenince bu günlerin yerini yeniden resmi liste alır.
+     *
+     * Liste yarını da kapsıyorsa hiçbir şey eklenmez: resmi liste yeterliyken araya hesap girmez.
+     */
+    private fun listContinuation(
+        listed: List<PrayerDay>,
+        point: Pair<Double, Double>,
+        today: LocalDate,
+        zone: ZoneId,
+    ): List<PrayerDay> {
+        val last = listed.lastOrNull()
+        if (last != null && !last.date.isBefore(today.plusDays(CONTINUE_WHEN_DAYS_LEFT))) return emptyList()
+        val from = maxOf(today.minusDays(1), last?.date?.plusDays(1) ?: today.minusDays(1))
+        // Yer başka bir saat dilimindeyse (listede saat farkı varsa) hesaplanan günler de listedekiler
+        // gibi yerin saatiyle yazılır. Aynı saat dilimindeyse telefonun saati kullanılır; böylece yaz
+        // saati geçişi kendiliğinden doğru olur.
+        val placeOffset = last?.takeIf { it.shiftMinutes != 0 }
+            ?.let { d -> d.times.getOrNull(2)?.let { PlaceZone.offsetMinutes(d.date, it, point.second) } }
+        return generateSequence(from) { it.plusDays(1) }.takeWhile { !it.isAfter(today.plusDays(30)) }
+            .mapNotNull { date ->
+                val day = PrayerCalc.calculatedDay(date, point.first, point.second, zone, CalcMethod.DIYANET, 1)
+                    ?: return@mapNotNull null
+                val instants = day.instants
+                if (placeOffset == null || instants == null) {
+                    day.copy(hijri = hijriFormat(date), computed = true)
+                } else {
+                    val place = ZoneOffset.ofTotalSeconds(placeOffset * 60)
+                    day.copy(
+                        times = instants.map { it.atOffset(place).toLocalTime() },
+                        hijri = hijriFormat(date),
+                        shiftMinutes = zone.rules.getOffset(instants[2]).totalSeconds / 60 - placeOffset,
+                        computed = true,
+                    )
+                }
+            }.toList()
+    }
+
+    private companion object {
+        /** Liste bugünden itibaren bundan az günü kapsıyorsa devamı hesaplanır (yarın eksikse alarm kurulamaz). */
+        const val CONTINUE_WHEN_DAYS_LEFT = 2L
     }
 }
 

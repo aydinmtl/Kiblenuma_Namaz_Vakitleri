@@ -14,6 +14,16 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp" />
 
+    <!-- Diyanet listesi bitip devamı hesaplandıysa görünür (ImsakiyeActivity) -->
+    <TextView
+        android:id="@+id/tvNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/gold"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
     <!-- Başlık satırı -->
     <LinearLayout
         android:layout_width="match_parent"

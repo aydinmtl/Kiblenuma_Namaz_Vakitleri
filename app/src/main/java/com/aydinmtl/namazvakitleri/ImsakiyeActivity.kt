@@ -30,6 +30,12 @@ class ImsakiyeActivity : LangActivity() {
 
         val days = Times.days(this)
         val today = LocalDate.now()
+        // Diyanet listesi bittiyse devamı hesaplanmıştır; hangi günlerin hesap olduğu belli olsun.
+        if (days.any { it.computed }) {
+            val note = findViewById<TextView>(R.id.tvNote)
+            note.text = getString(R.string.ims_computed_note)
+            note.visibility = View.VISIBLE
+        }
         val highlight = getColor(R.color.primary)
         val list = findViewById<ListView>(R.id.list)
 
@@ -41,7 +47,7 @@ class ImsakiyeActivity : LangActivity() {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
                 val v = convertView ?: layoutInflater.inflate(R.layout.item_imsakiye, parent, false)
                 val d = days[position]
-                v.findViewById<TextView>(R.id.c_date).text = d.date.format(dateFormat)
+                v.findViewById<TextView>(R.id.c_date).text = (if (d.computed) "≈ " else "") + d.date.format(dateFormat)
                 for (i in 0..5) v.findViewById<TextView>(cellIds[i]).text = d.times[i].format(HHMM)
                 v.setBackgroundColor(if (d.date == today) highlight else Color.TRANSPARENT)
                 return v

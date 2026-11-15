@@ -15,6 +15,8 @@ import org.junit.Assert.fail
 import org.junit.Test
 
 class PrayerSnapshotTest {
+    // Not: listeler tek günlüktür. Liste bittiği için devamı hesaplanır (bkz. ListContinuationTest);
+    // bu testler listedeki günün kendisine bakar: single { !it.computed }.
     private val today = LocalDate.of(2026, 3, 29)
     private fun snapshot(id: String, longitude: Double, imsak: String, noon: String) = PrayerSnapshot(
         districtId = id,
@@ -46,19 +48,19 @@ class PrayerSnapshotTest {
             assertTrue(captured.await(5, TimeUnit.SECONDS))
             guard.change { selected = snapshot("B", 0.0, "05:00", "12:08") }
             val newer = reader.days(guard.capture { selected }.second, today, ZoneOffset.UTC)
-            assertEquals(Instant.parse("2026-03-29T05:00:00Z"), newer.single().instants!!.first())
+            assertEquals(Instant.parse("2026-03-29T05:00:00Z"), newer.single { !it.computed }.instants!!.first())
         } finally {
             resume.countDown()
             worker.join(6000)
         }
         assertFalse(worker.isAlive)
         failure.get()?.let { throw AssertionError(it) }
-        val old = result.get().single()
+        val old = result.get().single { !it.computed }
         assertEquals(LocalTime.of(4, 30), old.times.first())
         assertEquals(Instant.parse("2026-03-28T19:30:00Z"), old.instants!!.first())
         val newerAgain = reader.days(guard.capture { selected }.second, today, ZoneOffset.UTC)
-        assertEquals(LocalTime.of(5, 0), newerAgain.single().times.first())
-        assertEquals(Instant.parse("2026-03-29T05:00:00Z"), newerAgain.single().instants!!.first())
+        assertEquals(LocalTime.of(5, 0), newerAgain.single { !it.computed }.times.first())
+        assertEquals(Instant.parse("2026-03-29T05:00:00Z"), newerAgain.single { !it.computed }.instants!!.first())
     }
 
     @Test
@@ -67,13 +69,13 @@ class PrayerSnapshotTest {
         val old = snapshot("A", 139.7, "04:30", "11:51")
         val first = reader.days(old, today, ZoneOffset.UTC)
         val second = reader.days(old.copy(timesJson = old.timesJson!!.replace("04:30", "04:31")), today, ZoneOffset.UTC)
-        assertEquals(Instant.parse("2026-03-28T19:30:00Z"), first.single().instants!!.first())
-        assertEquals(Instant.parse("2026-03-28T19:31:00Z"), second.single().instants!!.first())
+        assertEquals(Instant.parse("2026-03-28T19:30:00Z"), first.single { !it.computed }.instants!!.first())
+        assertEquals(Instant.parse("2026-03-28T19:31:00Z"), second.single { !it.computed }.instants!!.first())
         try {
-            (first.single().times as MutableList<LocalTime>)[0] = LocalTime.NOON
+            (first.single { !it.computed }.times as MutableList<LocalTime>)[0] = LocalTime.NOON
             fail("snapshot must not expose mutable cached clocks")
         } catch (_: UnsupportedOperationException) { }
-        assertEquals(LocalTime.of(4, 30), reader.days(old, today, ZoneOffset.UTC).single().times.first())
+        assertEquals(LocalTime.of(4, 30), reader.days(old, today, ZoneOffset.UTC).single { !it.computed }.times.first())
     }
 
     @Test
@@ -116,9 +118,9 @@ class PrayerSnapshotTest {
             fail("raw snapshot list must be immutable")
         } catch (_: UnsupportedOperationException) { }
         try {
-            (derived.single().instants as MutableList<Instant>)[0] = Instant.EPOCH
+            (derived.single { !it.computed }.instants as MutableList<Instant>)[0] = Instant.EPOCH
             fail("derived instant list must be immutable")
         } catch (_: UnsupportedOperationException) { }
-        assertEquals(Instant.parse("2026-03-28T19:30:00Z"), derived.single().instants!!.first())
+        assertEquals(Instant.parse("2026-03-28T19:30:00Z"), derived.single { !it.computed }.instants!!.first())
     }
 }
