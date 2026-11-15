@@ -430,7 +430,7 @@
         <item>Ablution</item>
         <item>Prayer</item>
     </string-array>
-    <string name="learn_option">Option %1$s: %2$s.</string>
+    <string name="learn_option">Option %1$d: %2$s.</string>
     <string name="learn_report_title">Family Circle: possible question errors</string>
     <string name="learn_report_missing">(question no longer in the bank)</string>
     <string name="learn_report_answer">Answer: %1$s</string>
@@ -438,12 +438,12 @@
 
     <!-- Learning UI -->
     <string name="learn_ui_000">Would you like to resume?</string>
-    <string name="learn_ui_001">%1$s · Question %2$s / %3$s · %4$s correct</string>
+    <string name="learn_ui_001">%1$s · Question %2$d / %3$d · %4$d correct</string>
     <string name="learn_ui_002">Continue</string>
     <string name="learn_ui_003">New round</string>
     <string name="learn_ui_004">Cancel</string>
-    <string name="learn_ui_005">Our tree: %1$s · %2$s correct in total</string>
-    <string name="learn_ui_006">\n%2$s more correct answers to reach %1$s</string>
+    <string name="learn_ui_005">Our tree: %1$s · %2$d correct in total</string>
+    <string name="learn_ui_006">\n%2$d more correct answers to reach %1$s</string>
     <string name="learn_ui_007">\nOur tree is fully grown!</string>
     <string name="learn_ui_008">💡 Daily question ✓ (answered today)</string>
     <string name="learn_ui_009">💡 Daily question</string>
@@ -453,7 +453,7 @@
     <string name="learn_ui_013">%1$s level. %2$s.</string>
     <string name="learn_ui_014"> A round is in progress.</string>
     <string name="learn_ui_015">A round is in progress</string>
-    <string name="learn_ui_016">%1$s: you are on question %2$s. What next?</string>
+    <string name="learn_ui_016">%1$s: you are on question %2$d. What next?</string>
     <string name="learn_ui_017">New %1$s round</string>
     <string name="learn_ui_018">Review mistakes</string>
     <string name="learn_ui_019">%1$s level</string>
@@ -461,7 +461,7 @@
     <string name="learn_ui_021">Separate names with commas; players take turns. Leave blank to play alone.</string>
     <string name="learn_ui_022">Who is playing?</string>
     <string name="learn_ui_023">Start</string>
-    <string name="learn_ui_024">%1$s · Question %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_024">%1$s · Question %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_025">%1$s, correct answer</string>
     <string name="learn_ui_026">%1$s, your answer, incorrect</string>
     <string name="learn_ui_027">✓ Correct!</string>
@@ -471,7 +471,7 @@
     <string name="learn_ui_031">\n(You already knew this answer; the tree grows with new knowledge.)</string>
     <string name="learn_ui_032">See results ›</string>
     <string name="learn_ui_033">Next question ›</string>
-    <string name="learn_ui_034">%1$s · Question %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_034">%1$s · Question %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_035">The selected language voice is unavailable. Install it in your phone\'s text-to-speech settings.</string>
     <string name="learn_ui_036">Close</string>
     <string name="learn_ui_037">🔊 Read aloud</string>
@@ -496,8 +496,8 @@
     <string name="learn_ui_056">Remove all flags?</string>
     <string name="learn_ui_057">Delete</string>
     <string name="learn_ui_058">Turn: %1$s</string>
-    <string name="learn_ui_059">%1$s out of 3 stars</string>
-    <string name="learn_ui_060">%2$s correct out of %1$s</string>
+    <string name="learn_ui_059">%1$d out of 3 stars</string>
+    <string name="learn_ui_060">%2$d correct out of %1$d</string>
     <string name="learn_ui_061"> correct</string>
     <string name="learn_ui_062">\n\nYour mistakes are waiting in “Review my mistakes”.</string>
     <string name="learn_ui_063">Review mistakes again</string>
@@ -514,28 +514,28 @@
     <string name="learn_ui_074">Hold a goal to edit or delete it.</string>
     <string name="learn_ui_075">E.g. Go for ice cream together</string>
     <string name="learn_ui_076">At which tree stage?</string>
-    <string name="learn_ui_077">%1$s (%2$s correct)</string>
+    <string name="learn_ui_077">%1$s (%2$d correct)</string>
     <string name="learn_ui_078">Edit goal</string>
     <string name="learn_ui_079">New family goal</string>
     <string name="learn_ui_080">Save</string>
     <string name="learn_ui_081">Add</string>
     <string name="learn_ui_082">On: supplications and surahs are recited aloud.</string>
     <string name="learn_ui_083">Off: the text advances without sound.</string>
-    <string name="learn_ui_084">Resume at step %1$s / %2$s</string>
-    <string name="learn_ui_085">%1$s steps</string>
-    <string name="learn_ui_086">You stopped at step %1$s of %2$s. Where shall we start?</string>
+    <string name="learn_ui_084">Resume at step %1$d / %2$d</string>
+    <string name="learn_ui_085">%1$d steps</string>
+    <string name="learn_ui_086">You stopped at step %1$d of %2$d. Where shall we start?</string>
     <string name="learn_ui_087">Resume</string>
     <string name="learn_ui_088">Start over</string>
-    <string name="learn_ui_089">🏆 You completed the prayer %1$s times</string>
+    <string name="learn_ui_089">🏆 You completed the prayer %1$d times</string>
     <string name="learn_ui_090">%1$s %2$s · Preparation</string>
     <string name="learn_ui_091">Laying out our prayer mat towards the qibla\n(tap the picture to skip)</string>
-    <string name="learn_ui_092">%1$s %2$s · Step %3$s / %4$s</string>
+    <string name="learn_ui_092">%1$s %2$s · Step %3$d / %4$d</string>
     <string name="learn_ui_093">Continue ›</string>
     <string name="learn_ui_094">%1$s, incorrect</string>
     <string name="learn_ui_095">Almost! Look at the option with the gold border. 🙂</string>
     <string name="learn_ui_096">Try again. You can do it! 💪</string>
     <string name="learn_ui_097">%1$s, correct</string>
-    <string name="learn_ui_098">Step %1$s · %2$s</string>
+    <string name="learn_ui_098">Step %1$d · %2$s</string>
     <string name="learn_ui_099">✓ Well done!\n%1$s</string>
     <string name="learn_ui_100">\nSource: %1$s</string>
     <string name="learn_ui_101">\n\nOur ablution is complete! Shall we pray?</string>

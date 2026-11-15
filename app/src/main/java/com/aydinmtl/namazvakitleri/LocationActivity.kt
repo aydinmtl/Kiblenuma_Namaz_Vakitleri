@@ -1,5 +1,6 @@
 package com.aydinmtl.namazvakitleri
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -256,6 +257,9 @@ class LocationActivity : LangActivity() {
     }
 
     // Android 12 ve öncesinde geri tuşu buraya gelir.
+    // Lint "geri hareketi artık onBackPressed'i çağırmıyor" diye uyarır. Doğru: Android 13+ için
+    // geri hareketi onCreate'te OnBackInvokedCallback ile kayıtlıdır; bu metot eski sürümler içindir.
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() = goBack()
 

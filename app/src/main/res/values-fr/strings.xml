@@ -140,6 +140,7 @@
     <string name="notif_prayer_text">L\'heure de %1$s est entrée : %2$s</string>
     <plurals name="notif_reminder_title">
         <item quantity="one">%1$s dans %2$d minute</item>
+        <item quantity="many">%1$s dans %2$d minutes</item>
         <item quantity="other">%1$s dans %2$d minutes</item>
     </plurals>
     <string name="notif_daily_title">🌳 Question du jour</string>
@@ -195,6 +196,7 @@
     <string name="set_off">Désactivé</string>
     <plurals name="set_minutes_before">
         <item quantity="one">%1$d minute avant</item>
+        <item quantity="many">%1$d minutes avant</item>
         <item quantity="other">%1$d minutes avant</item>
     </plurals>
     <string name="set_adhan_none">L\'application ne contient pas d\'adhan. Choisissez un fichier audio d\'adhan (mp3, etc.) sur votre téléphone. Il sera joué à l\'heure de la prière ; « Arrêter » dans la notification l\'interrompt.</string>
@@ -266,6 +268,7 @@
     <string name="hd_tomorrow">Demain</string>
     <plurals name="hd_in_days">
         <item quantity="one">dans %1$d jour</item>
+        <item quantity="many">dans %1$d jours</item>
         <item quantity="other">dans %1$d jours</item>
     </plurals>
     <string name="holy_new_year">Nouvel An hégirien (%1$d)</string>
@@ -358,6 +361,7 @@
     <string name="kz_none">Aucune prière à rattraper</string>
     <plurals name="kz_total">
         <item quantity="one">Total : %1$d prière</item>
+        <item quantity="many">Total : %1$d prières</item>
         <item quantity="other">Total : %1$d prières</item>
     </plurals>
     <string name="zk_title">Compteur de dhikr</string>
@@ -430,7 +434,7 @@
         <item>Ablutions</item>
         <item>Prière</item>
     </string-array>
-    <string name="learn_option">Réponse %1$s : %2$s.</string>
+    <string name="learn_option">Réponse %1$d : %2$s.</string>
     <string name="learn_report_title">Cercle familial : erreurs possibles</string>
     <string name="learn_report_missing">(question retirée de la banque)</string>
     <string name="learn_report_answer">Réponse : %1$s</string>
@@ -438,12 +442,12 @@
 
     <!-- Learning UI -->
     <string name="learn_ui_000">Veux-tu reprendre où tu en étais ?</string>
-    <string name="learn_ui_001">%1$s · Question %2$s / %3$s · %4$s bonnes réponses</string>
+    <string name="learn_ui_001">%1$s · Question %2$d / %3$d · %4$d bonnes réponses</string>
     <string name="learn_ui_002">Continuer</string>
     <string name="learn_ui_003">Nouvelle partie</string>
     <string name="learn_ui_004">Annuler</string>
-    <string name="learn_ui_005">Notre arbre : %1$s · %2$s bonnes réponses au total</string>
-    <string name="learn_ui_006">\nEncore %2$s bonnes réponses pour %1$s</string>
+    <string name="learn_ui_005">Notre arbre : %1$s · %2$d bonnes réponses au total</string>
+    <string name="learn_ui_006">\nEncore %2$d bonnes réponses pour %1$s</string>
     <string name="learn_ui_007">\nNotre arbre a atteint sa taille maximale !</string>
     <string name="learn_ui_008">💡 Question du jour ✓ (déjà répondue)</string>
     <string name="learn_ui_009">💡 Question du jour</string>
@@ -453,7 +457,7 @@
     <string name="learn_ui_013">Niveau %1$s. %2$s.</string>
     <string name="learn_ui_014"> Une partie est en cours.</string>
     <string name="learn_ui_015">Une partie est en cours</string>
-    <string name="learn_ui_016">%1$s : tu en es à la question %2$s. Que faire ?</string>
+    <string name="learn_ui_016">%1$s : tu en es à la question %2$d. Que faire ?</string>
     <string name="learn_ui_017">Nouvelle partie : %1$s</string>
     <string name="learn_ui_018">Revoir les erreurs</string>
     <string name="learn_ui_019">Niveau %1$s</string>
@@ -461,7 +465,7 @@
     <string name="learn_ui_021">Séparez les noms par des virgules ; chacun joue à son tour. Laissez vide pour jouer seul.</string>
     <string name="learn_ui_022">Qui joue ?</string>
     <string name="learn_ui_023">Commencer</string>
-    <string name="learn_ui_024">%1$s · Question %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_024">%1$s · Question %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_025">%1$s, bonne réponse</string>
     <string name="learn_ui_026">%1$s, ta réponse, incorrecte</string>
     <string name="learn_ui_027">✓ Bonne réponse !</string>
@@ -471,7 +475,7 @@
     <string name="learn_ui_031">\n(Tu avais déjà répondu correctement ; seules les nouvelles connaissances font grandir l\'arbre.)</string>
     <string name="learn_ui_032">Voir le résultat ›</string>
     <string name="learn_ui_033">Question suivante ›</string>
-    <string name="learn_ui_034">%1$s · Question %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_034">%1$s · Question %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_035">La voix de la langue choisie est indisponible. Installe-la dans les réglages de synthèse vocale du téléphone.</string>
     <string name="learn_ui_036">Fermer</string>
     <string name="learn_ui_037">🔊 Lire</string>
@@ -496,8 +500,8 @@
     <string name="learn_ui_056">Supprimer tous les signalements ?</string>
     <string name="learn_ui_057">Supprimer</string>
     <string name="learn_ui_058">Au tour de %1$s</string>
-    <string name="learn_ui_059">%1$s étoiles sur 3</string>
-    <string name="learn_ui_060">%2$s bonnes réponses sur %1$s</string>
+    <string name="learn_ui_059">%1$d étoiles sur 3</string>
+    <string name="learn_ui_060">%2$d bonnes réponses sur %1$d</string>
     <string name="learn_ui_061"> bonnes réponses</string>
     <string name="learn_ui_062">\n\nRetrouve tes erreurs dans « Revoir mes erreurs ».</string>
     <string name="learn_ui_063">Revoir encore les erreurs</string>
@@ -514,28 +518,28 @@
     <string name="learn_ui_074">Appuie longuement sur un objectif pour le modifier ou le supprimer.</string>
     <string name="learn_ui_075">Ex. : Aller manger une glace ensemble</string>
     <string name="learn_ui_076">À quelle étape de notre arbre ?</string>
-    <string name="learn_ui_077">%1$s (%2$s bonnes réponses)</string>
+    <string name="learn_ui_077">%1$s (%2$d bonnes réponses)</string>
     <string name="learn_ui_078">Modifier l\'objectif</string>
     <string name="learn_ui_079">Nouvel objectif familial</string>
     <string name="learn_ui_080">Enregistrer</string>
     <string name="learn_ui_081">Ajouter</string>
     <string name="learn_ui_082">Activé : les invocations et sourates sont récitées à voix haute.</string>
     <string name="learn_ui_083">Désactivé : seul le texte défile, sans son.</string>
-    <string name="learn_ui_084">Reprendre à l\'étape %1$s / %2$s</string>
-    <string name="learn_ui_085">%1$s étapes</string>
-    <string name="learn_ui_086">Tu en étais à l\'étape %1$s sur %2$s. Où commencer ?</string>
+    <string name="learn_ui_084">Reprendre à l\'étape %1$d / %2$d</string>
+    <string name="learn_ui_085">%1$d étapes</string>
+    <string name="learn_ui_086">Tu en étais à l\'étape %1$d sur %2$d. Où commencer ?</string>
     <string name="learn_ui_087">Reprendre</string>
     <string name="learn_ui_088">Recommencer</string>
-    <string name="learn_ui_089">🏆 Tu as terminé la prière %1$s fois</string>
+    <string name="learn_ui_089">🏆 Tu as terminé la prière %1$d fois</string>
     <string name="learn_ui_090">%1$s %2$s · Préparation</string>
     <string name="learn_ui_091">Déroulons le tapis vers la qibla\n(touche l\'image pour passer)</string>
-    <string name="learn_ui_092">%1$s %2$s · Étape %3$s / %4$s</string>
+    <string name="learn_ui_092">%1$s %2$s · Étape %3$d / %4$d</string>
     <string name="learn_ui_093">Continuer ›</string>
     <string name="learn_ui_094">%1$s, incorrect</string>
     <string name="learn_ui_095">Presque ! Regarde la réponse encadrée d\'or. 🙂</string>
     <string name="learn_ui_096">Essaie encore, tu peux y arriver ! 💪</string>
     <string name="learn_ui_097">%1$s, correct</string>
-    <string name="learn_ui_098">Étape %1$s · %2$s</string>
+    <string name="learn_ui_098">Étape %1$d · %2$s</string>
     <string name="learn_ui_099">✓ Bravo !\n%1$s</string>
     <string name="learn_ui_100">\nSource : %1$s</string>
     <string name="learn_ui_101">\n\nLes ablutions sont terminées ! Passons à la prière ?</string>

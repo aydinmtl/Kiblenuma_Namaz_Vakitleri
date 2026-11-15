@@ -1,6 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.media.AudioManager
 import android.os.Build
@@ -180,6 +181,9 @@ class PrayerGameActivity : LangActivity() {
         super.onDestroy()
     }
 
+    // Lint "geri hareketi artık onBackPressed'i çağırmıyor" diye uyarır. Doğru: Android 13+ için
+    // geri hareketi onCreate'te OnBackInvokedCallback ile kayıtlıdır; bu metot eski sürümler içindir.
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() = goBack()
 
