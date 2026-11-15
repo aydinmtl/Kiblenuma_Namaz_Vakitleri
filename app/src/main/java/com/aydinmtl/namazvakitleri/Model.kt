@@ -1,9 +1,10 @@
 package com.aydinmtl.namazvakitleri
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -22,9 +23,9 @@ const val MAGHRIB = 4
 /**
  * Bir günün 6 vakti.
  * [times] yerin kendi saatiyle yazılır (Diyanet'in listesindeki gibi).
- * [shiftMinutes]: telefonun saati ile yerin saati arasındaki fark (dakika). Genelde 0'dır;
- * başka saat dilimindeki bir yer seçilince (ör. Cenevre'deyken İstanbul) 0 olmaz.
- * Ekranda [times] aynen gösterilir; alarm ve geri sayım bu farkla düzeltilmiş anı kullanır.
+ * [instants] varsa alarm ve geri sayım her vaktin kendi gerçek anını kullanır.
+ * [shiftMinutes] yalnızca kaynak açıklaması ve eski, saat dilimsiz kayıtlar içindir.
+ * [phoneZone], [instants] değerlerinin [Moment.at] olarak gösterileceği saat dilimidir.
  */
 data class PrayerDay(
     val date: LocalDate,
@@ -32,11 +33,14 @@ data class PrayerDay(
     val hijri: String,
     val hijriShort: String = "",
     val shiftMinutes: Int = 0,
+    val instants: List<Instant>? = null,
+    val phoneZone: ZoneId? = null,
 )
 
 /**
  * Takvimdeki tek bir an: hangi vakit, ne zaman.
- * [at] her zaman TELEFONUN saatiyle gerçek andır (alarm ve geri sayım bunu kullanır).
+ * [instant] alarm ve geri sayımın kullandığı gerçek andır. [at] telefonun duvar saatidir;
+ * saatlerin geri alındığı günlerde aynı [at] iki ayrı gerçek anı gösterebilir.
  * [clock]: listede yazan saat (yerin kendi saati). Saat dilimleri aynıysa [at] ile aynıdır.
  * [day]: vaktin ait olduğu gün (imsakiyedeki satır). Genelde [at] ile aynı gündür; ama kuzey
  * ülkelerinde yatsı gece yarısını geçerse [at] ertesi güne düşer, [day] yine o günün satırıdır.
@@ -46,8 +50,27 @@ data class Moment(
     val at: LocalDateTime,
     val day: LocalDate = at.toLocalDate(),
     val clock: LocalTime = at.toLocalTime(),
+    val phoneZone: ZoneId = ZoneId.systemDefault(),
+    val instant: Instant = at.atZone(phoneZone).toInstant(),
 ) {
     val name: String get() = PRAYER_NAMES[index]
+
+    companion object {
+        /** Alarm/servis aktarımında yer saati ve takvim günü kaybolmaz; eski alarmlar da okunur. */
+        fun fromEpochMillis(
+            index: Int,
+            atMs: Long,
+            clockSeconds: Int? = null,
+            dayEpoch: Long? = null,
+            phone: ZoneId = ZoneId.systemDefault(),
+        ): Moment {
+            val instant = Instant.ofEpochMilli(atMs)
+            val at = instant.atZone(phone).toLocalDateTime()
+            val clock = clockSeconds?.takeIf { it in 0 until 86400 }?.let { LocalTime.ofSecondOfDay(it.toLong()) }
+                ?: at.toLocalTime()
+            return Moment(index, at, dayEpoch?.let(LocalDate::ofEpochDay) ?: at.toLocalDate(), clock, phone, instant)
+        }
+    }
 }
 
 object Prayers {
@@ -55,7 +78,7 @@ object Prayers {
     /** Bütün günlerin bütün vakitlerini zaman sırasıyla tek listede verir. */
     fun moments(days: List<PrayerDay>): List<Moment> =
         days.flatMap { dayMoments(it) }
-            .sortedBy { it.at.toEpochSecond(ZoneOffset.UTC) }
+            .sortedBy { it.instant }
 
     /**
      * Bir günün 6 vaktini gerçek tarih-saatleriyle verir.
@@ -73,19 +96,26 @@ object Prayers {
                 i == 5 && time.isBefore(t[4]) -> d.date.plusDays(1)
                 else -> d.date
             }
-            // Yerin saatiyle an -> telefonun saatiyle an (fark yoksa aynı kalır)
-            val at = LocalDateTime.of(date, time).plusMinutes(d.shiftMinutes.toLong())
-            Moment(i, at, d.date, time)
+            val zone = d.phoneZone ?: ZoneId.systemDefault()
+            val instant = d.instants?.getOrNull(i)
+                ?: LocalDateTime.of(date, time).plusMinutes(d.shiftMinutes.toLong()).atZone(zone).toInstant()
+            Moment(i, instant.atZone(zone).toLocalDateTime(), d.date, time, zone, instant)
         }
     }
 
     /** [after] anından SONRA gelen ilk vakit. */
     fun next(days: List<PrayerDay>, after: LocalDateTime): Moment? =
-        moments(days).firstOrNull { it.at.isAfter(after) }
+        next(days, after.atZone(days.firstOrNull()?.phoneZone ?: ZoneId.systemDefault()).toInstant())
+
+    fun next(days: List<PrayerDay>, after: Instant): Moment? =
+        moments(days).firstOrNull { it.instant.isAfter(after) }
 
     /** Şu an içinde bulunulan vakit (girmiş olan son vakit). */
     fun current(days: List<PrayerDay>, now: LocalDateTime): Moment? =
-        moments(days).lastOrNull { !it.at.isAfter(now) }
+        current(days, now.atZone(days.firstOrNull()?.phoneZone ?: ZoneId.systemDefault()).toInstant())
+
+    fun current(days: List<PrayerDay>, now: Instant): Moment? =
+        moments(days).lastOrNull { !it.instant.isAfter(now) }
 
     fun day(days: List<PrayerDay>, date: LocalDate): PrayerDay? =
         days.firstOrNull { it.date == date }

@@ -76,6 +76,7 @@
     <string name="notif_perm_off">⚠ Benachrichtigungen sind deaktiviert. Zum Aktivieren tippen.</string>
     <string name="exact_alarm_needed">⚠ Damit Benachrichtigungen pünktlich kommen, erlaube „Wecker und Erinnerungen“. Tippen.</string>
     <string name="loc_perm_denied">Standortberechtigung nicht erteilt. Du kannst deine Stadt von Hand wählen.</string>
+    <string name="loc_selection_cancelled">Auswahl abgebrochen. Bitte wähle den Ort erneut aus.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Quelle: aus deinem Standort berechnet (Diyanet-Parameter)\nDie Diyanet-Liste hat keinen Ort in der Nähe. Die Zeiten können um einige Minuten von der offiziellen Liste abweichen.</string>
@@ -359,4 +360,450 @@
     <string name="zk_target">Ziel</string>
     <string name="zk_target_row">Ziel: %1$s  ›</string>
     <string name="zk_rounds">Abgeschlossene Runden: %1$d  (gesamt %2$d)</string>
+
+    <!-- Learning labels -->
+    <string name="learn_static_00">Zurück</string>
+    <string name="learn_static_01">Vorlesen</string>
+    <string name="learn_static_02">Beten lernen</string>
+    <string name="learn_static_03">Mit jeder richtigen Antwort führt dein Freund die Waschung durch oder betet. Hilfst du ihm, das Morgengebet zu beenden?</string>
+    <string name="learn_static_04">Mit wem möchtest du spielen?</string>
+    <string name="learn_static_05">Ahmet führt die Waschung durch. Wähle Ahmet für dieses Kapitel.</string>
+    <string name="learn_static_06">🔊  Gesprochene Rezitation</string>
+    <string name="learn_static_07">Die Waschung und die zwei Pflichtgebetseinheiten des Morgengebets folgen der hanafitischen Rechtsschule. Bei belegten Schritten stehen Vers- oder Hadithnummern.</string>
+    <string name="learn_static_08">Kind bei Waschung und Gebet</string>
+    <string name="learn_static_09">⏭  Rezitation überspringen</string>
+    <string name="learn_static_10">Jetzt nicht</string>
+    <string name="learn_static_11">🔁  Erneut spielen</string>
+    <string name="learn_static_12">Beenden</string>
+    <string name="learn_static_13">Familienkreis</string>
+    <string name="learn_static_14">Lernen wir zusammen. Jede erstmals richtig beantwortete Frage lässt unseren Familienbaum wachsen.</string>
+    <string name="learn_static_15">Wissensquiz</string>
+    <string name="learn_static_16">Über den Islam</string>
+    <string name="learn_static_17">Waschungs- und Gebetsspiel für Kinder</string>
+    <string name="learn_static_18">Tagesfrage zum Abendgebet melden</string>
+    <string name="learn_static_19">Unsere Familienziele</string>
+    <string name="learn_static_20">+ Ziel hinzufügen</string>
+    <string name="learn_static_21">Baum zurücksetzen</string>
+    <string name="learn_static_22">Wähle eine Stufe für passende Fragen.</string>
+    <string name="learn_static_23">Die Fragen wurden eigens erstellt. Quellen nennen Vers- oder Hadithnummern. Rechtsfragen folgen der hanafitischen Rechtsschule. Nach dem Antworten kannst du einen Fehler markieren.</string>
+    <string name="learn_static_24">Stufe wählen</string>
+    <string name="learn_static_25">Familienkreis-Startseite</string>
+    <string name="learn_static_26">Schließen ✕</string>
+    <string name="learn_static_27">QIBLA</string>
+    <string-array name="learn_levels">
+        <item>Leicht</item>
+        <item>Mittel</item>
+        <item>Schwer</item>
+    </string-array>
+    <string-array name="learn_level_hints">
+        <item>Prophetengeschichten, Grundlagen und gutes Benehmen</item>
+        <item>Prophetenbiografie, Gottesdienst und Koranwissen</item>
+        <item>Islamische Geschichte, Wissenschaftsgeschichte und Recht</item>
+    </string-array>
+    <string-array name="learn_tree_stages">
+        <item>Samen</item>
+        <item>Keimling</item>
+        <item>Setzling</item>
+        <item>Junger Baum</item>
+        <item>Blühender Baum</item>
+        <item>Obstbaum</item>
+        <item>Mächtige Platane</item>
+    </string-array>
+    <string-array name="learn_result_titles">
+        <item>Wiederholen wir zusammen</item>
+        <item>Guter Anfang!</item>
+        <item>Sehr gut!</item>
+        <item>Maschallah!</item>
+    </string-array>
+    <string-array name="learn_chapters">
+        <item>Waschung</item>
+        <item>Gebet</item>
+    </string-array>
+    <string name="learn_option">Antwort %1$s: %2$s.</string>
+    <string name="learn_report_title">Familienkreis: möglicherweise fehlerhafte Fragen</string>
+    <string name="learn_report_missing">(Frage nicht mehr im Katalog)</string>
+    <string name="learn_report_answer">Antwort: %1$s</string>
+    <string name="learn_report_note">Notiz: %1$s</string>
+
+    <!-- Learning UI -->
+    <string name="learn_ui_000">Möchtest du fortfahren?</string>
+    <string name="learn_ui_001">%1$s · Frage %2$s / %3$s · %4$s richtig</string>
+    <string name="learn_ui_002">Fortfahren</string>
+    <string name="learn_ui_003">Neue Runde</string>
+    <string name="learn_ui_004">Abbrechen</string>
+    <string name="learn_ui_005">Unser Baum: %1$s · insgesamt %2$s richtig</string>
+    <string name="learn_ui_006">\nNoch %2$s richtige Antworten bis %1$s</string>
+    <string name="learn_ui_007">\nUnser Baum ist ausgewachsen!</string>
+    <string name="learn_ui_008">💡 Tagesfrage ✓ (heute beantwortet)</string>
+    <string name="learn_ui_009">💡 Tagesfrage</string>
+    <string name="learn_ui_010">🔁 Meine Fehler wiederholen</string>
+    <string name="learn_ui_011">⚑ Meine markierten Fragen</string>
+    <string name="learn_ui_012">▶ Weiter</string>
+    <string name="learn_ui_013">Stufe %1$s. %2$s.</string>
+    <string name="learn_ui_014"> Eine Runde läuft noch.</string>
+    <string name="learn_ui_015">Eine Runde läuft noch</string>
+    <string name="learn_ui_016">%1$s: Du bist bei Frage %2$s. Wie weiter?</string>
+    <string name="learn_ui_017">Neue Runde: %1$s</string>
+    <string name="learn_ui_018">Fehler wiederholen</string>
+    <string name="learn_ui_019">Stufe %1$s</string>
+    <string name="learn_ui_020">Z. B. Mama, Papa, Zeynep</string>
+    <string name="learn_ui_021">Namen durch Kommas trennen; alle sind abwechselnd dran. Für eine Person leer lassen.</string>
+    <string name="learn_ui_022">Wer spielt mit?</string>
+    <string name="learn_ui_023">Starten</string>
+    <string name="learn_ui_024">%1$s · Frage %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_025">%1$s, richtige Antwort</string>
+    <string name="learn_ui_026">%1$s, deine Antwort, falsch</string>
+    <string name="learn_ui_027">✓ Richtig!</string>
+    <string name="learn_ui_028">✗ Richtige Antwort: %1$s</string>
+    <string name="learn_ui_029">\nQuelle: %1$s</string>
+    <string name="learn_ui_030">\n🌱 +1 für unseren Baum</string>
+    <string name="learn_ui_031">\n(Diese Antwort kanntest du schon; der Baum wächst durch neues Wissen.)</string>
+    <string name="learn_ui_032">Ergebnis ansehen ›</string>
+    <string name="learn_ui_033">Nächste Frage ›</string>
+    <string name="learn_ui_034">%1$s · Frage %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_035">Die Stimme für die gewählte Sprache fehlt. Installiere sie in den Text-zu-Sprache-Einstellungen des Telefons.</string>
+    <string name="learn_ui_036">Schließen</string>
+    <string name="learn_ui_037">🔊 Vorlesen</string>
+    <string name="learn_ui_038">\nQuelle: </string>
+    <string name="learn_ui_039">\n\n🌱 +1 für unseren Baum</string>
+    <string name="learn_ui_040">Tagesfrage</string>
+    <string name="learn_ui_041">OK</string>
+    <string name="learn_ui_042">Baum zurücksetzen?</string>
+    <string name="learn_ui_043">Unser Baum wird wieder zum Samen und alle Fragen können ihn erneut wachsen lassen. </string>
+    <string name="learn_ui_044">Ziele und Fehlerliste bleiben erhalten. Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="learn_ui_045">Zurücksetzen</string>
+    <string name="learn_ui_046">⚑ Markiert (zum Entfernen tippen)</string>
+    <string name="learn_ui_047">⚑ Fehler in dieser Frage</string>
+    <string name="learn_ui_048">Was ist falsch? (optional)</string>
+    <string name="learn_ui_049">Fehler in dieser Frage</string>
+    <string name="learn_ui_050">Die Frage wird auf deinem Telefon markiert. Du kannst die Liste auf der Familienkreis-Startseite teilen.</string>
+    <string name="learn_ui_051">Markieren</string>
+    <string name="learn_ui_052">Meine markierten Fragen</string>
+    <string name="learn_ui_053">Markierte Fragen teilen</string>
+    <string name="learn_ui_054">Teilen</string>
+    <string name="learn_ui_055">Liste leeren</string>
+    <string name="learn_ui_056">Alle Markierungen löschen?</string>
+    <string name="learn_ui_057">Löschen</string>
+    <string name="learn_ui_058">Am Zug: %1$s</string>
+    <string name="learn_ui_059">%1$s von 3 Sternen</string>
+    <string name="learn_ui_060">%2$s von %1$s richtig</string>
+    <string name="learn_ui_061"> richtig</string>
+    <string name="learn_ui_062">\n\nDeine Fehler warten unter „Meine Fehler wiederholen“ auf dich.</string>
+    <string name="learn_ui_063">Fehler erneut wiederholen</string>
+    <string name="learn_ui_064">Neue Runde: %1$s</string>
+    <string name="learn_ui_065">Unser Familienbaum ist jetzt: %1$s!</string>
+    <string name="learn_ui_066">\n\nWir haben unser Ziel erreicht:</string>
+    <string name="learn_ui_067">🌳 Unser Baum ist gewachsen</string>
+    <string name="learn_ui_068">Alhamdulillah</string>
+    <string name="learn_ui_069">Noch keine Ziele. Beispiel: „Wenn unser Baum Früchte trägt, gehen wir zusammen Eis essen.“</string>
+    <string name="learn_ui_070">Erreicht · </string>
+    <string name="learn_ui_071">Zielstufe: </string>
+    <string name="learn_ui_072">Bearbeiten</string>
+    <string name="learn_ui_073">Ziel löschen?</string>
+    <string name="learn_ui_074">Halte ein Ziel gedrückt, um es zu bearbeiten oder zu löschen.</string>
+    <string name="learn_ui_075">Z. B. Zusammen Eis essen gehen</string>
+    <string name="learn_ui_076">Bei welcher Baumstufe?</string>
+    <string name="learn_ui_077">%1$s (%2$s richtig)</string>
+    <string name="learn_ui_078">Ziel bearbeiten</string>
+    <string name="learn_ui_079">Neues Familienziel</string>
+    <string name="learn_ui_080">Speichern</string>
+    <string name="learn_ui_081">Hinzufügen</string>
+    <string name="learn_ui_082">Ein: Bittgebete und Suren werden vorgelesen.</string>
+    <string name="learn_ui_083">Aus: Der Text läuft ohne Ton weiter.</string>
+    <string name="learn_ui_084">Fortsetzen bei Schritt %1$s / %2$s</string>
+    <string name="learn_ui_085">%1$s Schritte</string>
+    <string name="learn_ui_086">Du warst bei Schritt %1$s von %2$s. Wo beginnen wir?</string>
+    <string name="learn_ui_087">Fortsetzen</string>
+    <string name="learn_ui_088">Von vorn beginnen</string>
+    <string name="learn_ui_089">🏆 Du hast das Gebet %1$s-mal abgeschlossen</string>
+    <string name="learn_ui_090">%1$s %2$s · Vorbereitung</string>
+    <string name="learn_ui_091">Wir legen den Gebetsteppich zur Qibla aus\n(zum Überspringen aufs Bild tippen)</string>
+    <string name="learn_ui_092">%1$s %2$s · Schritt %3$s / %4$s</string>
+    <string name="learn_ui_093">Weiter ›</string>
+    <string name="learn_ui_094">%1$s, falsch</string>
+    <string name="learn_ui_095">Fast! Schau dir die Antwort mit dem goldenen Rahmen an. 🙂</string>
+    <string name="learn_ui_096">Versuch es noch einmal. Du schaffst das! 💪</string>
+    <string name="learn_ui_097">%1$s, richtig</string>
+    <string name="learn_ui_098">Schritt %1$s · %2$s</string>
+    <string name="learn_ui_099">✓ Gut gemacht!\n%1$s</string>
+    <string name="learn_ui_100">\nQuelle: %1$s</string>
+    <string name="learn_ui_101">\n\nUnsere Waschung ist fertig! Wollen wir beten?</string>
+    <string name="learn_ui_102">🕌  Ja, beginnen wir das Gebet</string>
+    <string name="learn_ui_103">\n\nBedeutung: %1$s</string>
+    <string name="learn_ui_104">\nQuelle: %1$s</string>
+    <string name="learn_ui_105">%1$s. %2$s. Bedeutung: %3$s</string>
+    <string name="learn_ui_106">Maschallah! 🎉</string>
+    <string name="learn_ui_107">Du hast alle Fragen richtig beantwortet. %1$s hat das Morgengebet mit dir von Anfang bis Ende verrichtet.\n\n</string>
+    <string name="learn_ui_108">Jetzt bist du dran: Beim nächsten Gebet machen wir das zusammen!</string>
+
+    <!-- Prayer learning content (stable step and recitation order) -->
+    <string-array name="learn_step_titles">
+        <item>Wir beginnen mit der Basmala</item>
+        <item>Wir waschen die Hände</item>
+        <item>Wir spülen den Mund</item>
+        <item>Wir reinigen die Nase</item>
+        <item>Wir waschen das Gesicht</item>
+        <item>Wir waschen den rechten Arm</item>
+        <item>Wir waschen den linken Arm</item>
+        <item>Wir streichen über den Kopf</item>
+        <item>Wir streichen über die Ohren</item>
+        <item>Wir streichen über den Nacken</item>
+        <item>Wir waschen den rechten Fuß</item>
+        <item>Wir waschen den linken Fuß</item>
+        <item>Unsere Waschung ist fertig!</item>
+        <item>Wir wenden uns zur Qibla</item>
+        <item>Wir fassen die Absicht</item>
+        <item>Der Eröffnungstakbir</item>
+        <item>Wir lesen Subhanaka</item>
+        <item>Wir lesen Al-Fatiha</item>
+        <item>Wir lesen eine Sure</item>
+        <item>Wir verbeugen uns</item>
+        <item>Wir richten uns auf</item>
+        <item>Wir werfen uns nieder</item>
+        <item>Lobpreis in der Niederwerfung</item>
+        <item>Zwischen zwei Niederwerfungen</item>
+        <item>Die zweite Niederwerfung</item>
+        <item>Wir stehen zur zweiten Einheit auf</item>
+        <item>Al-Fatiha und eine Sure</item>
+        <item>Wir verbeugen uns erneut</item>
+        <item>Wir richten uns erneut auf</item>
+        <item>Wir werfen uns erneut nieder</item>
+        <item>Die letzte Niederwerfung</item>
+        <item>Das letzte Sitzen</item>
+        <item>At-Tahiyyat</item>
+        <item>Salli und Barik</item>
+        <item>Das Rabbana-Bittgebet</item>
+        <item>Der Abschlussgruß</item>
+    </string-array>
+    <string-array name="learn_step_questions">
+        <item>Was sagen wir zu Beginn der Waschung?</item>
+        <item>Was waschen wir zuerst?</item>
+        <item>Was tun wir, nachdem wir Wasser in den Mund genommen haben?</item>
+        <item>Wohin geben wir nach dem Mund Wasser?</item>
+        <item>Welche Bereiche des Gesichts waschen wir?</item>
+        <item>Mit welchem Arm beginnen wir?</item>
+        <item>Wie weit waschen wir den Arm?</item>
+        <item>Was tun wir am Kopf?</item>
+        <item>Was streichen wir nach dem Kopf mit nassen Fingern ab?</item>
+        <item>Was streichen wir nach den Ohren mit den Handrücken ab?</item>
+        <item>Wie weit waschen wir die Füße?</item>
+        <item>Was waschen wir nach dem rechten Fuß?</item>
+        <item>Was ist nach der Waschung gut zu sagen?</item>
+        <item>In welche Richtung beten wir?</item>
+        <item>Was tun wir im Herzen vor dem Gebet?</item>
+        <item>Mit welchen Worten beginnen wir das Gebet?</item>
+        <item>Die Hände sind gefaltet. Welches Bittgebet lesen wir zuerst im Stehen?</item>
+        <item>Welche Sure lesen wir in jeder Gebetseinheit?</item>
+        <item>Was lesen wir nach Al-Fatiha?</item>
+        <item>Wir beugen uns vor und legen die Hände auf die Knie. Wie heißt dies?</item>
+        <item>Was sagen wir beim Aufrichten aus der Verbeugung?</item>
+        <item>Jetzt legen wir die Stirn auf den Boden. Wie heißt dies?</item>
+        <item>Was sagen wir bei der Niederwerfung?</item>
+        <item>Was tun wir zwischen zwei Niederwerfungen?</item>
+        <item>Welche Körperteile berühren bei der Niederwerfung den Boden?</item>
+        <item>Wie viele Niederwerfungen gibt es in einer Gebetseinheit?</item>
+        <item>Welche Sure lesen wir auch in der zweiten Einheit zuerst?</item>
+        <item>Wie halten wir den Rücken bei der Verbeugung?</item>
+        <item>Was bedeutet „Rabbenâ leke\'l-hamd“?</item>
+        <item>Was sagen wir beim Niederwerfen?</item>
+        <item>Was tun wir nach dem Sitzen zwischen zwei Niederwerfungen?</item>
+        <item>Das Pflichtgebet am Morgen hat zwei Einheiten. Was tun wir nach den Niederwerfungen der zweiten Einheit?</item>
+        <item>Welches Bittgebet lesen wir zuerst im Sitzen?</item>
+        <item>Welche Segensgebete lesen wir nach At-Tahiyyat für unseren Propheten?</item>
+        <item>Welches Bittgebet lesen wir danach?</item>
+        <item>Wie beenden wir das Gebet?</item>
+    </string-array>
+    <string-array name="learn_step_correct">
+        <item>Bismillâhirrahmânirrahîm</item>
+        <item>Die Hände bis zu den Handgelenken</item>
+        <item>Dreimal ausspülen</item>
+        <item>In die Nase</item>
+        <item>Von der Stirn bis unter das Kinn, von Ohr zu Ohr</item>
+        <item>Mit dem rechten Arm</item>
+        <item>Einschließlich des Ellenbogens</item>
+        <item>Mit der nassen Hand darüberstreichen</item>
+        <item>Die Ohren</item>
+        <item>Den Nacken</item>
+        <item>Einschließlich der Knöchel</item>
+        <item>Den linken Fuß</item>
+        <item>Das Glaubensbekenntnis</item>
+        <item>Zur Qibla, also zur Kaaba</item>
+        <item>Beabsichtigen, welches Gebet wir verrichten</item>
+        <item>Allâhu Ekber</item>
+        <item>Sübhâneke</item>
+        <item>Fâtiha</item>
+        <item>Eine kurze Koransure, etwa Al-Ikhlas</item>
+        <item>Verbeugung (Ruku)</item>
+        <item>Semi\'allâhü limen hamideh</item>
+        <item>Niederwerfung (Sudschud)</item>
+        <item>Sübhâne rabbiye\'l-a\'lâ</item>
+        <item>Kurz sitzen</item>
+        <item>Stirn, Nase, Hände, Knie und Zehen</item>
+        <item>Zwei</item>
+        <item>Fâtiha</item>
+        <item>Gerade</item>
+        <item>Unser Herr, Dir gebührt alles Lob</item>
+        <item>Allâhu Ekber</item>
+        <item>Uns erneut niederwerfen</item>
+        <item>Uns hinsetzen</item>
+        <item>Ettehiyyâtü</item>
+        <item>Allâhümme salli und Allâhümme bârik</item>
+        <item>Rabbenâ âtinâ</item>
+        <item>Erst nach rechts, dann nach links grüßen</item>
+    </string-array>
+    <string-array name="learn_step_wrong_one">
+        <item>Elhamdülillah</item>
+        <item>Die Füße</item>
+        <item>Es schlucken</item>
+        <item>In die Ohren</item>
+        <item>Nur die Nase</item>
+        <item>Mit dem linken Arm</item>
+        <item>Bis zum Handgelenk</item>
+        <item>Mit Seife waschen</item>
+        <item>Die Knie</item>
+        <item>Die Knie</item>
+        <item>Nur die Zehenspitzen</item>
+        <item>Noch einmal den rechten Fuß</item>
+        <item>Sübhâneke</item>
+        <item>Zur Sonne</item>
+        <item>Ein Lied singen</item>
+        <item>Elhamdülillah</item>
+        <item>Ettehiyyâtü</item>
+        <item>Kevser</item>
+        <item>Den Gebetsruf</item>
+        <item>Niederwerfung (Sudschud)</item>
+        <item>Sübhâne rabbiye\'l-a\'lâ</item>
+        <item>Verbeugung (Ruku)</item>
+        <item>Sübhâne rabbiye\'l-azîm</item>
+        <item>Aufstehen</item>
+        <item>Nur die Stirn</item>
+        <item>Eine</item>
+        <item>İhlâs</item>
+        <item>Gekrümmt</item>
+        <item>Allah ist am größten</item>
+        <item>Âmin</item>
+        <item>Das Gebet beenden</item>
+        <item>Zur dritten Einheit aufstehen</item>
+        <item>Sübhâneke</item>
+        <item>Sübhâneke</item>
+        <item>Sübhâneke</item>
+        <item>Sofort aufstehen</item>
+    </string-array>
+    <string-array name="learn_step_wrong_two">
+        <item>Esselâmü aleyküm</item>
+        <item>Die Haare</item>
+        <item>Nichts</item>
+        <item>In die Augen</item>
+        <item>Nur die Stirn</item>
+        <item>Mit einem beliebigen Arm</item>
+        <item>Nur die Finger</item>
+        <item>Nichts</item>
+        <item>Die Schuhe</item>
+        <item>Die Fußsohlen</item>
+        <item>Bis zu den Knien</item>
+        <item>Das Gesicht</item>
+        <item>Âmin</item>
+        <item>Zum Fenster</item>
+        <item>Die Augen schließen und schlafen</item>
+        <item>Âmin</item>
+        <item>Rabbenâ âtinâ</item>
+        <item>Nâs</item>
+        <item>Nichts</item>
+        <item>Stehen (Qiyam)</item>
+        <item>Esselâmü aleyküm</item>
+        <item>Abschlussgruß</item>
+        <item>Semi\'allâhü limen hamideh</item>
+        <item>Den Abschlussgruß sprechen</item>
+        <item>Nur die Hände</item>
+        <item>Drei</item>
+        <item>Keine Sure</item>
+        <item>Aufrecht stehend</item>
+        <item>Friede sei mit euch</item>
+        <item>Elhamdülillah</item>
+        <item>Aufstehen</item>
+        <item>Uns verbeugen</item>
+        <item>Fâtiha</item>
+        <item>Den Gebetsruf</item>
+        <item>Den Gebetsruf</item>
+        <item>Erst nach links, dann nach rechts grüßen</item>
+    </string-array>
+    <string-array name="learn_step_info">
+        <item>Wir beabsichtigen die Waschung und beginnen mit „Bismillâhirrahmânirrahîm“.</item>
+        <item>Wir waschen die Hände dreimal bis zu den Handgelenken, auch zwischen den Fingern.</item>
+        <item>Mit der rechten Hand nehmen wir Wasser in den Mund, spülen und spucken es aus, insgesamt dreimal.</item>
+        <item>Wir ziehen vorsichtig Wasser in die Nase und reinigen sie dreimal.</item>
+        <item>Wir waschen das ganze Gesicht dreimal und nehmen jedes Mal frisches Wasser. Das Waschen des Gesichts gehört zu den Pflichten der Waschung.</item>
+        <item>Unser Prophet (Friede sei mit ihm) begann die Reinigung gern rechts. Wir waschen den rechten Arm einschließlich des Ellenbogens dreimal.</item>
+        <item>Wir waschen auch den linken Arm einschließlich des Ellenbogens dreimal. Das Waschen der Arme mit den Ellenbogen gehört zu den Pflichten der Waschung.</item>
+        <item>Überstreichen bedeutet, mit einer nassen Hand darüberzufahren. Das Überstreichen des Kopfes gehört zu den Pflichten der Waschung.</item>
+        <item>Wir streichen mit nassen Fingern über die Innen- und Rückseiten der Ohren.</item>
+        <item>Wir streichen mit den Handrücken über den Nacken. In der hanafitischen Rechtsschule gehört dies zu den guten Umgangsformen der Waschung. Danach waschen wir die Füße.</item>
+        <item>Wir waschen zuerst den rechten Fuß einschließlich des Knöchels dreimal und reiben zwischen den Zehen. Das Waschen der Füße mit den Knöcheln gehört zu den Pflichten der Waschung.</item>
+        <item>Wir waschen auch den linken Fuß einschließlich des Knöchels dreimal.</item>
+        <item>Nach der Waschung ist es gut, „Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh“ zu sagen.</item>
+        <item>Wir beten in Richtung der Kaaba in Mekka. Diese Richtung heißt Qibla. Wir haben den Gebetsteppich dorthin ausgelegt; die Spitze seines Mihrab-Musters zeigt zur Qibla.</item>
+        <item>Wir beabsichtigen, heute das Pflichtgebet am Morgen für Allah zu verrichten. Taten werden nach den Absichten beurteilt.</item>
+        <item>Wir heben die Hände, sagen „Allâhu Ekber“ und beginnen das Gebet. Dies heißt Eröffnungstakbir.</item>
+        <item>Im Stehen falten wir die Hände und lesen das Bittgebet Subhanaka.</item>
+        <item>Wir suchen Zuflucht bei Allah, sagen die Basmala und lesen Al-Fatiha. Ohne Al-Fatiha ist das Gebet nicht gültig.</item>
+        <item>Nach Al-Fatiha lesen wir eine Sure oder einige Koranverse. Das ist die zusätzliche Rezitation.</item>
+        <item>Wir sagen „Allâhu Ekber“, verbeugen uns, umfassen die Knie und sagen dreimal „Sübhâne rabbiye\'l-azîm“.</item>
+        <item>Beim Aufrichten sagen wir „Semi\'allâhü limen hamideh“ und im aufrechten Stand „Rabbenâ leke\'l-hamd“.</item>
+        <item>Mit „Allâhu Ekber“ legen wir erst die Knie, dann Hände, Stirn und Nase auf den Boden. Bei der Niederwerfung ist der Mensch seinem Herrn am nächsten.</item>
+        <item>Bei der Niederwerfung sagen wir dreimal „Sübhâne rabbiye\'l-a\'lâ“.</item>
+        <item>Wir sagen „Allâhu Ekber“, richten uns auf und sitzen kurz.</item>
+        <item>Wir sagen „Allâhu Ekber“ und werfen uns ein zweites Mal nieder. Der Prophet gebot die Niederwerfung auf sieben Körperteilen.</item>
+        <item>Jede Gebetseinheit hat zwei Niederwerfungen. Jetzt sagen wir „Allâhu Ekber“ und stehen zur zweiten Einheit auf.</item>
+        <item>In der zweiten Einheit sagen wir die Basmala, lesen Al-Fatiha und dann eine weitere Sure, hier Al-Kawthar.</item>
+        <item>Bei der Verbeugung heben wir den Kopf weder an noch lassen wir ihn hängen; der Rücken bleibt gerade.</item>
+        <item>Wir richten uns auf und sagen „Rabbenâ leke\'l-hamd“. Das bedeutet „Unser Herr, Dir gebührt alles Lob“.</item>
+        <item>Beim Senken und Aufrichten sagen wir „Allâhu Ekber“.</item>
+        <item>Nach kurzem Sitzen sagen wir „Allâhu Ekber“ und werfen uns ein zweites Mal nieder.</item>
+        <item>Wir haben zwei Einheiten beendet. Mit „Allâhu Ekber“ richten wir uns zum letzten Sitzen auf.</item>
+        <item>Im Sitzen lesen wir zuerst das Bittgebet At-Tahiyyat.</item>
+        <item>Wir lesen Allahumma salli und Allahumma barik und bitten um Segen für unseren Propheten.</item>
+        <item>Wir lesen die Bittgebete Rabbana atina und Rabbanaghfirli.</item>
+        <item>Wir drehen den Kopf erst nach rechts, dann nach links und sagen „Esselâmü aleyküm ve rahmetullah“. Unser Gebet ist fertig!</item>
+    </string-array>
+    <string-array name="learn_recitation_titles">
+        <item>Basmala</item>
+        <item>Das Glaubensbekenntnis</item>
+        <item>Die Absicht</item>
+        <item>Subhanaka</item>
+        <item>Zufluchtsgebet und Basmala</item>
+        <item>Sure Al-Fatiha</item>
+        <item>Sure Al-Ikhlas</item>
+        <item>Sure Al-Kawthar</item>
+        <item>Lobpreis bei der Verbeugung</item>
+        <item>Beim Aufrichten</item>
+        <item>Im aufrechten Stand</item>
+        <item>Lobpreis bei der Niederwerfung</item>
+        <item>At-Tahiyyat</item>
+        <item>Allahumma salli</item>
+        <item>Allahumma barik</item>
+        <item>Rabbana-Bittgebete</item>
+        <item>Der Abschlussgruß</item>
+    </string-array>
+    <string-array name="learn_recitation_meanings">
+        <item>Im Namen Allahs, des Allerbarmers, des Barmherzigen.</item>
+        <item>Ich bezeuge, dass es keinen Gott außer Allah gibt, und dass Muhammad Sein Diener und Gesandter ist.</item>
+        <item>Die Absicht wird im Herzen gefasst; es ist auch gut, sie auszusprechen.</item>
+        <item>O Allah, Dir gebühren Herrlichkeit und Lob. Dein Name ist gesegnet, Deine Erhabenheit ist groß, und es gibt keinen Gott außer Dir.</item>
+        <item>Ich suche Zuflucht bei Allah vor dem verstoßenen Satan. Im Namen Allahs, des Allerbarmers, des Barmherzigen.</item>
+        <item>Alles Lob gebührt Allah, dem Herrn aller Welten, dem Allerbarmer, dem Barmherzigen, dem Herrscher am Tag des Gerichts. Dir allein dienen wir und Dich allein bitten wir um Hilfe. Führe uns auf den geraden Weg, den Weg derer, denen Du Gnade erwiesen hast, nicht derer, die Zorn auf sich gezogen haben, und nicht der Irregegangenen.</item>
+        <item>Sprich: Er ist Allah, der Einzige. Allah ist der, von dem alles abhängt und der von nichts abhängt. Er zeugt nicht und ist nicht gezeugt worden. Nichts ist Ihm gleich.</item>
+        <item>Wir haben dir wahrlich Al-Kawthar gegeben. So bete zu deinem Herrn und opfere. Derjenige, der dich hasst, ist wahrlich ohne Nachkommenschaft.</item>
+        <item>Gepriesen sei mein Herr, der Gewaltige. (3-mal)</item>
+        <item>Allah hört den, der Ihn lobt.</item>
+        <item>Unser Herr, Dir gebührt alles Lob.</item>
+        <item>Gepriesen sei mein Herr, der Allerhöchste. (3-mal)</item>
+        <item>Alle Grüße, Gottesdienste und guten Worte gebühren Allah. O Prophet, Allahs Friede, Barmherzigkeit und Segen seien mit dir. Friede sei mit uns und mit Allahs rechtschaffenen Dienern. Ich bezeuge, dass es keinen Gott außer Allah gibt, und dass Muhammad Sein Diener und Gesandter ist.</item>
+        <item>O Allah, erweise Muhammad und seiner Familie Barmherzigkeit, wie Du Ibrahim und seiner Familie Barmherzigkeit erwiesen hast. Du bist wahrlich des Lobes würdig und ruhmreich.</item>
+        <item>O Allah, segne Muhammad und seine Familie, wie Du Ibrahim und seine Familie gesegnet hast. Du bist wahrlich des Lobes würdig und ruhmreich.</item>
+        <item>Unser Herr, gib uns Gutes im Diesseits und im Jenseits und bewahre uns vor der Strafe des Feuers. Unser Herr, vergib mir, meinen Eltern und allen Gläubigen am Tag der Abrechnung.</item>
+        <item>Allahs Friede und Barmherzigkeit seien mit euch.</item>
+    </string-array>
+    <string name="learn_intention">Ich beabsichtige, heute das Pflichtgebet am Morgen für Allah zu verrichten.</string>
+    <string name="learn_greet_right">Gruß nach rechts →</string>
+    <string name="learn_greet_left">← Gruß nach links</string>
 </resources>

@@ -3,16 +3,28 @@ package com.aydinmtl.namazvakitleri
 import android.content.Context
 import android.content.SharedPreferences
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 /** Seçilen yer, ayarlar ve 30 günlük vakit önbelleği (SharedPreferences). */
 object Store {
     private const val PREFS = "namaz"
     private const val MIN_RETRY_MS = 15 * 60 * 1000L        // başarısız denemeden sonra 15 dk bekle
-    private const val REFRESH_WHEN_DAYS_LEFT = 10            // 10 günden az veri kalınca yenile
 
-    private var cachedJson: String? = null
-    private var cachedDays: List<PrayerDay> = emptyList()
+    private val selection = SelectionGuard()
+
+    fun placeRequest(ctx: Context): Pair<Long, String?> = selection.capture { districtId(ctx) }
+
+    fun automaticPlaceRequest(ctx: Context): Pair<Long, String?>? =
+        selection.automatic { autoLocation(ctx) to districtId(ctx) }
+            ?.takeIf { it.second.first }?.let { it.first to it.second.second }
+
+    fun isPlaceRequestCurrent(request: Pair<Long, String?>): Boolean = selection.isCurrentRequest(request.first)
+    fun beginManualSelection(): Long = selection.beginManual()
+    fun cancelManualSelection(token: Long) = selection.cancelManual(token)
+    fun finishManualSelection(token: Long, write: () -> Unit): Boolean = selection.finishManual(token, write)
+    internal fun alarmPublisher() = GuardedPublication(selection)
+
+    fun applyPlaceRequest(request: Pair<Long, String?>, write: () -> Unit): Boolean =
+        selection.apply(request.first, write)
 
     private fun prefs(ctx: Context): SharedPreferences =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -41,20 +53,20 @@ object Store {
     }
 
     fun notificationsOn(ctx: Context): Boolean = prefs(ctx).getBoolean("notify", true)
-    fun setNotificationsOn(ctx: Context, on: Boolean) {
+    fun setNotificationsOn(ctx: Context, on: Boolean) = selection.change {
         prefs(ctx).edit().putBoolean("notify", on).apply()
     }
 
     /** Vakit bazında bildirim. Varsayılan: Güneş hariç hepsi açık. */
     fun notifyFor(ctx: Context, index: Int): Boolean = prefs(ctx).getBoolean("notify_$index", index != SUNRISE)
-    fun setNotifyFor(ctx: Context, index: Int, on: Boolean) {
+    fun setNotifyFor(ctx: Context, index: Int, on: Boolean) = selection.change {
         prefs(ctx).edit().putBoolean("notify_$index", on).apply()
     }
 
     // ---- Otomatik konum ----
 
     fun autoLocation(ctx: Context): Boolean = prefs(ctx).getBoolean("autoLocation", false)
-    fun setAutoLocation(ctx: Context, on: Boolean) {
+    fun setAutoLocation(ctx: Context, on: Boolean) = selection.change {
         // Açarken de kapatırken de eski "son otomatik nokta" silinir. Böylece otomatik konum
         // her açıldığında konum mutlaka yeniden kontrol edilir (eski kayıt yüzünden atlanmaz).
         prefs(ctx).edit()
@@ -75,7 +87,9 @@ object Store {
      * elle değiştirildiyse (ör. Cenevre'deyken İstanbul seçildiyse) null döner; böylece
      * otomatik konum "yer değişmedi" deyip yanlış şehirde kalmaz.
      */
-    fun autoPoint(ctx: Context): Pair<Double, Double>? {
+    fun autoPoint(ctx: Context): Pair<Double, Double>? = selection.capture { readAutoPoint(ctx) }.second
+
+    private fun readAutoPoint(ctx: Context): Pair<Double, Double>? {
         val p = prefs(ctx)
         if (p.getString("autoDistrict", null) != districtId(ctx)) return null
         val lat = p.getString("autoLat", null)?.toDoubleOrNull() ?: return null
@@ -84,7 +98,7 @@ object Store {
     }
 
     /** Konumu kaydeder; o anki seçili yerle birlikte (bkz. [autoPoint]). */
-    fun saveAutoPoint(ctx: Context, lat: Double, lon: Double) {
+    fun saveAutoPoint(ctx: Context, lat: Double, lon: Double) = selection.change {
         prefs(ctx).edit()
             .putString("autoLat", lat.toString()).putString("autoLon", lon.toString())
             .putString("autoDistrict", districtId(ctx))
@@ -96,25 +110,27 @@ object Store {
     // ---- Hesaplama yöntemi ----
 
     fun method(ctx: Context): CalcMethod = CalcMethod.byId(prefs(ctx).getString("method", null))
-    fun setMethod(ctx: Context, m: CalcMethod) {
+    fun setMethod(ctx: Context, m: CalcMethod) = selection.change {
         prefs(ctx).edit().putString("method", m.id).apply()
     }
 
     /** İkindi: false = standart (Şafii/Diyanet), true = Hanefi (asr-ı sani). */
     fun asrHanafi(ctx: Context): Boolean = prefs(ctx).getBoolean("asrHanafi", false)
-    fun setAsrHanafi(ctx: Context, on: Boolean) {
+    fun setAsrHanafi(ctx: Context, on: Boolean) = selection.change {
         prefs(ctx).edit().putBoolean("asrHanafi", on).apply()
     }
 
     /** Seçili yerin koordinatı: hesaplama yöntemleri, kıble ve camiler için. */
-    fun placePoint(ctx: Context): Pair<Double, Double>? {
+    fun placePoint(ctx: Context): Pair<Double, Double>? = selection.capture { readPlacePoint(ctx) }.second
+
+    private fun readPlacePoint(ctx: Context): Pair<Double, Double>? {
         val p = prefs(ctx)
         val lat = p.getString("placeLat", null)?.toDoubleOrNull() ?: return null
         val lon = p.getString("placeLon", null)?.toDoubleOrNull() ?: return null
         return Pair(lat, lon)
     }
 
-    fun savePlacePoint(ctx: Context, point: Pair<Double, Double>?) {
+    fun savePlacePoint(ctx: Context, point: Pair<Double, Double>?) = selection.change {
         val e = prefs(ctx).edit()
         if (point == null) e.remove("placeLat").remove("placeLon")
         else e.putString("placeLat", point.first.toString()).putString("placeLon", point.second.toString())
@@ -138,7 +154,7 @@ object Store {
 
     /** Vakitten kaç dakika önce hatırlatılsın (0 = kapalı). */
     fun reminderMinutes(ctx: Context): Int = prefs(ctx).getInt("reminderMin", 0)
-    fun setReminderMinutes(ctx: Context, min: Int) {
+    fun setReminderMinutes(ctx: Context, min: Int) = selection.change {
         prefs(ctx).edit().putInt("reminderMin", min).apply()
     }
 
@@ -281,7 +297,7 @@ object Store {
      * Yeri "konumdan hesaplanan yer" olarak kaydeder (Diyanet listesi yok).
      * Vakitler [point] koordinatından hesaplanır (bkz. Times.days).
      */
-    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) {
+    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) = selection.change {
         prefs(ctx).edit()
             .putString("districtId", COMPUTED_ID)
             .putString("placeName", placeName)
@@ -296,44 +312,51 @@ object Store {
         prefs(ctx).edit().putLong("computedRecheckAt", at).apply()
     }
 
-    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String) {
+    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String, point: Pair<Double, Double>? = null) = selection.change {
         prefs(ctx).edit()
             .putString("districtId", districtId)
             .putString("placeName", placeName)
             .putString("times", timesJson)
+            .putString("placeLat", point?.first?.toString())
+            .putString("placeLon", point?.second?.toString())
             .putLong("lastAttempt", System.currentTimeMillis())
             .apply()
     }
 
-    @Synchronized
-    fun days(ctx: Context): List<PrayerDay> {
-        val json = prefs(ctx).getString("times", null) ?: return emptyList()
-        if (json != cachedJson) {
-            cachedDays = Diyanet.parseDays(json)
-            cachedJson = json
-        }
-        return cachedDays
+    internal fun prayerSnapshot(ctx: Context): Pair<Long, PrayerSnapshot> = selection.capture {
+        val p = prefs(ctx)
+        PrayerSnapshot(
+            districtId = p.getString("districtId", null),
+            timesJson = p.getString("times", null),
+            point = readPlacePoint(ctx),
+            method = CalcMethod.byId(p.getString("method", null)),
+            hanafi = p.getBoolean("asrHanafi", false),
+        )
     }
+
+    internal fun alarmSnapshot(ctx: Context): Pair<Long, AlarmSnapshot> = selection.capture {
+        AlarmSnapshot(
+            prayerSnapshot(ctx).second,
+            if (notificationsOn(ctx)) reminderMinutes(ctx) else 0,
+            (0..5).map { notifyFor(ctx, it) },
+        )
+    }
+
+    fun days(ctx: Context): List<PrayerDay> = prayerSnapshot(ctx).second.diyanetDays()
 
     /** Veri bitmek üzereyse ve kısa süre önce denenmediyse true. */
     fun needsRefresh(ctx: Context): Boolean {
-        if (districtId(ctx) == null) return false
-        if (isComputed(ctx)) return false // hesaplanan yerde indirilecek liste yok
-        // Diyanet dışı bir yöntem seçili olsa da Diyanet verisi güncel tutulur, çünkü:
-        //  - yerin koordinatı bulunamazsa uygulama Diyanet vakitlerini gösterir (Times.effectiveMethod);
-        //    önceden burada "yöntem Diyanet değil" diye yenileme yapılmıyordu ve ~30 gün sonra
-        //    vakitler tamamen bitiyordu,
-        //  - Hicri tarih Diyanet takvimine bu veriyle hizalanır.
-        // Ayda bir kez küçük bir indirme; pil ve veri etkisi önemsiz.
-        val sinceLast = System.currentTimeMillis() - prefs(ctx).getLong("lastAttempt", 0L)
-        if (sinceLast < MIN_RETRY_MS) return false
-        val last = days(ctx).lastOrNull()?.date ?: return true
-        return ChronoUnit.DAYS.between(LocalDate.now(), last) < REFRESH_WHEN_DAYS_LEFT
+        val (state, lastAttempt) = selection.capture {
+            prayerSnapshot(ctx).second to prefs(ctx).getLong("lastAttempt", 0L)
+        }.second
+        if (System.currentTimeMillis() - lastAttempt < MIN_RETRY_MS) return false
+        return state.needsData(LocalDate.now())
     }
 
     /** Vakitleri internetten yeniler. Ağ kullanır: arka planda çağır. */
     fun refresh(ctx: Context): Boolean {
-        val id = districtId(ctx) ?: return false
+        val request = placeRequest(ctx)
+        val id = request.second ?: return false
         if (id == COMPUTED_ID) return true // hesaplanan yer: vakitler telefonda hesaplanır, indirme yok
         prefs(ctx).edit().putLong("lastAttempt", System.currentTimeMillis()).apply()
         return try {
@@ -341,8 +364,9 @@ object Store {
             if (Diyanet.parseDays(json).isEmpty()) {
                 false
             } else {
-                prefs(ctx).edit().putString("times", json).apply()
-                true
+                applyPlaceRequest(request) {
+                    prefs(ctx).edit().putString("times", json).apply()
+                }
             }
         } catch (e: Exception) {
             false

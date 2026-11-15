@@ -33,7 +33,7 @@ class Namaz3dActivity : LangActivity() {
         // Durum çubuğu ve gezinme çubuğu sahnenin düğmelerini örtmesin
         Ui.fitSystemBars(this, root)
         // "app" parametresi: video kayıt düğmesini gizler (WebView'de indirme yok)
-        web.loadUrl("file:///android_asset/namaz3d/index.html?app=1")
+        web.loadUrl("file:///android_asset/namaz3d/index.html?app=1&lang=${Lang.code(this)}")
     }
 
     // Ekrandan çıkınca çizimi durdur (pil ve ısınma için), dönünce devam et

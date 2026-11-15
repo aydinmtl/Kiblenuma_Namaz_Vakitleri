@@ -492,7 +492,7 @@ class PrayerFigureView(context: Context, attrs: AttributeSet?) : View(context, a
         text.color = 0xFFE8C15A.toInt()
         text.textSize = 4.2f
         text.isFakeBoldText = true
-        c.drawText("KIBLE", mx, 18f, text)
+        c.drawText(context.getString(R.string.learn_static_27), mx, 18f, text)
         text.isFakeBoldText = false
         drawStar(c, mx, 44f, 2.2f, 0xFFE8C15A.toInt())
 

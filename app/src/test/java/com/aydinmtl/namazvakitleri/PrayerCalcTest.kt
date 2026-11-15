@@ -168,4 +168,20 @@ class PrayerCalcTest {
         // Güneşin batmadığı yerde hesap yapılamaz; otomatik konum bunu kullanıcıya söyler.
         assertNull(PrayerCalc.diyanetDay(LocalDate.of(2026, 6, 21), 78.22, 15.65, ZoneId.of("Arctic/Longyearbyen")))
     }
+
+    @Test
+    fun computed_tokyo_keeps_utc_date_rollover_and_converts_each_dst_offset() {
+        val date = LocalDate.of(2026, 3, 29)
+        val phone = ZoneId.of("Europe/Zurich")
+        val d = PrayerCalc.calculatedDay(date, 35.6762, 139.6503, phone, CalcMethod.MWL, 1)!!
+        val inTokyo = PrayerCalc.calculatedDay(date, 35.6762, 139.6503, ZoneId.of("Asia/Tokyo"), CalcMethod.MWL, 1)!!
+        val m = Prayers.dayMoments(d)
+        assertEquals(LocalDate.of(2026, 3, 28), m[0].at.toLocalDate())
+        assertEquals(date, m[2].at.toLocalDate())
+        assertEquals(3600, phone.rules.getOffset(m[0].instant).totalSeconds)
+        assertEquals(7200, phone.rules.getOffset(m[2].instant).totalSeconds)
+        assertEquals(Prayers.dayMoments(inTokyo).map { it.instant }, m.map { it.instant })
+        assertEquals(m.map { it.instant }.sorted(), m.map { it.instant })
+        assertEquals(date, m[0].day)
+    }
 }

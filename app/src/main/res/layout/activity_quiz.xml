@@ -22,13 +22,13 @@
                 style="@style/Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Aile Halkası" />
+                android:text="@string/learn_static_13" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Birlikte öğrenelim. İlk kez doğru bilinen her soru aile ağacımızı büyütür."
+                android:text="@string/learn_static_14"
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
 
@@ -80,7 +80,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bilgi Yarışması"
+                        android:text="@string/learn_static_15"
                         android:textColor="@color/text"
                         android:textSize="21sp"
                         android:textStyle="bold" />
@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="İslam dini hakkında"
+                        android:text="@string/learn_static_16"
                         android:textColor="#DDF2F2F2"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -135,7 +135,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Namaz Öğreniyorum"
+                        android:text="@string/learn_static_02"
                         android:textColor="@color/text"
                         android:textSize="21sp"
                         android:textStyle="bold" />
@@ -144,7 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Çocuklar için abdest ve namaz oyunu"
+                        android:text="@string/learn_static_17"
                         android:textColor="#DDF2F2F2"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:minHeight="52dp"
-                android:text="💡 Günün sorusu" />
+                android:text="@string/learn_ui_009" />
 
             <CheckBox
                 android:id="@+id/cbDaily"
@@ -174,11 +174,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:buttonTint="@color/gold"
-                android:text="Akşam vakti girince günün sorusunu bildir"
+                android:text="@string/learn_static_18"
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
 
-            <TextView style="@style/SectionHead" android:text="Aile hedeflerimiz" />
+            <TextView style="@style/SectionHead" android:text="@string/learn_static_19" />
 
             <LinearLayout
                 android:id="@+id/goalList"
@@ -193,7 +193,7 @@
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
-                android:text="+ Hedef ekle" />
+                android:text="@string/learn_static_20" />
 
             <!-- Yeni bir dönem için: ağaç tohuma döner (onay sorulur) -->
             <TextView
@@ -203,7 +203,7 @@
                 android:layout_marginTop="10dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="8dp"
-                android:text="Ağacı sıfırla"
+                android:text="@string/learn_static_21"
                 android:textColor="@color/muted"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -228,7 +228,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
-                    android:contentDescription="Geri"
+                    android:contentDescription="@string/learn_static_00"
                     android:paddingTop="4dp"
                     android:paddingEnd="14dp"
                     android:paddingBottom="4dp"
@@ -241,14 +241,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Bilgi Yarışması" />
+                    android:text="@string/learn_static_15" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Seviyeni seç, sorular ona göre gelsin."
+                android:text="@string/learn_static_22"
                 android:textColor="@color/muted"
                 android:textSize="15sp" />
 
@@ -284,7 +284,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="Sorular özgün olarak hazırlanmıştır. Kaynağı belirtilen sorularda ayet ya da hadis numarası verilmiştir. Fıkıh soruları Hanefi mezhebine göredir. Hatalı bulduğun soruyu cevaptan sonra işaretleyebilirsin."
+                android:text="@string/learn_static_23"
                 android:textColor="@color/muted"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -356,14 +356,14 @@
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="20dp"
-                android:text="Yeni tur" />
+                android:text="@string/learn_ui_003" />
 
             <Button
                 android:id="@+id/btnLevels"
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
-                android:text="Seviye seç" />
+                android:text="@string/learn_static_24" />
 
             <TextView
                 android:id="@+id/btnResultHome"
@@ -372,7 +372,7 @@
                 android:layout_marginTop="10dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="10dp"
-                android:text="Aile Halkası ana sayfası"
+                android:text="@string/learn_static_25"
                 android:textColor="@color/muted"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -407,9 +407,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:background="?android:attr/selectableItemBackground"
-                    android:contentDescription="Sesli oku"
+                    android:contentDescription="@string/learn_static_01"
                     android:padding="8dp"
-                    android:text="🔊 Oku"
+                    android:text="@string/learn_ui_037"
                     android:textColor="@color/gold"
                     android:textSize="15sp" />
 
@@ -419,7 +419,7 @@
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
                     android:padding="8dp"
-                    android:text="Kapat ✕"
+                    android:text="@string/learn_static_26"
                     android:textColor="@color/gold"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -480,7 +480,7 @@
                 style="@style/Btn"
                 android:layout_width="match_parent"
                 android:layout_marginTop="14dp"
-                android:text="Sıradaki soru ›"
+                android:text="@string/learn_ui_033"
                 android:visibility="gone" />
 
             <!-- Cevaptan sonra görünür: soruyu hatalı diye işaretle -->
@@ -492,7 +492,7 @@
                 android:layout_marginTop="10dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:padding="10dp"
-                android:text="⚑ Bu soruda hata var"
+                android:text="@string/learn_ui_047"
                 android:textColor="@color/muted"
                 android:textSize="14sp"
                 android:visibility="gone" />

@@ -1,6 +1,8 @@
 package com.aydinmtl.namazvakitleri
 
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 /**
  * Hangi alarmın ne zaman çalacağını ve geciken bir alarmda ne yapılacağını belirleyen kurallar.
@@ -9,7 +11,12 @@ import java.time.LocalDateTime
 object AlarmPlan {
 
     /** Bir alarm olayı: vakit girişi ya da vakitten önce hatırlatma. */
-    data class Event(val moment: Moment, val reminder: Boolean, val fireAt: LocalDateTime)
+    data class Event(
+        val moment: Moment,
+        val reminder: Boolean,
+        val fireAt: LocalDateTime,
+        val fireInstant: Instant = fireAt.atZone(moment.phoneZone).toInstant(),
+    )
 
     /**
      * [after] anından sonraki ilk olay.
@@ -25,19 +32,30 @@ object AlarmPlan {
         remindMinutes: Int,
         remindFor: (Int) -> Boolean,
         after: LocalDateTime,
+    ): Event? = next(moments, remindMinutes, remindFor,
+        after.atZone(moments.firstOrNull()?.phoneZone ?: ZoneId.systemDefault()).toInstant())
+
+    fun next(
+        moments: List<Moment>,
+        remindMinutes: Int,
+        remindFor: (Int) -> Boolean,
+        after: Instant,
     ): Event? {
-        val entries = moments.map { Event(it, false, it.at) }
-        val entryTimes = entries.map { it.fireAt }.toHashSet()
+        fun event(m: Moment, reminder: Boolean, instant: Instant) =
+            Event(m, reminder, instant.atZone(m.phoneZone).toLocalDateTime(), instant)
+
+        val entries = moments.map { event(it, false, it.instant) }
+        val entryTimes = entries.map { it.fireInstant }.toHashSet()
         val reminders = if (remindMinutes <= 0) emptyList() else moments
             .filter { remindFor(it.index) }
             .map { m ->
-                var t = m.at.minusMinutes(remindMinutes.toLong())
-                if (t in entryTimes) t = t.minusMinutes(1)
-                Event(m, true, t)
+                var t = m.instant.minusSeconds(remindMinutes * 60L)
+                if (t in entryTimes) t = t.minusSeconds(60)
+                event(m, true, t)
             }
         return (entries + reminders)
-            .filter { it.fireAt.isAfter(after) }
-            .minByOrNull { it.fireAt }
+            .filter { it.fireInstant.isAfter(after) }
+            .minByOrNull { it.fireInstant }
     }
 
     /** Ezan, vakit girdikten en fazla bu kadar sonra çalınır (daha geç çalması yanıltıcı olur). */

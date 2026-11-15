@@ -32,16 +32,29 @@ enum class QuizLevel(val id: String, val title: String, val hint: String) {
 }
 
 /** Uygulamayla gelen soru bankası (assets/sorular.json). */
+internal class LocalizedQuizCache {
+    private val banks = mutableMapOf<String, List<Question>>()
+
+    @Synchronized
+    fun get(language: String, load: () -> List<Question>): List<Question> =
+        banks.getOrPut(language, load)
+}
+
 object QuizBank {
-    private var cache: List<Question>? = null
+    private val cache = LocalizedQuizCache()
+
+    fun assetName(language: String): String = when (language) {
+        "fr", "en", "de" -> "sorular_$language.json"
+        else -> "sorular.json"
+    }
 
     @Synchronized
     fun all(ctx: Context): List<Question> {
-        cache?.let { return it }
-        val json = ctx.assets.open("sorular.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
-        val out = parse(json)
-        cache = out
-        return out
+        val language = Lang.code(ctx)
+        return cache.get(language) {
+            val json = ctx.assets.open(assetName(language)).bufferedReader(Charsets.UTF_8).use { it.readText() }
+            parse(json)
+        }
     }
 
     /** sorular.json içeriğini okur. Android'e bağlı değil; testlerde doğrudan kullanılır. */

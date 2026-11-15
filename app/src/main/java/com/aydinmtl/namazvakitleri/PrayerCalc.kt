@@ -3,6 +3,7 @@ package com.aydinmtl.namazvakitleri
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
@@ -137,6 +138,25 @@ object PrayerCalc {
         }
     }
 
+    /**
+     * Hesabı önce UTC'de yapar: tarih sınırı ve yaz saati her vakit için ayrı korunur.
+     * Hesaplanan listelerde saatler, önceki davranış gibi telefonun saat diliminde gösterilir.
+     */
+    fun calculatedDay(
+        date: LocalDate, lat: Double, lon: Double, phone: ZoneId, method: CalcMethod, asrFactor: Int,
+    ): PrayerDay? {
+        val raw = rawMinutes(date, lat, lon, ZoneOffset.UTC, method, asrFactor) ?: return null
+        val instants = raw.mapIndexed { i, minute ->
+            val rounded = if (method == CalcMethod.DIYANET) {
+                val t = minute + DIYANET_TEMKIN[i]
+                if (i <= SUNRISE) floor(t).toLong() else ceil(t).toLong()
+            } else minute.roundToInt().toLong()
+            date.atStartOfDay().plusMinutes(rounded).toInstant(ZoneOffset.UTC)
+        }
+        return PrayerDay(date, instants.map { it.atZone(phone).toLocalTime() }, "",
+            instants = instants, phoneZone = phone)
+    }
+
     /** Gün içindeki dakikayı saate çevirir; 24:00'ı geçerse başa sarar. */
     private fun toClock(minutes: Int): LocalTime {
         val m = ((minutes % 1440) + 1440) % 1440
@@ -198,6 +218,6 @@ object PrayerCalc {
             if (times[5].isNaN() || (times[5] - sunset) > ishaPortion) times[5] = sunset + ishaPortion
         }
 
-        return times.map { t -> fixHour(t + tz - lon / 15.0) * 60.0 }
+        return times.map { t -> (t + tz - lon / 15.0) * 60.0 }
     }
 }

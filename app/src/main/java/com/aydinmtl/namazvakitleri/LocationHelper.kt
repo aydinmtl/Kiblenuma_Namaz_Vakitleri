@@ -8,8 +8,10 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.CancellationSignal
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 
 /** Telefonun yaklaşık konumunu tek seferlik alır. */
 object LocationHelper {
@@ -38,9 +40,12 @@ object LocationHelper {
             callback(null)
             return
         }
+        fun fresh(l: Location?): Location? = l?.takeIf {
+            LocationFreshness.accepts(SystemClock.elapsedRealtimeNanos(), it.elapsedRealtimeNanos, maxAgeMs)
+        }
         val last = lastKnown(lm)
-        if (last != null && System.currentTimeMillis() - last.time < maxAgeMs) {
-            callback(last)
+        if (fresh(last) != null) {
+            callback(fresh(last))
             return
         }
         val provider = when {
@@ -52,18 +57,21 @@ object LocationHelper {
             else -> null
         }
         if (provider == null) {
-            callback(last)
+            callback(fresh(last))
             return
         }
 
         val handler = Handler(Looper.getMainLooper())
+        val cancellation = CancellationSignal()
         var done = false
         var listener: LocationListener? = null
         val deliver: (Location?) -> Unit = { l ->
             if (!done) {
                 done = true
+                handler.removeCallbacksAndMessages(null)
+                cancellation.cancel()
                 listener?.let { lm.removeUpdates(it) }
-                callback(l ?: last)
+                callback(fresh(l) ?: fresh(last))
             }
         }
         // Süre dolarsa vazgeç; varsa son bilinen konum kullanılır.
@@ -71,7 +79,7 @@ object LocationHelper {
 
         try {
             if (Build.VERSION.SDK_INT >= 30) {
-                lm.getCurrentLocation(provider, null, ctx.mainExecutor) { l -> handler.post { deliver(l) } }
+                lm.getCurrentLocation(provider, cancellation, ctx.mainExecutor) { l -> handler.post { deliver(l) } }
             } else {
                 // Android 10 ve öncesinde 4 metodun hepsi yazılmalı, yoksa uygulama çöker.
                 val l = object : LocationListener {
@@ -96,7 +104,7 @@ object LocationHelper {
         for (p in lm.getProviders(true)) {
             try {
                 val l = lm.getLastKnownLocation(p) ?: continue
-                if (best == null || l.time > best.time) best = l
+                if (best == null || l.elapsedRealtimeNanos > best.elapsedRealtimeNanos) best = l
             } catch (e: SecurityException) {
             }
         }

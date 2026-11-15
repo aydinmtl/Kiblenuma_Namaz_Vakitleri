@@ -80,6 +80,7 @@
     <string name="notif_perm_off">⚠ Bildirim izni kapalı. Açmak için dokun.</string>
     <string name="exact_alarm_needed">⚠ Bildirimlerin tam vaktinde gelmesi için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.</string>
     <string name="loc_perm_denied">Konum izni verilmedi. Şehrini elle seçebilirsin.</string>
+    <string name="loc_selection_cancelled">Seçim iptal edildi. Lütfen yeri yeniden seçin.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Kaynak: Konumundan hesaplandı (Diyanet ölçüleriyle)\nDiyanet\'in listesinde bu konuma yakın bir yer yok. Vakitler resmi listeden birkaç dakika farklı olabilir.</string>
@@ -363,4 +364,450 @@
     <string name="zk_target">Hedef</string>
     <string name="zk_target_row">Hedef: %1$s  ›</string>
     <string name="zk_rounds">Tamamlanan tur: %1$d  (toplam %2$d)</string>
+
+    <!-- Learning labels -->
+    <string name="learn_static_00">Geri</string>
+    <string name="learn_static_01">Sesli oku</string>
+    <string name="learn_static_02">Namaz Öğreniyorum</string>
+    <string name="learn_static_03">Soruları bildikçe arkadaşın abdest alacak ya da namaz kılacak. Bakalım sabah namazını sonuna kadar kıldırabilecek misin?</string>
+    <string name="learn_static_04">Kimle oynamak istersin?</string>
+    <string name="learn_static_05">Abdesti Ahmet alıyor. Abdest bölümünü oynamak için Ahmet\'i seç.</string>
+    <string name="learn_static_06">🔊  Sesli okuma</string>
+    <string name="learn_static_07">Abdest ve sabah namazının farzı (2 rekat) Hanefi mezhebine göre anlatılır. Kaynağı olan adımlarda ayet ya da hadis numarası verilmiştir.</string>
+    <string name="learn_static_08">Abdest alan ve namaz kılan çocuk</string>
+    <string name="learn_static_09">⏭  Okunuşu atla</string>
+    <string name="learn_static_10">Şimdi değil</string>
+    <string name="learn_static_11">🔁  Tekrar oyna</string>
+    <string name="learn_static_12">Çıkış</string>
+    <string name="learn_static_13">Aile Halkası</string>
+    <string name="learn_static_14">Birlikte öğrenelim. İlk kez doğru bilinen her soru aile ağacımızı büyütür.</string>
+    <string name="learn_static_15">Bilgi Yarışması</string>
+    <string name="learn_static_16">İslam dini hakkında</string>
+    <string name="learn_static_17">Çocuklar için abdest ve namaz oyunu</string>
+    <string name="learn_static_18">Akşam vakti girince günün sorusunu bildir</string>
+    <string name="learn_static_19">Aile hedeflerimiz</string>
+    <string name="learn_static_20">+ Hedef ekle</string>
+    <string name="learn_static_21">Ağacı sıfırla</string>
+    <string name="learn_static_22">Seviyeni seç, sorular ona göre gelsin.</string>
+    <string name="learn_static_23">Sorular özgün olarak hazırlanmıştır. Kaynağı belirtilen sorularda ayet ya da hadis numarası verilmiştir. Fıkıh soruları Hanefi mezhebine göredir. Hatalı bulduğun soruyu cevaptan sonra işaretleyebilirsin.</string>
+    <string name="learn_static_24">Seviye seç</string>
+    <string name="learn_static_25">Aile Halkası ana sayfası</string>
+    <string name="learn_static_26">Kapat ✕</string>
+    <string name="learn_static_27">KIBLE</string>
+    <string-array name="learn_levels">
+        <item>Kolay</item>
+        <item>Orta</item>
+        <item>Zor</item>
+    </string-array>
+    <string-array name="learn_level_hints">
+        <item>Peygamber kıssaları, temel bilgiler, güzel ahlak</item>
+        <item>Siyer, ibadetler, Kur\'an bilgisi</item>
+        <item>İslam tarihi, bilim tarihi, fıkıh</item>
+    </string-array>
+    <string-array name="learn_tree_stages">
+        <item>Tohum</item>
+        <item>Filiz</item>
+        <item>Fidan</item>
+        <item>Genç ağaç</item>
+        <item>Çiçekli ağaç</item>
+        <item>Meyveli ağaç</item>
+        <item>Ulu çınar</item>
+    </string-array>
+    <string-array name="learn_result_titles">
+        <item>Birlikte tekrar edelim</item>
+        <item>Güzel başlangıç!</item>
+        <item>Çok güzel!</item>
+        <item>Maşallah!</item>
+    </string-array>
+    <string-array name="learn_chapters">
+        <item>Abdest</item>
+        <item>Namaz</item>
+    </string-array>
+    <string name="learn_option">Şık %1$s: %2$s.</string>
+    <string name="learn_report_title">Aile Halkası: hatalı olabilecek sorular</string>
+    <string name="learn_report_missing">(soru artık bankada yok)</string>
+    <string name="learn_report_answer">Cevap: %1$s</string>
+    <string name="learn_report_note">Not: %1$s</string>
+
+    <!-- Learning UI -->
+    <string name="learn_ui_000">Kaldığın yerden devam etmek ister misin?</string>
+    <string name="learn_ui_001">%1$s · %2$s. soru / %3$s · %4$s doğru</string>
+    <string name="learn_ui_002">Devam et</string>
+    <string name="learn_ui_003">Yeni tur</string>
+    <string name="learn_ui_004">Vazgeç</string>
+    <string name="learn_ui_005">Ağacımız: %1$s · toplam %2$s doğru</string>
+    <string name="learn_ui_006">\nSonraki aşamaya (%1$s) %2$s doğru kaldı</string>
+    <string name="learn_ui_007">\nAğacımız en büyük haline ulaştı!</string>
+    <string name="learn_ui_008">💡 Günün sorusu ✓ (bugün cevaplandı)</string>
+    <string name="learn_ui_009">💡 Günün sorusu</string>
+    <string name="learn_ui_010">🔁 Yanlışlarımı tekrar et</string>
+    <string name="learn_ui_011">⚑ İşaretlediğim sorular</string>
+    <string name="learn_ui_012">▶ Devam</string>
+    <string name="learn_ui_013">%1$s seviye. %2$s.</string>
+    <string name="learn_ui_014"> Yarım kalan tur var.</string>
+    <string name="learn_ui_015">Yarım kalan tur var</string>
+    <string name="learn_ui_016">%1$s: %2$s. sorudasın. Ne yapalım?</string>
+    <string name="learn_ui_017">Yeni %1$s turu</string>
+    <string name="learn_ui_018">Yanlışları tekrar</string>
+    <string name="learn_ui_019">%1$s seviye</string>
+    <string name="learn_ui_020">Ör: Annem, Babam, Zeynep</string>
+    <string name="learn_ui_021">Adları virgülle ayır; sorular sırayla gelir. Tek kişi oynuyorsan boş bırak.</string>
+    <string name="learn_ui_022">Kimler oynuyor?</string>
+    <string name="learn_ui_023">Başla</string>
+    <string name="learn_ui_024">%1$s · Soru %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_025">%1$s, doğru cevap</string>
+    <string name="learn_ui_026">%1$s, senin cevabın, yanlış</string>
+    <string name="learn_ui_027">✓ Doğru!</string>
+    <string name="learn_ui_028">✗ Doğru cevap: %1$s</string>
+    <string name="learn_ui_029">\nKaynak: %1$s</string>
+    <string name="learn_ui_030">\n🌱 Ağacımıza +1</string>
+    <string name="learn_ui_031">\n(Bu soruyu daha önce bilmiştiniz; ağaç yalnızca yeni bilgiyle büyür.)</string>
+    <string name="learn_ui_032">Sonucu gör ›</string>
+    <string name="learn_ui_033">Sıradaki soru ›</string>
+    <string name="learn_ui_034">%1$s · Soru %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_035">Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma\'dan Türkçe sesi indirebilirsin.</string>
+    <string name="learn_ui_036">Kapat</string>
+    <string name="learn_ui_037">🔊 Oku</string>
+    <string name="learn_ui_038">\nKaynak: </string>
+    <string name="learn_ui_039">\n\n🌱 Ağacımıza +1</string>
+    <string name="learn_ui_040">Günün sorusu</string>
+    <string name="learn_ui_041">Tamam</string>
+    <string name="learn_ui_042">Ağaç sıfırlansın mı?</string>
+    <string name="learn_ui_043">Ağacımız tohuma döner ve bütün sorular ağacı yeniden büyütebilir. </string>
+    <string name="learn_ui_044">Hedefler ve yanlışlar listesi silinmez. Bu işlem geri alınamaz.</string>
+    <string name="learn_ui_045">Sıfırla</string>
+    <string name="learn_ui_046">⚑ İşaretlendi (kaldırmak için dokun)</string>
+    <string name="learn_ui_047">⚑ Bu soruda hata var</string>
+    <string name="learn_ui_048">Ne yanlış? (isteğe bağlı)</string>
+    <string name="learn_ui_049">Bu soruda hata var</string>
+    <string name="learn_ui_050">Soru telefonunda işaretlenir. Aile Halkası ana sayfasından işaretli soruların listesini paylaşabilirsin.</string>
+    <string name="learn_ui_051">İşaretle</string>
+    <string name="learn_ui_052">İşaretlediğim sorular</string>
+    <string name="learn_ui_053">İşaretli soruları paylaş</string>
+    <string name="learn_ui_054">Paylaş</string>
+    <string name="learn_ui_055">Listeyi temizle</string>
+    <string name="learn_ui_056">Bütün işaretler silinsin mi?</string>
+    <string name="learn_ui_057">Sil</string>
+    <string name="learn_ui_058">Sıra: %1$s</string>
+    <string name="learn_ui_059">3 yıldızdan %1$s</string>
+    <string name="learn_ui_060">%1$s sorudan %2$s doğru</string>
+    <string name="learn_ui_061"> doğru</string>
+    <string name="learn_ui_062">\n\nYanlış bildiklerin \"Yanlışlarımı tekrar et\" bölümünde seni bekliyor.</string>
+    <string name="learn_ui_063">Yanlışları yeniden tekrar et</string>
+    <string name="learn_ui_064">Yeni %1$s turu</string>
+    <string name="learn_ui_065">Aile ağacımız artık: %1$s!</string>
+    <string name="learn_ui_066">\n\nHedefimize ulaştık:</string>
+    <string name="learn_ui_067">🌳 Ağacımız büyüdü</string>
+    <string name="learn_ui_068">Elhamdülillah</string>
+    <string name="learn_ui_069">Henüz hedef yok. Örnek: \"Ağacımız Meyveli ağaç olunca birlikte dondurma yemeye gidiyoruz.\"</string>
+    <string name="learn_ui_070">Ulaşıldı · </string>
+    <string name="learn_ui_071">Hedef aşama: </string>
+    <string name="learn_ui_072">Düzenle</string>
+    <string name="learn_ui_073">Hedef silinsin mi?</string>
+    <string name="learn_ui_074">Düzenlemek ya da silmek için hedefe basılı tut.</string>
+    <string name="learn_ui_075">Ör: Birlikte dondurma yemeye gidiyoruz</string>
+    <string name="learn_ui_076">Ağacımız hangi aşamaya gelince?</string>
+    <string name="learn_ui_077">%1$s (%2$s doğru)</string>
+    <string name="learn_ui_078">Hedefi düzenle</string>
+    <string name="learn_ui_079">Yeni aile hedefi</string>
+    <string name="learn_ui_080">Kaydet</string>
+    <string name="learn_ui_081">Ekle</string>
+    <string name="learn_ui_082">Açık: dualar ve sureler sesli okunur.</string>
+    <string name="learn_ui_083">Kapalı: ses yok, yalnızca yazı ilerler.</string>
+    <string name="learn_ui_084">Kaldığın yer: adım %1$s / %2$s</string>
+    <string name="learn_ui_085">%1$s adım</string>
+    <string name="learn_ui_086">Bu bölümde %1$s. adımda kalmıştın (%2$s adım). Nereden başlayalım?</string>
+    <string name="learn_ui_087">Kaldığım yerden devam et</string>
+    <string name="learn_ui_088">Baştan başla</string>
+    <string name="learn_ui_089">🏆 Namazı %1$s kez tamamladın</string>
+    <string name="learn_ui_090">%1$s %2$s · Hazırlık</string>
+    <string name="learn_ui_091">Seccademizi kıbleye doğru seriyoruz\n(geçmek için resme dokun)</string>
+    <string name="learn_ui_092">%1$s %2$s · Adım %3$s / %4$s</string>
+    <string name="learn_ui_093">Devam ›</string>
+    <string name="learn_ui_094">%1$s, yanlış</string>
+    <string name="learn_ui_095">Neredeyse! Altın çerçeveli şıkka bir bak. 🙂</string>
+    <string name="learn_ui_096">Olmadı, bir daha dene. Sen yaparsın! 💪</string>
+    <string name="learn_ui_097">%1$s, doğru</string>
+    <string name="learn_ui_098">Adım %1$s · %2$s</string>
+    <string name="learn_ui_099">✓ Aferin!\n%1$s</string>
+    <string name="learn_ui_100">\nKaynak: %1$s</string>
+    <string name="learn_ui_101">\n\nAbdestimiz tamam! Namaza geçelim mi?</string>
+    <string name="learn_ui_102">🕌  Evet, namaza geçelim</string>
+    <string name="learn_ui_103">\n\nAnlamı: %1$s</string>
+    <string name="learn_ui_104">\nKaynak: %1$s</string>
+    <string name="learn_ui_105">%1$s. %2$s. Anlamı: %3$s</string>
+    <string name="learn_ui_106">Maşallah! 🎉</string>
+    <string name="learn_ui_107">Bütün soruları bildin. %1$s seninle birlikte sabah namazını baştan sona kıldı.\n\n</string>
+    <string name="learn_ui_108">Şimdi sıra sende: bir dahaki namazda bunları birlikte yapalım!</string>
+
+    <!-- Prayer learning content (stable step and recitation order) -->
+    <string-array name="learn_step_titles">
+        <item>Besmele ile başlıyoruz</item>
+        <item>Ellerimizi yıkıyoruz</item>
+        <item>Ağzımızı yıkıyoruz</item>
+        <item>Burnumuzu temizliyoruz</item>
+        <item>Yüzümüzü yıkıyoruz</item>
+        <item>Sağ kolumuzu yıkıyoruz</item>
+        <item>Sol kolumuzu yıkıyoruz</item>
+        <item>Başımızı meshediyoruz</item>
+        <item>Kulaklarımızı meshediyoruz</item>
+        <item>Ensemizi meshediyoruz</item>
+        <item>Sağ ayağımızı yıkıyoruz</item>
+        <item>Sol ayağımızı yıkıyoruz</item>
+        <item>Abdestimiz tamam!</item>
+        <item>Kıbleye döndük</item>
+        <item>Niyet ettik</item>
+        <item>Başlama tekbiri</item>
+        <item>Sübhâneke\'yi okuyoruz</item>
+        <item>Fâtiha\'yı okuyoruz</item>
+        <item>Bir sure okuyoruz</item>
+        <item>Rükûdayız</item>
+        <item>Doğrulduk</item>
+        <item>Secdedeyiz</item>
+        <item>Secdede tesbih</item>
+        <item>İki secde arası</item>
+        <item>İkinci secde</item>
+        <item>İkinci rekata kalktık</item>
+        <item>Fâtiha ve bir sure</item>
+        <item>Yine rükûdayız</item>
+        <item>Yine doğrulduk</item>
+        <item>Yine secdedeyiz</item>
+        <item>Son secde</item>
+        <item>Son oturuş</item>
+        <item>Ettehiyyâtü</item>
+        <item>Salli ve Bârik</item>
+        <item>Rabbenâ duası</item>
+        <item>Selam verdik</item>
+    </string-array>
+    <string-array name="learn_step_questions">
+        <item>Abdest almaya başlarken ne deriz?</item>
+        <item>Önce neyimizi yıkarız?</item>
+        <item>Sonra ağzımıza su alıp ne yaparız?</item>
+        <item>Ağzımızdan sonra neye su veririz?</item>
+        <item>Yüzümüzü nereden nereye yıkarız?</item>
+        <item>Kollarımızı yıkarken hangisinden başlarız?</item>
+        <item>Kolumuzu nereye kadar yıkarız?</item>
+        <item>Başımıza ne yaparız?</item>
+        <item>Başımızdan sonra ıslak parmaklarımızla neyi meshederiz?</item>
+        <item>Kulaklarımızdan sonra ellerimizin dışıyla neyi meshederiz?</item>
+        <item>Ayaklarımızı nereye kadar yıkarız?</item>
+        <item>Sağ ayağımızdan sonra neyi yıkarız?</item>
+        <item>Abdest bitince ne söylemek güzeldir?</item>
+        <item>Namaz kılarken hangi yöne döneriz?</item>
+        <item>Namaza başlamadan önce içimizden ne yaparız?</item>
+        <item>Namaza hangi sözle başlarız?</item>
+        <item>Ellerimizi bağladık. Ayakta ilk okuduğumuz dua hangisidir?</item>
+        <item>Her rekatta mutlaka okunan sure hangisidir?</item>
+        <item>Fâtiha\'dan sonra ne okuruz?</item>
+        <item>Şimdi eğilip ellerimizi dizlerimize koyacağız. Bu harekete ne denir?</item>
+        <item>Rükûdan doğrulurken ne deriz?</item>
+        <item>Şimdi alnımızı yere koyacağız. Bu harekete ne denir?</item>
+        <item>Secdede ne deriz?</item>
+        <item>İki secde arasında ne yaparız?</item>
+        <item>Secdede yere neyimiz değer?</item>
+        <item>Bir rekatta kaç secde yaparız?</item>
+        <item>İkinci rekatta da önce hangi sureyi okuruz?</item>
+        <item>Rükûda sırtımız nasıl olur?</item>
+        <item>\"Rabbenâ leke\'l-hamd\" ne demektir?</item>
+        <item>Secdeye giderken ne deriz?</item>
+        <item>İki secde arasında oturduktan sonra ne yaparız?</item>
+        <item>Sabah namazının farzı iki rekattır. İkinci rekatın secdelerinden sonra ne yaparız?</item>
+        <item>Oturuşta ilk hangi duayı okuruz?</item>
+        <item>Ettehiyyâtü\'den sonra Peygamberimiz için hangi duaları okuruz?</item>
+        <item>Sonra hangi duayı okuruz?</item>
+        <item>Namazı nasıl bitiririz?</item>
+    </string-array>
+    <string-array name="learn_step_correct">
+        <item>Bismillâhirrahmânirrahîm</item>
+        <item>Ellerimizi bileklere kadar</item>
+        <item>Üç kez çalkalarız</item>
+        <item>Burnumuza</item>
+        <item>Alnımızdan çenemizin altına, bir kulaktan öbür kulağa</item>
+        <item>Sağ kolumuzdan</item>
+        <item>Dirseğimizle beraber</item>
+        <item>Islak elimizle meshederiz</item>
+        <item>Kulaklarımızı</item>
+        <item>Ensemizi</item>
+        <item>Topuklarımızla beraber</item>
+        <item>Sol ayağımızı</item>
+        <item>Kelime-i şehâdet</item>
+        <item>Kıbleye, yani Kâbe\'ye doğru</item>
+        <item>Hangi namazı kılacağımıza niyet ederiz</item>
+        <item>Allâhu Ekber</item>
+        <item>Sübhâneke</item>
+        <item>Fâtiha</item>
+        <item>Kur\'an\'dan kısa bir sure, örneğin İhlâs</item>
+        <item>Rükû</item>
+        <item>Semi\'allâhü limen hamideh</item>
+        <item>Secde</item>
+        <item>Sübhâne rabbiye\'l-a\'lâ</item>
+        <item>Kısa bir süre otururuz</item>
+        <item>Alnımız, burnumuz, ellerimiz, dizlerimiz ve ayak parmaklarımız</item>
+        <item>İki</item>
+        <item>Fâtiha</item>
+        <item>Dümdüz</item>
+        <item>Rabbimiz, hamd sanadır</item>
+        <item>Allâhu Ekber</item>
+        <item>Yine secdeye gideriz</item>
+        <item>Otururuz</item>
+        <item>Ettehiyyâtü</item>
+        <item>Allâhümme salli ve Allâhümme bârik</item>
+        <item>Rabbenâ âtinâ</item>
+        <item>Önce sağa, sonra sola selam vererek</item>
+    </string-array>
+    <string-array name="learn_step_wrong_one">
+        <item>Elhamdülillah</item>
+        <item>Ayaklarımızı</item>
+        <item>Yutarız</item>
+        <item>Kulağımıza</item>
+        <item>Yalnız burnumuzu</item>
+        <item>Sol kolumuzdan</item>
+        <item>Bileğimize kadar</item>
+        <item>Sabunla yıkarız</item>
+        <item>Dizlerimizi</item>
+        <item>Dizlerimizi</item>
+        <item>Parmak uçlarına kadar</item>
+        <item>Yine sağ ayağımızı</item>
+        <item>Sübhâneke</item>
+        <item>Güneşe doğru</item>
+        <item>Şarkı söyleriz</item>
+        <item>Elhamdülillah</item>
+        <item>Ettehiyyâtü</item>
+        <item>Kevser</item>
+        <item>Ezan</item>
+        <item>Secde</item>
+        <item>Sübhâne rabbiye\'l-a\'lâ</item>
+        <item>Rükû</item>
+        <item>Sübhâne rabbiye\'l-azîm</item>
+        <item>Ayağa kalkarız</item>
+        <item>Yalnız alnımız</item>
+        <item>Bir</item>
+        <item>İhlâs</item>
+        <item>Kambur</item>
+        <item>Allah en büyüktür</item>
+        <item>Âmin</item>
+        <item>Namazı bitiririz</item>
+        <item>Üçüncü rekata kalkarız</item>
+        <item>Sübhâneke</item>
+        <item>Sübhâneke</item>
+        <item>Sübhâneke</item>
+        <item>Hemen ayağa kalkarak</item>
+    </string-array>
+    <string-array name="learn_step_wrong_two">
+        <item>Esselâmü aleyküm</item>
+        <item>Saçlarımızı</item>
+        <item>Hiçbir şey yapmayız</item>
+        <item>Gözümüze</item>
+        <item>Yalnız alnımızı</item>
+        <item>Hangisi olursa</item>
+        <item>Yalnız parmaklarımızı</item>
+        <item>Hiçbir şey yapmayız</item>
+        <item>Ayakkabımızı</item>
+        <item>Ayak tabanlarımızı</item>
+        <item>Dizlerimize kadar</item>
+        <item>Yüzümüzü</item>
+        <item>Âmin</item>
+        <item>Pencereye doğru</item>
+        <item>Gözümüzü kapatıp uyuruz</item>
+        <item>Âmin</item>
+        <item>Rabbenâ âtinâ</item>
+        <item>Nâs</item>
+        <item>Hiçbir şey</item>
+        <item>Kıyam</item>
+        <item>Esselâmü aleyküm</item>
+        <item>Selam</item>
+        <item>Semi\'allâhü limen hamideh</item>
+        <item>Selam veririz</item>
+        <item>Yalnız ellerimiz</item>
+        <item>Üç</item>
+        <item>Hiçbir sure</item>
+        <item>Dimdik ayakta</item>
+        <item>Selam üzerinize olsun</item>
+        <item>Elhamdülillah</item>
+        <item>Ayağa kalkarız</item>
+        <item>Rükûya gideriz</item>
+        <item>Fâtiha</item>
+        <item>Ezan</item>
+        <item>Ezan</item>
+        <item>Önce sola, sonra sağa selam vererek</item>
+    </string-array>
+    <string-array name="learn_step_info">
+        <item>Abdest almaya niyet eder, \"Bismillâhirrahmânirrahîm\" diyerek başlarız.</item>
+        <item>Ellerimizi bileklerimize kadar üç kez yıkarız, parmak aralarını da unutmayız.</item>
+        <item>Sağ elimizle ağzımıza su alır, üç kez çalkalayıp dökeriz.</item>
+        <item>Burnumuza üç kez su çekip temizleriz.</item>
+        <item>Yüzümüzün tamamını üç kez yıkarız: her seferinde avuçlarımıza yeniden su alırız. Yüzü yıkamak abdestin farzlarındandır.</item>
+        <item>Peygamberimiz (s.a.v.) temizlikte sağdan başlamayı severdi. Sağ kolumuzu dirseğimizle beraber üç kez yıkarız.</item>
+        <item>Sol kolumuzu da dirseğimizle beraber üç kez yıkarız. Kolları dirseklerle beraber yıkamak abdestin farzlarındandır.</item>
+        <item>Mesh, ıslak elle sıvazlamak demektir. Başı meshetmek abdestin farzlarındandır.</item>
+        <item>Kulaklarımızın içini ve arkasını ıslak parmaklarımızla meshederiz.</item>
+        <item>Ellerimizin dışıyla ensemizi meshederiz. Hanefi mezhebinde ense meshi abdestin edeplerindendir. Ayaklarımızı bundan sonra yıkarız.</item>
+        <item>Önce sağ ayağımızı topuğumuzla beraber üç kez yıkar, parmak aralarını ovarız. Ayakları topuklarla beraber yıkamak abdestin farzlarındandır.</item>
+        <item>Sol ayağımızı da topuğumuzla beraber üç kez yıkarız.</item>
+        <item>Abdestten sonra \"Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh\" demek güzeldir.</item>
+        <item>Namazda Mekke\'deki Kâbe\'ye doğru döneriz. Buna kıble denir. Seccademizi kıbleye doğru serdik; üstündeki mihrap deseninin ucu kıbleyi gösteriyor.</item>
+        <item>\"Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya\" diye niyet ederiz. Ameller niyetlere göredir.</item>
+        <item>Ellerimizi kaldırıp \"Allâhu Ekber\" deriz ve namaza başlarız. Buna iftitah tekbiri denir.</item>
+        <item>Ayakta ellerimizi bağlarız ve Sübhâneke duasını okuruz.</item>
+        <item>Eûzü besmele çekip Fâtiha suresini okuruz. Fâtiha\'yı okumayanın namazı olmaz.</item>
+        <item>Fâtiha\'dan sonra Kur\'an\'dan bir sure ya da birkaç ayet okuruz. Buna zamm-ı sure denir.</item>
+        <item>\"Allâhu Ekber\" diyerek eğiliriz, ellerimizle dizlerimizi tutarız ve üç kez \"Sübhâne rabbiye\'l-azîm\" deriz.</item>
+        <item>Doğrulurken \"Semi\'allâhü limen hamideh\", dimdik durunca \"Rabbenâ leke\'l-hamd\" deriz.</item>
+        <item>\"Allâhu Ekber\" diyerek önce dizlerimizi, sonra ellerimizi, sonra alnımızı ve burnumuzu yere koyarız. Kul Rabbine en çok secdede yakın olur.</item>
+        <item>Secdede üç kez \"Sübhâne rabbiye\'l-a\'lâ\" deriz.</item>
+        <item>\"Allâhu Ekber\" diyerek doğrulur, biraz otururuz.</item>
+        <item>\"Allâhu Ekber\" deyip ikinci kez secdeye gideriz. Peygamberimiz yedi organ üzerine secde etmeyi emretti.</item>
+        <item>Her rekatta iki secde vardır. Şimdi \"Allâhu Ekber\" diyerek ikinci rekat için ayağa kalkıyoruz.</item>
+        <item>İkinci rekatta besmele çekip Fâtiha\'yı, ardından bir sure (burada Kevser) okuruz.</item>
+        <item>Rükûda başımızı ne yukarı kaldırırız ne aşağı sarkıtırız; sırtımız dümdüz olur.</item>
+        <item>Rükûdan doğrulup \"Rabbimiz, hamd sanadır\" anlamına gelen \"Rabbenâ leke\'l-hamd\" sözünü söyleriz.</item>
+        <item>Her eğilip kalkışta \"Allâhu Ekber\" deriz.</item>
+        <item>Kısa oturuştan sonra \"Allâhu Ekber\" deyip ikinci kez secdeye gideriz.</item>
+        <item>İki rekatı bitirdik. \"Allâhu Ekber\" diyerek doğrulur ve son oturuşa otururuz.</item>
+        <item>Oturuşta önce Ettehiyyâtü duasını okuruz.</item>
+        <item>Peygamberimize salavat getiren Allâhümme salli ve Allâhümme bârik dualarını okuruz.</item>
+        <item>Rabbenâ âtinâ ve Rabbenağfirlî dualarını okuruz.</item>
+        <item>Başımızı önce sağa, sonra sola çevirip \"Esselâmü aleyküm ve rahmetullah\" deriz. Namazımız tamam!</item>
+    </string-array>
+    <string-array name="learn_recitation_titles">
+        <item>Besmele</item>
+        <item>Kelime-i şehâdet</item>
+        <item>Niyet</item>
+        <item>Sübhâneke</item>
+        <item>Eûzü besmele</item>
+        <item>Fâtiha suresi</item>
+        <item>İhlâs suresi</item>
+        <item>Kevser suresi</item>
+        <item>Rükû tesbihi</item>
+        <item>Rükûdan doğrulurken</item>
+        <item>Dimdik durunca</item>
+        <item>Secde tesbihi</item>
+        <item>Ettehiyyâtü</item>
+        <item>Allâhümme salli</item>
+        <item>Allâhümme bârik</item>
+        <item>Rabbenâ duaları</item>
+        <item>Selam</item>
+    </string-array>
+    <string-array name="learn_recitation_meanings">
+        <item>Rahmân ve Rahîm olan Allah\'ın adıyla.</item>
+        <item>Şahitlik ederim ki Allah\'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O\'nun kulu ve elçisidir.</item>
+        <item>Niyet kalple yapılır; dille söylemek de güzeldir.</item>
+        <item>Allah\'ım! Seni her türlü eksiklikten uzak tutar ve överim. Senin adın mübarektir. Şanın yücedir. Senden başka ilah yoktur.</item>
+        <item>Kovulmuş şeytandan Allah\'a sığınırım. Rahmân ve Rahîm olan Allah\'ın adıyla.</item>
+        <item>Hamd, âlemlerin Rabbi Allah\'a mahsustur. O, Rahmân\'dır, Rahîm\'dir. Din gününün sahibidir. Yalnız sana ibadet ederiz ve yalnız senden yardım dileriz. Bizi doğru yola ilet. Kendilerine nimet verdiklerinin yoluna; gazaba uğramışların ve sapmışların yoluna değil.</item>
+        <item>De ki: O, Allah\'tır, bir tektir. Allah Samed\'dir; her şey O\'na muhtaçtır, O hiçbir şeye muhtaç değildir. O doğurmamış ve doğmamıştır. Hiçbir şey O\'na denk değildir.</item>
+        <item>Şüphesiz biz sana Kevser\'i verdik. Şimdi sen Rabbin için namaz kıl, kurban kes. Asıl soyu kesik olan, şüphesiz sana buğzedendir.</item>
+        <item>Büyük Rabbimi her türlü eksiklikten uzak tutarım. (3 kez)</item>
+        <item>Allah, kendisine hamd edeni işitir.</item>
+        <item>Rabbimiz, hamd sanadır.</item>
+        <item>En yüce olan Rabbimi her türlü eksiklikten uzak tutarım. (3 kez)</item>
+        <item>Bütün dualar, ibadetler ve güzel sözler Allah içindir. Ey Peygamber! Allah\'ın selamı, rahmeti ve bereketi senin üzerine olsun. Selam bizim üzerimize ve Allah\'ın salih kulları üzerine olsun. Şahitlik ederim ki Allah\'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O\'nun kulu ve elçisidir.</item>
+        <item>Allah\'ım! İbrahim\'e ve ailesine rahmet ettiğin gibi Muhammed\'e ve ailesine de rahmet et. Şüphesiz sen övülmeye layıksın, şanı yüce olansın.</item>
+        <item>Allah\'ım! İbrahim\'e ve ailesine bereket verdiğin gibi Muhammed\'e ve ailesine de bereket ver. Şüphesiz sen övülmeye layıksın, şanı yüce olansın.</item>
+        <item>Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi cehennem azabından koru. Rabbimiz! Hesap gününde beni, anamı, babamı ve bütün müminleri bağışla.</item>
+        <item>Allah\'ın selamı ve rahmeti üzerinize olsun.</item>
+    </string-array>
+    <string name="learn_intention">Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya.</string>
+    <string name="learn_greet_right">Sağa selam →</string>
+    <string name="learn_greet_left">← Sola selam</string>
 </resources>

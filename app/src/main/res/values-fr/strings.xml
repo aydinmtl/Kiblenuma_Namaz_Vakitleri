@@ -76,6 +76,7 @@
     <string name="notif_perm_off">⚠ Les notifications sont désactivées. Touchez pour les activer.</string>
     <string name="exact_alarm_needed">⚠ Pour des notifications à l\'heure exacte, autorisez « Alarmes et rappels ». Touchez.</string>
     <string name="loc_perm_denied">Autorisation de position refusée. Vous pouvez choisir votre ville à la main.</string>
+    <string name="loc_selection_cancelled">La sélection a été annulée. Veuillez choisir à nouveau le lieu.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Source : calculé à partir de votre position (paramètres de la Diyanet)\nLa liste de la Diyanet n\'a pas de lieu proche de cette position. Les horaires peuvent différer de quelques minutes de la liste officielle.</string>
@@ -359,4 +360,450 @@
     <string name="zk_target">Objectif</string>
     <string name="zk_target_row">Objectif : %1$s  ›</string>
     <string name="zk_rounds">Tours terminés : %1$d  (total %2$d)</string>
+
+    <!-- Learning labels -->
+    <string name="learn_static_00">Retour</string>
+    <string name="learn_static_01">Lire à voix haute</string>
+    <string name="learn_static_02">J\'apprends la prière</string>
+    <string name="learn_static_03">À chaque bonne réponse, ton ami fait ses ablutions ou prie. Pourras-tu l\'aider à terminer la prière de l\'aube ?</string>
+    <string name="learn_static_04">Avec qui veux-tu jouer ?</string>
+    <string name="learn_static_05">Ahmet fait les ablutions. Choisis Ahmet pour jouer à cette partie.</string>
+    <string name="learn_static_06">🔊  Récitation audio</string>
+    <string name="learn_static_07">Les ablutions et les deux unités obligatoires de la prière de l\'aube suivent l\'école hanafite. Les étapes documentées indiquent le verset ou le numéro du hadith.</string>
+    <string name="learn_static_08">Enfant faisant ses ablutions et priant</string>
+    <string name="learn_static_09">⏭  Passer la récitation</string>
+    <string name="learn_static_10">Pas maintenant</string>
+    <string name="learn_static_11">🔁  Rejouer</string>
+    <string name="learn_static_12">Quitter</string>
+    <string name="learn_static_13">Cercle familial</string>
+    <string name="learn_static_14">Apprenons ensemble. Chaque nouvelle bonne réponse fait grandir notre arbre familial.</string>
+    <string name="learn_static_15">Quiz</string>
+    <string name="learn_static_16">Sur l\'islam</string>
+    <string name="learn_static_17">Jeu d\'ablutions et de prière pour enfants</string>
+    <string name="learn_static_18">Notifier la question du jour à la prière du coucher du soleil</string>
+    <string name="learn_static_19">Nos objectifs familiaux</string>
+    <string name="learn_static_20">+ Ajouter un objectif</string>
+    <string name="learn_static_21">Réinitialiser l\'arbre</string>
+    <string name="learn_static_22">Choisis ton niveau pour des questions adaptées.</string>
+    <string name="learn_static_23">Les questions sont originales. Les références indiquent le verset ou le numéro du hadith. Les questions de droit suivent l\'école hanafite. Après ta réponse, tu peux signaler une erreur.</string>
+    <string name="learn_static_24">Choisir un niveau</string>
+    <string name="learn_static_25">Accueil du Cercle familial</string>
+    <string name="learn_static_26">Fermer ✕</string>
+    <string name="learn_static_27">QIBLA</string>
+    <string-array name="learn_levels">
+        <item>Facile</item>
+        <item>Intermédiaire</item>
+        <item>Difficile</item>
+    </string-array>
+    <string-array name="learn_level_hints">
+        <item>Récits des prophètes, bases et bon comportement</item>
+        <item>Vie du Prophète, culte et Coran</item>
+        <item>Histoire de l’islam, sciences et droit</item>
+    </string-array>
+    <string-array name="learn_tree_stages">
+        <item>Graine</item>
+        <item>Pousse</item>
+        <item>Jeune plant</item>
+        <item>Jeune arbre</item>
+        <item>Arbre fleuri</item>
+        <item>Arbre fruitier</item>
+        <item>Grand platane</item>
+    </string-array>
+    <string-array name="learn_result_titles">
+        <item>Révisons ensemble</item>
+        <item>Bon début !</item>
+        <item>Très bien !</item>
+        <item>Machallah !</item>
+    </string-array>
+    <string-array name="learn_chapters">
+        <item>Ablutions</item>
+        <item>Prière</item>
+    </string-array>
+    <string name="learn_option">Réponse %1$s : %2$s.</string>
+    <string name="learn_report_title">Cercle familial : erreurs possibles</string>
+    <string name="learn_report_missing">(question retirée de la banque)</string>
+    <string name="learn_report_answer">Réponse : %1$s</string>
+    <string name="learn_report_note">Note : %1$s</string>
+
+    <!-- Learning UI -->
+    <string name="learn_ui_000">Veux-tu reprendre où tu en étais ?</string>
+    <string name="learn_ui_001">%1$s · Question %2$s / %3$s · %4$s bonnes réponses</string>
+    <string name="learn_ui_002">Continuer</string>
+    <string name="learn_ui_003">Nouvelle partie</string>
+    <string name="learn_ui_004">Annuler</string>
+    <string name="learn_ui_005">Notre arbre : %1$s · %2$s bonnes réponses au total</string>
+    <string name="learn_ui_006">\nEncore %2$s bonnes réponses pour %1$s</string>
+    <string name="learn_ui_007">\nNotre arbre a atteint sa taille maximale !</string>
+    <string name="learn_ui_008">💡 Question du jour ✓ (déjà répondue)</string>
+    <string name="learn_ui_009">💡 Question du jour</string>
+    <string name="learn_ui_010">🔁 Revoir mes erreurs</string>
+    <string name="learn_ui_011">⚑ Mes questions signalées</string>
+    <string name="learn_ui_012">▶ Continuer</string>
+    <string name="learn_ui_013">Niveau %1$s. %2$s.</string>
+    <string name="learn_ui_014"> Une partie est en cours.</string>
+    <string name="learn_ui_015">Une partie est en cours</string>
+    <string name="learn_ui_016">%1$s : tu en es à la question %2$s. Que faire ?</string>
+    <string name="learn_ui_017">Nouvelle partie : %1$s</string>
+    <string name="learn_ui_018">Revoir les erreurs</string>
+    <string name="learn_ui_019">Niveau %1$s</string>
+    <string name="learn_ui_020">Ex. : Maman, Papa, Zeynep</string>
+    <string name="learn_ui_021">Séparez les noms par des virgules ; chacun joue à son tour. Laissez vide pour jouer seul.</string>
+    <string name="learn_ui_022">Qui joue ?</string>
+    <string name="learn_ui_023">Commencer</string>
+    <string name="learn_ui_024">%1$s · Question %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_025">%1$s, bonne réponse</string>
+    <string name="learn_ui_026">%1$s, ta réponse, incorrecte</string>
+    <string name="learn_ui_027">✓ Bonne réponse !</string>
+    <string name="learn_ui_028">✗ Bonne réponse : %1$s</string>
+    <string name="learn_ui_029">\nSource : %1$s</string>
+    <string name="learn_ui_030">\n🌱 +1 pour notre arbre</string>
+    <string name="learn_ui_031">\n(Tu avais déjà répondu correctement ; seules les nouvelles connaissances font grandir l\'arbre.)</string>
+    <string name="learn_ui_032">Voir le résultat ›</string>
+    <string name="learn_ui_033">Question suivante ›</string>
+    <string name="learn_ui_034">%1$s · Question %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_035">La voix de la langue choisie est indisponible. Installe-la dans les réglages de synthèse vocale du téléphone.</string>
+    <string name="learn_ui_036">Fermer</string>
+    <string name="learn_ui_037">🔊 Lire</string>
+    <string name="learn_ui_038">\nSource : </string>
+    <string name="learn_ui_039">\n\n🌱 +1 pour notre arbre</string>
+    <string name="learn_ui_040">Question du jour</string>
+    <string name="learn_ui_041">OK</string>
+    <string name="learn_ui_042">Réinitialiser l\'arbre ?</string>
+    <string name="learn_ui_043">Notre arbre redevient une graine et toutes les questions peuvent à nouveau le faire grandir. </string>
+    <string name="learn_ui_044">Les objectifs et la liste d\'erreurs sont conservés. Cette action est irréversible.</string>
+    <string name="learn_ui_045">Réinitialiser</string>
+    <string name="learn_ui_046">⚑ Signalée (toucher pour retirer)</string>
+    <string name="learn_ui_047">⚑ Signaler une erreur</string>
+    <string name="learn_ui_048">Quelle erreur ? (facultatif)</string>
+    <string name="learn_ui_049">Signaler une erreur</string>
+    <string name="learn_ui_050">La question est signalée sur ton téléphone. Tu peux partager la liste depuis l\'accueil du Cercle familial.</string>
+    <string name="learn_ui_051">Signaler</string>
+    <string name="learn_ui_052">Mes questions signalées</string>
+    <string name="learn_ui_053">Partager les questions signalées</string>
+    <string name="learn_ui_054">Partager</string>
+    <string name="learn_ui_055">Vider la liste</string>
+    <string name="learn_ui_056">Supprimer tous les signalements ?</string>
+    <string name="learn_ui_057">Supprimer</string>
+    <string name="learn_ui_058">Au tour de %1$s</string>
+    <string name="learn_ui_059">%1$s étoiles sur 3</string>
+    <string name="learn_ui_060">%2$s bonnes réponses sur %1$s</string>
+    <string name="learn_ui_061"> bonnes réponses</string>
+    <string name="learn_ui_062">\n\nRetrouve tes erreurs dans « Revoir mes erreurs ».</string>
+    <string name="learn_ui_063">Revoir encore les erreurs</string>
+    <string name="learn_ui_064">Nouvelle partie : %1$s</string>
+    <string name="learn_ui_065">Notre arbre familial est maintenant : %1$s !</string>
+    <string name="learn_ui_066">\n\nObjectif atteint :</string>
+    <string name="learn_ui_067">🌳 Notre arbre a grandi</string>
+    <string name="learn_ui_068">Alhamdoulillah</string>
+    <string name="learn_ui_069">Aucun objectif pour le moment. Exemple : « Quand notre arbre portera des fruits, nous irons manger une glace ensemble. »</string>
+    <string name="learn_ui_070">Atteint · </string>
+    <string name="learn_ui_071">Étape visée : </string>
+    <string name="learn_ui_072">Modifier</string>
+    <string name="learn_ui_073">Supprimer cet objectif ?</string>
+    <string name="learn_ui_074">Appuie longuement sur un objectif pour le modifier ou le supprimer.</string>
+    <string name="learn_ui_075">Ex. : Aller manger une glace ensemble</string>
+    <string name="learn_ui_076">À quelle étape de notre arbre ?</string>
+    <string name="learn_ui_077">%1$s (%2$s bonnes réponses)</string>
+    <string name="learn_ui_078">Modifier l\'objectif</string>
+    <string name="learn_ui_079">Nouvel objectif familial</string>
+    <string name="learn_ui_080">Enregistrer</string>
+    <string name="learn_ui_081">Ajouter</string>
+    <string name="learn_ui_082">Activé : les invocations et sourates sont récitées à voix haute.</string>
+    <string name="learn_ui_083">Désactivé : seul le texte défile, sans son.</string>
+    <string name="learn_ui_084">Reprendre à l\'étape %1$s / %2$s</string>
+    <string name="learn_ui_085">%1$s étapes</string>
+    <string name="learn_ui_086">Tu en étais à l\'étape %1$s sur %2$s. Où commencer ?</string>
+    <string name="learn_ui_087">Reprendre</string>
+    <string name="learn_ui_088">Recommencer</string>
+    <string name="learn_ui_089">🏆 Tu as terminé la prière %1$s fois</string>
+    <string name="learn_ui_090">%1$s %2$s · Préparation</string>
+    <string name="learn_ui_091">Déroulons le tapis vers la qibla\n(touche l\'image pour passer)</string>
+    <string name="learn_ui_092">%1$s %2$s · Étape %3$s / %4$s</string>
+    <string name="learn_ui_093">Continuer ›</string>
+    <string name="learn_ui_094">%1$s, incorrect</string>
+    <string name="learn_ui_095">Presque ! Regarde la réponse encadrée d\'or. 🙂</string>
+    <string name="learn_ui_096">Essaie encore, tu peux y arriver ! 💪</string>
+    <string name="learn_ui_097">%1$s, correct</string>
+    <string name="learn_ui_098">Étape %1$s · %2$s</string>
+    <string name="learn_ui_099">✓ Bravo !\n%1$s</string>
+    <string name="learn_ui_100">\nSource : %1$s</string>
+    <string name="learn_ui_101">\n\nLes ablutions sont terminées ! Passons à la prière ?</string>
+    <string name="learn_ui_102">🕌  Oui, passons à la prière</string>
+    <string name="learn_ui_103">\n\nSens : %1$s</string>
+    <string name="learn_ui_104">\nSource : %1$s</string>
+    <string name="learn_ui_105">%1$s. %2$s. Sens : %3$s</string>
+    <string name="learn_ui_106">Machallah ! 🎉</string>
+    <string name="learn_ui_107">Tu as trouvé toutes les réponses. %1$s a accompli toute la prière de l\'aube avec toi.\n\n</string>
+    <string name="learn_ui_108">À ton tour : faisons ces gestes ensemble à la prochaine prière !</string>
+
+    <!-- Prayer learning content (stable step and recitation order) -->
+    <string-array name="learn_step_titles">
+        <item>Commençons par la basmala</item>
+        <item>Lavons nos mains</item>
+        <item>Rinçons notre bouche</item>
+        <item>Nettoyons notre nez</item>
+        <item>Lavons notre visage</item>
+        <item>Lavons notre bras droit</item>
+        <item>Lavons notre bras gauche</item>
+        <item>Essuyons notre tête</item>
+        <item>Essuyons nos oreilles</item>
+        <item>Essuyons notre nuque</item>
+        <item>Lavons notre pied droit</item>
+        <item>Lavons notre pied gauche</item>
+        <item>Nos ablutions sont terminées !</item>
+        <item>Tournons-nous vers la qibla</item>
+        <item>Formulons notre intention</item>
+        <item>Le takbir d\'ouverture</item>
+        <item>Récitons Subhanaka</item>
+        <item>Récitons Al-Fatiha</item>
+        <item>Récitons une sourate</item>
+        <item>L\'inclinaison</item>
+        <item>Redressons-nous</item>
+        <item>La prosternation</item>
+        <item>Louange en prosternation</item>
+        <item>Entre deux prosternations</item>
+        <item>La deuxième prosternation</item>
+        <item>Levons-nous pour la deuxième unité</item>
+        <item>Al-Fatiha et une sourate</item>
+        <item>Inclinons-nous de nouveau</item>
+        <item>Redressons-nous de nouveau</item>
+        <item>Prosternons-nous de nouveau</item>
+        <item>La dernière prosternation</item>
+        <item>La dernière position assise</item>
+        <item>At-Tahiyyat</item>
+        <item>Salli et Barik</item>
+        <item>L\'invocation Rabbana</item>
+        <item>La salutation finale</item>
+    </string-array>
+    <string-array name="learn_step_questions">
+        <item>Que disons-nous au début des ablutions ?</item>
+        <item>Que lavons-nous d\'abord ?</item>
+        <item>Que faisons-nous après avoir pris de l\'eau dans la bouche ?</item>
+        <item>Après la bouche, où mettons-nous de l\'eau ?</item>
+        <item>Quelles parties du visage lavons-nous ?</item>
+        <item>Par quel bras commençons-nous ?</item>
+        <item>Jusqu\'où lavons-nous le bras ?</item>
+        <item>Que faisons-nous sur la tête ?</item>
+        <item>Après la tête, qu\'essuyons-nous avec les doigts mouillés ?</item>
+        <item>Après les oreilles, qu\'essuyons-nous avec le dos des mains ?</item>
+        <item>Jusqu\'où lavons-nous les pieds ?</item>
+        <item>Que lavons-nous après le pied droit ?</item>
+        <item>Que peut-on dire après les ablutions ?</item>
+        <item>Dans quelle direction prions-nous ?</item>
+        <item>Que faisons-nous dans notre cœur avant de prier ?</item>
+        <item>Par quels mots commençons-nous la prière ?</item>
+        <item>Les mains croisées, quelle invocation récitons-nous d\'abord debout ?</item>
+        <item>Quelle sourate récitons-nous dans chaque unité de prière ?</item>
+        <item>Que récitons-nous après Al-Fatiha ?</item>
+        <item>Nous nous inclinons, les mains sur les genoux. Comment s\'appelle ce geste ?</item>
+        <item>Que disons-nous en nous relevant de l\'inclinaison ?</item>
+        <item>Nous posons maintenant le front au sol. Comment s\'appelle ce geste ?</item>
+        <item>Que disons-nous en prosternation ?</item>
+        <item>Que faisons-nous entre deux prosternations ?</item>
+        <item>Quelles parties du corps touchent le sol en prosternation ?</item>
+        <item>Combien de prosternations faisons-nous par unité ?</item>
+        <item>Quelle sourate récitons-nous aussi en premier dans la deuxième unité ?</item>
+        <item>Comment gardons-nous le dos en inclinaison ?</item>
+        <item>Que signifie « Rabbenâ leke\'l-hamd » ?</item>
+        <item>Que disons-nous en allant nous prosterner ?</item>
+        <item>Que faisons-nous après la pause assise entre deux prosternations ?</item>
+        <item>La prière obligatoire de l\'aube a deux unités. Que faisons-nous après les prosternations de la deuxième unité ?</item>
+        <item>Quelle invocation récitons-nous d\'abord assis ?</item>
+        <item>Après At-Tahiyyat, quelles prières de bénédiction récitons-nous pour notre Prophète ?</item>
+        <item>Quelle invocation récitons-nous ensuite ?</item>
+        <item>Comment terminons-nous la prière ?</item>
+    </string-array>
+    <string-array name="learn_step_correct">
+        <item>Bismillâhirrahmânirrahîm</item>
+        <item>Nos mains jusqu\'aux poignets</item>
+        <item>Nous rinçons trois fois</item>
+        <item>Dans notre nez</item>
+        <item>Du front au-dessous du menton, d\'une oreille à l\'autre</item>
+        <item>Le bras droit</item>
+        <item>Le coude compris</item>
+        <item>Nous passons une main mouillée</item>
+        <item>Nos oreilles</item>
+        <item>Notre nuque</item>
+        <item>Les chevilles comprises</item>
+        <item>Le pied gauche</item>
+        <item>L\'attestation de foi</item>
+        <item>Vers la qibla, en direction de la Kaaba</item>
+        <item>Nous décidons quelle prière accomplir</item>
+        <item>Allâhu Ekber</item>
+        <item>Sübhâneke</item>
+        <item>Fâtiha</item>
+        <item>Une courte sourate du Coran, comme Al-Ikhlas</item>
+        <item>L\'inclinaison (ruku)</item>
+        <item>Semi\'allâhü limen hamideh</item>
+        <item>La prosternation (sujud)</item>
+        <item>Sübhâne rabbiye\'l-a\'lâ</item>
+        <item>Nous nous asseyons un instant</item>
+        <item>Le front, le nez, les mains, les genoux et les orteils</item>
+        <item>Deux</item>
+        <item>Fâtiha</item>
+        <item>Bien droit</item>
+        <item>Seigneur, à Toi la louange</item>
+        <item>Allâhu Ekber</item>
+        <item>Nous nous prosternons de nouveau</item>
+        <item>Nous nous asseyons</item>
+        <item>Ettehiyyâtü</item>
+        <item>Allâhümme salli et Allâhümme bârik</item>
+        <item>Rabbenâ âtinâ</item>
+        <item>En saluant à droite puis à gauche</item>
+    </string-array>
+    <string-array name="learn_step_wrong_one">
+        <item>Elhamdülillah</item>
+        <item>Nos pieds</item>
+        <item>Nous avalons</item>
+        <item>Dans nos oreilles</item>
+        <item>Seulement le nez</item>
+        <item>Le bras gauche</item>
+        <item>Jusqu\'au poignet</item>
+        <item>Nous la lavons au savon</item>
+        <item>Nos genoux</item>
+        <item>Nos genoux</item>
+        <item>Seulement le bout des orteils</item>
+        <item>Encore le pied droit</item>
+        <item>Sübhâneke</item>
+        <item>Vers le soleil</item>
+        <item>Nous chantons</item>
+        <item>Elhamdülillah</item>
+        <item>Ettehiyyâtü</item>
+        <item>Kevser</item>
+        <item>L\'appel à la prière</item>
+        <item>La prosternation (sujud)</item>
+        <item>Sübhâne rabbiye\'l-a\'lâ</item>
+        <item>L\'inclinaison (ruku)</item>
+        <item>Sübhâne rabbiye\'l-azîm</item>
+        <item>Nous nous levons</item>
+        <item>Seulement le front</item>
+        <item>Une</item>
+        <item>İhlâs</item>
+        <item>Courbé</item>
+        <item>Allah est le plus grand</item>
+        <item>Âmin</item>
+        <item>Nous terminons la prière</item>
+        <item>Nous nous levons pour une troisième unité</item>
+        <item>Sübhâneke</item>
+        <item>Sübhâneke</item>
+        <item>Sübhâneke</item>
+        <item>En nous levant immédiatement</item>
+    </string-array>
+    <string-array name="learn_step_wrong_two">
+        <item>Esselâmü aleyküm</item>
+        <item>Nos cheveux</item>
+        <item>Nous ne faisons rien</item>
+        <item>Dans nos yeux</item>
+        <item>Seulement le front</item>
+        <item>N\'importe lequel</item>
+        <item>Seulement les doigts</item>
+        <item>Nous ne faisons rien</item>
+        <item>Nos chaussures</item>
+        <item>La plante des pieds</item>
+        <item>Jusqu\'aux genoux</item>
+        <item>Le visage</item>
+        <item>Âmin</item>
+        <item>Vers la fenêtre</item>
+        <item>Nous fermons les yeux pour dormir</item>
+        <item>Âmin</item>
+        <item>Rabbenâ âtinâ</item>
+        <item>Nâs</item>
+        <item>Rien</item>
+        <item>La station debout (qiyam)</item>
+        <item>Esselâmü aleyküm</item>
+        <item>La salutation finale</item>
+        <item>Semi\'allâhü limen hamideh</item>
+        <item>Nous saluons</item>
+        <item>Seulement les mains</item>
+        <item>Trois</item>
+        <item>Aucune sourate</item>
+        <item>Debout verticalement</item>
+        <item>Que la paix soit sur vous</item>
+        <item>Elhamdülillah</item>
+        <item>Nous nous levons</item>
+        <item>Nous nous inclinons</item>
+        <item>Fâtiha</item>
+        <item>L\'appel à la prière</item>
+        <item>L\'appel à la prière</item>
+        <item>En saluant à gauche puis à droite</item>
+    </string-array>
+    <string-array name="learn_step_info">
+        <item>Nous avons l\'intention de faire nos ablutions et commençons en disant « Bismillâhirrahmânirrahîm ».</item>
+        <item>Nous lavons nos mains jusqu\'aux poignets trois fois, sans oublier entre les doigts.</item>
+        <item>Avec la main droite, nous prenons de l\'eau dans la bouche, la rinçons puis recrachons, trois fois.</item>
+        <item>Nous aspirons doucement de l\'eau dans le nez et le nettoyons trois fois.</item>
+        <item>Nous lavons tout le visage trois fois, en reprenant de l\'eau à chaque fois. Laver le visage est une obligation des ablutions.</item>
+        <item>Notre Prophète (paix sur lui) aimait commencer la toilette par la droite. Nous lavons le bras droit, coude compris, trois fois.</item>
+        <item>Nous lavons aussi le bras gauche, coude compris, trois fois. Laver les bras avec les coudes est une obligation des ablutions.</item>
+        <item>Essuyer consiste à passer une main mouillée sur une surface. Essuyer la tête est une obligation des ablutions.</item>
+        <item>Nous essuyons l\'intérieur et l\'arrière des oreilles avec les doigts mouillés.</item>
+        <item>Nous essuyons la nuque avec le dos des mains. Dans l\'école hanafite, cela fait partie des bonnes manières des ablutions. Nous lavons ensuite les pieds.</item>
+        <item>Nous lavons d\'abord le pied droit, cheville comprise, trois fois, en frottant entre les orteils. Laver les pieds avec les chevilles est une obligation des ablutions.</item>
+        <item>Nous lavons aussi le pied gauche, cheville comprise, trois fois.</item>
+        <item>Après les ablutions, il est bon de dire « Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh ».</item>
+        <item>Nous prions en direction de la Kaaba à La Mecque : c\'est la qibla. Nous avons orienté notre tapis vers elle ; la pointe du motif du mihrab indique cette direction.</item>
+        <item>Nous avons l\'intention d\'accomplir la prière obligatoire de l\'aube d\'aujourd\'hui pour Allah. Les actes valent par leurs intentions.</item>
+        <item>Nous levons les mains, disons « Allâhu Ekber » et commençons la prière. C\'est le takbir d\'ouverture.</item>
+        <item>Debout, nous croisons les mains et récitons l\'invocation Subhanaka.</item>
+        <item>Nous cherchons refuge auprès d\'Allah, disons la basmala puis récitons Al-Fatiha. La prière n\'est pas valable sans Al-Fatiha.</item>
+        <item>Après Al-Fatiha, nous récitons une sourate ou quelques versets du Coran. C\'est la récitation supplémentaire.</item>
+        <item>Nous disons « Allâhu Ekber », nous inclinons, tenons nos genoux et disons trois fois « Sübhâne rabbiye\'l-azîm ».</item>
+        <item>En nous relevant, nous disons « Semi\'allâhü limen hamideh », puis, bien droits, « Rabbenâ leke\'l-hamd ».</item>
+        <item>En disant « Allâhu Ekber », nous posons les genoux, puis les mains, le front et le nez au sol. Le serviteur est le plus proche de son Seigneur pendant la prosternation.</item>
+        <item>En prosternation, nous disons trois fois « Sübhâne rabbiye\'l-a\'lâ ».</item>
+        <item>Nous disons « Allâhu Ekber », nous redressons et nous asseyons un instant.</item>
+        <item>Nous disons « Allâhu Ekber » et nous prosternons une deuxième fois. Le Prophète a ordonné de se prosterner sur sept parties du corps.</item>
+        <item>Chaque unité comprend deux prosternations. Nous disons maintenant « Allâhu Ekber » et nous levons pour la deuxième unité.</item>
+        <item>Dans la deuxième unité, nous disons la basmala, récitons Al-Fatiha puis une autre sourate, ici Al-Kawthar.</item>
+        <item>En inclinaison, nous ne relevons pas la tête et ne la laissons pas pendre ; notre dos reste droit.</item>
+        <item>Nous nous redressons et disons « Rabbenâ leke\'l-hamd », qui signifie « Seigneur, à Toi la louange ».</item>
+        <item>Nous disons « Allâhu Ekber » en nous baissant et en nous relevant.</item>
+        <item>Après une courte pause assise, nous disons « Allâhu Ekber » et nous prosternons une deuxième fois.</item>
+        <item>Nous avons terminé deux unités. En disant « Allâhu Ekber », nous nous redressons pour la dernière position assise.</item>
+        <item>Assis, nous récitons d\'abord l\'invocation At-Tahiyyat.</item>
+        <item>Nous récitons Allahumma salli et Allahumma barik, demandant des bénédictions sur notre Prophète.</item>
+        <item>Nous récitons les invocations Rabbana atina et Rabbanaghfirli.</item>
+        <item>Nous tournons la tête à droite puis à gauche et disons « Esselâmü aleyküm ve rahmetullah ». Notre prière est terminée !</item>
+    </string-array>
+    <string-array name="learn_recitation_titles">
+        <item>Basmala</item>
+        <item>L\'attestation de foi</item>
+        <item>L\'intention</item>
+        <item>Subhanaka</item>
+        <item>Demande de protection et basmala</item>
+        <item>Sourate Al-Fatiha</item>
+        <item>Sourate Al-Ikhlas</item>
+        <item>Sourate Al-Kawthar</item>
+        <item>Louange dans l\'inclinaison</item>
+        <item>En se relevant de l\'inclinaison</item>
+        <item>Debout, bien droit</item>
+        <item>Louange en prosternation</item>
+        <item>At-Tahiyyat</item>
+        <item>Allahumma salli</item>
+        <item>Allahumma barik</item>
+        <item>Invocations Rabbana</item>
+        <item>La salutation finale</item>
+    </string-array>
+    <string-array name="learn_recitation_meanings">
+        <item>Au nom d\'Allah, le Tout Miséricordieux, le Très Miséricordieux.</item>
+        <item>J\'atteste qu\'il n\'y a de dieu qu\'Allah et que Muhammad est Son serviteur et Son messager.</item>
+        <item>L\'intention se fait dans le cœur ; il est également bon de l\'exprimer par des mots.</item>
+        <item>Ô Allah, gloire et louange à Toi. Ton nom est béni, Ta majesté est exaltée et il n\'y a de dieu que Toi.</item>
+        <item>Je cherche refuge auprès d\'Allah contre Satan le banni. Au nom d\'Allah, le Tout Miséricordieux, le Très Miséricordieux.</item>
+        <item>Louange à Allah, Seigneur de tous les mondes, le Tout Miséricordieux, le Très Miséricordieux, Maître du Jour du jugement. C\'est Toi seul que nous adorons et Toi seul dont nous implorons l\'aide. Guide-nous sur le droit chemin, celui de ceux que Tu as comblés de bienfaits, non de ceux qui ont encouru la colère ni des égarés.</item>
+        <item>Dis : Il est Allah, l\'Unique. Allah est Celui dont tous dépendent et qui ne dépend de personne. Il n\'engendre pas et n\'est pas engendré. Rien ne Lui est comparable.</item>
+        <item>Nous t\'avons certes accordé Al-Kawthar. Prie donc ton Seigneur et sacrifie. C\'est celui qui te déteste qui sera privé de postérité.</item>
+        <item>Gloire à mon Seigneur, le Magnifique. (3 fois)</item>
+        <item>Allah entend celui qui Le loue.</item>
+        <item>Seigneur, à Toi la louange.</item>
+        <item>Gloire à mon Seigneur, le Très-Haut. (3 fois)</item>
+        <item>Les salutations, les adorations et les bonnes paroles sont pour Allah. Ô Prophète, que la paix, la miséricorde et les bénédictions d\'Allah soient sur toi. Que la paix soit sur nous et sur les serviteurs vertueux d\'Allah. J\'atteste qu\'il n\'y a de dieu qu\'Allah et que Muhammad est Son serviteur et Son messager.</item>
+        <item>Ô Allah, accorde Ta miséricorde à Muhammad et à sa famille comme Tu l\'as accordée à Ibrahim et à sa famille. Tu es digne de louange et de gloire.</item>
+        <item>Ô Allah, bénis Muhammad et sa famille comme Tu as béni Ibrahim et sa famille. Tu es digne de louange et de gloire.</item>
+        <item>Seigneur, accorde-nous le bien ici-bas et dans l\'au-delà, et protège-nous du châtiment du Feu. Seigneur, pardonne-moi, ainsi qu\'à mes parents et à tous les croyants, au Jour du jugement.</item>
+        <item>Que la paix et la miséricorde d\'Allah soient sur vous.</item>
+    </string-array>
+    <string name="learn_intention">J\'ai l\'intention d\'accomplir aujourd\'hui la prière obligatoire de l\'aube pour Allah.</string>
+    <string name="learn_greet_right">Salutation à droite →</string>
+    <string name="learn_greet_left">← Salutation à gauche</string>
 </resources>

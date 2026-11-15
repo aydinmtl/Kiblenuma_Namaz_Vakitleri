@@ -68,10 +68,11 @@ class RefreshActivity : LangActivity() {
             done(getString(R.string.refresh_timeout), ok = false)
         }, TOTAL_TIMEOUT_MS)
 
-        if (canLocate) {
+        val request = if (canLocate) Store.automaticPlaceRequest(this) else null
+        if (request != null) {
             setStep(getString(R.string.refresh_finding_location))
             LocationHelper.current(this, maxAgeMs = 2 * 60_000L, timeoutMs = LOCATION_TIMEOUT_MS) { loc ->
-                work(loc, if (loc == null) getString(R.string.refresh_loc_failed) else null)
+                work(loc, if (loc == null) getString(R.string.refresh_loc_failed) else null, request)
             }
         } else {
             val note = when {
@@ -92,20 +93,25 @@ class RefreshActivity : LangActivity() {
         handler.postDelayed(secondsTicker, 1000)
     }
 
-    private fun work(loc: Location?, initialNote: String?) {
+    private fun work(loc: Location?, initialNote: String?, request: Pair<Long, String?>? = null) {
         if (finished) return
         val app = applicationContext
         Thread {
             var note = initialNote
             var newPlace: String? = null
 
-            if (loc != null) {
+            if (loc != null && request != null) {
                 val r = try {
-                    AutoLocation.resolve(app, loc) { msg -> runOnUiThread { setStep(msg) } }
+                    AutoLocation.resolve(app, loc, request) { msg -> runOnUiThread { setStep(msg) } }
                 } catch (e: Exception) {
-                    AutoLocation.Result.Failed(getString(R.string.no_internet))
+                    if (Store.isPlaceRequestCurrent(request)) AutoLocation.Result.Failed(getString(R.string.no_internet))
+                    else AutoLocation.Result.Discarded
                 }
                 when (r) {
+                    is AutoLocation.Result.Discarded -> {
+                        runOnUiThread { done(getString(R.string.loc_selection_cancelled), ok = false) }
+                        return@Thread
+                    }
                     is AutoLocation.Result.Changed -> newPlace = r.label
                     is AutoLocation.Result.Same -> {}
                     is AutoLocation.Result.Failed -> note = getString(R.string.refresh_failed_last, r.reason)

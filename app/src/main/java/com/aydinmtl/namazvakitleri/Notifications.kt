@@ -76,7 +76,7 @@ object Notifications {
             .setSmallIcon(R.drawable.ic_stat_hilal)
             .setContentTitle(c.getString(R.string.notif_prayer_title, name))
             .setContentText(
-                c.getString(R.string.notif_prayer_text, name, m.at.toLocalTime().format(HHMM)) +
+                c.getString(R.string.notif_prayer_text, name, m.clock.format(HHMM)) +
                     if (place.isNotEmpty()) " · $place" else "",
             )
             .setContentIntent(openAppIntent(ctx))
@@ -84,7 +84,7 @@ object Notifications {
             .setCategory(Notification.CATEGORY_REMINDER)
             .setWhen(System.currentTimeMillis())
             .build()
-        nm.notify(100 + m.index, n)
+        nm.notify(NotificationIds.prayer(m.index), n)
     }
 
     fun showReminder(ctx: Context, m: Moment, minutes: Int) {
@@ -96,13 +96,13 @@ object Notifications {
         val n = Notification.Builder(ctx, CHANNEL_REMINDER)
             .setSmallIcon(R.drawable.ic_stat_hilal)
             .setContentTitle(title)
-            .setContentText("$name: ${m.at.toLocalTime().format(HHMM)}")
+            .setContentText("$name: ${m.clock.format(HHMM)}")
             .setContentIntent(openAppIntent(ctx))
             .setAutoCancel(true)
             .setCategory(Notification.CATEGORY_REMINDER)
             .setTimeoutAfter(minutes * 60_000L)
             .build()
-        nm.notify(200 + m.index, n)
+        nm.notify(NotificationIds.reminder(m.index), n)
     }
 
     /** Aile Halkası "günün sorusu" bildirimi; dokununca soru açılır. */
@@ -125,6 +125,6 @@ object Notifications {
             .setContentIntent(open)
             .setAutoCancel(true)
             .build()
-        nm.notify(300, n)
+        nm.notify(NotificationIds.DAILY, n)
     }
 }

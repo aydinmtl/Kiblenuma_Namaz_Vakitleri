@@ -36,6 +36,8 @@ class LocationActivity : LangActivity() {
     private lateinit var tvError: TextView
     private lateinit var list: ListView
 
+    private var manualRequest: Long? = null
+
     private var lastLoad: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,7 +149,11 @@ class LocationActivity : LangActivity() {
         tvError.visibility = View.GONE
         progress.visibility = View.VISIBLE
         list.isEnabled = false
-        val label = Diyanet.label(district, city, country)
+        val request = Store.beginManualSelection()
+        manualRequest = request
+        val selectedCity = city
+        val selectedCountry = country
+        val label = Diyanet.label(district, selectedCity, selectedCountry)
         val fromAutoFailure = intent.hasExtra(EXTRA_REASON)
         val wasAuto = Store.autoLocation(this) && !fromAutoFailure
         val app = applicationContext
@@ -155,33 +161,61 @@ class LocationActivity : LangActivity() {
             try {
                 val json = Diyanet.fetchTimes(district.id)
                 if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException(getString(R.string.loc_no_times))
-                Store.saveLocation(app, district.id, label, json)
                 // Koordinat: hesaplama yöntemleri, kıble ve camiler için.
-                val c = city
-                val k = country
-                Store.savePlacePoint(app, AutoLocation.geocodeName(app, listOf(
+                val c = selectedCity
+                val k = selectedCountry
+                val point = AutoLocation.geocodeName(app, listOf(
                     listOfNotNull(district.name, c?.name, k?.name).joinToString(", "),
                     listOf(district.nameEn, c?.nameEn ?: "", k?.nameEn ?: "").filter { it.isNotBlank() }.joinToString(", "),
                     label,
-                )))
+                ))
                 // Elle seçilen yer otomatik konum tarafından ezilmesin. Ama bu ekran otomatik konum
                 // başarısız olduğu için açıldıysa otomatik konum açık kalır (yolculukta yine çalışsın).
-                if (!fromAutoFailure) Store.setAutoLocation(app, false)
+                val accepted = Store.finishManualSelection(request) {
+                    Store.saveLocation(app, district.id, label, json, point)
+                    if (!fromAutoFailure) Store.setAutoLocation(app, false)
+                }
+                if (!accepted) {
+                    runOnUiThread {
+                        if (manualRequest == request && !isFinishing && !isDestroyed) {
+                            manualRequest = null
+                            list.isEnabled = true
+                            showError(getString(R.string.loc_selection_cancelled))
+                        }
+                    }
+                    return@Thread
+                }
                 AlarmScheduler.schedule(app)
                 PrayerWidget.updateAll(app)
                 runOnUiThread {
+                    if (manualRequest != request || isFinishing || isDestroyed) return@runOnUiThread
+                    manualRequest = null
                     if (wasAuto) {
                         Toast.makeText(this, getString(R.string.loc_auto_turned_off), Toast.LENGTH_LONG).show()
                     }
                     finish()
                 }
             } catch (e: Exception) {
+                Store.cancelManualSelection(request)
                 runOnUiThread {
+                    if (manualRequest != request || isFinishing || isDestroyed) return@runOnUiThread
+                    manualRequest = null
                     list.isEnabled = true
                     showError(getString(R.string.loc_times_failed, e.message ?: getString(R.string.unknown)))
                 }
             }
         }.start()
+    }
+
+    private fun cancelSelection() {
+        manualRequest?.let(Store::cancelManualSelection)
+        manualRequest = null
+        list.isEnabled = true
+    }
+
+    override fun onDestroy() {
+        cancelSelection()
+        super.onDestroy()
     }
 
     // Android 12 ve öncesinde geri tuşu buraya gelir.
@@ -190,6 +224,7 @@ class LocationActivity : LangActivity() {
 
     /** Geri: ilçe listesinden şehre, şehirden ülkeye, ülke listesinden çıkış. */
     private fun goBack() {
+        cancelSelection()
         when (stage) {
             Stage.DISTRICT -> country?.let { showCities(it) } ?: showCountries()
             Stage.CITY -> showCountries()

@@ -387,6 +387,12 @@
         "Autorisation de position refusée. Vous pouvez choisir votre ville à la main.",
         "Location permission not granted. You can choose your city manually.",
         "Standortberechtigung nicht erteilt. Du kannst deine Stadt von Hand wählen."
+      ],
+      "loc_selection_cancelled": [
+        "Seçim iptal edildi. Lütfen yeri yeniden seçin.",
+        "La sélection a été annulée. Veuillez choisir à nouveau le lieu.",
+        "Selection canceled. Please choose the location again.",
+        "Auswahl abgebrochen. Bitte wähle den Ort erneut aus."
       ]
     }
   },
@@ -1902,6 +1908,2123 @@
         "Tours terminés : %1$d  (total %2$d)",
         "Rounds completed: %1$d  (total %2$d)",
         "Abgeschlossene Runden: %1$d  (gesamt %2$d)"
+      ]
+    }
+  },
+  {
+    "section": "Learning labels",
+    "strings": {
+      "learn_static_00": [
+        "Geri",
+        "Retour",
+        "Back",
+        "Zurück"
+      ],
+      "learn_static_01": [
+        "Sesli oku",
+        "Lire à voix haute",
+        "Read aloud",
+        "Vorlesen"
+      ],
+      "learn_static_02": [
+        "Namaz Öğreniyorum",
+        "J'apprends la prière",
+        "Learning to Pray",
+        "Beten lernen"
+      ],
+      "learn_static_03": [
+        "Soruları bildikçe arkadaşın abdest alacak ya da namaz kılacak. Bakalım sabah namazını sonuna kadar kıldırabilecek misin?",
+        "À chaque bonne réponse, ton ami fait ses ablutions ou prie. Pourras-tu l'aider à terminer la prière de l'aube ?",
+        "With every correct answer, your friend performs ablution or prays. Can you help them complete the dawn prayer?",
+        "Mit jeder richtigen Antwort führt dein Freund die Waschung durch oder betet. Hilfst du ihm, das Morgengebet zu beenden?"
+      ],
+      "learn_static_04": [
+        "Kimle oynamak istersin?",
+        "Avec qui veux-tu jouer ?",
+        "Who would you like to play with?",
+        "Mit wem möchtest du spielen?"
+      ],
+      "learn_static_05": [
+        "Abdesti Ahmet alıyor. Abdest bölümünü oynamak için Ahmet'i seç.",
+        "Ahmet fait les ablutions. Choisis Ahmet pour jouer à cette partie.",
+        "Ahmet performs ablution. Choose Ahmet to play the ablution chapter.",
+        "Ahmet führt die Waschung durch. Wähle Ahmet für dieses Kapitel."
+      ],
+      "learn_static_06": [
+        "🔊  Sesli okuma",
+        "🔊  Récitation audio",
+        "🔊  Audio recitation",
+        "🔊  Gesprochene Rezitation"
+      ],
+      "learn_static_07": [
+        "Abdest ve sabah namazının farzı (2 rekat) Hanefi mezhebine göre anlatılır. Kaynağı olan adımlarda ayet ya da hadis numarası verilmiştir.",
+        "Les ablutions et les deux unités obligatoires de la prière de l'aube suivent l'école hanafite. Les étapes documentées indiquent le verset ou le numéro du hadith.",
+        "Ablution and the two obligatory units of the dawn prayer follow the Hanafi school. Referenced steps include a verse or hadith number.",
+        "Die Waschung und die zwei Pflichtgebetseinheiten des Morgengebets folgen der hanafitischen Rechtsschule. Bei belegten Schritten stehen Vers- oder Hadithnummern."
+      ],
+      "learn_static_08": [
+        "Abdest alan ve namaz kılan çocuk",
+        "Enfant faisant ses ablutions et priant",
+        "Child performing ablution and prayer",
+        "Kind bei Waschung und Gebet"
+      ],
+      "learn_static_09": [
+        "⏭  Okunuşu atla",
+        "⏭  Passer la récitation",
+        "⏭  Skip recitation",
+        "⏭  Rezitation überspringen"
+      ],
+      "learn_static_10": [
+        "Şimdi değil",
+        "Pas maintenant",
+        "Not now",
+        "Jetzt nicht"
+      ],
+      "learn_static_11": [
+        "🔁  Tekrar oyna",
+        "🔁  Rejouer",
+        "🔁  Play again",
+        "🔁  Erneut spielen"
+      ],
+      "learn_static_12": [
+        "Çıkış",
+        "Quitter",
+        "Exit",
+        "Beenden"
+      ],
+      "learn_static_13": [
+        "Aile Halkası",
+        "Cercle familial",
+        "Family Circle",
+        "Familienkreis"
+      ],
+      "learn_static_14": [
+        "Birlikte öğrenelim. İlk kez doğru bilinen her soru aile ağacımızı büyütür.",
+        "Apprenons ensemble. Chaque nouvelle bonne réponse fait grandir notre arbre familial.",
+        "Let's learn together. Every first correct answer helps our family tree grow.",
+        "Lernen wir zusammen. Jede erstmals richtig beantwortete Frage lässt unseren Familienbaum wachsen."
+      ],
+      "learn_static_15": [
+        "Bilgi Yarışması",
+        "Quiz",
+        "Quiz",
+        "Wissensquiz"
+      ],
+      "learn_static_16": [
+        "İslam dini hakkında",
+        "Sur l'islam",
+        "About Islam",
+        "Über den Islam"
+      ],
+      "learn_static_17": [
+        "Çocuklar için abdest ve namaz oyunu",
+        "Jeu d'ablutions et de prière pour enfants",
+        "Ablution and prayer game for children",
+        "Waschungs- und Gebetsspiel für Kinder"
+      ],
+      "learn_static_18": [
+        "Akşam vakti girince günün sorusunu bildir",
+        "Notifier la question du jour à la prière du coucher du soleil",
+        "Notify me of the daily question at sunset prayer",
+        "Tagesfrage zum Abendgebet melden"
+      ],
+      "learn_static_19": [
+        "Aile hedeflerimiz",
+        "Nos objectifs familiaux",
+        "Our family goals",
+        "Unsere Familienziele"
+      ],
+      "learn_static_20": [
+        "+ Hedef ekle",
+        "+ Ajouter un objectif",
+        "+ Add a goal",
+        "+ Ziel hinzufügen"
+      ],
+      "learn_static_21": [
+        "Ağacı sıfırla",
+        "Réinitialiser l'arbre",
+        "Reset tree",
+        "Baum zurücksetzen"
+      ],
+      "learn_static_22": [
+        "Seviyeni seç, sorular ona göre gelsin.",
+        "Choisis ton niveau pour des questions adaptées.",
+        "Choose a level for matching questions.",
+        "Wähle eine Stufe für passende Fragen."
+      ],
+      "learn_static_23": [
+        "Sorular özgün olarak hazırlanmıştır. Kaynağı belirtilen sorularda ayet ya da hadis numarası verilmiştir. Fıkıh soruları Hanefi mezhebine göredir. Hatalı bulduğun soruyu cevaptan sonra işaretleyebilirsin.",
+        "Les questions sont originales. Les références indiquent le verset ou le numéro du hadith. Les questions de droit suivent l'école hanafite. Après ta réponse, tu peux signaler une erreur.",
+        "Questions are originally written. Sources give verse or hadith numbers. Jurisprudence questions follow the Hanafi school. You can flag an error after answering.",
+        "Die Fragen wurden eigens erstellt. Quellen nennen Vers- oder Hadithnummern. Rechtsfragen folgen der hanafitischen Rechtsschule. Nach dem Antworten kannst du einen Fehler markieren."
+      ],
+      "learn_static_24": [
+        "Seviye seç",
+        "Choisir un niveau",
+        "Choose level",
+        "Stufe wählen"
+      ],
+      "learn_static_25": [
+        "Aile Halkası ana sayfası",
+        "Accueil du Cercle familial",
+        "Family Circle home",
+        "Familienkreis-Startseite"
+      ],
+      "learn_static_26": [
+        "Kapat ✕",
+        "Fermer ✕",
+        "Close ✕",
+        "Schließen ✕"
+      ],
+      "learn_static_27": [
+        "KIBLE",
+        "QIBLA",
+        "QIBLA",
+        "QIBLA"
+      ],
+      "learn_levels": {
+        "array": {
+          "tr": [
+            "Kolay",
+            "Orta",
+            "Zor"
+          ],
+          "fr": [
+            "Facile",
+            "Intermédiaire",
+            "Difficile"
+          ],
+          "en": [
+            "Easy",
+            "Medium",
+            "Hard"
+          ],
+          "de": [
+            "Leicht",
+            "Mittel",
+            "Schwer"
+          ]
+        }
+      },
+      "learn_level_hints": {
+        "array": {
+          "tr": [
+            "Peygamber kıssaları, temel bilgiler, güzel ahlak",
+            "Siyer, ibadetler, Kur'an bilgisi",
+            "İslam tarihi, bilim tarihi, fıkıh"
+          ],
+          "fr": [
+            "Récits des prophètes, bases et bon comportement",
+            "Vie du Prophète, culte et Coran",
+            "Histoire de l’islam, sciences et droit"
+          ],
+          "en": [
+            "Prophets’ stories, basics and good character",
+            "The Prophet’s life, worship and Quran knowledge",
+            "Islamic history, history of science and jurisprudence"
+          ],
+          "de": [
+            "Prophetengeschichten, Grundlagen und gutes Benehmen",
+            "Prophetenbiografie, Gottesdienst und Koranwissen",
+            "Islamische Geschichte, Wissenschaftsgeschichte und Recht"
+          ]
+        }
+      },
+      "learn_tree_stages": {
+        "array": {
+          "tr": [
+            "Tohum",
+            "Filiz",
+            "Fidan",
+            "Genç ağaç",
+            "Çiçekli ağaç",
+            "Meyveli ağaç",
+            "Ulu çınar"
+          ],
+          "fr": [
+            "Graine",
+            "Pousse",
+            "Jeune plant",
+            "Jeune arbre",
+            "Arbre fleuri",
+            "Arbre fruitier",
+            "Grand platane"
+          ],
+          "en": [
+            "Seed",
+            "Sprout",
+            "Sapling",
+            "Young tree",
+            "Flowering tree",
+            "Fruit tree",
+            "Mighty plane tree"
+          ],
+          "de": [
+            "Samen",
+            "Keimling",
+            "Setzling",
+            "Junger Baum",
+            "Blühender Baum",
+            "Obstbaum",
+            "Mächtige Platane"
+          ]
+        }
+      },
+      "learn_result_titles": {
+        "array": {
+          "tr": [
+            "Birlikte tekrar edelim",
+            "Güzel başlangıç!",
+            "Çok güzel!",
+            "Maşallah!"
+          ],
+          "fr": [
+            "Révisons ensemble",
+            "Bon début !",
+            "Très bien !",
+            "Machallah !"
+          ],
+          "en": [
+            "Let’s review together",
+            "Good start!",
+            "Very good!",
+            "MashaAllah!"
+          ],
+          "de": [
+            "Wiederholen wir zusammen",
+            "Guter Anfang!",
+            "Sehr gut!",
+            "Maschallah!"
+          ]
+        }
+      },
+      "learn_chapters": {
+        "array": {
+          "tr": [
+            "Abdest",
+            "Namaz"
+          ],
+          "fr": [
+            "Ablutions",
+            "Prière"
+          ],
+          "en": [
+            "Ablution",
+            "Prayer"
+          ],
+          "de": [
+            "Waschung",
+            "Gebet"
+          ]
+        }
+      },
+      "learn_option": [
+        "Şık %1$s: %2$s.",
+        "Réponse %1$s : %2$s.",
+        "Option %1$s: %2$s.",
+        "Antwort %1$s: %2$s."
+      ],
+      "learn_report_title": [
+        "Aile Halkası: hatalı olabilecek sorular",
+        "Cercle familial : erreurs possibles",
+        "Family Circle: possible question errors",
+        "Familienkreis: möglicherweise fehlerhafte Fragen"
+      ],
+      "learn_report_missing": [
+        "(soru artık bankada yok)",
+        "(question retirée de la banque)",
+        "(question no longer in the bank)",
+        "(Frage nicht mehr im Katalog)"
+      ],
+      "learn_report_answer": [
+        "Cevap: %1$s",
+        "Réponse : %1$s",
+        "Answer: %1$s",
+        "Antwort: %1$s"
+      ],
+      "learn_report_note": [
+        "Not: %1$s",
+        "Note : %1$s",
+        "Note: %1$s",
+        "Notiz: %1$s"
+      ]
+    }
+  },
+  {
+    "section": "Learning UI",
+    "strings": {
+      "learn_ui_000": [
+        "Kaldığın yerden devam etmek ister misin?",
+        "Veux-tu reprendre où tu en étais ?",
+        "Would you like to resume?",
+        "Möchtest du fortfahren?"
+      ],
+      "learn_ui_001": [
+        "%1$s · %2$s. soru / %3$s · %4$s doğru",
+        "%1$s · Question %2$s / %3$s · %4$s bonnes réponses",
+        "%1$s · Question %2$s / %3$s · %4$s correct",
+        "%1$s · Frage %2$s / %3$s · %4$s richtig"
+      ],
+      "learn_ui_002": [
+        "Devam et",
+        "Continuer",
+        "Continue",
+        "Fortfahren"
+      ],
+      "learn_ui_003": [
+        "Yeni tur",
+        "Nouvelle partie",
+        "New round",
+        "Neue Runde"
+      ],
+      "learn_ui_004": [
+        "Vazgeç",
+        "Annuler",
+        "Cancel",
+        "Abbrechen"
+      ],
+      "learn_ui_005": [
+        "Ağacımız: %1$s · toplam %2$s doğru",
+        "Notre arbre : %1$s · %2$s bonnes réponses au total",
+        "Our tree: %1$s · %2$s correct in total",
+        "Unser Baum: %1$s · insgesamt %2$s richtig"
+      ],
+      "learn_ui_006": [
+        "\nSonraki aşamaya (%1$s) %2$s doğru kaldı",
+        "\nEncore %2$s bonnes réponses pour %1$s",
+        "\n%2$s more correct answers to reach %1$s",
+        "\nNoch %2$s richtige Antworten bis %1$s"
+      ],
+      "learn_ui_007": [
+        "\nAğacımız en büyük haline ulaştı!",
+        "\nNotre arbre a atteint sa taille maximale !",
+        "\nOur tree is fully grown!",
+        "\nUnser Baum ist ausgewachsen!"
+      ],
+      "learn_ui_008": [
+        "💡 Günün sorusu ✓ (bugün cevaplandı)",
+        "💡 Question du jour ✓ (déjà répondue)",
+        "💡 Daily question ✓ (answered today)",
+        "💡 Tagesfrage ✓ (heute beantwortet)"
+      ],
+      "learn_ui_009": [
+        "💡 Günün sorusu",
+        "💡 Question du jour",
+        "💡 Daily question",
+        "💡 Tagesfrage"
+      ],
+      "learn_ui_010": [
+        "🔁 Yanlışlarımı tekrar et",
+        "🔁 Revoir mes erreurs",
+        "🔁 Review my mistakes",
+        "🔁 Meine Fehler wiederholen"
+      ],
+      "learn_ui_011": [
+        "⚑ İşaretlediğim sorular",
+        "⚑ Mes questions signalées",
+        "⚑ My flagged questions",
+        "⚑ Meine markierten Fragen"
+      ],
+      "learn_ui_012": [
+        "▶ Devam",
+        "▶ Continuer",
+        "▶ Continue",
+        "▶ Weiter"
+      ],
+      "learn_ui_013": [
+        "%1$s seviye. %2$s.",
+        "Niveau %1$s. %2$s.",
+        "%1$s level. %2$s.",
+        "Stufe %1$s. %2$s."
+      ],
+      "learn_ui_014": [
+        " Yarım kalan tur var.",
+        " Une partie est en cours.",
+        " A round is in progress.",
+        " Eine Runde läuft noch."
+      ],
+      "learn_ui_015": [
+        "Yarım kalan tur var",
+        "Une partie est en cours",
+        "A round is in progress",
+        "Eine Runde läuft noch"
+      ],
+      "learn_ui_016": [
+        "%1$s: %2$s. sorudasın. Ne yapalım?",
+        "%1$s : tu en es à la question %2$s. Que faire ?",
+        "%1$s: you are on question %2$s. What next?",
+        "%1$s: Du bist bei Frage %2$s. Wie weiter?"
+      ],
+      "learn_ui_017": [
+        "Yeni %1$s turu",
+        "Nouvelle partie : %1$s",
+        "New %1$s round",
+        "Neue Runde: %1$s"
+      ],
+      "learn_ui_018": [
+        "Yanlışları tekrar",
+        "Revoir les erreurs",
+        "Review mistakes",
+        "Fehler wiederholen"
+      ],
+      "learn_ui_019": [
+        "%1$s seviye",
+        "Niveau %1$s",
+        "%1$s level",
+        "Stufe %1$s"
+      ],
+      "learn_ui_020": [
+        "Ör: Annem, Babam, Zeynep",
+        "Ex. : Maman, Papa, Zeynep",
+        "E.g. Mum, Dad, Zeynep",
+        "Z. B. Mama, Papa, Zeynep"
+      ],
+      "learn_ui_021": [
+        "Adları virgülle ayır; sorular sırayla gelir. Tek kişi oynuyorsan boş bırak.",
+        "Séparez les noms par des virgules ; chacun joue à son tour. Laissez vide pour jouer seul.",
+        "Separate names with commas; players take turns. Leave blank to play alone.",
+        "Namen durch Kommas trennen; alle sind abwechselnd dran. Für eine Person leer lassen."
+      ],
+      "learn_ui_022": [
+        "Kimler oynuyor?",
+        "Qui joue ?",
+        "Who is playing?",
+        "Wer spielt mit?"
+      ],
+      "learn_ui_023": [
+        "Başla",
+        "Commencer",
+        "Start",
+        "Starten"
+      ],
+      "learn_ui_024": [
+        "%1$s · Soru %2$s / %3$s · ✓ %4$s",
+        "%1$s · Question %2$s / %3$s · ✓ %4$s",
+        "%1$s · Question %2$s / %3$s · ✓ %4$s",
+        "%1$s · Frage %2$s / %3$s · ✓ %4$s"
+      ],
+      "learn_ui_025": [
+        "%1$s, doğru cevap",
+        "%1$s, bonne réponse",
+        "%1$s, correct answer",
+        "%1$s, richtige Antwort"
+      ],
+      "learn_ui_026": [
+        "%1$s, senin cevabın, yanlış",
+        "%1$s, ta réponse, incorrecte",
+        "%1$s, your answer, incorrect",
+        "%1$s, deine Antwort, falsch"
+      ],
+      "learn_ui_027": [
+        "✓ Doğru!",
+        "✓ Bonne réponse !",
+        "✓ Correct!",
+        "✓ Richtig!"
+      ],
+      "learn_ui_028": [
+        "✗ Doğru cevap: %1$s",
+        "✗ Bonne réponse : %1$s",
+        "✗ Correct answer: %1$s",
+        "✗ Richtige Antwort: %1$s"
+      ],
+      "learn_ui_029": [
+        "\nKaynak: %1$s",
+        "\nSource : %1$s",
+        "\nSource: %1$s",
+        "\nQuelle: %1$s"
+      ],
+      "learn_ui_030": [
+        "\n🌱 Ağacımıza +1",
+        "\n🌱 +1 pour notre arbre",
+        "\n🌱 +1 for our tree",
+        "\n🌱 +1 für unseren Baum"
+      ],
+      "learn_ui_031": [
+        "\n(Bu soruyu daha önce bilmiştiniz; ağaç yalnızca yeni bilgiyle büyür.)",
+        "\n(Tu avais déjà répondu correctement ; seules les nouvelles connaissances font grandir l'arbre.)",
+        "\n(You already knew this answer; the tree grows with new knowledge.)",
+        "\n(Diese Antwort kanntest du schon; der Baum wächst durch neues Wissen.)"
+      ],
+      "learn_ui_032": [
+        "Sonucu gör ›",
+        "Voir le résultat ›",
+        "See results ›",
+        "Ergebnis ansehen ›"
+      ],
+      "learn_ui_033": [
+        "Sıradaki soru ›",
+        "Question suivante ›",
+        "Next question ›",
+        "Nächste Frage ›"
+      ],
+      "learn_ui_034": [
+        "%1$s · Soru %2$s / %3$s · ✓ %4$s",
+        "%1$s · Question %2$s / %3$s · ✓ %4$s",
+        "%1$s · Question %2$s / %3$s · ✓ %4$s",
+        "%1$s · Frage %2$s / %3$s · ✓ %4$s"
+      ],
+      "learn_ui_035": [
+        "Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma'dan Türkçe sesi indirebilirsin.",
+        "La voix de la langue choisie est indisponible. Installe-la dans les réglages de synthèse vocale du téléphone.",
+        "The selected language voice is unavailable. Install it in your phone's text-to-speech settings.",
+        "Die Stimme für die gewählte Sprache fehlt. Installiere sie in den Text-zu-Sprache-Einstellungen des Telefons."
+      ],
+      "learn_ui_036": [
+        "Kapat",
+        "Fermer",
+        "Close",
+        "Schließen"
+      ],
+      "learn_ui_037": [
+        "🔊 Oku",
+        "🔊 Lire",
+        "🔊 Read aloud",
+        "🔊 Vorlesen"
+      ],
+      "learn_ui_038": [
+        "\nKaynak: ",
+        "\nSource : ",
+        "\nSource: ",
+        "\nQuelle: "
+      ],
+      "learn_ui_039": [
+        "\n\n🌱 Ağacımıza +1",
+        "\n\n🌱 +1 pour notre arbre",
+        "\n\n🌱 +1 for our tree",
+        "\n\n🌱 +1 für unseren Baum"
+      ],
+      "learn_ui_040": [
+        "Günün sorusu",
+        "Question du jour",
+        "Daily question",
+        "Tagesfrage"
+      ],
+      "learn_ui_041": [
+        "Tamam",
+        "OK",
+        "OK",
+        "OK"
+      ],
+      "learn_ui_042": [
+        "Ağaç sıfırlansın mı?",
+        "Réinitialiser l'arbre ?",
+        "Reset the tree?",
+        "Baum zurücksetzen?"
+      ],
+      "learn_ui_043": [
+        "Ağacımız tohuma döner ve bütün sorular ağacı yeniden büyütebilir. ",
+        "Notre arbre redevient une graine et toutes les questions peuvent à nouveau le faire grandir. ",
+        "Our tree returns to a seed and every question can help it grow again. ",
+        "Unser Baum wird wieder zum Samen und alle Fragen können ihn erneut wachsen lassen. "
+      ],
+      "learn_ui_044": [
+        "Hedefler ve yanlışlar listesi silinmez. Bu işlem geri alınamaz.",
+        "Les objectifs et la liste d'erreurs sont conservés. Cette action est irréversible.",
+        "Goals and the mistakes list are kept. This cannot be undone.",
+        "Ziele und Fehlerliste bleiben erhalten. Dies kann nicht rückgängig gemacht werden."
+      ],
+      "learn_ui_045": [
+        "Sıfırla",
+        "Réinitialiser",
+        "Reset",
+        "Zurücksetzen"
+      ],
+      "learn_ui_046": [
+        "⚑ İşaretlendi (kaldırmak için dokun)",
+        "⚑ Signalée (toucher pour retirer)",
+        "⚑ Flagged (tap to remove)",
+        "⚑ Markiert (zum Entfernen tippen)"
+      ],
+      "learn_ui_047": [
+        "⚑ Bu soruda hata var",
+        "⚑ Signaler une erreur",
+        "⚑ Report a question error",
+        "⚑ Fehler in dieser Frage"
+      ],
+      "learn_ui_048": [
+        "Ne yanlış? (isteğe bağlı)",
+        "Quelle erreur ? (facultatif)",
+        "What is wrong? (optional)",
+        "Was ist falsch? (optional)"
+      ],
+      "learn_ui_049": [
+        "Bu soruda hata var",
+        "Signaler une erreur",
+        "Report a question error",
+        "Fehler in dieser Frage"
+      ],
+      "learn_ui_050": [
+        "Soru telefonunda işaretlenir. Aile Halkası ana sayfasından işaretli soruların listesini paylaşabilirsin.",
+        "La question est signalée sur ton téléphone. Tu peux partager la liste depuis l'accueil du Cercle familial.",
+        "The question is flagged on your phone. You can share the list from the Family Circle home page.",
+        "Die Frage wird auf deinem Telefon markiert. Du kannst die Liste auf der Familienkreis-Startseite teilen."
+      ],
+      "learn_ui_051": [
+        "İşaretle",
+        "Signaler",
+        "Flag",
+        "Markieren"
+      ],
+      "learn_ui_052": [
+        "İşaretlediğim sorular",
+        "Mes questions signalées",
+        "My flagged questions",
+        "Meine markierten Fragen"
+      ],
+      "learn_ui_053": [
+        "İşaretli soruları paylaş",
+        "Partager les questions signalées",
+        "Share flagged questions",
+        "Markierte Fragen teilen"
+      ],
+      "learn_ui_054": [
+        "Paylaş",
+        "Partager",
+        "Share",
+        "Teilen"
+      ],
+      "learn_ui_055": [
+        "Listeyi temizle",
+        "Vider la liste",
+        "Clear list",
+        "Liste leeren"
+      ],
+      "learn_ui_056": [
+        "Bütün işaretler silinsin mi?",
+        "Supprimer tous les signalements ?",
+        "Remove all flags?",
+        "Alle Markierungen löschen?"
+      ],
+      "learn_ui_057": [
+        "Sil",
+        "Supprimer",
+        "Delete",
+        "Löschen"
+      ],
+      "learn_ui_058": [
+        "Sıra: %1$s",
+        "Au tour de %1$s",
+        "Turn: %1$s",
+        "Am Zug: %1$s"
+      ],
+      "learn_ui_059": [
+        "3 yıldızdan %1$s",
+        "%1$s étoiles sur 3",
+        "%1$s out of 3 stars",
+        "%1$s von 3 Sternen"
+      ],
+      "learn_ui_060": [
+        "%1$s sorudan %2$s doğru",
+        "%2$s bonnes réponses sur %1$s",
+        "%2$s correct out of %1$s",
+        "%2$s von %1$s richtig"
+      ],
+      "learn_ui_061": [
+        " doğru",
+        " bonnes réponses",
+        " correct",
+        " richtig"
+      ],
+      "learn_ui_062": [
+        "\n\nYanlış bildiklerin \"Yanlışlarımı tekrar et\" bölümünde seni bekliyor.",
+        "\n\nRetrouve tes erreurs dans « Revoir mes erreurs ».",
+        "\n\nYour mistakes are waiting in “Review my mistakes”.",
+        "\n\nDeine Fehler warten unter „Meine Fehler wiederholen“ auf dich."
+      ],
+      "learn_ui_063": [
+        "Yanlışları yeniden tekrar et",
+        "Revoir encore les erreurs",
+        "Review mistakes again",
+        "Fehler erneut wiederholen"
+      ],
+      "learn_ui_064": [
+        "Yeni %1$s turu",
+        "Nouvelle partie : %1$s",
+        "New %1$s round",
+        "Neue Runde: %1$s"
+      ],
+      "learn_ui_065": [
+        "Aile ağacımız artık: %1$s!",
+        "Notre arbre familial est maintenant : %1$s !",
+        "Our family tree is now: %1$s!",
+        "Unser Familienbaum ist jetzt: %1$s!"
+      ],
+      "learn_ui_066": [
+        "\n\nHedefimize ulaştık:",
+        "\n\nObjectif atteint :",
+        "\n\nWe reached our goal:",
+        "\n\nWir haben unser Ziel erreicht:"
+      ],
+      "learn_ui_067": [
+        "🌳 Ağacımız büyüdü",
+        "🌳 Notre arbre a grandi",
+        "🌳 Our tree has grown",
+        "🌳 Unser Baum ist gewachsen"
+      ],
+      "learn_ui_068": [
+        "Elhamdülillah",
+        "Alhamdoulillah",
+        "Alhamdulillah",
+        "Alhamdulillah"
+      ],
+      "learn_ui_069": [
+        "Henüz hedef yok. Örnek: \"Ağacımız Meyveli ağaç olunca birlikte dondurma yemeye gidiyoruz.\"",
+        "Aucun objectif pour le moment. Exemple : « Quand notre arbre portera des fruits, nous irons manger une glace ensemble. »",
+        "No goals yet. Example: “When our tree bears fruit, we'll go for ice cream together.”",
+        "Noch keine Ziele. Beispiel: „Wenn unser Baum Früchte trägt, gehen wir zusammen Eis essen.“"
+      ],
+      "learn_ui_070": [
+        "Ulaşıldı · ",
+        "Atteint · ",
+        "Reached · ",
+        "Erreicht · "
+      ],
+      "learn_ui_071": [
+        "Hedef aşama: ",
+        "Étape visée : ",
+        "Target stage: ",
+        "Zielstufe: "
+      ],
+      "learn_ui_072": [
+        "Düzenle",
+        "Modifier",
+        "Edit",
+        "Bearbeiten"
+      ],
+      "learn_ui_073": [
+        "Hedef silinsin mi?",
+        "Supprimer cet objectif ?",
+        "Delete this goal?",
+        "Ziel löschen?"
+      ],
+      "learn_ui_074": [
+        "Düzenlemek ya da silmek için hedefe basılı tut.",
+        "Appuie longuement sur un objectif pour le modifier ou le supprimer.",
+        "Hold a goal to edit or delete it.",
+        "Halte ein Ziel gedrückt, um es zu bearbeiten oder zu löschen."
+      ],
+      "learn_ui_075": [
+        "Ör: Birlikte dondurma yemeye gidiyoruz",
+        "Ex. : Aller manger une glace ensemble",
+        "E.g. Go for ice cream together",
+        "Z. B. Zusammen Eis essen gehen"
+      ],
+      "learn_ui_076": [
+        "Ağacımız hangi aşamaya gelince?",
+        "À quelle étape de notre arbre ?",
+        "At which tree stage?",
+        "Bei welcher Baumstufe?"
+      ],
+      "learn_ui_077": [
+        "%1$s (%2$s doğru)",
+        "%1$s (%2$s bonnes réponses)",
+        "%1$s (%2$s correct)",
+        "%1$s (%2$s richtig)"
+      ],
+      "learn_ui_078": [
+        "Hedefi düzenle",
+        "Modifier l'objectif",
+        "Edit goal",
+        "Ziel bearbeiten"
+      ],
+      "learn_ui_079": [
+        "Yeni aile hedefi",
+        "Nouvel objectif familial",
+        "New family goal",
+        "Neues Familienziel"
+      ],
+      "learn_ui_080": [
+        "Kaydet",
+        "Enregistrer",
+        "Save",
+        "Speichern"
+      ],
+      "learn_ui_081": [
+        "Ekle",
+        "Ajouter",
+        "Add",
+        "Hinzufügen"
+      ],
+      "learn_ui_082": [
+        "Açık: dualar ve sureler sesli okunur.",
+        "Activé : les invocations et sourates sont récitées à voix haute.",
+        "On: supplications and surahs are recited aloud.",
+        "Ein: Bittgebete und Suren werden vorgelesen."
+      ],
+      "learn_ui_083": [
+        "Kapalı: ses yok, yalnızca yazı ilerler.",
+        "Désactivé : seul le texte défile, sans son.",
+        "Off: the text advances without sound.",
+        "Aus: Der Text läuft ohne Ton weiter."
+      ],
+      "learn_ui_084": [
+        "Kaldığın yer: adım %1$s / %2$s",
+        "Reprendre à l'étape %1$s / %2$s",
+        "Resume at step %1$s / %2$s",
+        "Fortsetzen bei Schritt %1$s / %2$s"
+      ],
+      "learn_ui_085": [
+        "%1$s adım",
+        "%1$s étapes",
+        "%1$s steps",
+        "%1$s Schritte"
+      ],
+      "learn_ui_086": [
+        "Bu bölümde %1$s. adımda kalmıştın (%2$s adım). Nereden başlayalım?",
+        "Tu en étais à l'étape %1$s sur %2$s. Où commencer ?",
+        "You stopped at step %1$s of %2$s. Where shall we start?",
+        "Du warst bei Schritt %1$s von %2$s. Wo beginnen wir?"
+      ],
+      "learn_ui_087": [
+        "Kaldığım yerden devam et",
+        "Reprendre",
+        "Resume",
+        "Fortsetzen"
+      ],
+      "learn_ui_088": [
+        "Baştan başla",
+        "Recommencer",
+        "Start over",
+        "Von vorn beginnen"
+      ],
+      "learn_ui_089": [
+        "🏆 Namazı %1$s kez tamamladın",
+        "🏆 Tu as terminé la prière %1$s fois",
+        "🏆 You completed the prayer %1$s times",
+        "🏆 Du hast das Gebet %1$s-mal abgeschlossen"
+      ],
+      "learn_ui_090": [
+        "%1$s %2$s · Hazırlık",
+        "%1$s %2$s · Préparation",
+        "%1$s %2$s · Preparation",
+        "%1$s %2$s · Vorbereitung"
+      ],
+      "learn_ui_091": [
+        "Seccademizi kıbleye doğru seriyoruz\n(geçmek için resme dokun)",
+        "Déroulons le tapis vers la qibla\n(touche l'image pour passer)",
+        "Laying out our prayer mat towards the qibla\n(tap the picture to skip)",
+        "Wir legen den Gebetsteppich zur Qibla aus\n(zum Überspringen aufs Bild tippen)"
+      ],
+      "learn_ui_092": [
+        "%1$s %2$s · Adım %3$s / %4$s",
+        "%1$s %2$s · Étape %3$s / %4$s",
+        "%1$s %2$s · Step %3$s / %4$s",
+        "%1$s %2$s · Schritt %3$s / %4$s"
+      ],
+      "learn_ui_093": [
+        "Devam ›",
+        "Continuer ›",
+        "Continue ›",
+        "Weiter ›"
+      ],
+      "learn_ui_094": [
+        "%1$s, yanlış",
+        "%1$s, incorrect",
+        "%1$s, incorrect",
+        "%1$s, falsch"
+      ],
+      "learn_ui_095": [
+        "Neredeyse! Altın çerçeveli şıkka bir bak. 🙂",
+        "Presque ! Regarde la réponse encadrée d'or. 🙂",
+        "Almost! Look at the option with the gold border. 🙂",
+        "Fast! Schau dir die Antwort mit dem goldenen Rahmen an. 🙂"
+      ],
+      "learn_ui_096": [
+        "Olmadı, bir daha dene. Sen yaparsın! 💪",
+        "Essaie encore, tu peux y arriver ! 💪",
+        "Try again. You can do it! 💪",
+        "Versuch es noch einmal. Du schaffst das! 💪"
+      ],
+      "learn_ui_097": [
+        "%1$s, doğru",
+        "%1$s, correct",
+        "%1$s, correct",
+        "%1$s, richtig"
+      ],
+      "learn_ui_098": [
+        "Adım %1$s · %2$s",
+        "Étape %1$s · %2$s",
+        "Step %1$s · %2$s",
+        "Schritt %1$s · %2$s"
+      ],
+      "learn_ui_099": [
+        "✓ Aferin!\n%1$s",
+        "✓ Bravo !\n%1$s",
+        "✓ Well done!\n%1$s",
+        "✓ Gut gemacht!\n%1$s"
+      ],
+      "learn_ui_100": [
+        "\nKaynak: %1$s",
+        "\nSource : %1$s",
+        "\nSource: %1$s",
+        "\nQuelle: %1$s"
+      ],
+      "learn_ui_101": [
+        "\n\nAbdestimiz tamam! Namaza geçelim mi?",
+        "\n\nLes ablutions sont terminées ! Passons à la prière ?",
+        "\n\nOur ablution is complete! Shall we pray?",
+        "\n\nUnsere Waschung ist fertig! Wollen wir beten?"
+      ],
+      "learn_ui_102": [
+        "🕌  Evet, namaza geçelim",
+        "🕌  Oui, passons à la prière",
+        "🕌  Yes, let's pray",
+        "🕌  Ja, beginnen wir das Gebet"
+      ],
+      "learn_ui_103": [
+        "\n\nAnlamı: %1$s",
+        "\n\nSens : %1$s",
+        "\n\nMeaning: %1$s",
+        "\n\nBedeutung: %1$s"
+      ],
+      "learn_ui_104": [
+        "\nKaynak: %1$s",
+        "\nSource : %1$s",
+        "\nSource: %1$s",
+        "\nQuelle: %1$s"
+      ],
+      "learn_ui_105": [
+        "%1$s. %2$s. Anlamı: %3$s",
+        "%1$s. %2$s. Sens : %3$s",
+        "%1$s. %2$s. Meaning: %3$s",
+        "%1$s. %2$s. Bedeutung: %3$s"
+      ],
+      "learn_ui_106": [
+        "Maşallah! 🎉",
+        "Machallah ! 🎉",
+        "MashaAllah! 🎉",
+        "Maschallah! 🎉"
+      ],
+      "learn_ui_107": [
+        "Bütün soruları bildin. %1$s seninle birlikte sabah namazını baştan sona kıldı.\n\n",
+        "Tu as trouvé toutes les réponses. %1$s a accompli toute la prière de l'aube avec toi.\n\n",
+        "You answered every question. %1$s prayed the dawn prayer with you from beginning to end.\n\n",
+        "Du hast alle Fragen richtig beantwortet. %1$s hat das Morgengebet mit dir von Anfang bis Ende verrichtet.\n\n"
+      ],
+      "learn_ui_108": [
+        "Şimdi sıra sende: bir dahaki namazda bunları birlikte yapalım!",
+        "À ton tour : faisons ces gestes ensemble à la prochaine prière !",
+        "Your turn: let's do these together at the next prayer!",
+        "Jetzt bist du dran: Beim nächsten Gebet machen wir das zusammen!"
+      ]
+    }
+  },
+  {
+    "section": "Prayer learning content (stable step and recitation order)",
+    "strings": {
+      "learn_step_titles": {
+        "array": {
+          "tr": [
+            "Besmele ile başlıyoruz",
+            "Ellerimizi yıkıyoruz",
+            "Ağzımızı yıkıyoruz",
+            "Burnumuzu temizliyoruz",
+            "Yüzümüzü yıkıyoruz",
+            "Sağ kolumuzu yıkıyoruz",
+            "Sol kolumuzu yıkıyoruz",
+            "Başımızı meshediyoruz",
+            "Kulaklarımızı meshediyoruz",
+            "Ensemizi meshediyoruz",
+            "Sağ ayağımızı yıkıyoruz",
+            "Sol ayağımızı yıkıyoruz",
+            "Abdestimiz tamam!",
+            "Kıbleye döndük",
+            "Niyet ettik",
+            "Başlama tekbiri",
+            "Sübhâneke'yi okuyoruz",
+            "Fâtiha'yı okuyoruz",
+            "Bir sure okuyoruz",
+            "Rükûdayız",
+            "Doğrulduk",
+            "Secdedeyiz",
+            "Secdede tesbih",
+            "İki secde arası",
+            "İkinci secde",
+            "İkinci rekata kalktık",
+            "Fâtiha ve bir sure",
+            "Yine rükûdayız",
+            "Yine doğrulduk",
+            "Yine secdedeyiz",
+            "Son secde",
+            "Son oturuş",
+            "Ettehiyyâtü",
+            "Salli ve Bârik",
+            "Rabbenâ duası",
+            "Selam verdik"
+          ],
+          "fr": [
+            "Commençons par la basmala",
+            "Lavons nos mains",
+            "Rinçons notre bouche",
+            "Nettoyons notre nez",
+            "Lavons notre visage",
+            "Lavons notre bras droit",
+            "Lavons notre bras gauche",
+            "Essuyons notre tête",
+            "Essuyons nos oreilles",
+            "Essuyons notre nuque",
+            "Lavons notre pied droit",
+            "Lavons notre pied gauche",
+            "Nos ablutions sont terminées !",
+            "Tournons-nous vers la qibla",
+            "Formulons notre intention",
+            "Le takbir d'ouverture",
+            "Récitons Subhanaka",
+            "Récitons Al-Fatiha",
+            "Récitons une sourate",
+            "L'inclinaison",
+            "Redressons-nous",
+            "La prosternation",
+            "Louange en prosternation",
+            "Entre deux prosternations",
+            "La deuxième prosternation",
+            "Levons-nous pour la deuxième unité",
+            "Al-Fatiha et une sourate",
+            "Inclinons-nous de nouveau",
+            "Redressons-nous de nouveau",
+            "Prosternons-nous de nouveau",
+            "La dernière prosternation",
+            "La dernière position assise",
+            "At-Tahiyyat",
+            "Salli et Barik",
+            "L'invocation Rabbana",
+            "La salutation finale"
+          ],
+          "en": [
+            "Starting with the basmala",
+            "Washing our hands",
+            "Rinsing our mouth",
+            "Cleaning our nose",
+            "Washing our face",
+            "Washing our right arm",
+            "Washing our left arm",
+            "Wiping our head",
+            "Wiping our ears",
+            "Wiping our neck",
+            "Washing our right foot",
+            "Washing our left foot",
+            "Our ablution is complete!",
+            "Facing the qibla",
+            "Making our intention",
+            "The opening takbir",
+            "Reciting Subhanaka",
+            "Reciting Al-Fatiha",
+            "Reciting a surah",
+            "Bowing",
+            "Standing upright",
+            "Prostrating",
+            "Praise in prostration",
+            "Between two prostrations",
+            "The second prostration",
+            "Rising for the second unit",
+            "Al-Fatiha and a surah",
+            "Bowing again",
+            "Standing upright again",
+            "Prostrating again",
+            "The last prostration",
+            "The final sitting",
+            "At-Tahiyyat",
+            "Salli and Barik",
+            "The Rabbana supplication",
+            "Giving the closing greeting"
+          ],
+          "de": [
+            "Wir beginnen mit der Basmala",
+            "Wir waschen die Hände",
+            "Wir spülen den Mund",
+            "Wir reinigen die Nase",
+            "Wir waschen das Gesicht",
+            "Wir waschen den rechten Arm",
+            "Wir waschen den linken Arm",
+            "Wir streichen über den Kopf",
+            "Wir streichen über die Ohren",
+            "Wir streichen über den Nacken",
+            "Wir waschen den rechten Fuß",
+            "Wir waschen den linken Fuß",
+            "Unsere Waschung ist fertig!",
+            "Wir wenden uns zur Qibla",
+            "Wir fassen die Absicht",
+            "Der Eröffnungstakbir",
+            "Wir lesen Subhanaka",
+            "Wir lesen Al-Fatiha",
+            "Wir lesen eine Sure",
+            "Wir verbeugen uns",
+            "Wir richten uns auf",
+            "Wir werfen uns nieder",
+            "Lobpreis in der Niederwerfung",
+            "Zwischen zwei Niederwerfungen",
+            "Die zweite Niederwerfung",
+            "Wir stehen zur zweiten Einheit auf",
+            "Al-Fatiha und eine Sure",
+            "Wir verbeugen uns erneut",
+            "Wir richten uns erneut auf",
+            "Wir werfen uns erneut nieder",
+            "Die letzte Niederwerfung",
+            "Das letzte Sitzen",
+            "At-Tahiyyat",
+            "Salli und Barik",
+            "Das Rabbana-Bittgebet",
+            "Der Abschlussgruß"
+          ]
+        }
+      },
+      "learn_step_questions": {
+        "array": {
+          "tr": [
+            "Abdest almaya başlarken ne deriz?",
+            "Önce neyimizi yıkarız?",
+            "Sonra ağzımıza su alıp ne yaparız?",
+            "Ağzımızdan sonra neye su veririz?",
+            "Yüzümüzü nereden nereye yıkarız?",
+            "Kollarımızı yıkarken hangisinden başlarız?",
+            "Kolumuzu nereye kadar yıkarız?",
+            "Başımıza ne yaparız?",
+            "Başımızdan sonra ıslak parmaklarımızla neyi meshederiz?",
+            "Kulaklarımızdan sonra ellerimizin dışıyla neyi meshederiz?",
+            "Ayaklarımızı nereye kadar yıkarız?",
+            "Sağ ayağımızdan sonra neyi yıkarız?",
+            "Abdest bitince ne söylemek güzeldir?",
+            "Namaz kılarken hangi yöne döneriz?",
+            "Namaza başlamadan önce içimizden ne yaparız?",
+            "Namaza hangi sözle başlarız?",
+            "Ellerimizi bağladık. Ayakta ilk okuduğumuz dua hangisidir?",
+            "Her rekatta mutlaka okunan sure hangisidir?",
+            "Fâtiha'dan sonra ne okuruz?",
+            "Şimdi eğilip ellerimizi dizlerimize koyacağız. Bu harekete ne denir?",
+            "Rükûdan doğrulurken ne deriz?",
+            "Şimdi alnımızı yere koyacağız. Bu harekete ne denir?",
+            "Secdede ne deriz?",
+            "İki secde arasında ne yaparız?",
+            "Secdede yere neyimiz değer?",
+            "Bir rekatta kaç secde yaparız?",
+            "İkinci rekatta da önce hangi sureyi okuruz?",
+            "Rükûda sırtımız nasıl olur?",
+            "\"Rabbenâ leke'l-hamd\" ne demektir?",
+            "Secdeye giderken ne deriz?",
+            "İki secde arasında oturduktan sonra ne yaparız?",
+            "Sabah namazının farzı iki rekattır. İkinci rekatın secdelerinden sonra ne yaparız?",
+            "Oturuşta ilk hangi duayı okuruz?",
+            "Ettehiyyâtü'den sonra Peygamberimiz için hangi duaları okuruz?",
+            "Sonra hangi duayı okuruz?",
+            "Namazı nasıl bitiririz?"
+          ],
+          "fr": [
+            "Que disons-nous au début des ablutions ?",
+            "Que lavons-nous d'abord ?",
+            "Que faisons-nous après avoir pris de l'eau dans la bouche ?",
+            "Après la bouche, où mettons-nous de l'eau ?",
+            "Quelles parties du visage lavons-nous ?",
+            "Par quel bras commençons-nous ?",
+            "Jusqu'où lavons-nous le bras ?",
+            "Que faisons-nous sur la tête ?",
+            "Après la tête, qu'essuyons-nous avec les doigts mouillés ?",
+            "Après les oreilles, qu'essuyons-nous avec le dos des mains ?",
+            "Jusqu'où lavons-nous les pieds ?",
+            "Que lavons-nous après le pied droit ?",
+            "Que peut-on dire après les ablutions ?",
+            "Dans quelle direction prions-nous ?",
+            "Que faisons-nous dans notre cœur avant de prier ?",
+            "Par quels mots commençons-nous la prière ?",
+            "Les mains croisées, quelle invocation récitons-nous d'abord debout ?",
+            "Quelle sourate récitons-nous dans chaque unité de prière ?",
+            "Que récitons-nous après Al-Fatiha ?",
+            "Nous nous inclinons, les mains sur les genoux. Comment s'appelle ce geste ?",
+            "Que disons-nous en nous relevant de l'inclinaison ?",
+            "Nous posons maintenant le front au sol. Comment s'appelle ce geste ?",
+            "Que disons-nous en prosternation ?",
+            "Que faisons-nous entre deux prosternations ?",
+            "Quelles parties du corps touchent le sol en prosternation ?",
+            "Combien de prosternations faisons-nous par unité ?",
+            "Quelle sourate récitons-nous aussi en premier dans la deuxième unité ?",
+            "Comment gardons-nous le dos en inclinaison ?",
+            "Que signifie « Rabbenâ leke'l-hamd » ?",
+            "Que disons-nous en allant nous prosterner ?",
+            "Que faisons-nous après la pause assise entre deux prosternations ?",
+            "La prière obligatoire de l'aube a deux unités. Que faisons-nous après les prosternations de la deuxième unité ?",
+            "Quelle invocation récitons-nous d'abord assis ?",
+            "Après At-Tahiyyat, quelles prières de bénédiction récitons-nous pour notre Prophète ?",
+            "Quelle invocation récitons-nous ensuite ?",
+            "Comment terminons-nous la prière ?"
+          ],
+          "en": [
+            "What do we say when starting ablution?",
+            "What do we wash first?",
+            "What do we do after taking water into our mouth?",
+            "After our mouth, where do we put water?",
+            "Which parts of our face do we wash?",
+            "Which arm do we wash first?",
+            "How far up our arm do we wash?",
+            "What do we do to our head?",
+            "After the head, what do we wipe with wet fingers?",
+            "After the ears, what do we wipe with the backs of our hands?",
+            "How far up our feet do we wash?",
+            "What do we wash after our right foot?",
+            "What is good to say after ablution?",
+            "Which direction do we face when praying?",
+            "What do we do in our heart before starting prayer?",
+            "With which words do we begin prayer?",
+            "With our hands folded, which supplication do we recite first while standing?",
+            "Which surah is recited in every unit of prayer?",
+            "What do we recite after Al-Fatiha?",
+            "Now we bow and place our hands on our knees. What is this called?",
+            "What do we say while rising from bowing?",
+            "Now we place our forehead on the ground. What is this called?",
+            "What do we say in prostration?",
+            "What do we do between two prostrations?",
+            "Which parts of our body touch the ground in prostration?",
+            "How many prostrations are there in one unit?",
+            "Which surah do we recite first in the second unit too?",
+            "How do we keep our back when bowing?",
+            "What does “Rabbenâ leke'l-hamd” mean?",
+            "What do we say when going into prostration?",
+            "What do we do after sitting between two prostrations?",
+            "The obligatory dawn prayer has two units. What do we do after the prostrations of the second unit?",
+            "Which supplication do we recite first while sitting?",
+            "After At-Tahiyyat, which blessings do we recite for our Prophet?",
+            "Which supplication do we recite next?",
+            "How do we finish prayer?"
+          ],
+          "de": [
+            "Was sagen wir zu Beginn der Waschung?",
+            "Was waschen wir zuerst?",
+            "Was tun wir, nachdem wir Wasser in den Mund genommen haben?",
+            "Wohin geben wir nach dem Mund Wasser?",
+            "Welche Bereiche des Gesichts waschen wir?",
+            "Mit welchem Arm beginnen wir?",
+            "Wie weit waschen wir den Arm?",
+            "Was tun wir am Kopf?",
+            "Was streichen wir nach dem Kopf mit nassen Fingern ab?",
+            "Was streichen wir nach den Ohren mit den Handrücken ab?",
+            "Wie weit waschen wir die Füße?",
+            "Was waschen wir nach dem rechten Fuß?",
+            "Was ist nach der Waschung gut zu sagen?",
+            "In welche Richtung beten wir?",
+            "Was tun wir im Herzen vor dem Gebet?",
+            "Mit welchen Worten beginnen wir das Gebet?",
+            "Die Hände sind gefaltet. Welches Bittgebet lesen wir zuerst im Stehen?",
+            "Welche Sure lesen wir in jeder Gebetseinheit?",
+            "Was lesen wir nach Al-Fatiha?",
+            "Wir beugen uns vor und legen die Hände auf die Knie. Wie heißt dies?",
+            "Was sagen wir beim Aufrichten aus der Verbeugung?",
+            "Jetzt legen wir die Stirn auf den Boden. Wie heißt dies?",
+            "Was sagen wir bei der Niederwerfung?",
+            "Was tun wir zwischen zwei Niederwerfungen?",
+            "Welche Körperteile berühren bei der Niederwerfung den Boden?",
+            "Wie viele Niederwerfungen gibt es in einer Gebetseinheit?",
+            "Welche Sure lesen wir auch in der zweiten Einheit zuerst?",
+            "Wie halten wir den Rücken bei der Verbeugung?",
+            "Was bedeutet „Rabbenâ leke'l-hamd“?",
+            "Was sagen wir beim Niederwerfen?",
+            "Was tun wir nach dem Sitzen zwischen zwei Niederwerfungen?",
+            "Das Pflichtgebet am Morgen hat zwei Einheiten. Was tun wir nach den Niederwerfungen der zweiten Einheit?",
+            "Welches Bittgebet lesen wir zuerst im Sitzen?",
+            "Welche Segensgebete lesen wir nach At-Tahiyyat für unseren Propheten?",
+            "Welches Bittgebet lesen wir danach?",
+            "Wie beenden wir das Gebet?"
+          ]
+        }
+      },
+      "learn_step_correct": {
+        "array": {
+          "tr": [
+            "Bismillâhirrahmânirrahîm",
+            "Ellerimizi bileklere kadar",
+            "Üç kez çalkalarız",
+            "Burnumuza",
+            "Alnımızdan çenemizin altına, bir kulaktan öbür kulağa",
+            "Sağ kolumuzdan",
+            "Dirseğimizle beraber",
+            "Islak elimizle meshederiz",
+            "Kulaklarımızı",
+            "Ensemizi",
+            "Topuklarımızla beraber",
+            "Sol ayağımızı",
+            "Kelime-i şehâdet",
+            "Kıbleye, yani Kâbe'ye doğru",
+            "Hangi namazı kılacağımıza niyet ederiz",
+            "Allâhu Ekber",
+            "Sübhâneke",
+            "Fâtiha",
+            "Kur'an'dan kısa bir sure, örneğin İhlâs",
+            "Rükû",
+            "Semi'allâhü limen hamideh",
+            "Secde",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Kısa bir süre otururuz",
+            "Alnımız, burnumuz, ellerimiz, dizlerimiz ve ayak parmaklarımız",
+            "İki",
+            "Fâtiha",
+            "Dümdüz",
+            "Rabbimiz, hamd sanadır",
+            "Allâhu Ekber",
+            "Yine secdeye gideriz",
+            "Otururuz",
+            "Ettehiyyâtü",
+            "Allâhümme salli ve Allâhümme bârik",
+            "Rabbenâ âtinâ",
+            "Önce sağa, sonra sola selam vererek"
+          ],
+          "fr": [
+            "Bismillâhirrahmânirrahîm",
+            "Nos mains jusqu'aux poignets",
+            "Nous rinçons trois fois",
+            "Dans notre nez",
+            "Du front au-dessous du menton, d'une oreille à l'autre",
+            "Le bras droit",
+            "Le coude compris",
+            "Nous passons une main mouillée",
+            "Nos oreilles",
+            "Notre nuque",
+            "Les chevilles comprises",
+            "Le pied gauche",
+            "L'attestation de foi",
+            "Vers la qibla, en direction de la Kaaba",
+            "Nous décidons quelle prière accomplir",
+            "Allâhu Ekber",
+            "Sübhâneke",
+            "Fâtiha",
+            "Une courte sourate du Coran, comme Al-Ikhlas",
+            "L'inclinaison (ruku)",
+            "Semi'allâhü limen hamideh",
+            "La prosternation (sujud)",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Nous nous asseyons un instant",
+            "Le front, le nez, les mains, les genoux et les orteils",
+            "Deux",
+            "Fâtiha",
+            "Bien droit",
+            "Seigneur, à Toi la louange",
+            "Allâhu Ekber",
+            "Nous nous prosternons de nouveau",
+            "Nous nous asseyons",
+            "Ettehiyyâtü",
+            "Allâhümme salli et Allâhümme bârik",
+            "Rabbenâ âtinâ",
+            "En saluant à droite puis à gauche"
+          ],
+          "en": [
+            "Bismillâhirrahmânirrahîm",
+            "Our hands up to the wrists",
+            "Rinse three times",
+            "Our nose",
+            "From the forehead to below the chin, from ear to ear",
+            "Our right arm",
+            "Including the elbow",
+            "Wipe it with a wet hand",
+            "Our ears",
+            "Our neck",
+            "Including the ankles",
+            "Our left foot",
+            "The testimony of faith",
+            "The qibla, towards the Kaaba",
+            "Intend which prayer to perform",
+            "Allâhu Ekber",
+            "Sübhâneke",
+            "Fâtiha",
+            "A short surah from the Quran, such as Al-Ikhlas",
+            "Bowing (ruku)",
+            "Semi'allâhü limen hamideh",
+            "Prostration (sujud)",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Sit for a short while",
+            "Our forehead, nose, hands, knees and toes",
+            "Two",
+            "Fâtiha",
+            "Straight",
+            "Our Lord, all praise is Yours",
+            "Allâhu Ekber",
+            "Prostrate again",
+            "Sit down",
+            "Ettehiyyâtü",
+            "Allâhümme salli and Allâhümme bârik",
+            "Rabbenâ âtinâ",
+            "Greet first to the right, then to the left"
+          ],
+          "de": [
+            "Bismillâhirrahmânirrahîm",
+            "Die Hände bis zu den Handgelenken",
+            "Dreimal ausspülen",
+            "In die Nase",
+            "Von der Stirn bis unter das Kinn, von Ohr zu Ohr",
+            "Mit dem rechten Arm",
+            "Einschließlich des Ellenbogens",
+            "Mit der nassen Hand darüberstreichen",
+            "Die Ohren",
+            "Den Nacken",
+            "Einschließlich der Knöchel",
+            "Den linken Fuß",
+            "Das Glaubensbekenntnis",
+            "Zur Qibla, also zur Kaaba",
+            "Beabsichtigen, welches Gebet wir verrichten",
+            "Allâhu Ekber",
+            "Sübhâneke",
+            "Fâtiha",
+            "Eine kurze Koransure, etwa Al-Ikhlas",
+            "Verbeugung (Ruku)",
+            "Semi'allâhü limen hamideh",
+            "Niederwerfung (Sudschud)",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Kurz sitzen",
+            "Stirn, Nase, Hände, Knie und Zehen",
+            "Zwei",
+            "Fâtiha",
+            "Gerade",
+            "Unser Herr, Dir gebührt alles Lob",
+            "Allâhu Ekber",
+            "Uns erneut niederwerfen",
+            "Uns hinsetzen",
+            "Ettehiyyâtü",
+            "Allâhümme salli und Allâhümme bârik",
+            "Rabbenâ âtinâ",
+            "Erst nach rechts, dann nach links grüßen"
+          ]
+        }
+      },
+      "learn_step_wrong_one": {
+        "array": {
+          "tr": [
+            "Elhamdülillah",
+            "Ayaklarımızı",
+            "Yutarız",
+            "Kulağımıza",
+            "Yalnız burnumuzu",
+            "Sol kolumuzdan",
+            "Bileğimize kadar",
+            "Sabunla yıkarız",
+            "Dizlerimizi",
+            "Dizlerimizi",
+            "Parmak uçlarına kadar",
+            "Yine sağ ayağımızı",
+            "Sübhâneke",
+            "Güneşe doğru",
+            "Şarkı söyleriz",
+            "Elhamdülillah",
+            "Ettehiyyâtü",
+            "Kevser",
+            "Ezan",
+            "Secde",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Rükû",
+            "Sübhâne rabbiye'l-azîm",
+            "Ayağa kalkarız",
+            "Yalnız alnımız",
+            "Bir",
+            "İhlâs",
+            "Kambur",
+            "Allah en büyüktür",
+            "Âmin",
+            "Namazı bitiririz",
+            "Üçüncü rekata kalkarız",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Hemen ayağa kalkarak"
+          ],
+          "fr": [
+            "Elhamdülillah",
+            "Nos pieds",
+            "Nous avalons",
+            "Dans nos oreilles",
+            "Seulement le nez",
+            "Le bras gauche",
+            "Jusqu'au poignet",
+            "Nous la lavons au savon",
+            "Nos genoux",
+            "Nos genoux",
+            "Seulement le bout des orteils",
+            "Encore le pied droit",
+            "Sübhâneke",
+            "Vers le soleil",
+            "Nous chantons",
+            "Elhamdülillah",
+            "Ettehiyyâtü",
+            "Kevser",
+            "L'appel à la prière",
+            "La prosternation (sujud)",
+            "Sübhâne rabbiye'l-a'lâ",
+            "L'inclinaison (ruku)",
+            "Sübhâne rabbiye'l-azîm",
+            "Nous nous levons",
+            "Seulement le front",
+            "Une",
+            "İhlâs",
+            "Courbé",
+            "Allah est le plus grand",
+            "Âmin",
+            "Nous terminons la prière",
+            "Nous nous levons pour une troisième unité",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Sübhâneke",
+            "En nous levant immédiatement"
+          ],
+          "en": [
+            "Elhamdülillah",
+            "Our feet",
+            "Swallow it",
+            "Our ears",
+            "Only our nose",
+            "Our left arm",
+            "Up to the wrist",
+            "Wash it with soap",
+            "Our knees",
+            "Our knees",
+            "Only the tips of our toes",
+            "Our right foot again",
+            "Sübhâneke",
+            "Towards the sun",
+            "Sing a song",
+            "Elhamdülillah",
+            "Ettehiyyâtü",
+            "Kevser",
+            "The call to prayer",
+            "Prostration (sujud)",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Bowing (ruku)",
+            "Sübhâne rabbiye'l-azîm",
+            "Stand up",
+            "Only our forehead",
+            "One",
+            "İhlâs",
+            "Hunched",
+            "Allah is the Greatest",
+            "Âmin",
+            "Finish the prayer",
+            "Stand for a third unit",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Stand up straight away"
+          ],
+          "de": [
+            "Elhamdülillah",
+            "Die Füße",
+            "Es schlucken",
+            "In die Ohren",
+            "Nur die Nase",
+            "Mit dem linken Arm",
+            "Bis zum Handgelenk",
+            "Mit Seife waschen",
+            "Die Knie",
+            "Die Knie",
+            "Nur die Zehenspitzen",
+            "Noch einmal den rechten Fuß",
+            "Sübhâneke",
+            "Zur Sonne",
+            "Ein Lied singen",
+            "Elhamdülillah",
+            "Ettehiyyâtü",
+            "Kevser",
+            "Den Gebetsruf",
+            "Niederwerfung (Sudschud)",
+            "Sübhâne rabbiye'l-a'lâ",
+            "Verbeugung (Ruku)",
+            "Sübhâne rabbiye'l-azîm",
+            "Aufstehen",
+            "Nur die Stirn",
+            "Eine",
+            "İhlâs",
+            "Gekrümmt",
+            "Allah ist am größten",
+            "Âmin",
+            "Das Gebet beenden",
+            "Zur dritten Einheit aufstehen",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Sübhâneke",
+            "Sofort aufstehen"
+          ]
+        }
+      },
+      "learn_step_wrong_two": {
+        "array": {
+          "tr": [
+            "Esselâmü aleyküm",
+            "Saçlarımızı",
+            "Hiçbir şey yapmayız",
+            "Gözümüze",
+            "Yalnız alnımızı",
+            "Hangisi olursa",
+            "Yalnız parmaklarımızı",
+            "Hiçbir şey yapmayız",
+            "Ayakkabımızı",
+            "Ayak tabanlarımızı",
+            "Dizlerimize kadar",
+            "Yüzümüzü",
+            "Âmin",
+            "Pencereye doğru",
+            "Gözümüzü kapatıp uyuruz",
+            "Âmin",
+            "Rabbenâ âtinâ",
+            "Nâs",
+            "Hiçbir şey",
+            "Kıyam",
+            "Esselâmü aleyküm",
+            "Selam",
+            "Semi'allâhü limen hamideh",
+            "Selam veririz",
+            "Yalnız ellerimiz",
+            "Üç",
+            "Hiçbir sure",
+            "Dimdik ayakta",
+            "Selam üzerinize olsun",
+            "Elhamdülillah",
+            "Ayağa kalkarız",
+            "Rükûya gideriz",
+            "Fâtiha",
+            "Ezan",
+            "Ezan",
+            "Önce sola, sonra sağa selam vererek"
+          ],
+          "fr": [
+            "Esselâmü aleyküm",
+            "Nos cheveux",
+            "Nous ne faisons rien",
+            "Dans nos yeux",
+            "Seulement le front",
+            "N'importe lequel",
+            "Seulement les doigts",
+            "Nous ne faisons rien",
+            "Nos chaussures",
+            "La plante des pieds",
+            "Jusqu'aux genoux",
+            "Le visage",
+            "Âmin",
+            "Vers la fenêtre",
+            "Nous fermons les yeux pour dormir",
+            "Âmin",
+            "Rabbenâ âtinâ",
+            "Nâs",
+            "Rien",
+            "La station debout (qiyam)",
+            "Esselâmü aleyküm",
+            "La salutation finale",
+            "Semi'allâhü limen hamideh",
+            "Nous saluons",
+            "Seulement les mains",
+            "Trois",
+            "Aucune sourate",
+            "Debout verticalement",
+            "Que la paix soit sur vous",
+            "Elhamdülillah",
+            "Nous nous levons",
+            "Nous nous inclinons",
+            "Fâtiha",
+            "L'appel à la prière",
+            "L'appel à la prière",
+            "En saluant à gauche puis à droite"
+          ],
+          "en": [
+            "Esselâmü aleyküm",
+            "Our hair",
+            "Do nothing",
+            "Our eyes",
+            "Only our forehead",
+            "Either one",
+            "Only the fingers",
+            "Do nothing",
+            "Our shoes",
+            "The soles of our feet",
+            "Up to the knees",
+            "Our face",
+            "Âmin",
+            "Towards the window",
+            "Close our eyes and sleep",
+            "Âmin",
+            "Rabbenâ âtinâ",
+            "Nâs",
+            "Nothing",
+            "Standing (qiyam)",
+            "Esselâmü aleyküm",
+            "The closing greeting",
+            "Semi'allâhü limen hamideh",
+            "Give the closing greeting",
+            "Only our hands",
+            "Three",
+            "No surah",
+            "Standing upright",
+            "Peace be upon you",
+            "Elhamdülillah",
+            "Stand up",
+            "Bow",
+            "Fâtiha",
+            "The call to prayer",
+            "The call to prayer",
+            "Greet first to the left, then to the right"
+          ],
+          "de": [
+            "Esselâmü aleyküm",
+            "Die Haare",
+            "Nichts",
+            "In die Augen",
+            "Nur die Stirn",
+            "Mit einem beliebigen Arm",
+            "Nur die Finger",
+            "Nichts",
+            "Die Schuhe",
+            "Die Fußsohlen",
+            "Bis zu den Knien",
+            "Das Gesicht",
+            "Âmin",
+            "Zum Fenster",
+            "Die Augen schließen und schlafen",
+            "Âmin",
+            "Rabbenâ âtinâ",
+            "Nâs",
+            "Nichts",
+            "Stehen (Qiyam)",
+            "Esselâmü aleyküm",
+            "Abschlussgruß",
+            "Semi'allâhü limen hamideh",
+            "Den Abschlussgruß sprechen",
+            "Nur die Hände",
+            "Drei",
+            "Keine Sure",
+            "Aufrecht stehend",
+            "Friede sei mit euch",
+            "Elhamdülillah",
+            "Aufstehen",
+            "Uns verbeugen",
+            "Fâtiha",
+            "Den Gebetsruf",
+            "Den Gebetsruf",
+            "Erst nach links, dann nach rechts grüßen"
+          ]
+        }
+      },
+      "learn_step_info": {
+        "array": {
+          "tr": [
+            "Abdest almaya niyet eder, \"Bismillâhirrahmânirrahîm\" diyerek başlarız.",
+            "Ellerimizi bileklerimize kadar üç kez yıkarız, parmak aralarını da unutmayız.",
+            "Sağ elimizle ağzımıza su alır, üç kez çalkalayıp dökeriz.",
+            "Burnumuza üç kez su çekip temizleriz.",
+            "Yüzümüzün tamamını üç kez yıkarız: her seferinde avuçlarımıza yeniden su alırız. Yüzü yıkamak abdestin farzlarındandır.",
+            "Peygamberimiz (s.a.v.) temizlikte sağdan başlamayı severdi. Sağ kolumuzu dirseğimizle beraber üç kez yıkarız.",
+            "Sol kolumuzu da dirseğimizle beraber üç kez yıkarız. Kolları dirseklerle beraber yıkamak abdestin farzlarındandır.",
+            "Mesh, ıslak elle sıvazlamak demektir. Başı meshetmek abdestin farzlarındandır.",
+            "Kulaklarımızın içini ve arkasını ıslak parmaklarımızla meshederiz.",
+            "Ellerimizin dışıyla ensemizi meshederiz. Hanefi mezhebinde ense meshi abdestin edeplerindendir. Ayaklarımızı bundan sonra yıkarız.",
+            "Önce sağ ayağımızı topuğumuzla beraber üç kez yıkar, parmak aralarını ovarız. Ayakları topuklarla beraber yıkamak abdestin farzlarındandır.",
+            "Sol ayağımızı da topuğumuzla beraber üç kez yıkarız.",
+            "Abdestten sonra \"Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh\" demek güzeldir.",
+            "Namazda Mekke'deki Kâbe'ye doğru döneriz. Buna kıble denir. Seccademizi kıbleye doğru serdik; üstündeki mihrap deseninin ucu kıbleyi gösteriyor.",
+            "\"Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya\" diye niyet ederiz. Ameller niyetlere göredir.",
+            "Ellerimizi kaldırıp \"Allâhu Ekber\" deriz ve namaza başlarız. Buna iftitah tekbiri denir.",
+            "Ayakta ellerimizi bağlarız ve Sübhâneke duasını okuruz.",
+            "Eûzü besmele çekip Fâtiha suresini okuruz. Fâtiha'yı okumayanın namazı olmaz.",
+            "Fâtiha'dan sonra Kur'an'dan bir sure ya da birkaç ayet okuruz. Buna zamm-ı sure denir.",
+            "\"Allâhu Ekber\" diyerek eğiliriz, ellerimizle dizlerimizi tutarız ve üç kez \"Sübhâne rabbiye'l-azîm\" deriz.",
+            "Doğrulurken \"Semi'allâhü limen hamideh\", dimdik durunca \"Rabbenâ leke'l-hamd\" deriz.",
+            "\"Allâhu Ekber\" diyerek önce dizlerimizi, sonra ellerimizi, sonra alnımızı ve burnumuzu yere koyarız. Kul Rabbine en çok secdede yakın olur.",
+            "Secdede üç kez \"Sübhâne rabbiye'l-a'lâ\" deriz.",
+            "\"Allâhu Ekber\" diyerek doğrulur, biraz otururuz.",
+            "\"Allâhu Ekber\" deyip ikinci kez secdeye gideriz. Peygamberimiz yedi organ üzerine secde etmeyi emretti.",
+            "Her rekatta iki secde vardır. Şimdi \"Allâhu Ekber\" diyerek ikinci rekat için ayağa kalkıyoruz.",
+            "İkinci rekatta besmele çekip Fâtiha'yı, ardından bir sure (burada Kevser) okuruz.",
+            "Rükûda başımızı ne yukarı kaldırırız ne aşağı sarkıtırız; sırtımız dümdüz olur.",
+            "Rükûdan doğrulup \"Rabbimiz, hamd sanadır\" anlamına gelen \"Rabbenâ leke'l-hamd\" sözünü söyleriz.",
+            "Her eğilip kalkışta \"Allâhu Ekber\" deriz.",
+            "Kısa oturuştan sonra \"Allâhu Ekber\" deyip ikinci kez secdeye gideriz.",
+            "İki rekatı bitirdik. \"Allâhu Ekber\" diyerek doğrulur ve son oturuşa otururuz.",
+            "Oturuşta önce Ettehiyyâtü duasını okuruz.",
+            "Peygamberimize salavat getiren Allâhümme salli ve Allâhümme bârik dualarını okuruz.",
+            "Rabbenâ âtinâ ve Rabbenağfirlî dualarını okuruz.",
+            "Başımızı önce sağa, sonra sola çevirip \"Esselâmü aleyküm ve rahmetullah\" deriz. Namazımız tamam!"
+          ],
+          "fr": [
+            "Nous avons l'intention de faire nos ablutions et commençons en disant « Bismillâhirrahmânirrahîm ».",
+            "Nous lavons nos mains jusqu'aux poignets trois fois, sans oublier entre les doigts.",
+            "Avec la main droite, nous prenons de l'eau dans la bouche, la rinçons puis recrachons, trois fois.",
+            "Nous aspirons doucement de l'eau dans le nez et le nettoyons trois fois.",
+            "Nous lavons tout le visage trois fois, en reprenant de l'eau à chaque fois. Laver le visage est une obligation des ablutions.",
+            "Notre Prophète (paix sur lui) aimait commencer la toilette par la droite. Nous lavons le bras droit, coude compris, trois fois.",
+            "Nous lavons aussi le bras gauche, coude compris, trois fois. Laver les bras avec les coudes est une obligation des ablutions.",
+            "Essuyer consiste à passer une main mouillée sur une surface. Essuyer la tête est une obligation des ablutions.",
+            "Nous essuyons l'intérieur et l'arrière des oreilles avec les doigts mouillés.",
+            "Nous essuyons la nuque avec le dos des mains. Dans l'école hanafite, cela fait partie des bonnes manières des ablutions. Nous lavons ensuite les pieds.",
+            "Nous lavons d'abord le pied droit, cheville comprise, trois fois, en frottant entre les orteils. Laver les pieds avec les chevilles est une obligation des ablutions.",
+            "Nous lavons aussi le pied gauche, cheville comprise, trois fois.",
+            "Après les ablutions, il est bon de dire « Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh ».",
+            "Nous prions en direction de la Kaaba à La Mecque : c'est la qibla. Nous avons orienté notre tapis vers elle ; la pointe du motif du mihrab indique cette direction.",
+            "Nous avons l'intention d'accomplir la prière obligatoire de l'aube d'aujourd'hui pour Allah. Les actes valent par leurs intentions.",
+            "Nous levons les mains, disons « Allâhu Ekber » et commençons la prière. C'est le takbir d'ouverture.",
+            "Debout, nous croisons les mains et récitons l'invocation Subhanaka.",
+            "Nous cherchons refuge auprès d'Allah, disons la basmala puis récitons Al-Fatiha. La prière n'est pas valable sans Al-Fatiha.",
+            "Après Al-Fatiha, nous récitons une sourate ou quelques versets du Coran. C'est la récitation supplémentaire.",
+            "Nous disons « Allâhu Ekber », nous inclinons, tenons nos genoux et disons trois fois « Sübhâne rabbiye'l-azîm ».",
+            "En nous relevant, nous disons « Semi'allâhü limen hamideh », puis, bien droits, « Rabbenâ leke'l-hamd ».",
+            "En disant « Allâhu Ekber », nous posons les genoux, puis les mains, le front et le nez au sol. Le serviteur est le plus proche de son Seigneur pendant la prosternation.",
+            "En prosternation, nous disons trois fois « Sübhâne rabbiye'l-a'lâ ».",
+            "Nous disons « Allâhu Ekber », nous redressons et nous asseyons un instant.",
+            "Nous disons « Allâhu Ekber » et nous prosternons une deuxième fois. Le Prophète a ordonné de se prosterner sur sept parties du corps.",
+            "Chaque unité comprend deux prosternations. Nous disons maintenant « Allâhu Ekber » et nous levons pour la deuxième unité.",
+            "Dans la deuxième unité, nous disons la basmala, récitons Al-Fatiha puis une autre sourate, ici Al-Kawthar.",
+            "En inclinaison, nous ne relevons pas la tête et ne la laissons pas pendre ; notre dos reste droit.",
+            "Nous nous redressons et disons « Rabbenâ leke'l-hamd », qui signifie « Seigneur, à Toi la louange ».",
+            "Nous disons « Allâhu Ekber » en nous baissant et en nous relevant.",
+            "Après une courte pause assise, nous disons « Allâhu Ekber » et nous prosternons une deuxième fois.",
+            "Nous avons terminé deux unités. En disant « Allâhu Ekber », nous nous redressons pour la dernière position assise.",
+            "Assis, nous récitons d'abord l'invocation At-Tahiyyat.",
+            "Nous récitons Allahumma salli et Allahumma barik, demandant des bénédictions sur notre Prophète.",
+            "Nous récitons les invocations Rabbana atina et Rabbanaghfirli.",
+            "Nous tournons la tête à droite puis à gauche et disons « Esselâmü aleyküm ve rahmetullah ». Notre prière est terminée !"
+          ],
+          "en": [
+            "We intend to perform ablution and begin by saying “Bismillâhirrahmânirrahîm”.",
+            "We wash our hands up to the wrists three times, including between the fingers.",
+            "With our right hand, we take water into our mouth, rinse and spit it out three times.",
+            "We gently draw water into our nose and clean it three times.",
+            "We wash our whole face three times, taking fresh water in our hands each time. Washing the face is an obligatory part of ablution.",
+            "Our Prophet (peace be upon him) liked to begin cleaning with the right side. We wash our right arm, including the elbow, three times.",
+            "We also wash our left arm, including the elbow, three times. Washing the arms with the elbows is an obligatory part of ablution.",
+            "Wiping means passing a wet hand over a surface. Wiping the head is an obligatory part of ablution.",
+            "We wipe the inside and back of our ears with wet fingers.",
+            "We wipe the back of our neck with the backs of our hands. In the Hanafi school, this is part of the etiquette of ablution. We wash our feet next.",
+            "First we wash our right foot, including the ankle, three times and rub between the toes. Washing the feet with the ankles is an obligatory part of ablution.",
+            "We also wash our left foot, including the ankle, three times.",
+            "After ablution, it is good to say “Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh”.",
+            "In prayer we face the Kaaba in Mecca. This direction is called the qibla. We laid out our prayer mat towards it; the tip of its mihrab pattern points towards the qibla.",
+            "We intend to perform today's obligatory dawn prayer for Allah's sake. Actions are judged by intentions.",
+            "We raise our hands, say “Allâhu Ekber” and begin prayer. This is called the opening takbir.",
+            "We fold our hands while standing and recite the Subhanaka supplication.",
+            "We seek refuge in Allah, say the basmala and recite Al-Fatiha. Prayer is not valid without Al-Fatiha.",
+            "After Al-Fatiha, we recite a surah or several verses from the Quran. This is the additional recitation.",
+            "We say “Allâhu Ekber”, bow, hold our knees and say “Sübhâne rabbiye'l-azîm” three times.",
+            "While rising, we say “Semi'allâhü limen hamideh”; once upright, we say “Rabbenâ leke'l-hamd”.",
+            "Saying “Allâhu Ekber”, we place our knees, then hands, forehead and nose on the ground. A servant is closest to their Lord in prostration.",
+            "In prostration, we say “Sübhâne rabbiye'l-a'lâ” three times.",
+            "We say “Allâhu Ekber”, rise and sit briefly.",
+            "We say “Allâhu Ekber” and prostrate a second time. The Prophet instructed us to prostrate on seven body parts.",
+            "Each unit has two prostrations. Now we say “Allâhu Ekber” and stand for the second unit.",
+            "In the second unit, we say the basmala, recite Al-Fatiha and then another surah, here Al-Kawthar.",
+            "When bowing, we neither raise our head nor let it hang down; we keep our back straight.",
+            "We rise from bowing and say “Rabbenâ leke'l-hamd”, meaning “Our Lord, all praise is Yours”.",
+            "We say “Allâhu Ekber” as we lower and raise ourselves.",
+            "After sitting briefly, we say “Allâhu Ekber” and prostrate a second time.",
+            "We have completed two units. Saying “Allâhu Ekber”, we rise into the final sitting position.",
+            "While sitting, we first recite the At-Tahiyyat supplication.",
+            "We recite Allahumma salli and Allahumma barik, asking for blessings upon our Prophet.",
+            "We recite the Rabbana atina and Rabbanaghfirli supplications.",
+            "We turn our head first right, then left and say “Esselâmü aleyküm ve rahmetullah”. Our prayer is complete!"
+          ],
+          "de": [
+            "Wir beabsichtigen die Waschung und beginnen mit „Bismillâhirrahmânirrahîm“.",
+            "Wir waschen die Hände dreimal bis zu den Handgelenken, auch zwischen den Fingern.",
+            "Mit der rechten Hand nehmen wir Wasser in den Mund, spülen und spucken es aus, insgesamt dreimal.",
+            "Wir ziehen vorsichtig Wasser in die Nase und reinigen sie dreimal.",
+            "Wir waschen das ganze Gesicht dreimal und nehmen jedes Mal frisches Wasser. Das Waschen des Gesichts gehört zu den Pflichten der Waschung.",
+            "Unser Prophet (Friede sei mit ihm) begann die Reinigung gern rechts. Wir waschen den rechten Arm einschließlich des Ellenbogens dreimal.",
+            "Wir waschen auch den linken Arm einschließlich des Ellenbogens dreimal. Das Waschen der Arme mit den Ellenbogen gehört zu den Pflichten der Waschung.",
+            "Überstreichen bedeutet, mit einer nassen Hand darüberzufahren. Das Überstreichen des Kopfes gehört zu den Pflichten der Waschung.",
+            "Wir streichen mit nassen Fingern über die Innen- und Rückseiten der Ohren.",
+            "Wir streichen mit den Handrücken über den Nacken. In der hanafitischen Rechtsschule gehört dies zu den guten Umgangsformen der Waschung. Danach waschen wir die Füße.",
+            "Wir waschen zuerst den rechten Fuß einschließlich des Knöchels dreimal und reiben zwischen den Zehen. Das Waschen der Füße mit den Knöcheln gehört zu den Pflichten der Waschung.",
+            "Wir waschen auch den linken Fuß einschließlich des Knöchels dreimal.",
+            "Nach der Waschung ist es gut, „Eşhedü en lâ ilâhe illallah ve eşhedü enne Muhammeden abdühû ve rasûlüh“ zu sagen.",
+            "Wir beten in Richtung der Kaaba in Mekka. Diese Richtung heißt Qibla. Wir haben den Gebetsteppich dorthin ausgelegt; die Spitze seines Mihrab-Musters zeigt zur Qibla.",
+            "Wir beabsichtigen, heute das Pflichtgebet am Morgen für Allah zu verrichten. Taten werden nach den Absichten beurteilt.",
+            "Wir heben die Hände, sagen „Allâhu Ekber“ und beginnen das Gebet. Dies heißt Eröffnungstakbir.",
+            "Im Stehen falten wir die Hände und lesen das Bittgebet Subhanaka.",
+            "Wir suchen Zuflucht bei Allah, sagen die Basmala und lesen Al-Fatiha. Ohne Al-Fatiha ist das Gebet nicht gültig.",
+            "Nach Al-Fatiha lesen wir eine Sure oder einige Koranverse. Das ist die zusätzliche Rezitation.",
+            "Wir sagen „Allâhu Ekber“, verbeugen uns, umfassen die Knie und sagen dreimal „Sübhâne rabbiye'l-azîm“.",
+            "Beim Aufrichten sagen wir „Semi'allâhü limen hamideh“ und im aufrechten Stand „Rabbenâ leke'l-hamd“.",
+            "Mit „Allâhu Ekber“ legen wir erst die Knie, dann Hände, Stirn und Nase auf den Boden. Bei der Niederwerfung ist der Mensch seinem Herrn am nächsten.",
+            "Bei der Niederwerfung sagen wir dreimal „Sübhâne rabbiye'l-a'lâ“.",
+            "Wir sagen „Allâhu Ekber“, richten uns auf und sitzen kurz.",
+            "Wir sagen „Allâhu Ekber“ und werfen uns ein zweites Mal nieder. Der Prophet gebot die Niederwerfung auf sieben Körperteilen.",
+            "Jede Gebetseinheit hat zwei Niederwerfungen. Jetzt sagen wir „Allâhu Ekber“ und stehen zur zweiten Einheit auf.",
+            "In der zweiten Einheit sagen wir die Basmala, lesen Al-Fatiha und dann eine weitere Sure, hier Al-Kawthar.",
+            "Bei der Verbeugung heben wir den Kopf weder an noch lassen wir ihn hängen; der Rücken bleibt gerade.",
+            "Wir richten uns auf und sagen „Rabbenâ leke'l-hamd“. Das bedeutet „Unser Herr, Dir gebührt alles Lob“.",
+            "Beim Senken und Aufrichten sagen wir „Allâhu Ekber“.",
+            "Nach kurzem Sitzen sagen wir „Allâhu Ekber“ und werfen uns ein zweites Mal nieder.",
+            "Wir haben zwei Einheiten beendet. Mit „Allâhu Ekber“ richten wir uns zum letzten Sitzen auf.",
+            "Im Sitzen lesen wir zuerst das Bittgebet At-Tahiyyat.",
+            "Wir lesen Allahumma salli und Allahumma barik und bitten um Segen für unseren Propheten.",
+            "Wir lesen die Bittgebete Rabbana atina und Rabbanaghfirli.",
+            "Wir drehen den Kopf erst nach rechts, dann nach links und sagen „Esselâmü aleyküm ve rahmetullah“. Unser Gebet ist fertig!"
+          ]
+        }
+      },
+      "learn_recitation_titles": {
+        "array": {
+          "tr": [
+            "Besmele",
+            "Kelime-i şehâdet",
+            "Niyet",
+            "Sübhâneke",
+            "Eûzü besmele",
+            "Fâtiha suresi",
+            "İhlâs suresi",
+            "Kevser suresi",
+            "Rükû tesbihi",
+            "Rükûdan doğrulurken",
+            "Dimdik durunca",
+            "Secde tesbihi",
+            "Ettehiyyâtü",
+            "Allâhümme salli",
+            "Allâhümme bârik",
+            "Rabbenâ duaları",
+            "Selam"
+          ],
+          "fr": [
+            "Basmala",
+            "L'attestation de foi",
+            "L'intention",
+            "Subhanaka",
+            "Demande de protection et basmala",
+            "Sourate Al-Fatiha",
+            "Sourate Al-Ikhlas",
+            "Sourate Al-Kawthar",
+            "Louange dans l'inclinaison",
+            "En se relevant de l'inclinaison",
+            "Debout, bien droit",
+            "Louange en prosternation",
+            "At-Tahiyyat",
+            "Allahumma salli",
+            "Allahumma barik",
+            "Invocations Rabbana",
+            "La salutation finale"
+          ],
+          "en": [
+            "Basmala",
+            "The testimony of faith",
+            "Intention",
+            "Subhanaka",
+            "Seeking refuge and basmala",
+            "Surah Al-Fatiha",
+            "Surah Al-Ikhlas",
+            "Surah Al-Kawthar",
+            "Praise while bowing",
+            "Rising from bowing",
+            "Standing upright",
+            "Praise in prostration",
+            "At-Tahiyyat",
+            "Allahumma salli",
+            "Allahumma barik",
+            "Rabbana supplications",
+            "The closing greeting"
+          ],
+          "de": [
+            "Basmala",
+            "Das Glaubensbekenntnis",
+            "Die Absicht",
+            "Subhanaka",
+            "Zufluchtsgebet und Basmala",
+            "Sure Al-Fatiha",
+            "Sure Al-Ikhlas",
+            "Sure Al-Kawthar",
+            "Lobpreis bei der Verbeugung",
+            "Beim Aufrichten",
+            "Im aufrechten Stand",
+            "Lobpreis bei der Niederwerfung",
+            "At-Tahiyyat",
+            "Allahumma salli",
+            "Allahumma barik",
+            "Rabbana-Bittgebete",
+            "Der Abschlussgruß"
+          ]
+        }
+      },
+      "learn_recitation_meanings": {
+        "array": {
+          "tr": [
+            "Rahmân ve Rahîm olan Allah'ın adıyla.",
+            "Şahitlik ederim ki Allah'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O'nun kulu ve elçisidir.",
+            "Niyet kalple yapılır; dille söylemek de güzeldir.",
+            "Allah'ım! Seni her türlü eksiklikten uzak tutar ve överim. Senin adın mübarektir. Şanın yücedir. Senden başka ilah yoktur.",
+            "Kovulmuş şeytandan Allah'a sığınırım. Rahmân ve Rahîm olan Allah'ın adıyla.",
+            "Hamd, âlemlerin Rabbi Allah'a mahsustur. O, Rahmân'dır, Rahîm'dir. Din gününün sahibidir. Yalnız sana ibadet ederiz ve yalnız senden yardım dileriz. Bizi doğru yola ilet. Kendilerine nimet verdiklerinin yoluna; gazaba uğramışların ve sapmışların yoluna değil.",
+            "De ki: O, Allah'tır, bir tektir. Allah Samed'dir; her şey O'na muhtaçtır, O hiçbir şeye muhtaç değildir. O doğurmamış ve doğmamıştır. Hiçbir şey O'na denk değildir.",
+            "Şüphesiz biz sana Kevser'i verdik. Şimdi sen Rabbin için namaz kıl, kurban kes. Asıl soyu kesik olan, şüphesiz sana buğzedendir.",
+            "Büyük Rabbimi her türlü eksiklikten uzak tutarım. (3 kez)",
+            "Allah, kendisine hamd edeni işitir.",
+            "Rabbimiz, hamd sanadır.",
+            "En yüce olan Rabbimi her türlü eksiklikten uzak tutarım. (3 kez)",
+            "Bütün dualar, ibadetler ve güzel sözler Allah içindir. Ey Peygamber! Allah'ın selamı, rahmeti ve bereketi senin üzerine olsun. Selam bizim üzerimize ve Allah'ın salih kulları üzerine olsun. Şahitlik ederim ki Allah'tan başka ilah yoktur ve yine şahitlik ederim ki Muhammed O'nun kulu ve elçisidir.",
+            "Allah'ım! İbrahim'e ve ailesine rahmet ettiğin gibi Muhammed'e ve ailesine de rahmet et. Şüphesiz sen övülmeye layıksın, şanı yüce olansın.",
+            "Allah'ım! İbrahim'e ve ailesine bereket verdiğin gibi Muhammed'e ve ailesine de bereket ver. Şüphesiz sen övülmeye layıksın, şanı yüce olansın.",
+            "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi cehennem azabından koru. Rabbimiz! Hesap gününde beni, anamı, babamı ve bütün müminleri bağışla.",
+            "Allah'ın selamı ve rahmeti üzerinize olsun."
+          ],
+          "fr": [
+            "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux.",
+            "J'atteste qu'il n'y a de dieu qu'Allah et que Muhammad est Son serviteur et Son messager.",
+            "L'intention se fait dans le cœur ; il est également bon de l'exprimer par des mots.",
+            "Ô Allah, gloire et louange à Toi. Ton nom est béni, Ta majesté est exaltée et il n'y a de dieu que Toi.",
+            "Je cherche refuge auprès d'Allah contre Satan le banni. Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux.",
+            "Louange à Allah, Seigneur de tous les mondes, le Tout Miséricordieux, le Très Miséricordieux, Maître du Jour du jugement. C'est Toi seul que nous adorons et Toi seul dont nous implorons l'aide. Guide-nous sur le droit chemin, celui de ceux que Tu as comblés de bienfaits, non de ceux qui ont encouru la colère ni des égarés.",
+            "Dis : Il est Allah, l'Unique. Allah est Celui dont tous dépendent et qui ne dépend de personne. Il n'engendre pas et n'est pas engendré. Rien ne Lui est comparable.",
+            "Nous t'avons certes accordé Al-Kawthar. Prie donc ton Seigneur et sacrifie. C'est celui qui te déteste qui sera privé de postérité.",
+            "Gloire à mon Seigneur, le Magnifique. (3 fois)",
+            "Allah entend celui qui Le loue.",
+            "Seigneur, à Toi la louange.",
+            "Gloire à mon Seigneur, le Très-Haut. (3 fois)",
+            "Les salutations, les adorations et les bonnes paroles sont pour Allah. Ô Prophète, que la paix, la miséricorde et les bénédictions d'Allah soient sur toi. Que la paix soit sur nous et sur les serviteurs vertueux d'Allah. J'atteste qu'il n'y a de dieu qu'Allah et que Muhammad est Son serviteur et Son messager.",
+            "Ô Allah, accorde Ta miséricorde à Muhammad et à sa famille comme Tu l'as accordée à Ibrahim et à sa famille. Tu es digne de louange et de gloire.",
+            "Ô Allah, bénis Muhammad et sa famille comme Tu as béni Ibrahim et sa famille. Tu es digne de louange et de gloire.",
+            "Seigneur, accorde-nous le bien ici-bas et dans l'au-delà, et protège-nous du châtiment du Feu. Seigneur, pardonne-moi, ainsi qu'à mes parents et à tous les croyants, au Jour du jugement.",
+            "Que la paix et la miséricorde d'Allah soient sur vous."
+          ],
+          "en": [
+            "In the name of Allah, the Most Merciful, the Especially Merciful.",
+            "I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and messenger.",
+            "Intention is made in the heart; it is also good to express it in words.",
+            "O Allah, glory and praise be to You. Blessed is Your name, exalted is Your majesty, and there is no god but You.",
+            "I seek refuge in Allah from the rejected Satan. In the name of Allah, the Most Merciful, the Especially Merciful.",
+            "All praise belongs to Allah, Lord of all worlds, the Most Merciful, the Especially Merciful, Master of the Day of Judgment. You alone we worship and You alone we ask for help. Guide us to the straight path, the path of those You have blessed, not those who have incurred anger or gone astray.",
+            "Say: He is Allah, the One. Allah is the One on whom all depend, while He depends on none. He neither begets nor is born, and none is comparable to Him.",
+            "We have surely granted you Al-Kawthar. So pray to your Lord and sacrifice. Indeed, it is the one who hates you who is cut off.",
+            "Glory be to my Lord, the Magnificent. (3 times)",
+            "Allah hears whoever praises Him.",
+            "Our Lord, all praise is Yours.",
+            "Glory be to my Lord, the Most High. (3 times)",
+            "All greetings, worship and good words belong to Allah. O Prophet, may the peace, mercy and blessings of Allah be upon you. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and that Muhammad is His servant and messenger.",
+            "O Allah, send mercy upon Muhammad and his family as You sent mercy upon Ibrahim and his family. You are indeed worthy of praise, full of glory.",
+            "O Allah, bless Muhammad and his family as You blessed Ibrahim and his family. You are indeed worthy of praise, full of glory.",
+            "Our Lord, grant us good in this world and good in the Hereafter, and protect us from the punishment of the Fire. Our Lord, forgive me, my parents and all believers on the Day of Reckoning.",
+            "May the peace and mercy of Allah be upon you."
+          ],
+          "de": [
+            "Im Namen Allahs, des Allerbarmers, des Barmherzigen.",
+            "Ich bezeuge, dass es keinen Gott außer Allah gibt, und dass Muhammad Sein Diener und Gesandter ist.",
+            "Die Absicht wird im Herzen gefasst; es ist auch gut, sie auszusprechen.",
+            "O Allah, Dir gebühren Herrlichkeit und Lob. Dein Name ist gesegnet, Deine Erhabenheit ist groß, und es gibt keinen Gott außer Dir.",
+            "Ich suche Zuflucht bei Allah vor dem verstoßenen Satan. Im Namen Allahs, des Allerbarmers, des Barmherzigen.",
+            "Alles Lob gebührt Allah, dem Herrn aller Welten, dem Allerbarmer, dem Barmherzigen, dem Herrscher am Tag des Gerichts. Dir allein dienen wir und Dich allein bitten wir um Hilfe. Führe uns auf den geraden Weg, den Weg derer, denen Du Gnade erwiesen hast, nicht derer, die Zorn auf sich gezogen haben, und nicht der Irregegangenen.",
+            "Sprich: Er ist Allah, der Einzige. Allah ist der, von dem alles abhängt und der von nichts abhängt. Er zeugt nicht und ist nicht gezeugt worden. Nichts ist Ihm gleich.",
+            "Wir haben dir wahrlich Al-Kawthar gegeben. So bete zu deinem Herrn und opfere. Derjenige, der dich hasst, ist wahrlich ohne Nachkommenschaft.",
+            "Gepriesen sei mein Herr, der Gewaltige. (3-mal)",
+            "Allah hört den, der Ihn lobt.",
+            "Unser Herr, Dir gebührt alles Lob.",
+            "Gepriesen sei mein Herr, der Allerhöchste. (3-mal)",
+            "Alle Grüße, Gottesdienste und guten Worte gebühren Allah. O Prophet, Allahs Friede, Barmherzigkeit und Segen seien mit dir. Friede sei mit uns und mit Allahs rechtschaffenen Dienern. Ich bezeuge, dass es keinen Gott außer Allah gibt, und dass Muhammad Sein Diener und Gesandter ist.",
+            "O Allah, erweise Muhammad und seiner Familie Barmherzigkeit, wie Du Ibrahim und seiner Familie Barmherzigkeit erwiesen hast. Du bist wahrlich des Lobes würdig und ruhmreich.",
+            "O Allah, segne Muhammad und seine Familie, wie Du Ibrahim und seine Familie gesegnet hast. Du bist wahrlich des Lobes würdig und ruhmreich.",
+            "Unser Herr, gib uns Gutes im Diesseits und im Jenseits und bewahre uns vor der Strafe des Feuers. Unser Herr, vergib mir, meinen Eltern und allen Gläubigen am Tag der Abrechnung.",
+            "Allahs Friede und Barmherzigkeit seien mit euch."
+          ]
+        }
+      },
+      "learn_intention": [
+        "Niyet ettim Allah rızası için bugünkü sabah namazının farzını kılmaya.",
+        "J'ai l'intention d'accomplir aujourd'hui la prière obligatoire de l'aube pour Allah.",
+        "I intend to perform today's obligatory dawn prayer for Allah's sake.",
+        "Ich beabsichtige, heute das Pflichtgebet am Morgen für Allah zu verrichten."
+      ],
+      "learn_greet_right": [
+        "Sağa selam →",
+        "Salutation à droite →",
+        "Greeting to the right →",
+        "Gruß nach rechts →"
+      ],
+      "learn_greet_left": [
+        "← Sola selam",
+        "← Salutation à gauche",
+        "← Greeting to the left",
+        "← Gruß nach links"
       ]
     }
   }

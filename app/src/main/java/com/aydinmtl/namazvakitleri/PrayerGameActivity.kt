@@ -21,7 +21,6 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
-import java.util.Locale
 
 /**
  * Namaz Öğreniyorum: çocuklar için oyun.
@@ -60,7 +59,9 @@ class PrayerGameActivity : LangActivity() {
     private var wrongCount = 0
     private val dp: Float by lazy { resources.displayMetrics.density }
 
-    // Sesli okuma (okuma bilmeyen küçükler için): telefonun kendi Türkçe sesi
+    // Sesli okuma (okuma bilmeyen küçükler için): telefonun seçili dildeki sesi
+    private val learning by lazy { LearningText(this) }
+
     private var tts: TextToSpeech? = null
     private var ttsReady = false
     private var pendingSpeech: String? = null
@@ -108,16 +109,27 @@ class PrayerGameActivity : LangActivity() {
                 if (skipStep) {
                     figure.fastForward() // atla denmişti: bu adımın sonraki okuması da hemen geçilir
                 } else {
-                    if (soundOn) { tts?.stop(); voice.play(PrayerSounds.of(r)) }
+                    if (soundOn) {
+                        stopSpeech()
+                        if (learning.isIntention(r)) {
+                            if (Lang.code(this) != "tr") speak(r.text)
+                            else voice.play(PrayerSounds.of(Recitations.NIYET))
+                        } else voice.play(PrayerSounds.of(r))
+                    }
                     btnSkip.visibility = View.VISIBLE
                 }
             }
             showRecite(r, n)
         }
         figure.onCaption = { c -> if (soundOn && !skipStep) voice.play(PrayerSounds.ofCaption(c)) }
-        figure.onSkip = { voice.stop() }
+        figure.onSkip = { voice.stop(); stopSpeech() }
         // Sesli modda okuma, kaydın uzunluğu kadar sürer; sessiz modda kelime sayısına göre (eskisi gibi)
-        figure.reciteMs = { r -> if (soundOn) voice.durationMs(PrayerSounds.of(r))?.plus(300) else null }
+        figure.reciteMs = { r ->
+            val intention = learning.isIntention(r)
+            if (soundOn && (!intention || Lang.code(this) == "tr")) {
+                voice.durationMs(PrayerSounds.of(if (intention) Recitations.NIYET else r))?.plus(300)
+            } else null
+        }
         btnSkip.setOnClickListener {
             skipStep = true
             btnSkip.visibility = View.GONE
@@ -126,6 +138,7 @@ class PrayerGameActivity : LangActivity() {
         swSound.isChecked = soundOn
         swSound.setOnCheckedChangeListener { _, on ->
             soundOn = on
+            if (!on) { voice.stop(); stopSpeech() }
             Store.setPrayerSound(this, on)
             showSoundChoice()
         }
@@ -154,12 +167,14 @@ class PrayerGameActivity : LangActivity() {
     }
 
     // Ekrandan çıkınca 3B çizimi durdur, dönünce devam ettir
-    override fun onPause() { voice.stop(); figure.pause(); super.onPause() }
+    override fun onPause() { voice.stop(); stopSpeech(); figure.pause(); super.onPause() }
     override fun onResume() { super.onResume(); figure.resume() }
 
     override fun onDestroy() {
         figure.destroy()
         voice.stop()
+        stopSpeech()
+        ttsReady = false
         tts?.shutdown()
         tts = null
         super.onDestroy()
@@ -178,7 +193,7 @@ class PrayerGameActivity : LangActivity() {
     /** Sesli okuma anahtarının altındaki açıklama. */
     private fun showSoundChoice() {
         findViewById<TextView>(R.id.tvSoundInfo).text =
-            if (soundOn) "Açık: dualar ve sureler sesli okunur." else "Kapalı: ses yok, yalnızca yazı ilerler."
+            if (soundOn) getString(R.string.learn_ui_082) else getString(R.string.learn_ui_083)
     }
 
     private fun choose(g: Boolean, save: Boolean = true) {
@@ -205,15 +220,15 @@ class PrayerGameActivity : LangActivity() {
             val start = PrayerGame.chapterStart(ch)
             val saved = Store.prayerStep(this, ch)
             val total = PrayerGame.chapterEnd(ch) - start
-            val status = if (saved > start) "Kaldığın yer: adım ${saved - start + 1} / $total" else "$total adım"
-            val sb = SpannableStringBuilder("${ch.icon}  ${ch.title}")
+            val status = if (saved > start) getString(R.string.learn_ui_084, saved - start + 1, total) else getString(R.string.learn_ui_085, total)
+            val sb = SpannableStringBuilder("${ch.icon}  ${learning.chapter(ch)}")
             sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             sb.setSpan(RelativeSizeSpan(1.2f), 0, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             val from = sb.length
             sb.append("\n").append(status)
             sb.setSpan(RelativeSizeSpan(0.85f), from, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             btn.text = sb
-            btn.contentDescription = "${ch.title}. $status"
+            btn.contentDescription = "${learning.chapter(ch)}. $status"
         }
         val abdest = findViewById<Button>(R.id.btnAbdest)
         abdest.isEnabled = !girl
@@ -234,15 +249,15 @@ class PrayerGameActivity : LangActivity() {
         }
         val total = PrayerGame.chapterEnd(ch) - start
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("${ch.icon} ${ch.title}")
-            .setMessage("Bu bölümde ${saved - start + 1}. adımda kalmıştın ($total adım). Nereden başlayalım?")
-            .setPositiveButton("Kaldığım yerden devam et") { _, _ -> startGame(saved) }
-            .setNegativeButton("Baştan başla") { _, _ -> startGame(start) }
+            .setTitle("${ch.icon} ${learning.chapter(ch)}")
+            .setMessage(getString(R.string.learn_ui_086, saved - start + 1, total))
+            .setPositiveButton(getString(R.string.learn_ui_087)) { _, _ -> startGame(saved) }
+            .setNegativeButton(getString(R.string.learn_ui_088)) { _, _ -> startGame(start) }
             .show()
     }
 
     private fun showStart() {
-        tts?.stop()
+        stopSpeech()
         voice.stop()
         gamePane.visibility = View.GONE
         startPane.visibility = View.VISIBLE
@@ -252,7 +267,7 @@ class PrayerGameActivity : LangActivity() {
         val wins = Store.prayerWins(this)
         val tvWins = findViewById<TextView>(R.id.tvWins)
         tvWins.visibility = if (wins > 0) View.VISIBLE else View.GONE
-        tvWins.text = "🏆 Namazı $wins kez tamamladın"
+        tvWins.text = getString(R.string.learn_ui_089, wins)
     }
 
     /**
@@ -284,16 +299,16 @@ class PrayerGameActivity : LangActivity() {
     private fun showIntro() {
         index = PrayerGame.NAMAZ_START
         busy = true
-        tts?.stop()
+        stopSpeech()
         voice.stop()
         val ch = PrayerChapter.NAMAZ
-        tvChapter.text = "${ch.icon} ${ch.title} · Hazırlık"
+        tvChapter.text = getString(R.string.learn_ui_090, ch.icon, learning.chapter(ch))
         bar.progress = 0
         finishBox.visibility = View.GONE
         tvRecite.visibility = View.GONE
         btnSkip.visibility = View.GONE
         questionBox.visibility = View.GONE
-        tvStepTitle.text = "Seccademizi kıbleye doğru seriyoruz\n(geçmek için resme dokun)"
+        tvStepTitle.text = getString(R.string.learn_ui_091)
         tvStepTitle.alpha = 1f
         tvStepTitle.scaleX = 1f
         tvStepTitle.scaleY = 1f
@@ -314,10 +329,10 @@ class PrayerGameActivity : LangActivity() {
         index = i
         busy = false
         wrongCount = 0
-        tts?.stop()
-        val step = PrayerGame.STEPS[i]
+        stopSpeech()
+        val step = learning.step(i)
         val (n, total) = PrayerGame.positionInChapter(i)
-        tvChapter.text = "${step.chapter.icon} ${step.chapter.title} · Adım $n / $total"
+        tvChapter.text = getString(R.string.learn_ui_092, step.chapter.icon, learning.chapter(step.chapter), n, total)
         // İlerleme çubuğu bölümün kendi içindeki ilerlemeyi gösterir
         bar.max = total * 100
         ObjectAnimator.ofInt(bar, "progress", bar.progress.coerceAtMost(bar.max), (n - 1) * 100).setDuration(450).start()
@@ -331,7 +346,7 @@ class PrayerGameActivity : LangActivity() {
         tvStepTitle.visibility = View.INVISIBLE
         tvInfo.visibility = View.GONE
         btnNext.visibility = View.GONE
-        btnNext.text = "Devam ›"
+        btnNext.text = getString(R.string.learn_ui_093)
         btnLater.visibility = View.GONE
 
         tvQuestion.text = step.question
@@ -372,10 +387,10 @@ class PrayerGameActivity : LangActivity() {
             b.isEnabled = false
             b.setBackgroundResource(R.drawable.opt_wrong)
             b.text = "✗  $chosen"
-            b.contentDescription = "$chosen, yanlış"
+            b.contentDescription = getString(R.string.learn_ui_094, chosen)
             shake(b)
             figure.oops()
-            tvInfo.text = if (wrongCount >= 2) "Neredeyse! Altın çerçeveli şıkka bir bak. 🙂" else "Olmadı, bir daha dene. Sen yaparsın! 💪"
+            tvInfo.text = if (wrongCount >= 2) getString(R.string.learn_ui_095) else getString(R.string.learn_ui_096)
             tvInfo.setTextColor(getColor(R.color.text))
             tvInfo.visibility = View.VISIBLE
             if (wrongCount >= 2) hintCorrect(step)
@@ -390,14 +405,14 @@ class PrayerGameActivity : LangActivity() {
             if (o.tag == step.correct) {
                 o.setBackgroundResource(R.drawable.opt_correct)
                 o.text = "✓  ${step.correct}"
-                o.contentDescription = "${step.correct}, doğru"
+                o.contentDescription = getString(R.string.learn_ui_097, step.correct)
                 pulse(o)
             } else {
                 o.animate().alpha(0.4f).setStartDelay(0).setDuration(200).start()
             }
         }
         val (n, _) = PrayerGame.positionInChapter(index)
-        tvStepTitle.text = "Adım $n · ${step.title}"
+        tvStepTitle.text = getString(R.string.learn_ui_098, n, step.title)
         tvStepTitle.visibility = View.VISIBLE
         tvStepTitle.alpha = 0f
         tvStepTitle.scaleX = 0.7f
@@ -405,7 +420,7 @@ class PrayerGameActivity : LangActivity() {
         tvStepTitle.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(0).setDuration(350)
             .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
 
-        tvInfo.text = "✓ Aferin!\n${step.info}" + if (step.source.isNotEmpty()) "\nKaynak: ${step.source}" else ""
+        tvInfo.text = getString(R.string.learn_ui_099, step.info) + if (step.source.isNotEmpty()) getString(R.string.learn_ui_100, step.source) else ""
         tvInfo.setTextColor(getColor(R.color.gold))
         tvInfo.visibility = View.VISIBLE
         tvInfo.alpha = 0f
@@ -422,8 +437,8 @@ class PrayerGameActivity : LangActivity() {
                     // Abdest bitti: kayıt başa döner ve "Namaza geçelim mi?" diye sorulur
                     Store.setPrayerStep(this, PrayerChapter.ABDEST, PrayerGame.chapterStart(PrayerChapter.ABDEST))
                     bar.progress = bar.max
-                    tvInfo.text = tvInfo.text.toString() + "\n\nAbdestimiz tamam! Namaza geçelim mi?"
-                    btnNext.text = "🕌  Evet, namaza geçelim"
+                    tvInfo.text = tvInfo.text.toString() + getString(R.string.learn_ui_101)
+                    btnNext.text = getString(R.string.learn_ui_102)
                     btnLater.visibility = View.VISIBLE
                 } else {
                     Store.setPrayerStep(this, step.chapter, index + 1)
@@ -439,7 +454,8 @@ class PrayerGameActivity : LangActivity() {
      * Okuma kartı: başlık, okunuşun okunmuş kısmı altın renkli ve kalın, kalanı soluk; altında anlamı.
      * [n]: şu ana kadar okunan kelime sayısı.
      */
-    private fun showRecite(r: Recitation, n: Int) {
+    private fun showRecite(original: Recitation, n: Int) {
+        val r = learning.recitation(original)
         val words = r.words
         val sb = SpannableStringBuilder()
         fun span(text: String, vararg spans: Any) {
@@ -450,10 +466,10 @@ class PrayerGameActivity : LangActivity() {
         span("📖 ${r.title}\n", ForegroundColorSpan(getColor(R.color.gold)), StyleSpan(android.graphics.Typeface.BOLD), RelativeSizeSpan(0.85f))
         span(words.take(n).joinToString(" "), ForegroundColorSpan(getColor(R.color.gold)), StyleSpan(android.graphics.Typeface.BOLD))
         if (n < words.size) span(" " + words.drop(n).joinToString(" "), ForegroundColorSpan(0x66F2F2F2))
-        span("\n\nAnlamı: ${r.meaning}", ForegroundColorSpan(getColor(R.color.muted)), RelativeSizeSpan(0.8f))
-        if (r.source.isNotEmpty()) span("\nKaynak: ${r.source}", ForegroundColorSpan(getColor(R.color.muted)), RelativeSizeSpan(0.75f))
+        span(getString(R.string.learn_ui_103, r.meaning), ForegroundColorSpan(getColor(R.color.muted)), RelativeSizeSpan(0.8f))
+        if (r.source.isNotEmpty()) span(getString(R.string.learn_ui_104, r.source), ForegroundColorSpan(getColor(R.color.muted)), RelativeSizeSpan(0.75f))
         tvRecite.text = sb
-        tvRecite.contentDescription = "${r.title}. ${r.text}. Anlamı: ${r.meaning}"
+        tvRecite.contentDescription = getString(R.string.learn_ui_105, r.title, r.text, r.meaning)
         if (tvRecite.visibility != View.VISIBLE) {
             tvRecite.visibility = View.VISIBLE
             fadeIn(tvRecite)
@@ -480,10 +496,10 @@ class PrayerGameActivity : LangActivity() {
         tvStepTitle.visibility = View.INVISIBLE
         btnSpeak.visibility = View.GONE
         val name = if (girl) "Zeynep" else "Ahmet"
-        findViewById<TextView>(R.id.tvFinishTitle).text = "Maşallah! 🎉"
+        findViewById<TextView>(R.id.tvFinishTitle).text = getString(R.string.learn_ui_106)
         findViewById<TextView>(R.id.tvFinishText).text =
-            "Bütün soruları bildin. $name seninle birlikte sabah namazını baştan sona kıldı.\n\n" +
-            "Şimdi sıra sende: bir dahaki namazda bunları birlikte yapalım!"
+            getString(R.string.learn_ui_107, name) +
+            getString(R.string.learn_ui_108)
         finishBox.visibility = View.VISIBLE
         fadeIn(finishBox)
         findViewById<View>(R.id.root).post { (findViewById<View>(R.id.root) as android.widget.ScrollView).smoothScrollTo(0, 0) }
@@ -507,20 +523,27 @@ class PrayerGameActivity : LangActivity() {
     /** Cevaptan önce soruyu ve şıkları, cevaptan sonra açıklamayı okur. */
     private fun speakCurrent() {
         if (gamePane.visibility != View.VISIBLE || index >= PrayerGame.STEPS.size) return
-        val step = PrayerGame.STEPS[index]
+        val step = learning.step(index)
         val text = if (busy) {
             QuizSpeech.clean(tvStepTitle.text.toString() + ". " + step.info)
         } else {
             val shown = (0 until options.childCount).map { (options.getChildAt(it).tag as? String).orEmpty() }
-            QuizSpeech.question(step.question, shown)
+            learning.question(step.question, shown)
         }
         speak(text)
+    }
+
+    /** Atlanan okuma, motor geç açılsa bile yeniden başlamamalı. */
+    private fun stopSpeech() {
+        pendingSpeech = null
+        tts?.stop()
     }
 
     private fun speak(text: String) {
         voice.stop() // soru okunurken dua kaydı üstüne binmesin
         val engine = tts
         if (engine != null && ttsReady) {
+            pendingSpeech = null
             engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "prayer")
             return
         }
@@ -528,13 +551,15 @@ class PrayerGameActivity : LangActivity() {
         if (engine != null) return // motor hâlâ açılıyor; hazır olunca okunur
         tts = TextToSpeech(this) init@{ status ->
             val t = tts ?: return@init
-            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Locale.forLanguageTag("tr-TR")) else TextToSpeech.LANG_NOT_SUPPORTED
+            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Lang.locale(this)) else TextToSpeech.LANG_NOT_SUPPORTED
             if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Toast.makeText(
                     this,
-                    "Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma'dan Türkçe sesi indirebilirsin.",
+                    getString(R.string.learn_ui_035),
                     Toast.LENGTH_LONG,
                 ).show()
+                pendingSpeech = null
+                ttsReady = false
                 t.shutdown()
                 tts = null
                 return@init

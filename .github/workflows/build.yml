@@ -27,6 +27,11 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
+      - name: Eğitim içeriklerini ve dört dili denetle
+        run: |
+          python3 tools/check_content_l10n.py
+          node app/src/test/js/namaz3d_l10n.test.js
+
       - name: Birim testleri
         run: |
           chmod +x gradlew
