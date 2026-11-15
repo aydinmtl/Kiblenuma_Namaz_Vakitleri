@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
-                android:contentDescription="Geri"
+                android:contentDescription="@string/learn_static_00"
                 android:paddingTop="2dp"
                 android:paddingEnd="14dp"
                 android:paddingBottom="2dp"
@@ -38,16 +38,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Namaz Öğreniyorum" />
+                android:text="@string/learn_static_02" />
 
             <TextView
                 android:id="@+id/btnSpeak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
-                android:contentDescription="Sesli oku"
+                android:contentDescription="@string/learn_static_01"
                 android:padding="8dp"
-                android:text="🔊 Oku"
+                android:text="@string/learn_ui_037"
                 android:textColor="@color/gold"
                 android:textSize="15sp"
                 android:visibility="gone" />
@@ -64,13 +64,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Soruları bildikçe arkadaşın abdest alacak ya da namaz kılacak. Bakalım sabah namazını sonuna kadar kıldırabilecek misin?"
+                android:text="@string/learn_static_03"
                 android:textColor="@color/muted"
                 android:textSize="15sp" />
 
             <TextView
                 style="@style/SectionHead"
-                android:text="Kimle oynamak istersin?" />
+                android:text="@string/learn_static_04" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,7 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Abdesti Ahmet alıyor. Abdest bölümünü oynamak için Ahmet'i seç."
+                android:text="@string/learn_static_05"
                 android:textColor="@color/muted"
                 android:textSize="13sp"
                 android:visibility="gone" />
@@ -190,7 +190,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
-                    android:text="🔊  Sesli okuma"
+                    android:text="@string/learn_static_06"
                     android:textColor="@color/text"
                     android:textSize="17sp" />
 
@@ -216,7 +216,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Abdest ve sabah namazının farzı (2 rekat) Hanefi mezhebine göre anlatılır. Kaynağı olan adımlarda ayet ya da hadis numarası verilmiştir."
+                android:text="@string/learn_static_07"
                 android:textColor="@color/muted"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -250,7 +250,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:contentDescription="Abdest alan ve namaz kılan çocuk" />
+                android:contentDescription="@string/learn_static_08" />
 
             <!-- Doğru cevaptan sonra: "Adım 5 · Yüzümüzü yıkıyoruz" -->
             <TextView
@@ -290,7 +290,7 @@
                 android:minHeight="44dp"
                 android:paddingHorizontal="18dp"
                 android:paddingVertical="10dp"
-                android:text="⏭  Okunuşu atla"
+                android:text="@string/learn_static_09"
                 android:textColor="@color/gold"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -337,7 +337,7 @@
                     style="@style/Btn"
                     android:layout_width="match_parent"
                     android:layout_marginTop="12dp"
-                    android:text="Devam ›"
+                    android:text="@string/learn_ui_093"
                     android:visibility="gone" />
 
                 <!-- Abdest bitince "Namaza geçelim mi?" sorusunun "hayır" cevabı -->
@@ -351,7 +351,7 @@
                     android:minHeight="44dp"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="Şimdi değil"
+                    android:text="@string/learn_static_10"
                     android:textColor="@color/muted"
                     android:textSize="15sp"
                     android:visibility="gone" />
@@ -396,7 +396,7 @@
                     style="@style/Btn"
                     android:layout_width="match_parent"
                     android:layout_marginTop="16dp"
-                    android:text="🔁  Tekrar oyna" />
+                    android:text="@string/learn_static_11" />
 
                 <TextView
                     android:id="@+id/btnExit"
@@ -405,7 +405,7 @@
                     android:layout_marginTop="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:padding="10dp"
-                    android:text="Çıkış"
+                    android:text="@string/learn_static_12"
                     android:textColor="@color/muted"
                     android:textSize="15sp" />
             </LinearLayout>

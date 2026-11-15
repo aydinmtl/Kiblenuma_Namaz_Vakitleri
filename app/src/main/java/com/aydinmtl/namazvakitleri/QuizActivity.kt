@@ -23,7 +23,6 @@ import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
 import java.time.LocalDate
-import java.util.Locale
 
 /**
  * Aile Halkası: bilgi yarışması.
@@ -37,7 +36,7 @@ import java.util.Locale
  * - Bir soru İLK KEZ doğru bilinince aile ağacı büyür; ağaç aşamalarına aile hedefleri bağlanabilir.
  * - Yanlış bilinen sorular "Yanlışlarımı tekrar et" turunda yeniden sorulur.
  * - Her gün bir "günün sorusu" (ana ekrandan ya da akşam bildiriminden açılır).
- * - "🔊 Oku": soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
+ * - getString(R.string.learn_ui_037): soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
  */
 class QuizActivity : LangActivity() {
 
@@ -64,6 +63,8 @@ class QuizActivity : LangActivity() {
     private lateinit var cbDaily: CheckBox
 
     // Sesli okuma: telefonun kendi metin okuma motoru (ek kütüphane yok). İlk kullanımda açılır.
+    private val learning by lazy { LearningText(this) }
+
     private var tts: TextToSpeech? = null
     private var ttsReady = false
     private var pendingSpeech: String? = null
@@ -75,7 +76,7 @@ class QuizActivity : LangActivity() {
 
     private var session: QuizSession? = null
 
-    /** Sonuç ekranında gösterilen, biten tur ("Yeni tur" aynı seviyeden başlasın diye). */
+    /** Sonuç ekranında gösterilen, biten tur (getString(R.string.learn_ui_003) aynı seviyeden başlasın diye). */
     private var lastResult: QuizSession? = null
     private val dp: Float by lazy { resources.displayMetrics.density }
     private var answered = false
@@ -167,11 +168,11 @@ class QuizActivity : LangActivity() {
         ) {
             askedResume = true
             AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                .setTitle("Kaldığın yerden devam etmek ister misin?")
-                .setMessage("${title(s)} · ${s.index + 1}. soru / ${s.order.size} · ${s.score} doğru")
-                .setPositiveButton("Devam et") { _, _ -> resume(s) }
-                .setNegativeButton("Yeni tur") { _, _ -> if (s.review) startReview(s.players) else start(s.level, s.players) }
-                .setNeutralButton("Vazgeç", null)
+                .setTitle(getString(R.string.learn_ui_000))
+                .setMessage(getString(R.string.learn_ui_001, title(s), s.index + 1, s.order.size, s.score))
+                .setPositiveButton(getString(R.string.learn_ui_002)) { _, _ -> resume(s) }
+                .setNegativeButton(getString(R.string.learn_ui_003)) { _, _ -> if (s.review) startReview(s.players) else start(s.level, s.players) }
+                .setNeutralButton(getString(R.string.learn_ui_004), null)
                 .show()
         }
     }
@@ -218,12 +219,12 @@ class QuizActivity : LangActivity() {
         tree.stage = stage
         tree.invalidate()
         val next = FamilyTree.toNext(points)
-        tvTree.text = "Ağacımız: ${FamilyTree.STAGES[stage].name} · toplam $points doğru" +
-            if (next != null) "\nSonraki aşamaya (${FamilyTree.STAGES[stage + 1].name}) $next doğru kaldı" else "\nAğacımız en büyük haline ulaştı!"
+        tvTree.text = getString(R.string.learn_ui_005, learning.tree(stage), points) +
+            if (next != null) getString(R.string.learn_ui_006, learning.tree(stage + 1), next) else getString(R.string.learn_ui_007)
         renderGoals(stage)
 
         val dailyDone = Store.dailyDoneDate(this) == LocalDate.now().toString()
-        findViewById<Button>(R.id.btnDailyHome).text = if (dailyDone) "💡 Günün sorusu ✓ (bugün cevaplandı)" else "💡 Günün sorusu"
+        findViewById<Button>(R.id.btnDailyHome).text = if (dailyDone) getString(R.string.learn_ui_008) else getString(R.string.learn_ui_009)
     }
 
     // ---------------- Seviye seçimi ----------------
@@ -237,12 +238,12 @@ class QuizActivity : LangActivity() {
         // Yanlış bilinen soru varsa tekrar düğmesini göster (bankadan çıkmış sorular sayılmaz).
         val wrong = reviewIds().size
         btnReview.visibility = if (wrong > 0) View.VISIBLE else View.GONE
-        btnReview.text = "🔁 Yanlışlarımı tekrar et"
+        btnReview.text = getString(R.string.learn_ui_010)
 
-        // "Bu soruda hata var" diye işaretlenmiş soru varsa listesini gösteren düğme
+        // getString(R.string.learn_ui_049) diye işaretlenmiş soru varsa listesini gösteren düğme
         val flags = Store.quizFlags(this).size
         btnFlags.visibility = if (flags > 0) View.VISIBLE else View.GONE
-        btnFlags.text = "⚑ İşaretlediğim sorular"
+        btnFlags.text = getString(R.string.learn_ui_011)
     }
 
     /**
@@ -286,14 +287,14 @@ class QuizActivity : LangActivity() {
             card.addView(mid, midLp)
 
             val name = TextView(this)
-            name.text = "${level.title}  ${stars[level]}"
+            name.text = "${learning.level(level)}  ${stars[level]}"
             name.textSize = 20f
             name.setTypeface(name.typeface, android.graphics.Typeface.BOLD)
             name.setTextColor(getColor(R.color.text))
             mid.addView(name)
 
             val hint = TextView(this)
-            hint.text = level.hint
+            hint.text = learning.hint(level)
             hint.textSize = 13f
             hint.setTextColor(getColor(R.color.muted))
             mid.addView(hint)
@@ -310,7 +311,7 @@ class QuizActivity : LangActivity() {
 
             // Sağda: yarım tur varsa "Devam", yoksa ok işareti
             val right = TextView(this)
-            right.text = if (open?.level == level) "▶ Devam" else "›"
+            right.text = if (open?.level == level) getString(R.string.learn_ui_012) else "›"
             right.textSize = if (open?.level == level) 14f else 30f
             right.setTextColor(getColor(R.color.gold))
             right.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -318,8 +319,8 @@ class QuizActivity : LangActivity() {
             rLp.marginStart = (8 * dp).toInt()
             card.addView(right, rLp)
 
-            card.contentDescription = "${level.title} seviye. ${level.hint}." +
-                if (open?.level == level) " Yarım kalan tur var." else ""
+            card.contentDescription = getString(R.string.learn_ui_013, learning.level(level), learning.hint(level)) +
+                if (open?.level == level) getString(R.string.learn_ui_014) else ""
             card.setOnClickListener { onLevelChosen(level) }
 
             // Giriş canlandırması: sırayla aşağıdan kayarak belirir
@@ -336,10 +337,10 @@ class QuizActivity : LangActivity() {
         val s = Store.quizSession(this)
         if (s != null && !s.finished) {
             AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                .setTitle("Yarım kalan tur var")
-                .setMessage("${title(s)}: ${s.index + 1}. sorudasın. Ne yapalım?")
-                .setPositiveButton("Devam et") { _, _ -> resume(s) }
-                .setNegativeButton("Yeni ${level.title} turu") { _, _ ->
+                .setTitle(getString(R.string.learn_ui_015))
+                .setMessage(getString(R.string.learn_ui_016, title(s), s.index + 1))
+                .setPositiveButton(getString(R.string.learn_ui_002)) { _, _ -> resume(s) }
+                .setNegativeButton(getString(R.string.learn_ui_017, learning.level(level))) { _, _ ->
                     askPlayersThen { players -> start(level, players) }
                 }
                 .show()
@@ -348,8 +349,8 @@ class QuizActivity : LangActivity() {
         }
     }
 
-    /** Tur başlığı: "Kolay seviye" ya da "Yanlışları tekrar". */
-    private fun title(s: QuizSession): String = if (s.review) "Yanlışları tekrar" else "${s.level.title} seviye"
+    /** Tur başlığı: "Kolay seviye" ya da getString(R.string.learn_ui_018). */
+    private fun title(s: QuizSession): String = if (s.review) getString(R.string.learn_ui_018) else getString(R.string.learn_ui_019, learning.level(s.level))
 
     /** Yanlış listesindeki ve hâlâ soru bankasında olan sorular. */
     private fun reviewIds(): List<String> {
@@ -360,7 +361,7 @@ class QuizActivity : LangActivity() {
     // ---------------- Yarışma ----------------
 
     /**
-     * "Kimler oynuyor?" penceresi. Adlar virgülle ayrılır; boş bırakılırsa tek kişi oynar.
+     * getString(R.string.learn_ui_022) penceresi. Adlar virgülle ayrılır; boş bırakılırsa tek kişi oynar.
      * Bir önceki yarışmanın adları hazır gelir.
      */
     private fun askPlayersThen(onReady: (List<String>) -> Unit) {
@@ -369,24 +370,24 @@ class QuizActivity : LangActivity() {
         box.orientation = LinearLayout.VERTICAL
         box.setPadding(pad, pad / 2, pad, 0)
         val input = EditText(this)
-        input.hint = "Ör: Annem, Babam, Zeynep"
+        input.hint = getString(R.string.learn_ui_020)
         input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
         input.setText(Store.quizPlayers(this).joinToString(", "))
         box.addView(input)
         val note = TextView(this)
-        note.text = "Adları virgülle ayır; sorular sırayla gelir. Tek kişi oynuyorsan boş bırak."
+        note.text = getString(R.string.learn_ui_021)
         note.setPadding(0, pad / 2, 0, 0)
         box.addView(note)
 
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Kimler oynuyor?")
+            .setTitle(getString(R.string.learn_ui_022))
             .setView(box)
-            .setPositiveButton("Başla") { _, _ ->
+            .setPositiveButton(getString(R.string.learn_ui_023)) { _, _ ->
                 val players = QuizDeck.parsePlayers(input.text.toString())
                 Store.saveQuizPlayers(this, players)
                 onReady(players)
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(getString(R.string.learn_ui_004), null)
             .show()
     }
 
@@ -435,7 +436,7 @@ class QuizActivity : LangActivity() {
         tts?.stop()
         btnFlag.visibility = View.GONE
         showTurn(s)
-        tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${s.score}"
+        tvProgress.text = getString(R.string.learn_ui_024, title(s), s.index + 1, s.order.size, s.score)
         bar.max = s.order.size * 100
         animateBar(s.index * 100)
         tvQuestion.text = q.text
@@ -515,20 +516,20 @@ class QuizActivity : LangActivity() {
                 q.correct -> {
                     b.setBackgroundResource(R.drawable.opt_correct)
                     b.text = "✓  $opt"
-                    b.contentDescription = "$opt, doğru cevap"
+                    b.contentDescription = getString(R.string.learn_ui_025, opt)
                     pulse(b)
                 }
                 chosen -> {
                     b.setBackgroundResource(R.drawable.opt_wrong)
                     b.text = "✗  $opt"
-                    b.contentDescription = "$opt, senin cevabın, yanlış"
+                    b.contentDescription = getString(R.string.learn_ui_026, opt)
                     shake(b)
                 }
             }
         }
-        tvInfo.text = (if (ok) "✓ Doğru!" else "✗ Doğru cevap: ${q.correct}") +
+        tvInfo.text = (if (ok) getString(R.string.learn_ui_027) else getString(R.string.learn_ui_028, q.correct)) +
             (if (q.info.isNotEmpty()) "\n${q.info}" else "") +
-            (if (q.source.isNotEmpty()) "\nKaynak: ${q.source}" else "")
+            (if (q.source.isNotEmpty()) getString(R.string.learn_ui_029, learning.source(q.source)) else "")
         tvInfo.setTextColor(getColor(if (ok) R.color.gold else R.color.text))
         tvInfo.visibility = View.VISIBLE
         tvInfo.alpha = 0f
@@ -544,13 +545,13 @@ class QuizActivity : LangActivity() {
         Store.setWrong(this, q.id, !ok)
         if (ok) {
             tvInfo.text = tvInfo.text.toString() +
-                if (firstTime) "\n🌱 Ağacımıza +1" else "\n(Bu soruyu daha önce bilmiştiniz; ağaç yalnızca yeni bilgiyle büyür.)"
+                if (firstTime) getString(R.string.learn_ui_030) else getString(R.string.learn_ui_031)
         }
 
-        btnNext.text = if (updated.finished) "Sonucu gör ›" else "Sıradaki soru ›"
+        btnNext.text = if (updated.finished) getString(R.string.learn_ui_032) else getString(R.string.learn_ui_033)
         btnNext.visibility = View.VISIBLE
         updateFlagButton(q)
-        tvProgress.text = "${title(s)} · Soru ${s.index + 1} / ${s.order.size} · ✓ ${updated.score}"
+        tvProgress.text = getString(R.string.learn_ui_034, title(s), s.index + 1, s.order.size, updated.score)
         animateBar(updated.index * 100)
 
         val newStage = FamilyTree.stageIndex(Store.treePoints(this))
@@ -566,7 +567,7 @@ class QuizActivity : LangActivity() {
             QuizSpeech.clean(tvInfo.text.toString())
         } else {
             val shown = (0 until options.childCount).map { (options.getChildAt(it).tag as? String).orEmpty() }
-            QuizSpeech.question(q.text, shown)
+            learning.question(q.text, shown)
         }
         speak(text)
     }
@@ -581,11 +582,11 @@ class QuizActivity : LangActivity() {
         if (engine != null) return // motor hâlâ açılıyor; hazır olunca okunur
         tts = TextToSpeech(this) init@{ status ->
             val t = tts ?: return@init
-            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Locale.forLanguageTag("tr-TR")) else TextToSpeech.LANG_NOT_SUPPORTED
+            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Lang.locale(this)) else TextToSpeech.LANG_NOT_SUPPORTED
             if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Toast.makeText(
                     this,
-                    "Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma'dan Türkçe sesi indirebilirsin.",
+                    getString(R.string.learn_ui_035),
                     Toast.LENGTH_LONG,
                 ).show()
                 t.shutdown()
@@ -619,10 +620,10 @@ class QuizActivity : LangActivity() {
         box.addView(tvQ)
 
         val dialog = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("💡 Günün sorusu")
+            .setTitle(getString(R.string.learn_ui_009))
             .setView(box)
-            .setNegativeButton("Kapat", null)
-            .setNeutralButton("🔊 Oku", null) // tıklanınca pencere kapanmasın diye aşağıda bağlanıyor
+            .setNegativeButton(getString(R.string.learn_ui_036), null)
+            .setNeutralButton(getString(R.string.learn_ui_037), null) // tıklanınca pencere kapanmasın diye aşağıda bağlanıyor
             .create()
         for (opt in opts) {
             val b = Button(this)
@@ -643,7 +644,7 @@ class QuizActivity : LangActivity() {
             box.addView(b)
         }
         dialog.setOnShowListener {
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener { speak(QuizSpeech.question(q.text, opts)) }
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener { speak(learning.question(q.text, opts)) }
         }
         dialog.setOnDismissListener { tts?.stop() }
         dialog.show()
@@ -655,14 +656,14 @@ class QuizActivity : LangActivity() {
         val firstTime = ok && Store.markSolved(this, q.id)
         Store.setWrong(this, q.id, !ok)
         Store.setDailyDone(this, today)
-        val msg = StringBuilder(if (ok) "✓ Doğru!" else "✗ Doğru cevap: ${q.correct}")
+        val msg = StringBuilder(if (ok) getString(R.string.learn_ui_027) else getString(R.string.learn_ui_028, q.correct))
         if (q.info.isNotEmpty()) msg.append("\n\n").append(q.info)
-        if (q.source.isNotEmpty()) msg.append("\nKaynak: ").append(q.source)
-        if (firstTime) msg.append("\n\n🌱 Ağacımıza +1")
+        if (q.source.isNotEmpty()) msg.append(getString(R.string.learn_ui_038)).append(learning.source(q.source))
+        if (firstTime) msg.append(getString(R.string.learn_ui_039))
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Günün sorusu")
+            .setTitle(getString(R.string.learn_ui_040))
             .setMessage(msg.toString())
-            .setPositiveButton("Tamam") { _, _ ->
+            .setPositiveButton(getString(R.string.learn_ui_041)) { _, _ ->
                 val newStage = FamilyTree.stageIndex(Store.treePoints(this))
                 if (newStage > oldStage) celebrate(newStage)
             }
@@ -674,23 +675,23 @@ class QuizActivity : LangActivity() {
 
     private fun askResetTree() {
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Ağaç sıfırlansın mı?")
+            .setTitle(getString(R.string.learn_ui_042))
             .setMessage(
-                "Ağacımız tohuma döner ve bütün sorular ağacı yeniden büyütebilir. " +
-                    "Hedefler ve yanlışlar listesi silinmez. Bu işlem geri alınamaz.",
+                getString(R.string.learn_ui_043) +
+                    getString(R.string.learn_ui_044),
             )
-            .setPositiveButton("Sıfırla") { _, _ ->
+            .setPositiveButton(getString(R.string.learn_ui_045)) { _, _ ->
                 Store.resetTree(this)
                 showHome()
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(getString(R.string.learn_ui_004), null)
             .show()
     }
 
-    // ---------------- "Bu soruda hata var" ----------------
+    // ---------------- getString(R.string.learn_ui_049) ----------------
 
     private fun updateFlagButton(q: Question) {
-        btnFlag.text = if (q.id in Store.quizFlags(this)) "⚑ İşaretlendi (kaldırmak için dokun)" else "⚑ Bu soruda hata var"
+        btnFlag.text = if (q.id in Store.quizFlags(this)) getString(R.string.learn_ui_046) else getString(R.string.learn_ui_047)
         btnFlag.visibility = View.VISIBLE
     }
 
@@ -703,42 +704,42 @@ class QuizActivity : LangActivity() {
         }
         val pad = (20 * resources.displayMetrics.density).toInt()
         val input = EditText(this)
-        input.hint = "Ne yanlış? (isteğe bağlı)"
+        input.hint = getString(R.string.learn_ui_048)
         input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or
             InputType.TYPE_TEXT_FLAG_MULTI_LINE
         val box = LinearLayout(this)
         box.setPadding(pad, pad / 2, pad, 0)
         box.addView(input, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Bu soruda hata var")
-            .setMessage("Soru telefonunda işaretlenir. Aile Halkası ana sayfasından işaretli soruların listesini paylaşabilirsin.")
+            .setTitle(getString(R.string.learn_ui_049))
+            .setMessage(getString(R.string.learn_ui_050))
             .setView(box)
-            .setPositiveButton("İşaretle") { _, _ ->
+            .setPositiveButton(getString(R.string.learn_ui_051)) { _, _ ->
                 Store.setQuizFlag(this, q.id, input.text.toString())
                 updateFlagButton(q)
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(getString(R.string.learn_ui_004), null)
             .show()
     }
 
     /** İşaretli soruların listesi: paylaş ya da temizle. */
     private fun showFlags() {
-        val report = QuizFlags.report(Store.quizFlags(this), QuizBank.all(this))
+        val report = learning.report(Store.quizFlags(this), QuizBank.all(this))
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("İşaretlediğim sorular")
+            .setTitle(getString(R.string.learn_ui_052))
             .setMessage(report)
-            .setPositiveButton("Paylaş") { _, _ ->
+            .setPositiveButton(getString(R.string.learn_ui_054)) { _, _ ->
                 val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, report)
-                startActivity(Intent.createChooser(send, "İşaretli soruları paylaş"))
+                startActivity(Intent.createChooser(send, getString(R.string.learn_ui_053)))
             }
-            .setNeutralButton("Listeyi temizle") { _, _ ->
+            .setNeutralButton(getString(R.string.learn_ui_055)) { _, _ ->
                 AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                    .setTitle("Bütün işaretler silinsin mi?")
-                    .setPositiveButton("Sil") { _, _ -> Store.clearQuizFlags(this); showLevels() }
-                    .setNegativeButton("Vazgeç", null)
+                    .setTitle(getString(R.string.learn_ui_056))
+                    .setPositiveButton(getString(R.string.learn_ui_057)) { _, _ -> Store.clearQuizFlags(this); showLevels() }
+                    .setNegativeButton(getString(R.string.learn_ui_004), null)
                     .show()
             }
-            .setNegativeButton("Kapat", null)
+            .setNegativeButton(getString(R.string.learn_ui_036), null)
             .show()
     }
 
@@ -748,7 +749,7 @@ class QuizActivity : LangActivity() {
         if (p == null) {
             tvTurn.visibility = View.GONE
         } else {
-            tvTurn.text = "Sıra: ${s.players[p]}"
+            tvTurn.text = getString(R.string.learn_ui_058, s.players[p])
             tvTurn.visibility = View.VISIBLE
         }
     }
@@ -765,12 +766,12 @@ class QuizActivity : LangActivity() {
         val total = s.order.size
         val stars = QuizResult.stars(s.score, total)
         findViewById<TextView>(R.id.tvResultEmoji).text = QuizResult.EMOJI[stars]
-        findViewById<TextView>(R.id.tvResultTitle).text = QuizResult.TITLE[stars]
+        findViewById<TextView>(R.id.tvResultTitle).text = learning.result(stars)
 
         // Üç yıldız: kazanılanlar altın renkli, sırayla "zıplayarak" belirir
         val row = findViewById<LinearLayout>(R.id.starsRow)
         row.removeAllViews()
-        row.contentDescription = "3 yıldızdan $stars"
+        row.contentDescription = getString(R.string.learn_ui_059, stars)
         for (i in 0 until 3) {
             val st = TextView(this)
             st.text = "★"
@@ -788,7 +789,7 @@ class QuizActivity : LangActivity() {
         // Puan sıfırdan yukarı sayar
         val tvScore = findViewById<TextView>(R.id.tvResultScore)
         tvScore.text = "0 / $total"
-        tvScore.contentDescription = "$total sorudan ${s.score} doğru"
+        tvScore.contentDescription = getString(R.string.learn_ui_060, total, s.score)
         ValueAnimator.ofInt(0, s.score).apply {
             duration = 120L * s.score + 200
             startDelay = 300
@@ -801,26 +802,26 @@ class QuizActivity : LangActivity() {
             detail.append("\n")
             // Kişi kişi: "Zeynep: 3 doğru"
             s.players.forEachIndexed { i, name ->
-                detail.append("\n").append(name).append(": ").append(s.scores.getOrElse(i) { 0 }).append(" doğru")
+                detail.append("\n").append(name).append(": ").append(s.scores.getOrElse(i) { 0 }).append(getString(R.string.learn_ui_061))
             }
         }
-        if (s.score < total) detail.append("\n\nYanlış bildiklerin \"Yanlışlarımı tekrar et\" bölümünde seni bekliyor.")
+        if (s.score < total) detail.append(getString(R.string.learn_ui_062))
         findViewById<TextView>(R.id.tvResultDetail).text = detail.toString()
-        findViewById<Button>(R.id.btnAgain).text = if (s.review) "Yanlışları yeniden tekrar et" else "Yeni ${s.level.title} turu"
+        findViewById<Button>(R.id.btnAgain).text = if (s.review) getString(R.string.learn_ui_063) else getString(R.string.learn_ui_064, learning.level(s.level))
     }
 
     /** Ağaç yeni bir aşamaya geçince kutla ve o aşamaya bağlı aile hedeflerini göster. */
     private fun celebrate(stage: Int) {
         val reached = Store.goals(this).filter { it.stage == stage }
-        val msg = StringBuilder("Aile ağacımız artık: ${FamilyTree.STAGES[stage].name}!")
+        val msg = StringBuilder(getString(R.string.learn_ui_065, learning.tree(stage)))
         if (reached.isNotEmpty()) {
-            msg.append("\n\nHedefimize ulaştık:")
+            msg.append(getString(R.string.learn_ui_066))
             reached.forEach { msg.append("\n🎯 ").append(it.text) }
         }
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("🌳 Ağacımız büyüdü")
+            .setTitle(getString(R.string.learn_ui_067))
             .setMessage(msg.toString())
-            .setPositiveButton("Elhamdülillah", null)
+            .setPositiveButton(getString(R.string.learn_ui_068), null)
             .show()
     }
 
@@ -831,7 +832,7 @@ class QuizActivity : LangActivity() {
         val goals = Store.goals(this)
         if (goals.isEmpty()) {
             val tv = TextView(this)
-            tv.text = "Henüz hedef yok. Örnek: \"Ağacımız Meyveli ağaç olunca birlikte dondurma yemeye gidiyoruz.\""
+            tv.text = getString(R.string.learn_ui_069)
             tv.setTextColor(getColor(R.color.muted))
             tv.textSize = 14f
             tv.setPadding(16, 16, 16, 16)
@@ -842,26 +843,26 @@ class QuizActivity : LangActivity() {
             val done = currentStage >= g.stage
             val tv = TextView(this)
             tv.text = (if (done) "✅ " else "🎯 ") + g.text + "\n" +
-                (if (done) "Ulaşıldı · " else "Hedef aşama: ") +
-                (FamilyTree.STAGES.getOrNull(g.stage)?.name ?: "?")
+                (if (done) getString(R.string.learn_ui_070) else getString(R.string.learn_ui_071)) +
+                learning.tree(g.stage)
             tv.setTextColor(getColor(if (done) R.color.gold else R.color.text))
             tv.textSize = 15f
             tv.setPadding(16, 18, 16, 18)
             tv.setOnLongClickListener {
                 AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
                     .setTitle(g.text)
-                    .setItems(arrayOf("Düzenle", "Sil")) { _, which ->
+                    .setItems(arrayOf(getString(R.string.learn_ui_072), getString(R.string.learn_ui_057))) { _, which ->
                         if (which == 0) {
                             addGoal(editIndex = i)
                         } else {
                             AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-                                .setTitle("Hedef silinsin mi?")
+                                .setTitle(getString(R.string.learn_ui_073))
                                 .setMessage(g.text)
-                                .setPositiveButton("Sil") { _, _ ->
+                                .setPositiveButton(getString(R.string.learn_ui_057)) { _, _ ->
                                     Store.saveGoals(this, Store.goals(this).filterIndexed { j, _ -> j != i })
                                     showHome()
                                 }
-                                .setNegativeButton("Vazgeç", null)
+                                .setNegativeButton(getString(R.string.learn_ui_004), null)
                                 .show()
                         }
                     }
@@ -871,7 +872,7 @@ class QuizActivity : LangActivity() {
             goalList.addView(tv)
         }
         val hint = TextView(this)
-        hint.text = "Düzenlemek ya da silmek için hedefe basılı tut."
+        hint.text = getString(R.string.learn_ui_074)
         hint.setTextColor(getColor(R.color.muted))
         hint.textSize = 12f
         hint.setPadding(16, 4, 16, 8)
@@ -887,13 +888,13 @@ class QuizActivity : LangActivity() {
         box.setPadding(pad, pad / 2, pad, 0)
 
         val input = EditText(this)
-        input.hint = "Ör: Birlikte dondurma yemeye gidiyoruz"
+        input.hint = getString(R.string.learn_ui_075)
         input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         editing?.let { input.setText(it.text) }
         box.addView(input)
 
         val label = TextView(this)
-        label.text = "Ağacımız hangi aşamaya gelince?"
+        label.text = getString(R.string.learn_ui_076)
         label.setPadding(0, pad / 2, 0, 0)
         box.addView(label)
 
@@ -901,15 +902,15 @@ class QuizActivity : LangActivity() {
         val spinner = Spinner(this)
         spinner.adapter = ArrayAdapter(
             this, android.R.layout.simple_spinner_dropdown_item,
-            stages.map { "${it.name} (${it.minPoints} doğru)" },
+            stages.mapIndexed { i, stage -> getString(R.string.learn_ui_077, learning.tree(i + 1), stage.minPoints) },
         )
         editing?.let { spinner.setSelection((it.stage - 1).coerceIn(0, stages.size - 1)) }
         box.addView(spinner)
 
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle(if (editing != null) "Hedefi düzenle" else "Yeni aile hedefi")
+            .setTitle(if (editing != null) getString(R.string.learn_ui_078) else getString(R.string.learn_ui_079))
             .setView(box)
-            .setPositiveButton(if (editing != null) "Kaydet" else "Ekle") { _, _ ->
+            .setPositiveButton(if (editing != null) getString(R.string.learn_ui_080) else getString(R.string.learn_ui_081)) { _, _ ->
                 val text = input.text.toString().trim()
                 if (text.isNotEmpty()) {
                     val goal = FamilyGoal(text, spinner.selectedItemPosition + 1)
@@ -923,7 +924,7 @@ class QuizActivity : LangActivity() {
                     showHome()
                 }
             }
-            .setNegativeButton("Vazgeç", null)
+            .setNegativeButton(getString(R.string.learn_ui_004), null)
             .show()
     }
 }

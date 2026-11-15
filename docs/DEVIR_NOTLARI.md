@@ -17,8 +17,8 @@ Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. 
 | Konu | Değer |
 |---|---|
 | Dil / UI | Kotlin, platform View'ları (XML layout). Compose YOK. |
-| Bağımlılıklar | Yalnızca `androidx.activity` + CameraX (AR kıble için). Gerisi Android platformu. |
-| SDK | minSdk 26, compileSdk/targetSdk 35 |
+| Bağımlılıklar | `androidx.activity`, CameraX (AR kıble) ve WorkManager (vakit verisi yenileme). |
+| SDK | minSdk 26, compileSdk/targetSdk 36 |
 | Araçlar | AGP 8.7.3, Kotlin 2.0.21, Gradle 8.14.3 (wrapper depoda) |
 | Paket | namespace `com.aydinmtl.namazvakitleri`, applicationId `com.aydinmtl.kiblenuma` |
 | Derleme | `.github/workflows/build.yml`: her PR'da ve `main`'e her push'ta birim testleri + `assembleRelease`, APK "artifact" olarak indirilebilir. Yalnızca `main` push'unda GitHub Release `v1.0.<run>` (`Kiblenuma.apk`) |
@@ -90,8 +90,12 @@ JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıklar
 - Çevrildi: ana ekran, vakit adları, bildirimler, ezan bildirimi, widget, yenile penceresi, konum izni
   penceresi, kaynak satırı, otomatik konum adımları, Ayarlar (hesaplama yöntemleri dahil), konum seçimi,
   imsakiye, dini günler, kıble pusulası ve AR kıble, yakındaki camiler, kaza çetelesi, zikirmatik.
-- Henüz Türkçe: Aile Halkası (bilgi yarışması ve soru bankası), Namaz Öğreniyorum oyunu ve 3B canlandırma.
-  Bunlar dua, sure ve dinî bilgi içerdiğinden ayrı ve dikkatli çevrilmeli.
+- Aile Halkası, 120 soruluk banka, Namaz Öğreniyorum ve 3B izleme ekranı da dört dili kullanır.
+  Soru/adım kimlikleri değişmez; dil değişimi kayıtlı ilerlemeyi sıfırlamaz. Arapça okunuşlar ve
+  ses kayıtları korunur. Soru bankaları `sorular.json` ve `sorular_fr/en/de.json` dosyalarıdır.
+  Türkçe bankayı yeniden üretirken diğer bankaların kimliklerini, sırasını ve doğru ilk şıkkını da
+  güncelle; `python3 tools/check_content_l10n.py` ve `node app/src/test/js/namaz3d_l10n.test.js` çalıştır.
+  Çevirilerdeki dini anlam ve gerçek cihazdaki görünüm ayrıca insan kontrolü gerektirir.
 - Dini günlerin adları `Hijri.HolyKind` ile seçili dile çevrilir (`Lang.holyDayName`); `HolyDay.name` Türkçe
   kalır (testler bunu kullanır). "Üç Aylar" bilinçli olarak "kutsal aylar" diye çevrilmedi: o terim İslam'da
   başka dört ayı (eşhür-i hurum) anlatır; bunun yerine ayların adları yazıldı.

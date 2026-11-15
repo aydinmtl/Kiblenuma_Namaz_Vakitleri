@@ -74,7 +74,7 @@ select.btn{appearance:none;-webkit-appearance:none;font-size:13px;padding:0 10px
 <canvas id="c"></canvas>
 
 <div class="top">
-  <div class="brand">Namaz Öğreniyorum<small>3B canlandırma · Hanefi</small></div>
+  <div class="brand"><span id="brandTitle">Namaz Öğreniyorum</span><small id="brandSubtitle">3B canlandırma · Hanefi</small></div>
   <div class="sp"></div>
   <div class="fps" id="fps"></div>
 </div>
@@ -100,7 +100,109 @@ select.btn{appearance:none;-webkit-appearance:none;font-size:13px;padding:0 10px
   </div>
 </div>
 <div class="toast" id="toast"></div>
-<div class="load" id="load"><div class="ring"></div><div style="color:var(--muted);font-size:13px">Stüdyo hazırlanıyor…</div></div>
+<div class="load" id="load"><div class="ring"></div><div id="loadText" style="color:var(--muted);font-size:13px">Stüdyo hazırlanıyor…</div></div>
+
+<script id="lesson-l10n">
+// Dil yalnızca sunumu değiştirir; hareket sırası ve Arapça okunuşlar aynı kalır.
+const LESSON_LANGUAGES = {
+  tr: {
+    title: 'Namaz Öğreniyorum', subtitle: '3B canlandırma · Hanefi', preparation: 'Hazırlık',
+    labels: ['Zaman çizelgesi','Önceki adım','Oynat / durdur','Sonraki adım','Baştan oynat','Bilgi','Kamera kipi','Hız','Kalite','Video kaydet'],
+    quality: ['Hızlı','Dengeli','Sinema'], loading: 'Stüdyo hazırlanıyor…', webgl: 'Bu cihaz WebGL2 desteklemiyor.',
+    engine: 'Çizim motoru başlatılamadı:', freeCamera: 'Serbest kamera: sürükleyerek çevir, iki parmakla yaklaş.', cinematicCamera: 'Sinematik kamera',
+    noRecording: 'Bu tarayıcı video kaydını desteklemiyor.', videoReady: 'Video hazır.', download: 'İndir', recording: 'Kayıt başladı. Canlandırma bitince video hazırlanır.', source: 'Kaynak:',
+    rakat: 'Bu canlandırma, hareketlerin sırasını tek rekat üzerinden gösterir. Namazlar en az iki rekattır; son oturuştan önce ikinci rekat da aynı şekilde kılınır.'
+  },
+  fr: {
+    title: 'J’apprends la prière', subtitle: 'Animation 3D · École hanafite', preparation: 'Préparation',
+    labels: ['Chronologie','Étape précédente','Lire / mettre en pause','Étape suivante','Recommencer','Informations','Mode caméra','Vitesse','Qualité','Enregistrer une vidéo'],
+    quality: ['Rapide','Équilibrée','Cinéma'], loading: 'Préparation du studio…', webgl: 'Cet appareil ne prend pas en charge WebGL2.',
+    engine: 'Impossible de démarrer le moteur graphique :', freeCamera: 'Caméra libre : glissez pour tourner, pincez avec deux doigts pour zoomer.', cinematicCamera: 'Caméra cinématographique',
+    noRecording: 'Ce navigateur ne permet pas l’enregistrement vidéo.', videoReady: 'La vidéo est prête.', download: 'Télécharger', recording: 'Enregistrement lancé. La vidéo sera préparée à la fin de l’animation.', source: 'Source :',
+    rakat: 'Cette animation montre l’ordre des mouvements sur une seule unité de prière (rakʿa). Les prières comprennent au moins deux unités ; accomplissez aussi la deuxième de la même façon avant l’assise finale.',
+    intention: 'J’ai l’intention de prier pour Allah…',
+    steps: [
+      ['Préparation : face à la qibla','Après les ablutions, nous nous tenons sur le tapis face à la qibla (direction de la Kaaba). Dans notre cœur, nous formons l’intention de la prière que nous allons accomplir.'],
+      ['1. Takbir d’ouverture','Les hommes lèvent les mains jusqu’à ce que les pouces touchent les lobes des oreilles. Les paumes sont tournées vers la qibla, les doigts restent naturels.'],
+      ['2. Station debout (qiyam)','La main droite se pose sur la gauche. Selon l’école hanafite, les hommes placent les mains sous le nombril ; le pouce et l’auriculaire droits entourent le poignet gauche. Le regard se porte vers le lieu de prosternation.','La position des mains sous le nombril relève de la pratique hanafite.'],
+      ['3. Inclinaison (rukuʿ)','Le dos est droit et la tête reste dans son prolongement, sans se lever ni s’abaisser. Les mains, doigts écartés, saisissent les genoux ; les jambes sont droites. Le regard se porte vers le bout des pieds.'],
+      ['4. Redressement (qawma)','Nous nous redressons après l’inclinaison et restons un instant bien droits. Les bras retombent le long du corps.'],
+      ['5. Première prosternation','Nous posons les genoux, puis les mains, puis le nez et le front au sol. Les mains sont à hauteur des oreilles, doigts joints et tournés vers la qibla. Les coudes restent éloignés du sol et des flancs, le ventre des cuisses. Les orteils se plient vers la qibla.'],
+      ['6. Assise entre les prosternations (jalsa)','Nous nous asseyons sur le pied gauche couché ; le pied droit reste dressé, les orteils vers la qibla. Les mains reposent sur les cuisses, le bout des doigts près des genoux.'],
+      ['7. Deuxième prosternation','Nous disons à nouveau « Allâhu Ekber » et nous prosternons de la même façon. Chaque unité de prière comporte deux prosternations.'],
+      ['8. Assise finale','Nous nous asseyons comme entre les prosternations, le regard vers les genoux. Nous récitons le Tashahhud, Allâhümme salli, Allâhümme bârik et les invocations Rabbenâ.'],
+      ['9. Salutations finales','Nous saluons d’abord à droite, puis à gauche. Nous tournons la tête en regardant vers l’épaule. La prière est ainsi terminée.']
+    ],
+    sourceNotes: ['(main droite posée sur la gauche)','(prosternation sur sept parties du corps)']
+  },
+  en: {
+    title: 'Learning to Pray', subtitle: '3D animation · Hanafi school', preparation: 'Preparation',
+    labels: ['Timeline','Previous step','Play / pause','Next step','Restart','Information','Camera mode','Speed','Quality','Record video'],
+    quality: ['Fast','Balanced','Cinema'], loading: 'Preparing the studio…', webgl: 'This device does not support WebGL2.',
+    engine: 'Could not start the rendering engine:', freeCamera: 'Free camera: drag to rotate, pinch with two fingers to zoom.', cinematicCamera: 'Cinematic camera',
+    noRecording: 'This browser does not support video recording.', videoReady: 'Your video is ready.', download: 'Download', recording: 'Recording started. The video will be prepared when the animation ends.', source: 'Source:',
+    rakat: 'This animation shows the order of movements using one prayer unit (rakʿah). Prayers have at least two units; perform the second unit in the same way before the final sitting.',
+    intention: 'I intend to pray for Allah’s sake…',
+    steps: [
+      ['Preparation: facing the qibla','After ablution, we stand on our prayer mat facing the qibla (the direction of the Kaaba). In our heart, we intend the prayer we are about to perform.'],
+      ['1. Opening takbir','Men raise their hands until their thumbs touch their earlobes. The palms face the qibla and the fingers remain in a natural position.'],
+      ['2. Standing (qiyam)','Place the right hand over the left. In the Hanafi school, men place their hands below the navel; the right thumb and little finger hold the left wrist. Look towards the place of prostration.','Placing the hands below the navel is a Hanafi practice.'],
+      ['3. Bowing (rukuʿ)','Keep the back straight and the head level with it, neither raised nor lowered. Hold the knees with fingers spread, keeping the legs straight. Look towards the tips of the feet.'],
+      ['4. Standing upright (qawmah)','Rise from bowing and stand fully upright for a moment. Let the arms hang at the sides.'],
+      ['5. First prostration','Place the knees, then the hands, then the nose and forehead on the ground. Keep the hands at ear level, fingers together and pointing towards the qibla. Keep the elbows away from the ground and sides, and the abdomen away from the thighs. Bend the toes towards the qibla.'],
+      ['6. Sitting between prostrations (jalsah)','Sit on the left foot laid flat; keep the right foot upright with the toes towards the qibla. Rest the hands on the thighs, with fingertips near the knees.'],
+      ['7. Second prostration','Say “Allâhu Ekber” again and prostrate a second time in the same way. There are two prostrations in each prayer unit.'],
+      ['8. Final sitting','Sit as between the prostrations, looking towards the lap. Recite the Tashahhud, Allâhümme salli, Allâhümme bârik and the Rabbenâ supplications.'],
+      ['9. Final greetings','Greet first to the right, then to the left. Turn the head and look towards the shoulder. This completes the prayer.']
+    ],
+    sourceNotes: ['(right hand placed over the left)','(prostration on seven body parts)']
+  },
+  de: {
+    title: 'Beten lernen', subtitle: '3D-Animation · Hanafitische Rechtsschule', preparation: 'Vorbereitung',
+    labels: ['Zeitleiste','Vorheriger Schritt','Abspielen / pausieren','Nächster Schritt','Neu starten','Informationen','Kameramodus','Geschwindigkeit','Qualität','Video aufnehmen'],
+    quality: ['Schnell','Ausgewogen','Kino'], loading: 'Studio wird vorbereitet…', webgl: 'Dieses Gerät unterstützt WebGL2 nicht.',
+    engine: 'Die Grafik konnte nicht gestartet werden:', freeCamera: 'Freie Kamera: zum Drehen ziehen, mit zwei Fingern zoomen.', cinematicCamera: 'Filmische Kamera',
+    noRecording: 'Dieser Browser unterstützt keine Videoaufnahme.', videoReady: 'Das Video ist fertig.', download: 'Herunterladen', recording: 'Aufnahme gestartet. Nach der Animation wird das Video vorbereitet.', source: 'Quelle:',
+    rakat: 'Diese Animation zeigt die Reihenfolge der Bewegungen anhand einer Gebetseinheit (Rakʿa). Gebete haben mindestens zwei Einheiten; verrichte auch die zweite auf dieselbe Weise vor dem letzten Sitzen.',
+    intention: 'Ich beabsichtige, für Allah zu beten…',
+    steps: [
+      ['Vorbereitung: zur Qibla wenden','Nach der Waschung stehen wir auf dem Gebetsteppich zur Qibla gewandt (in Richtung der Kaaba). Im Herzen fassen wir die Absicht für das Gebet, das wir verrichten werden.'],
+      ['1. Eröffnungstakbir','Männer heben die Hände, bis die Daumen die Ohrläppchen berühren. Die Handflächen zeigen zur Qibla, die Finger bleiben in natürlicher Haltung.'],
+      ['2. Stehen (Qiyam)','Die rechte Hand liegt auf der linken. In der hanafitischen Rechtsschule halten Männer die Hände unter dem Bauchnabel; der rechte Daumen und kleine Finger umfassen das linke Handgelenk. Der Blick ruht auf dem Ort der Niederwerfung.','Die Hände unter dem Bauchnabel zu halten entspricht der hanafitischen Praxis.'],
+      ['3. Verbeugung (Rukuʿ)','Der Rücken ist gerade und der Kopf auf derselben Höhe, weder gehoben noch gesenkt. Die Hände umfassen die Knie mit gespreizten Fingern, die Beine bleiben gerade. Der Blick geht zu den Fußspitzen.'],
+      ['4. Aufrichten (Qawma)','Wir richten uns aus der Verbeugung auf und stehen einen Moment ganz gerade. Die Arme hängen seitlich herab.'],
+      ['5. Erste Niederwerfung','Zuerst berühren die Knie, dann die Hände, dann Nase und Stirn den Boden. Die Hände liegen auf Ohrhöhe, die Finger geschlossen zur Qibla gerichtet. Die Ellbogen bleiben vom Boden und den Seiten entfernt, der Bauch von den Oberschenkeln. Die Zehen werden zur Qibla gebogen.'],
+      ['6. Sitzen zwischen den Niederwerfungen (Dschalsa)','Wir sitzen auf dem flach gelegten linken Fuß; der rechte Fuß steht aufrecht mit den Zehen zur Qibla. Die Hände liegen auf den Oberschenkeln, die Fingerspitzen nahe den Knien.'],
+      ['7. Zweite Niederwerfung','Wir sagen erneut „Allâhu Ekber“ und werfen uns auf dieselbe Weise ein zweites Mal nieder. Jede Gebetseinheit hat zwei Niederwerfungen.'],
+      ['8. Letztes Sitzen','Wir sitzen wie zwischen den Niederwerfungen und blicken zum Schoß. Wir sprechen den Taschahhud, Allâhümme salli, Allâhümme bârik und die Rabbenâ-Bittgebete.'],
+      ['9. Abschließende Friedensgrüße','Wir grüßen zuerst nach rechts, dann nach links. Dabei drehen wir den Kopf und schauen zur Schulter. Damit ist das Gebet beendet.']
+    ],
+    sourceNotes: ['(rechte Hand auf der linken)','(Niederwerfung auf sieben Körperteilen)']
+  }
+};
+const requestedLanguage = new URLSearchParams(location.search).get('lang');
+const LESSON_LANGUAGE = Object.prototype.hasOwnProperty.call(LESSON_LANGUAGES, requestedLanguage) ? requestedLanguage : 'tr';
+const LESSON = LESSON_LANGUAGES[LESSON_LANGUAGE];
+document.documentElement.lang = LESSON_LANGUAGE;
+document.title = LESSON.title + ' 3D';
+document.getElementById('brandTitle').textContent = LESSON.title;
+document.getElementById('brandSubtitle').textContent = LESSON.subtitle;
+document.getElementById('loadText').textContent = LESSON.loading;
+['seek','bPrev','bPlay','bNext','bRestart','bInfo','bCam','sSpeed','sQ','bRec'].forEach((id, i) => {
+  document.getElementById(id).setAttribute('aria-label', LESSON.labels[i]);
+});
+LESSON.quality.forEach((label, i) => { document.getElementById('sQ').options[i].textContent = label; });
+function localizeSteps(steps) {
+  if (LESSON_LANGUAGE === 'tr') return steps;
+  return steps.map((step, i) => ({...step,
+    t: LESSON.steps[i][0], info: LESSON.steps[i][1], note: LESSON.steps[i][2],
+    src: step.src.replace(' suresi, ', ', ').replace('. ayet', {fr:' (verset)',en:' (verse)',de:' (Vers)'}[LESSON_LANGUAGE])
+      .replace('(sağ elin sol el üzerine konması)', LESSON.sourceNotes[0])
+      .replace('(yedi organ üzerine secde)', LESSON.sourceNotes[1]),
+    rec: i === 0 ? step.rec.map(([at]) => [at, LESSON.intention]) : step.rec
+  }));
+}
+</script>
 
 <!-- ===================================================================== -->
 <!-- SAHNE SHADER'I: oda, seccade, eşyalar ve çocuk karakteri işaretli      -->
@@ -1218,7 +1320,7 @@ function solve(pose,time){
 /* =====================================================================
  * 5) ZAMAN ÇİZELGESİ: adımlar, okunanlar, kamera planları
  * ===================================================================== */
-const STEPS=[
+const STEPS=localizeSteps([
   {t:"Hazırlık: kıbleye döndük", info:"Abdestli olarak seccademize, kıbleye (Kâbe yönüne) dönüp dururuz. Kalbimizden kılacağımız namaza niyet ederiz.",
    src:"Bakara suresi, 144. ayet · Buhârî, Bed'ü'l-vahy 1", rec:[[0.4,"Niyet ettim Allah rızası için…"]]},
   {t:"1. İftitah tekbiri", info:"Erkekler ellerini, baş parmakları kulak memelerine değecek kadar kaldırır; avuç içleri kıbleye bakar, parmaklar doğal hâlde durur.",
@@ -1240,8 +1342,8 @@ const STEPS=[
    src:"Buhârî, Ezan 831", rec:[[0.05,"Allâhu Ekber"],[0.2,"Ettehiyyâtü…"],[0.45,"Allâhümme salli…"],[0.65,"Allâhümme bârik…"],[0.84,"Rabbenâ âtinâ…"]]},
   {t:"9. Selam", info:"Önce sağa, sonra sola selam verilir. Baş çevrilir, gözler omuz başına bakar. Böylece namaz tamamlanır.",
    src:"Müslim, Mesâcid 582", rec:[[0.06,"Esselâmü aleyküm ve rahmetullâh"],[0.52,"Esselâmü aleyküm ve rahmetullâh"]]},
-];
-const NOTE_RAKAT="Bu canlandırma, hareketlerin sırasını tek rekat üzerinden gösterir. Namazlar en az iki rekattır; son oturuştan önce ikinci rekat da aynı şekilde kılınır.";
+]);
+const NOTE_RAKAT=LESSON.rakat;
 
 // anahtar kareler: [duruş, geçiş süresi, bekleme süresi, adım]
 const SEQ=[
@@ -1311,7 +1413,7 @@ const cv=document.getElementById('c');
 const gl=cv.getContext('webgl2',{antialias:false,alpha:false,preserveDrawingBuffer:false,powerPreference:'high-performance'});
 const toastEl=document.getElementById('toast');
 function toast(html,ms){toastEl.innerHTML=html;toastEl.classList.add('on');if(ms)setTimeout(()=>toastEl.classList.remove('on'),ms);}
-if(!gl){document.getElementById('load').innerHTML='<div style="padding:24px;text-align:center">Bu cihaz WebGL2 desteklemiyor.</div>';throw new Error('webgl2');}
+if(!gl){document.getElementById('load').innerHTML='<div style="padding:24px;text-align:center">'+LESSON.webgl+'</div>';throw new Error('webgl2');}
 const floatOK=!!gl.getExtension('EXT_color_buffer_float');
 gl.getExtension('EXT_color_buffer_half_float');
 
@@ -1361,7 +1463,7 @@ document.getElementById('sQ').value=String(S.q);
 
 const $=id=>document.getElementById(id);
 const chips=$('chips');
-STEPS.forEach((s,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=i===0?'Hazırlık':s.t.replace(/^\d+\.\s*/,'').replace(/ \(.*\)/,'');
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.className='chip';b.textContent=i===0?LESSON.preparation:s.t.replace(/^\d+\.\s*/,'').replace(/ \(.*\)/,'');
   b.onclick=()=>{S.t=STEP_START[i]+0.001;S.ended=false;};chips.appendChild(b);});
 const marks=$('marks');
 STEP_START.forEach(t=>{const i=document.createElement('i');i.style.left=(t/DURATION*100)+'%';marks.appendChild(i);});
@@ -1377,7 +1479,7 @@ $('sQ').onchange=e=>{S.q=+e.target.value;};
 $('bInfo').onclick=()=>{$('info').classList.toggle('on');};
 $('bCam').onclick=()=>{S.free=!S.free;$('bCam').textContent=S.free?'✋':'🎬';
   if(S.free){const c=camAt(S.t);const d=sub(c.p,S.orbit.tgt);S.orbit.dist=clamp(len(d),0.8,5);S.orbit.yaw=Math.atan2(d[0],d[2]);S.orbit.pitch=Math.asin(clamp(d[1]/len(d),-0.2,1.2));}
-  toast(S.free?'Serbest kamera: sürükleyerek çevir, iki parmakla yaklaş.':'Sinematik kamera',1600);};
+  toast(S.free?LESSON.freeCamera:LESSON.cinematicCamera,1600);};
 // serbest kamera: sürükle / yakınlaştır
 let drag=null,pinch=null;
 cv.addEventListener('pointerdown',e=>{if(!S.free)return;drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId);});
@@ -1393,7 +1495,7 @@ window.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$(
 let rec=null,chunks=[];
 $('bRec').onclick=()=>{
   if(S.recording){rec&&rec.stop();return;}
-  if(!cv.captureStream||!window.MediaRecorder){toast('Bu tarayıcı video kaydını desteklemiyor.',2500);return;}
+  if(!cv.captureStream||!window.MediaRecorder){toast(LESSON.noRecording,2500);return;}
   const types=['video/mp4;codecs=avc1','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
   const type=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
   const stream=cv.captureStream(30);
@@ -1402,9 +1504,9 @@ $('bRec').onclick=()=>{
   rec.onstop=()=>{S.recording=false;$('bRec').classList.remove('on');
     const blob=new Blob(chunks,{type:rec.mimeType||'video/webm'});
     const url=URL.createObjectURL(blob);const ext=(rec.mimeType||'').includes('mp4')?'mp4':'webm';
-    toast(`Video hazır. <a href="${url}" download="namaz-ogreniyorum.${ext}">İndir (${(blob.size/1e6).toFixed(1)} MB)</a>`);};
+    toast(`${LESSON.videoReady} <a href="${url}" download="namaz-ogreniyorum.${ext}">${LESSON.download} (${(blob.size/1e6).toFixed(1)} MB)</a>`);};
   S.t=0;S.ended=false;setPlaying(true);S.recording=true;$('bRec').classList.add('on');rec.start(500);
-  toast('Kayıt başladı. Canlandırma bitince video hazırlanır.',2200);
+  toast(LESSON.recording,2200);
 };
 
 function updateUI(){
@@ -1414,7 +1516,7 @@ function updateUI(){
   let r='';s.rec.forEach(([at,txt])=>{if(u>=at) r=txt;});
   if($('capR').textContent!==r) $('capR').textContent=r;
   [...chips.children].forEach((c,i)=>c.classList.toggle('on',i===st));
-  $('info').innerHTML=`<b>${s.t}</b><br>${s.info}<div class="src">Kaynak: ${s.src}</div>${s.note?`<div class="note">${s.note}</div>`:''}<div class="note">${NOTE_RAKAT}</div>`;
+  $('info').innerHTML=`<b>${s.t}</b><br>${s.info}<div class="src">${LESSON.source} ${s.src}</div>${s.note?`<div class="note">${s.note}</div>`:''}<div class="note">${NOTE_RAKAT}</div>`;
   $('seek').value=Math.round(S.t/DURATION*1000);
   $('time').textContent=fmt(S.t)+' / '+fmt(DURATION);
 }
@@ -1489,7 +1591,7 @@ function render(now){
 try{
   progScene=program('fsScene');progPost=program('fsPost');
 }catch(e){
-  $('load').innerHTML='<div style="padding:24px;text-align:center;max-width:90vw;font-size:12px;white-space:pre-wrap">Çizim motoru başlatılamadı:\n'+String(e.message||e).slice(0,600)+'</div>';
+  $('load').innerHTML='<div style="padding:24px;text-align:center;max-width:90vw;font-size:12px;white-space:pre-wrap">' + LESSON.engine + '\n'+String(e.message||e).slice(0,600)+'</div>';
   throw e;
 }
 const MANUAL=params.has('manual');

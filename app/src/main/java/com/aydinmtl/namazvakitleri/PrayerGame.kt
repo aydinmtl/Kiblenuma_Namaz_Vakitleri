@@ -223,6 +223,19 @@ data class PrayerStep(
 
 object PrayerGame {
 
+    /** Yalnızca sunum çevrilir; duruşlar, süreler ve Arapça okumalar korunur. */
+    fun presentMoves(moves: List<Move>, intention: Recitation, rightGreeting: String, leftGreeting: String): List<Move> =
+        moves.map { move ->
+            move.copy(
+                caption = when (move.caption) {
+                    "Sağa selam →" -> rightGreeting
+                    "← Sola selam" -> leftGreeting
+                    else -> move.caption
+                },
+                recite = if (move.recite == Recitations.NIYET) intention else move.recite,
+            )
+        }
+
     /** Üç kez yıkama: iki duruş arasında üç kez gidip gelinir, balonda "1", "2", "3" yazar. */
     private fun three(a: String, b: String, water: Boolean = true): List<Move> = listOf(
         Move(a, 550, "1", water), Move(b, 380, "1", water),

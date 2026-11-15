@@ -1,0 +1,1449 @@
+{
+ "version": 1,
+ "questions": [
+  {
+   "id": "k001",
+   "level": "kolay",
+   "q": "Wie heißt das heilige Buch der Muslime?",
+   "options": [
+    "Koran",
+    "Tora",
+    "Psalmen",
+    "Evangelium"
+   ],
+   "info": "Der Koran ist das letzte göttliche Buch, das dem Propheten Muhammad (Friede und Segen seien auf ihm) offenbart wurde."
+  },
+  {
+   "id": "k002",
+   "level": "kolay",
+   "q": "Welche ist die erste Sure des Korans?",
+   "options": [
+    "Al-Fatiha",
+    "Al-Baqara",
+    "Al-Ikhlas",
+    "Ya-Sin"
+   ],
+   "info": "Al-Fatiha steht im geschriebenen Koran an erster Stelle."
+  },
+  {
+   "id": "k003",
+   "level": "kolay",
+   "q": "Wie viele tägliche Gebete sind Pflicht?",
+   "options": [
+    "5",
+    "3",
+    "4",
+    "6"
+   ],
+   "info": "Es sind fünf: Morgengebet, Mittagsgebet, Nachmittagsgebet, Abendgebet und Nachtgebet."
+  },
+  {
+   "id": "k004",
+   "level": "kolay",
+   "q": "Welcher Prophet baute vor der großen Flut auf Allahs Befehl eine Arche?",
+   "options": [
+    "Nuh (Noah)",
+    "Musa (Mose)",
+    "Yunus (Jona)",
+    "Ibrahim (Abraham)"
+   ],
+   "info": "Nuh baute die Arche auf Allahs Befehl; die Gläubigen wurden vor der Flut gerettet."
+  },
+  {
+   "id": "k005",
+   "level": "kolay",
+   "q": "Welcher Prophet wurde gerettet, nachdem er im Bauch eines Fisches gebetet hatte?",
+   "options": [
+    "Yunus (Jona)",
+    "Nuh (Noah)",
+    "Ayyub (Hiob)",
+    "Yusuf (Josef)"
+   ],
+   "info": "Yunus betete im Bauch des Fisches zu Allah und wurde gerettet (Al-Anbiya 87–88)."
+  },
+  {
+   "id": "k006",
+   "level": "kolay",
+   "q": "Welcher Prophet wurde in ein Feuer geworfen, das ihn nicht verbrannte?",
+   "options": [
+    "Ibrahim (Abraham)",
+    "Musa (Mose)",
+    "Isa (Jesus)",
+    "Dawud (David)"
+   ],
+   "info": "Allah befahl dem Feuer, für Ibrahim kühl und friedlich zu sein (Al-Anbiya 69)."
+  },
+  {
+   "id": "k007",
+   "level": "kolay",
+   "q": "Für welchen Propheten teilte sich das Meer, als er es mit seinem Stab schlug?",
+   "options": [
+    "Musa (Mose)",
+    "Nuh (Noah)",
+    "Sulayman (Salomo)",
+    "Harun (Aaron)"
+   ],
+   "info": "Musa und die Kinder Israels durchquerten das geteilte Meer und entkamen dem Pharao."
+  },
+  {
+   "id": "k008",
+   "level": "kolay",
+   "q": "Welcher Prophet wurde von seinen Brüdern in einen Brunnen geworfen?",
+   "options": [
+    "Yusuf (Josef)",
+    "Yaqub (Jakob)",
+    "Ismail",
+    "Yunus (Jona)"
+   ],
+   "info": "Yusufs Geschichte wird in der Sure Yusuf erzählt."
+  },
+  {
+   "id": "k009",
+   "level": "kolay",
+   "q": "Welche gottesdienstliche Handlung ist im Ramadan Pflicht?",
+   "options": [
+    "Fasten",
+    "Pilgerfahrt (Hadsch)",
+    "Opfertier",
+    "Umra"
+   ],
+   "info": "Das Fasten im Ramadan ist für jeden gesunden Muslim ab der Pubertät Pflicht."
+  },
+  {
+   "id": "k010",
+   "level": "kolay",
+   "q": "Wer war der erste Mensch und der erste Prophet?",
+   "options": [
+    "Adam",
+    "Nuh (Noah)",
+    "Idris",
+    "Schith (Set)"
+   ],
+   "info": "Adam war sowohl der erste Mensch als auch der erste Prophet."
+  },
+  {
+   "id": "k011",
+   "level": "kolay",
+   "q": "In welcher Stadt wurde der Prophet geboren?",
+   "options": [
+    "Mekka",
+    "Medina",
+    "Jerusalem",
+    "Taif"
+   ],
+   "info": "Muhammad (Friede und Segen seien auf ihm) wurde in Mekka geboren. Quellen nennen 570 oder 571 als Geburtsjahr."
+  },
+  {
+   "id": "k012",
+   "level": "kolay",
+   "q": "In welcher Stadt steht die Kaaba?",
+   "options": [
+    "Mekka",
+    "Medina",
+    "Jerusalem",
+    "Damaskus"
+   ],
+   "info": "Die Kaaba steht in der Heiligen Moschee in Mekka."
+  },
+  {
+   "id": "k013",
+   "level": "kolay",
+   "q": "Wie heißt die Reinigung vor dem Gebet?",
+   "options": [
+    "Gebetswaschung (Wudu)",
+    "Ersatzwaschung (Tayammum)",
+    "Gebetsruf (Adhan)",
+    "Iqama"
+   ],
+   "info": "Für das Gebet ist die Gebetswaschung erforderlich; fehlt Wasser, wird die Ersatzwaschung vorgenommen."
+  },
+  {
+   "id": "k014",
+   "level": "kolay",
+   "q": "Wie hieß die Mutter des Propheten?",
+   "options": [
+    "Amina",
+    "Khadija",
+    "Halima",
+    "Fatima"
+   ],
+   "info": "Seine Mutter hieß Amina; sie starb, als er sechs Jahre alt war."
+  },
+  {
+   "id": "k015",
+   "level": "kolay",
+   "q": "Wie hieß der Vater des Propheten?",
+   "options": [
+    "Abdullah",
+    "Abu Talib",
+    "Abd al-Muttalib",
+    "Hamza"
+   ],
+   "info": "Sein Vater Abdullah starb vor seiner Geburt."
+  },
+  {
+   "id": "k016",
+   "level": "kolay",
+   "q": "Welcher Engel brachte dem Propheten die Koranverse?",
+   "options": [
+    "Jibril",
+    "Mikail",
+    "Israfil",
+    "Azrail"
+   ],
+   "info": "Dschibril (Gabriel), Friede sei auf ihm, ist der Engel der Offenbarung."
+  },
+  {
+   "id": "k017",
+   "level": "kolay",
+   "q": "Was wird beim Opferfest um Allahs Wohlgefallen willen getan?",
+   "options": [
+    "Ein Tier wird geopfert",
+    "Man fastet",
+    "Die Zakat al-Fitr wird entrichtet",
+    "Man betet Tarawih"
+   ],
+   "info": "Muslime, die es sich leisten können, opfern beim Opferfest ein Tier."
+  },
+  {
+   "id": "k018",
+   "level": "kolay",
+   "q": "Was sagen wir, wenn wir eine Aufgabe beginnen?",
+   "options": [
+    "Bismillahirrahmanirrahim",
+    "Alhamdulillah",
+    "Masha Allah",
+    "Subhanallah"
+   ],
+   "info": "Die Basmala bedeutet: Im Namen Allahs, des Allerbarmers, des Barmherzigen."
+  },
+  {
+   "id": "k019",
+   "level": "kolay",
+   "q": "Wie begrüßen Muslime einander?",
+   "options": [
+    "As-salamu alaykum",
+    "Guten Morgen",
+    "Möge Allah dich beschützen",
+    "Alhamdulillah"
+   ],
+   "info": "Der Gruß wünscht dem anderen Frieden; die Antwort lautet Wa alaykum as-salam."
+  },
+  {
+   "id": "k020",
+   "level": "kolay",
+   "q": "Welches Verhalten entspricht NICHT einem guten Charakter?",
+   "options": [
+    "Lügen",
+    "Wahrhaftig sein",
+    "Ältere respektieren",
+    "Versprechen halten"
+   ],
+   "info": "Der Prophet gebot Wahrhaftigkeit und warnte vor dem Lügen."
+  },
+  {
+   "id": "k021",
+   "level": "kolay",
+   "q": "Was ist gut zu tun, wenn ein Nachbar krank ist?",
+   "options": [
+    "Besuchen und nach dem Befinden fragen",
+    "Sich gar nicht kümmern",
+    "Nicht an die Tür klopfen",
+    "Sich nur um sich selbst kümmern"
+   ],
+   "info": "Kranke zu besuchen gehört zu den Rechten, die Muslime einander gegenüber haben."
+  },
+  {
+   "id": "k022",
+   "level": "kolay",
+   "q": "In welche Stadt wanderte der Prophet von Mekka aus?",
+   "options": [
+    "Medina",
+    "Taif",
+    "Jerusalem",
+    "Damaskus"
+   ],
+   "info": "Die Auswanderung von Mekka nach Medina fand 622 statt."
+  },
+  {
+   "id": "k023",
+   "level": "kolay",
+   "q": "Wie viele Suren hat der Koran?",
+   "options": [
+    "114",
+    "99",
+    "110",
+    "120"
+   ],
+   "info": "Der Koran besteht aus 114 Suren."
+  },
+  {
+   "id": "k024",
+   "level": "kolay",
+   "q": "Welches Tier hörte Sulayman im Koran sprechen, woraufhin er lächelte?",
+   "options": [
+    "Ameise",
+    "Biene",
+    "Spinne",
+    "Vogel"
+   ],
+   "info": "Dies wird in der Sure An-Naml, Die Ameise, erzählt (18–19)."
+  },
+  {
+   "id": "k025",
+   "level": "kolay",
+   "q": "Welches Buch wurde Dawud offenbart?",
+   "options": [
+    "Psalmen",
+    "Tora",
+    "Evangelium",
+    "Koran"
+   ],
+   "info": "Dawud erhielt die Psalmen, Musa die Tora und Isa das Evangelium."
+  },
+  {
+   "id": "k026",
+   "level": "kolay",
+   "q": "Welchem Propheten wurde die Tora offenbart?",
+   "options": [
+    "Musa (Mose)",
+    "Isa (Jesus)",
+    "Dawud (David)",
+    "Ibrahim (Abraham)"
+   ],
+   "info": "Die Tora ist das Buch, das Musa offenbart wurde."
+  },
+  {
+   "id": "k027",
+   "level": "kolay",
+   "q": "Welchem Propheten wurde das Evangelium offenbart?",
+   "options": [
+    "Isa (Jesus)",
+    "Musa (Mose)",
+    "Dawud (David)",
+    "Yahya (Johannes)"
+   ],
+   "info": "Das Evangelium ist das Buch, das Isa offenbart wurde."
+  },
+  {
+   "id": "k028",
+   "level": "kolay",
+   "q": "Warum wird der Adhan gerufen?",
+   "options": [
+    "Um den Beginn der Gebetszeit anzukündigen",
+    "Um das Fest zu feiern",
+    "Um das Ende des Ramadan anzukündigen",
+    "Nur für Freitage"
+   ],
+   "info": "Der Adhan ruft zu jeder Gebetszeit zum Gebet."
+  },
+  {
+   "id": "k029",
+   "level": "kolay",
+   "q": "Welcher Prophet wurde ohne Vater geboren?",
+   "options": [
+    "Isa (Jesus)",
+    "Yahya (Johannes)",
+    "Musa (Mose)",
+    "Yusuf (Josef)"
+   ],
+   "info": "Isa wurde von Maryam ohne Vater geboren."
+  },
+  {
+   "id": "k030",
+   "level": "kolay",
+   "q": "Wer war die Tochter des Propheten und die Ehefrau Alis?",
+   "options": [
+    "Fatima",
+    "Aischa",
+    "Khadidscha",
+    "Zainab"
+   ],
+   "info": "Fatima war die Mutter von Hasan und Husayn."
+  },
+  {
+   "id": "k031",
+   "level": "kolay",
+   "q": "Wer war die erste Ehefrau des Propheten?",
+   "options": [
+    "Khadidscha",
+    "Aischa",
+    "Hafsa",
+    "Fatima"
+   ],
+   "info": "Khadidscha war auch der erste Mensch, der den Islam annahm."
+  },
+  {
+   "id": "k032",
+   "level": "kolay",
+   "q": "In welcher Höhle erhielt der Prophet die erste Offenbarung?",
+   "options": [
+    "Hira",
+    "Thawr",
+    "Uhud",
+    "Al-Kahf"
+   ],
+   "info": "Die erste Offenbarung erfolgte in der Höhle Hira auf dem Berg des Lichts."
+  },
+  {
+   "id": "k033",
+   "level": "kolay",
+   "q": "Wie viele Säulen hat der Islam?",
+   "options": [
+    "5",
+    "3",
+    "6",
+    "7"
+   ],
+   "info": "Es sind das Glaubensbekenntnis, das Gebet, das Fasten, die Zakat und die Pilgerfahrt."
+  },
+  {
+   "id": "k034",
+   "level": "kolay",
+   "q": "Wie viele Glaubensgrundsätze gibt es?",
+   "options": [
+    "6",
+    "4",
+    "5",
+    "7"
+   ],
+   "info": "Der Glaube an Allah, Seine Engel, Seine Bücher, Seine Gesandten, den Jüngsten Tag und die Vorherbestimmung."
+  },
+  {
+   "id": "k035",
+   "level": "kolay",
+   "q": "Wie heißt Hilfe für Bedürftige um Allahs Wohlgefallen willen?",
+   "options": [
+    "Freiwillige Spende (Sadaqa)",
+    "Steuer",
+    "Darlehen",
+    "Miete"
+   ],
+   "info": "Sadaqa ist eine Wohltat um Allahs willen, ohne eine Gegenleistung zu erwarten."
+  },
+  {
+   "id": "k036",
+   "level": "kolay",
+   "q": "Was sagen wir nach dem Essen zum Dank?",
+   "options": [
+    "Alhamdulillah",
+    "Bismillah",
+    "Astaghfirullah",
+    "Insha Allah"
+   ],
+   "info": "Alhamdulillah bedeutet: Alles Lob gebührt Allah."
+  },
+  {
+   "id": "k037",
+   "level": "kolay",
+   "q": "Welchen Beinamen mit der Bedeutung vertrauenswürdig erhielt der Prophet in seiner Jugend?",
+   "options": [
+    "Al-Amin",
+    "Al-Faruq",
+    "As-Siddiq",
+    "Sayfullah"
+   ],
+   "info": "Die Menschen in Mekka nannten ihn wegen seiner Ehrlichkeit Al-Amin."
+  },
+  {
+   "id": "k038",
+   "level": "kolay",
+   "q": "An welchem Wochentag wird das Freitagsgebet verrichtet?",
+   "options": [
+    "Freitag",
+    "Montag",
+    "Donnerstag",
+    "Sonntag"
+   ],
+   "info": "Das Freitagsgebet wird freitags zur Mittagszeit in Gemeinschaft verrichtet."
+  },
+  {
+   "id": "k039",
+   "level": "kolay",
+   "q": "Welcher Prophet war Yusufs Vater?",
+   "options": [
+    "Yaqub (Jakob)",
+    "Ishaq (Isaak)",
+    "Ibrahim (Abraham)",
+    "Ismail"
+   ],
+   "info": "Yaqub war Yusufs Vater."
+  },
+  {
+   "id": "k040",
+   "level": "kolay",
+   "q": "Welcher Sohn baute mit Ibrahim die Kaaba?",
+   "options": [
+    "Ismail",
+    "Ishaq (Isaak)",
+    "Yaqub (Jakob)",
+    "Lut (Lot)"
+   ],
+   "info": "Ibrahim und Ismail errichteten die Grundmauern der Kaaba (Al-Baqara 127)."
+  },
+  {
+   "id": "o001",
+   "level": "orta",
+   "q": "In welchem Jahr unserer Zeitrechnung fand die Auswanderung von Mekka nach Medina statt?",
+   "options": [
+    "622",
+    "610",
+    "630",
+    "632"
+   ],
+   "info": "Die Auswanderung war 622; der islamische Kalender nimmt dieses Ereignis als Ausgangspunkt."
+  },
+  {
+   "id": "o002",
+   "level": "orta",
+   "q": "In welchem Jahr nach der Auswanderung fand die Schlacht von Badr statt?",
+   "options": [
+    "2",
+    "1",
+    "3",
+    "5"
+   ],
+   "info": "Die Schlacht von Badr fand im Jahr 2 nach der Hidschra statt (624)."
+  },
+  {
+   "id": "o003",
+   "level": "orta",
+   "q": "In welchem Jahr nach der Auswanderung fand die Schlacht von Uhud statt?",
+   "options": [
+    "3",
+    "2",
+    "5",
+    "8"
+   ],
+   "info": "Die Schlacht von Uhud fand im Jahr 3 nach der Hidschra statt (625)."
+  },
+  {
+   "id": "o004",
+   "level": "orta",
+   "q": "In welchem Jahr nach der Auswanderung wurde Mekka erobert?",
+   "options": [
+    "8",
+    "5",
+    "6",
+    "10"
+   ],
+   "info": "Mekka wurde im Jahr 8 nach der Hidschra erobert (630)."
+  },
+  {
+   "id": "o005",
+   "level": "orta",
+   "q": "Wer war der erste Kalif nach dem Propheten?",
+   "options": [
+    "Abu Bakr",
+    "Umar",
+    "Uthman",
+    "Ali"
+   ],
+   "info": "Die vier Kalifen waren der Reihe nach Abu Bakr, Umar, Uthman und Ali."
+  },
+  {
+   "id": "o006",
+   "level": "orta",
+   "q": "Wer war der zweite Kalif?",
+   "options": [
+    "Umar",
+    "Abu Bakr",
+    "Uthman",
+    "Ali"
+   ],
+   "info": "Umar wurde nach Abu Bakr Kalif."
+  },
+  {
+   "id": "o007",
+   "level": "orta",
+   "q": "Unter welchem Kalifen wurden die Koranverse in einem Band gesammelt?",
+   "options": [
+    "Abu Bakr",
+    "Umar",
+    "Uthman",
+    "Ali"
+   ],
+   "info": "Sie wurden nach der Schlacht von Yamama unter Abu Bakr gesammelt; unter Uthman wurden Abschriften angefertigt."
+  },
+  {
+   "id": "o008",
+   "level": "orta",
+   "q": "Unter welchem Kalifen wurden Koranabschriften in die großen Zentren geschickt?",
+   "options": [
+    "Uthman",
+    "Abu Bakr",
+    "Umar",
+    "Ali"
+   ],
+   "info": "Unter Uthman wurden Abschriften angefertigt und in die islamischen Zentren geschickt."
+  },
+  {
+   "id": "o009",
+   "level": "orta",
+   "q": "In welchem Jahr starb der Prophet?",
+   "options": [
+    "632",
+    "622",
+    "630",
+    "640"
+   ],
+   "info": "Der Prophet starb 632 in Medina."
+  },
+  {
+   "id": "o010",
+   "level": "orta",
+   "q": "Welche ist die längste Sure des Korans?",
+   "options": [
+    "Al-Baqara",
+    "Al Imran",
+    "An-Nisa",
+    "Ya-Sin"
+   ],
+   "info": "Al-Baqara hat 286 Verse und ist die längste Sure."
+  },
+  {
+   "id": "o011",
+   "level": "orta",
+   "q": "Welche ist die kürzeste Sure des Korans?",
+   "options": [
+    "Al-Kawthar",
+    "Al-Fatiha",
+    "Al-Ikhlas",
+    "Al-Falaq"
+   ],
+   "info": "Al-Kawthar hat drei kurze Verse und ist die kürzeste Sure."
+  },
+  {
+   "id": "o012",
+   "level": "orta",
+   "q": "In welcher Sure steht der Thronvers, Ayat al-Kursi?",
+   "options": [
+    "Al-Baqara",
+    "Al-Fatiha",
+    "Ya-Sin",
+    "Al-Mulk"
+   ],
+   "info": "Ayat al-Kursi ist Vers 255 der Sure Al-Baqara."
+  },
+  {
+   "id": "o013",
+   "level": "orta",
+   "q": "Wer war der erste Muezzin des Islam?",
+   "options": [
+    "Bilal",
+    "Ammar",
+    "Zaid",
+    "Hamza"
+   ],
+   "info": "Bilal al-Habaschi war der Gefährte mit der schönen Stimme, der zuerst den Adhan rief."
+  },
+  {
+   "id": "o014",
+   "level": "orta",
+   "q": "Worauf wurde die Gebetsrichtung der Muslime nach Jerusalem ausgerichtet?",
+   "options": [
+    "Kaaba",
+    "Medina",
+    "Taif",
+    "Damaskus"
+   ],
+   "info": "Etwa 16 bis 17 Monate nach der Auswanderung wurde die Gebetsrichtung zur Kaaba geändert (Al-Baqara 144)."
+  },
+  {
+   "id": "o015",
+   "level": "orta",
+   "q": "Wie hoch ist die Zakat auf Geld und Handelswaren?",
+   "options": [
+    "Ein Vierzigstel (2,5 %)",
+    "Ein Zehntel (10 %)",
+    "Ein Zwanzigstel (5 %)",
+    "Ein Hundertstel (1 %)"
+   ],
+   "info": "Für Geld und Handelswaren, die den Nisab erreichen, beträgt die Zakat ein Vierzigstel."
+  },
+  {
+   "id": "o016",
+   "level": "orta",
+   "q": "In welchem islamischen Monat wird die Pilgerfahrt verrichtet?",
+   "options": [
+    "Dhu al-Hijja",
+    "Ramadan",
+    "Muharram",
+    "Shawwal"
+   ],
+   "info": "Die Pilgerfahrt findet an bestimmten Tagen des Monats Dhu al-Hijja statt."
+  },
+  {
+   "id": "o017",
+   "level": "orta",
+   "q": "Der wievielte Monat im islamischen Kalender ist Ramadan?",
+   "options": [
+    "9.",
+    "1.",
+    "7.",
+    "12."
+   ],
+   "info": "Ramadan ist der neunte Monat des islamischen Jahres."
+  },
+  {
+   "id": "o018",
+   "level": "orta",
+   "q": "Wann wird die Ersatzwaschung vorgenommen?",
+   "options": [
+    "Wenn Wasser fehlt oder nicht benutzt werden kann",
+    "Vor jedem Gebet",
+    "Nur freitags",
+    "Um die Gebetswaschung zu erneuern"
+   ],
+   "info": "Sie ersetzt die Gebetswaschung, wenn Wasser fehlt oder nicht benutzt werden kann."
+  },
+  {
+   "id": "o019",
+   "level": "orta",
+   "q": "Wie viele Pflichtbestandteile hat die Gebetswaschung nach der hanafitischen Schule?",
+   "options": [
+    "4",
+    "3",
+    "5",
+    "6"
+   ],
+   "info": "Das Gesicht und die Arme einschließlich der Ellenbogen waschen, ein Viertel des Kopfes bestreichen und die Füße einschließlich der Knöchel waschen."
+  },
+  {
+   "id": "o020",
+   "level": "orta",
+   "q": "Wie viele Pflichtgebetseinheiten hat das Morgengebet?",
+   "options": [
+    "2",
+    "3",
+    "4",
+    "1"
+   ],
+   "info": "Das Morgengebet hat zwei Pflichtgebetseinheiten."
+  },
+  {
+   "id": "o021",
+   "level": "orta",
+   "q": "Wie viele Pflichtgebetseinheiten hat das Abendgebet?",
+   "options": [
+    "3",
+    "2",
+    "4",
+    "5"
+   ],
+   "info": "Das Abendgebet hat drei Pflichtgebetseinheiten."
+  },
+  {
+   "id": "o022",
+   "level": "orta",
+   "q": "Welcher Großvater betreute den Propheten als Kind?",
+   "options": [
+    "Abd al-Muttalib",
+    "Abu Talib",
+    "Abbas",
+    "Hashim"
+   ],
+   "info": "Nach dem Tod seiner Mutter betreute ihn Abd al-Muttalib; nach dessen Tod übernahm sein Onkel Abu Talib die Betreuung."
+  },
+  {
+   "id": "o023",
+   "level": "orta",
+   "q": "Welcher Onkel beschützte den Propheten viele Jahre lang?",
+   "options": [
+    "Abu Talib",
+    "Abu Lahab",
+    "Abbas",
+    "Hamza"
+   ],
+   "info": "Abu Talib beschützte ihn auch in den ersten Jahren seines Prophetentums vor den Götzendienern."
+  },
+  {
+   "id": "o024",
+   "level": "orta",
+   "q": "In welcher Nacht begann die Offenbarung des Korans?",
+   "options": [
+    "Nacht der Bestimmung",
+    "Baraat-Nacht",
+    "Miradsch-Nacht",
+    "Raghaib-Nacht"
+   ],
+   "info": "Die Sure Al-Qadr berichtet, dass der Koran in der Nacht der Bestimmung offenbart wurde."
+  },
+  {
+   "id": "o025",
+   "level": "orta",
+   "q": "Welche Moschee ließ der Prophet zuerst bei seiner Ankunft nahe Medina bauen?",
+   "options": [
+    "Quba-Moschee",
+    "Prophetenmoschee",
+    "Al-Aqsa-Moschee",
+    "Heilige Moschee"
+   ],
+   "info": "Die Quba-Moschee wurde auf der Auswanderungsreise vor dem Einzug in Medina gebaut."
+  },
+  {
+   "id": "o026",
+   "level": "orta",
+   "q": "In welchem Jahr nach der Auswanderung wurde der Vertrag von Hudaybiyya geschlossen?",
+   "options": [
+    "6",
+    "2",
+    "4",
+    "8"
+   ],
+   "info": "Der Vertrag von Hudaybiyya wurde im Jahr 6 nach der Hidschra geschlossen (628)."
+  },
+  {
+   "id": "o027",
+   "level": "orta",
+   "q": "Wie nennt man die Muslime von Medina?",
+   "options": [
+    "Ansar",
+    "Muhajirun",
+    "Tabiun",
+    "Ashab as-Suffa"
+   ],
+   "info": "Ansar bedeutet Helfer; die Auswanderer aus Mekka werden Muhadschirun genannt."
+  },
+  {
+   "id": "o028",
+   "level": "orta",
+   "q": "Wer war die Amme des Propheten?",
+   "options": [
+    "Halima",
+    "Amina",
+    "Khadija",
+    "Umm Ayman"
+   ],
+   "info": "Halima as-Sadiyya stillte den Propheten und zog ihn als Kind in der Wüste auf."
+  },
+  {
+   "id": "o029",
+   "level": "orta",
+   "q": "Zu welcher Moschee wurde der Prophet bei der Isra von der Heiligen Moschee geführt?",
+   "options": [
+    "Al-Aqsa-Moschee",
+    "Quba-Moschee",
+    "Prophetenmoschee",
+    "Moschee der zwei Gebetsrichtungen"
+   ],
+   "info": "Der erste Vers der Sure Al-Isra beschreibt diese Nacht."
+  },
+  {
+   "id": "o030",
+   "level": "orta",
+   "q": "Welche Frau wird als einzige im Koran ausdrücklich beim Namen genannt?",
+   "options": [
+    "Maryam (Maria)",
+    "Khadidscha",
+    "Asiya",
+    "Hadschar (Hagar)"
+   ],
+   "info": "Maryam wird im Koran namentlich genannt; auch eine Sure trägt ihren Namen.",
+   "source": "Meryem suresi (19. sure)"
+  },
+  {
+   "id": "o031",
+   "level": "orta",
+   "q": "Wer führte im Jahr des Elefanten das Heer an, das die Kaaba zerstören wollte?",
+   "options": [
+    "Abraha",
+    "Abu Jahl",
+    "Pharao",
+    "Nimrod"
+   ],
+   "info": "Dieses Ereignis wird in der Sure Al-Fil erzählt; es geschah im Geburtsjahr des Propheten."
+  },
+  {
+   "id": "o032",
+   "level": "orta",
+   "q": "Welche Sure erzählt von den Gefährten der Höhle?",
+   "options": [
+    "Al-Kahf",
+    "Yusuf",
+    "Maryam",
+    "Ar-Rum"
+   ],
+   "info": "Ihre Geschichte steht in der Sure Al-Kahf."
+  },
+  {
+   "id": "o033",
+   "level": "orta",
+   "q": "In welcher Höhle versteckten sich der Prophet und Abu Bakr während der Auswanderung?",
+   "options": [
+    "Thawr",
+    "Hira",
+    "Uhud",
+    "Quba"
+   ],
+   "info": "Sie blieben drei Tage in der Höhle Thawr."
+  },
+  {
+   "id": "o034",
+   "level": "orta",
+   "q": "Welcher Beiname Umars bedeutet der zwischen Wahrheit und Falschheit unterscheidet?",
+   "options": [
+    "Al-Faruq",
+    "As-Siddiq",
+    "Dhun-Nurayn",
+    "Asadullah"
+   ],
+   "info": "Abu Bakr wird As-Siddiq genannt, Uthman Dhun-Nurayn."
+  },
+  {
+   "id": "o035",
+   "level": "orta",
+   "q": "In wie viele Dschuz-Abschnitte ist der Koran geteilt?",
+   "options": [
+    "30",
+    "20",
+    "40",
+    "114"
+   ],
+   "info": "Der Koran ist in 30 Dschuz geteilt; gemeinschaftliche Lesungen folgen oft diesen Abschnitten."
+  },
+  {
+   "id": "o036",
+   "level": "orta",
+   "q": "In welchem Monat wird das Tarawih-Gebet verrichtet?",
+   "options": [
+    "Ramadan",
+    "Shaban",
+    "Rajab",
+    "Dhu al-Hijja"
+   ],
+   "info": "Tarawih wird in den Nächten des Ramadan nach dem Nachtgebet verrichtet."
+  },
+  {
+   "id": "o037",
+   "level": "orta",
+   "q": "In welchem Land wurde Yusuf Verwalter?",
+   "options": [
+    "Ägypten",
+    "Yemen",
+    "Irak",
+    "Damaskus"
+   ],
+   "info": "Yusuf wurde in Ägypten mit der Verwaltung der Vorratskammern betraut."
+  },
+  {
+   "id": "o038",
+   "level": "orta",
+   "q": "Welcher Bruder Musas war ebenfalls Prophet?",
+   "options": [
+    "Harun (Aaron)",
+    "Yuscha (Josua)",
+    "Yahya (Johannes)",
+    "Zakariya (Zacharias)"
+   ],
+   "info": "Harun wurde gesandt, um Musa zu unterstützen."
+  },
+  {
+   "id": "o039",
+   "level": "orta",
+   "q": "Bis wann sollte die Zakat al-Fitr entrichtet werden?",
+   "options": [
+    "Vor dem Festgebet zum Ramadanfest",
+    "Beim Opferfest",
+    "Zum islamischen Neujahr",
+    "Während der Pilgerfahrt"
+   ],
+   "info": "Der Prophet ordnete an, sie zu entrichten, bevor die Menschen zum Festgebet gehen. Die Gefährten gaben sie auch ein oder zwei Tage vorher.",
+   "source": "Müslim, Zekât 986; Buhârî, Zekât 1511"
+  },
+  {
+   "id": "o040",
+   "level": "orta",
+   "q": "Wie viele Runden geht man beim Tawaf um die Kaaba?",
+   "options": [
+    "7",
+    "3",
+    "5",
+    "9"
+   ],
+   "info": "Der Tawaf besteht aus sieben Umrundungen der Kaaba."
+  },
+  {
+   "id": "z001",
+   "level": "zor",
+   "q": "Am Anfang welcher Sure stehen die zuerst offenbarten Verse?",
+   "options": [
+    "Al-Alaq",
+    "Al-Fatiha",
+    "Al-Muddaththir",
+    "Al-Qalam"
+   ],
+   "info": "Es sind die ersten fünf Verse von Al-Alaq, die mit der Aufforderung beginnen, im Namen des Schöpfers zu lesen."
+  },
+  {
+   "id": "z002",
+   "level": "zor",
+   "q": "Welcher Offenbarungsschreiber leitete unter Abu Bakr die Sammlung des Korans?",
+   "options": [
+    "Zayd ibn Thabit",
+    "Ubayy ibn Kab",
+    "Abdullah ibn Masud",
+    "Muadh ibn Jabal"
+   ],
+   "info": "Zaid ibn Thabit war Offenbarungsschreiber und leitete die Sammlung."
+  },
+  {
+   "id": "z003",
+   "level": "zor",
+   "q": "Wer ist der Imam der hanafitischen Schule?",
+   "options": [
+    "Imam Abu Hanifa",
+    "Imam ash-Shafii",
+    "Imam Malik",
+    "Ahmad ibn Hanbal"
+   ],
+   "info": "Abu Hanifa (gestorben 767) lebte in Kufa; die hanafitische Rechtsschule ist in der Türkei verbreitet."
+  },
+  {
+   "id": "z004",
+   "level": "zor",
+   "q": "Wer schrieb die bekannte Hadithsammlung Al-Dschami as-Sahih?",
+   "options": [
+    "Imam al-Bukhari",
+    "Imam Muslim",
+    "At-Tirmidhi",
+    "Ibn Majah"
+   ],
+   "info": "Sahih al-Bukhari gilt als eine der zuverlässigsten Hadithquellen."
+  },
+  {
+   "id": "z005",
+   "level": "zor",
+   "q": "Welcher muslimische Mathematiker gilt als Begründer der Algebra?",
+   "options": [
+    "Al-Khwarizmi",
+    "Ibn Sina",
+    "Al-Biruni",
+    "Al-Farabi"
+   ],
+   "info": "Das Wort Algebra stammt aus Al-Khwarizmis Werk Al-Kitab al-Mukhtasar fi Hisab al-Jabr wal-Muqabala."
+  },
+  {
+   "id": "z006",
+   "level": "zor",
+   "q": "Wer schrieb das medizinische Werk Kanon der Medizin?",
+   "options": [
+    "Ibn Sina",
+    "Ar-Razi",
+    "Ibn Rushd",
+    "Az-Zahrawi"
+   ],
+   "info": "Dieses Werk wurde in Europa jahrhundertelang als medizinisches Lehrbuch verwendet."
+  },
+  {
+   "id": "z007",
+   "level": "zor",
+   "q": "Welche Moschee bezeichnete der Architekt Sinan als sein Meisterwerk?",
+   "options": [
+    "Selimiye-Moschee",
+    "Süleymaniye-Moschee",
+    "Şehzade-Moschee",
+    "Sultan-Ahmed-Moschee"
+   ],
+   "info": "Selimiye in Edirne ist sein Meisterwerk, Süleymaniye sein Gesellenwerk und Şehzade sein Lehrlingswerk."
+  },
+  {
+   "id": "z008",
+   "level": "zor",
+   "q": "Welche Moschee bezeichnete Sinan als sein Lehrlingswerk?",
+   "options": [
+    "Şehzade-Moschee",
+    "Selimiye-Moschee",
+    "Süleymaniye-Moschee",
+    "Mihrimah-Sultan-Moschee"
+   ],
+   "info": "Die Şehzade-Moschee in Istanbul ist Sinans Lehrlingswerk."
+  },
+  {
+   "id": "z009",
+   "level": "zor",
+   "q": "Welcher umayyadische Kalif ließ den Felsendom in Jerusalem bauen?",
+   "options": [
+    "Abd al-Malik ibn Marwan",
+    "Muawiya",
+    "Umar ibn Abd al-Aziz",
+    "Harun ar-Rashid"
+   ],
+   "info": "Der Felsendom wurde 691–692 fertiggestellt."
+  },
+  {
+   "id": "z010",
+   "level": "zor",
+   "q": "In welcher Stadt lag das abbasidische Wissenszentrum Haus der Weisheit?",
+   "options": [
+    "Bagdad",
+    "Damaskus",
+    "Kairo",
+    "Córdoba"
+   ],
+   "info": "Dort wurden viele Werke ins Arabische übersetzt und wissenschaftliche Forschungen betrieben."
+  },
+  {
+   "id": "z011",
+   "level": "zor",
+   "q": "Welches Werk Ibn Khalduns ist für seine Geschichtsphilosophie bekannt?",
+   "options": [
+    "Muqaddimah",
+    "Masnavi",
+    "Siyasatnama",
+    "Kutadgu Bilig"
+   ],
+   "info": "Die Muqaddima ist ein wegweisendes Werk über Gesellschaft und Geschichte."
+  },
+  {
+   "id": "z012",
+   "level": "zor",
+   "q": "Welcher Gelehrte schrieb das Buch der Optik über Licht und Sehen?",
+   "options": [
+    "Ibn al-Haytham",
+    "Al-Khwarizmi",
+    "Al-Biruni",
+    "Jabir ibn Hayyan"
+   ],
+   "info": "Ibn al-Haytham war ein Wegbereiter der Optik."
+  },
+  {
+   "id": "z013",
+   "level": "zor",
+   "q": "In welchem Jahr fand die Schlacht von Manzikert statt?",
+   "options": [
+    "1071",
+    "1037",
+    "1176",
+    "1299"
+   ],
+   "info": "Die Seldschuken unter Sultan Alp Arslan besiegten Byzanz und eröffneten den Weg nach Anatolien."
+  },
+  {
+   "id": "z014",
+   "level": "zor",
+   "q": "Unter welchem Sultan ging das Kalifat an die Osmanen über?",
+   "options": [
+    "Selim I",
+    "Mehmed II",
+    "Suleiman the Magnificent",
+    "Bayezid II"
+   ],
+   "info": "Nach dem Ägyptenfeldzug von 1517 ging das Kalifat an die Osmanen über."
+  },
+  {
+   "id": "z015",
+   "level": "zor",
+   "q": "Welche theologische Schule ist in der Türkei verbreitet?",
+   "options": [
+    "Maturidiyya",
+    "Aschariyya",
+    "Mutazila",
+    "Hanbalitische Schule"
+   ],
+   "info": "Die beiden großen sunnitischen theologischen Schulen sind Maturidiyya und Aschariyya; in der Türkei ist die Maturidiyya verbreitet."
+  },
+  {
+   "id": "z016",
+   "level": "zor",
+   "q": "Welcher Kalif führte den islamischen Kalender ein?",
+   "options": [
+    "Umar",
+    "Abu Bakr",
+    "Uthman",
+    "Ali"
+   ],
+   "info": "Unter Umar wurde das Jahr der Auswanderung als Ausgangspunkt des Kalenders gewählt."
+  },
+  {
+   "id": "z017",
+   "level": "zor",
+   "q": "Wo hielt der Prophet während seiner letzten Pilgerfahrt hauptsächlich die Abschiedspredigt?",
+   "options": [
+    "Arafat",
+    "Taif",
+    "Quba",
+    "Uhud"
+   ],
+   "info": "Bei der Abschiedspilgerfahrt im Jahr 10 nach der Hidschra sprach er im Tal von Arafat zu den Menschen über die Unverletzlichkeit von Leben und Besitz. Auch am Festtag hielt er eine Predigt.",
+   "source": "Müslim, Hac 1218; Buhârî, Hac 1739"
+  },
+  {
+   "id": "z018",
+   "level": "zor",
+   "q": "Welche Sure nennt die acht Gruppen, die Zakat erhalten dürfen?",
+   "options": [
+    "At-Tawba",
+    "Al-Baqara",
+    "An-Nisa",
+    "Al-Maida"
+   ],
+   "info": "Sie werden in Vers 60 der Sure At-Tawba genannt."
+  },
+  {
+   "id": "z019",
+   "level": "zor",
+   "q": "Welchen Status hat das Witr-Gebet in der hanafitischen Schule?",
+   "options": [
+    "Verpflichtend (Wadschib)",
+    "Pflicht (Fard)",
+    "Prophetische Praxis (Sunna)",
+    "Empfohlen (Mustahabb)"
+   ],
+   "info": "Nach hanafitischer Auffassung ist Witr wadschib; in den anderen Schulen gilt es als Sunna."
+  },
+  {
+   "id": "z020",
+   "level": "zor",
+   "q": "Wie heißt die Niederwerfung am Gebetsende zum Ausgleich bestimmter Fehler?",
+   "options": [
+    "Vergesslichkeitsniederwerfung",
+    "Rezitationsniederwerfung",
+    "Dankesniederwerfung",
+    "Iqama-Niederwerfung"
+   ],
+   "info": "Sahw bedeutet Vergessen oder Irrtum."
+  },
+  {
+   "id": "z021",
+   "level": "zor",
+   "q": "Wie lange darf ein Nichtreisender über Ledersocken streichen?",
+   "options": [
+    "Ein Tag und eine Nacht",
+    "Drei Tage und drei Nächte",
+    "Eine Woche",
+    "Nur eine Gebetszeit"
+   ],
+   "info": "Für Ansässige beträgt die Frist 24 Stunden, für Reisende drei Tage und drei Nächte."
+  },
+  {
+   "id": "z022",
+   "level": "zor",
+   "q": "Wer schrieb die Masnavi?",
+   "options": [
+    "Jalal ad-Din Rumi",
+    "Yunus Emre",
+    "Haji Bektash Veli",
+    "Ahmad Yasawi"
+   ],
+   "info": "Die Masnavi wurde auf Persisch geschrieben und umfasst etwa 26.000 Doppelverse."
+  },
+  {
+   "id": "z023",
+   "level": "zor",
+   "q": "Wer schrieb Kutadgu Bilig?",
+   "options": [
+    "Yusuf Khass Hajib",
+    "Mahmud al-Kashgari",
+    "Edib Ahmad",
+    "Ali Shir Navai"
+   ],
+   "info": "Kutadgu Bilig ist ein Werk über Staatsführung aus der Karachanidenzeit."
+  },
+  {
+   "id": "z024",
+   "level": "zor",
+   "q": "Welcher Karachanidenherrscher wurde als erster Muslim?",
+   "options": [
+    "Satuq Bughra Khan",
+    "Tughril Beg",
+    "Alparslan",
+    "Suleiman ibn Qutalmish"
+   ],
+   "info": "Mit der Bekehrung Satuq Bughra Khans nahmen die Karachaniden den Islam an."
+  },
+  {
+   "id": "z025",
+   "level": "zor",
+   "q": "Wie heißt das schwarze Tuch, das die Kaaba bedeckt?",
+   "options": [
+    "Kiswa",
+    "Mantel",
+    "Gebetsteppich",
+    "Banner"
+   ],
+   "info": "Die Kiswa wird jedes Jahr erneuert."
+  },
+  {
+   "id": "z026",
+   "level": "zor",
+   "q": "Wie viele Pflichtbestandteile hat die Pilgerfahrt nach der hanafitischen Schule?",
+   "options": [
+    "3",
+    "2",
+    "4",
+    "5"
+   ],
+   "info": "Ihram ist eine Voraussetzung; das Verweilen in Arafat und der Besuchstawaf sind Säulen. Der Prophet lehrte, dass die Pilgerfahrt Arafat ist.",
+   "source": "Tirmizî, Hac 889; Hac suresi 29"
+  },
+  {
+   "id": "z027",
+   "level": "zor",
+   "q": "Welche Sure beginnt ohne Basmala?",
+   "options": [
+    "At-Tawba",
+    "Al-Fatiha",
+    "An-Naml",
+    "Ya-Sin"
+   ],
+   "info": "Die Sure At-Tawba beginnt ohne Basmala."
+  },
+  {
+   "id": "z028",
+   "level": "zor",
+   "q": "In welcher Sure kommt die Basmala zweimal vor?",
+   "options": [
+    "An-Naml",
+    "Al-Baqara",
+    "At-Tawba",
+    "Al-Fatiha"
+   ],
+   "info": "Sie steht am Anfang von An-Naml und in Vers 30."
+  },
+  {
+   "id": "z029",
+   "level": "zor",
+   "q": "Welche Sure ist als Umm al-Kitab, Mutter des Buches, bekannt?",
+   "options": [
+    "Al-Fatiha",
+    "Al-Baqara",
+    "Al-Ikhlas",
+    "Ya-Sin"
+   ],
+   "info": "Umm al-Kitab ist einer der Namen von Al-Fatiha."
+  },
+  {
+   "id": "z030",
+   "level": "zor",
+   "q": "Welcher Gefährte schlug in der Grabenschlacht vor, einen Graben um Medina auszuheben?",
+   "options": [
+    "Salman al-Farisi",
+    "Umar",
+    "Hamza",
+    "Khalid ibn al-Walid"
+   ],
+   "info": "Diese Verteidigungsmethode war in Persien bekannt; Salman al-Farisi schlug sie vor."
+  },
+  {
+   "id": "z031",
+   "level": "zor",
+   "q": "Welcher Gefährte fiel bei Uhud und wird Herr der Märtyrer genannt?",
+   "options": [
+    "Hamza",
+    "Musab",
+    "Dschafar",
+    "Zaid"
+   ],
+   "info": "Hamza, der Onkel des Propheten, starb bei Uhud als Märtyrer."
+  },
+  {
+   "id": "z032",
+   "level": "zor",
+   "q": "Welche berühmte andalusische Moschee liegt im heutigen Spanien?",
+   "options": [
+    "Große Moschee von Córdoba",
+    "Umayyadenmoschee",
+    "Al-Azhar-Moschee",
+    "Große Moschee von Kairouan"
+   ],
+   "info": "Mit dem Bau der Großen Moschee von Córdoba wurde im achten Jahrhundert begonnen."
+  },
+  {
+   "id": "z033",
+   "level": "zor",
+   "q": "In welchem Jahr eroberte Mehmed II. Istanbul?",
+   "options": [
+    "1453",
+    "1402",
+    "1517",
+    "1071"
+   ],
+   "info": "Istanbul wurde am 29. Mai 1453 erobert."
+  },
+  {
+   "id": "z034",
+   "level": "zor",
+   "q": "In welcher Stadt lebte der sunnitische Theologe Abu Mansur al-Maturidi?",
+   "options": [
+    "Samarkand",
+    "Bagdad",
+    "Kufa",
+    "Buchara"
+   ],
+   "info": "Al-Maturidi lebte und starb in Samarkand (gestorben 944)."
+  },
+  {
+   "id": "z035",
+   "level": "zor",
+   "q": "In welcher Moschee befindet sich das Grab des Propheten?",
+   "options": [
+    "Prophetenmoschee",
+    "Quba-Moschee",
+    "Heilige Moschee",
+    "Al-Aqsa-Moschee"
+   ],
+   "info": "Die Prophetenmoschee befindet sich in Medina."
+  },
+  {
+   "id": "z036",
+   "level": "zor",
+   "q": "Welcher Beiname Khalid ibn al-Walids bedeutet Schwert Allahs?",
+   "options": [
+    "Sayfullah",
+    "Asadullah",
+    "Al-Faruq",
+    "Dhun-Nurayn"
+   ],
+   "info": "Der Prophet gab ihm den Beinamen Sayfullah."
+  },
+  {
+   "id": "z037",
+   "level": "zor",
+   "q": "Welcher Beiname Alis bedeutet Löwe Allahs?",
+   "options": [
+    "Asadullah",
+    "Sayfullah",
+    "As-Siddiq",
+    "Al-Faruq"
+   ],
+   "info": "Ali wird auch Haydar genannt."
+  },
+  {
+   "id": "z038",
+   "level": "zor",
+   "q": "Wie nannte man Krankenhäuser in der islamischen Zivilisation?",
+   "options": [
+    "Bimaristan (Krankenhaus)",
+    "Madrasa (Schule)",
+    "Karawanserei",
+    "Öffentliche Suppenküche"
+   ],
+   "info": "Bimaristan oder Dar asch-Schifa waren Einrichtungen, in denen Kranke behandelt wurden."
+  },
+  {
+   "id": "z039",
+   "level": "zor",
+   "q": "Wie hießen die bekannten Schulen, die der seldschukische Wesir Nizam al-Mulk gründete?",
+   "options": [
+    "Nizamiyya-Schulen",
+    "Sahn-ı Seman",
+    "Süleymaniye-Schulen",
+    "Al-Azhar"
+   ],
+   "info": "Die Nizamiyya-Schulen wurden im elften Jahrhundert in Bagdad und vielen anderen Städten gegründet."
+  },
+  {
+   "id": "z040",
+   "level": "zor",
+   "q": "Welcher Prophet, dessen Geschichte im Koran steht, ist für seine Geduld bekannt?",
+   "options": [
+    "Ayyub (Hiob)",
+    "Lut (Lot)",
+    "Hud",
+    "Salih"
+   ],
+   "info": "Ayyub gilt trotz schwerer Krankheit und Verluste als Vorbild der Geduld (Sad 44)."
+  }
+ ]
+}
