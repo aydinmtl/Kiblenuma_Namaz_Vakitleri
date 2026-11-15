@@ -95,6 +95,9 @@ JSON elle düzenlenmez. Her soruda doğru cevap ilk şıktır; uygulama şıklar
   ses kayıtları korunur. Soru bankaları `sorular.json` ve `sorular_fr/en/de.json` dosyalarıdır.
   Türkçe bankayı yeniden üretirken diğer bankaların kimliklerini, sırasını ve doğru ilk şıkkını da
   güncelle; `python3 tools/check_content_l10n.py` ve `node app/src/test/js/namaz3d_l10n.test.js` çalıştır.
+  Arapça dua/sure okunuşu ve kayıtları dil seçiminden etkilenmez; yalnızca Türkçe niyet seçili dile
+  çevrilip okunur. Niyetin sesli okuması atlama, sesi kapatma ve ekrandan çıkmada durdurulur.
+  Kaynak künyelerindeki Türkçe açıklamalar da gösterilirken çevrilir; asıl kaynak numaraları korunur.
   Çevirilerdeki dini anlam ve gerçek cihazdaki görünüm ayrıca insan kontrolü gerektirir.
 - Dini günlerin adları `Hijri.HolyKind` ile seçili dile çevrilir (`Lang.holyDayName`); `HolyDay.name` Türkçe
   kalır (testler bunu kullanır). "Üç Aylar" bilinçli olarak "kutsal aylar" diye çevrilmedi: o terim İslam'da
@@ -140,15 +143,15 @@ birleştirilmeden önce ikisinin de yeşil olması beklenir. Sürümler dosyanı
    **Yer adlarının yazımı:** Diyanet adları büyük harfle verir; yabancı adlarda I harfi "i" olur
    ("VERNIER" → "Vernier"), Türkiye, Kuzey Kıbrıs ve Azerbaycan'da Türkçe kural geçerlidir
    (`titleCase(ad, turkish)`, `Diyanet.turkishSpelling`).
-2. **Saat dilimi:** Diyanet vakitleri o yerin yerel saatidir ama alarmlar telefonun saat diliminde kurulur.
-   Elle uzak bir yer seçilirse (ör. İsviçre'deyken İstanbul) vakitler kayar. API'deki
-   `GreenwichOrtalamaZamani` alanı kullanılabilir.
-3. **Yüksek enlem / gece yarısını geçen yatsı:** `PrayerCalc` saati `LocalTime`'a mod 24 ile çeviriyor;
-   yatsı 00:00'ı geçerse aynı günün başına düşer ve sıralama bozulur.
+2. **Saat dilimi (düzeltildi):** her vakit kendi gerçek anıyla (`Instant`) alarm hesabına girer.
+   Telefonun yaz saati farkı günlük tek bir değerle uygulanmaz. Bildirimler ana ekran ve widget gibi
+   seçili yerin özgün saatini gösterir; saat dilimi ve gün sınırı regresyon testleri vardır.
+3. **Gece yarısını geçen yatsı (düzeltildi):** vakitlere gün kayması eklenir; gece yarısından
+   sonraki yatsı ertesi güne yerleştirilir. Yüksek enlem ve gün sırası regresyon testleri vardır.
 4. **Ezan servisi:** Tam zamanlı alarm izni yoksa (inexact alarm) Android 12+ arka plandan ön plan servisi
    başlatmayı reddedebilir (`ForegroundServiceStartNotAllowedException`); şu an sessizce yutuluyor.
-5. **Hedef API:** targetSdk 35. Play'in güncel şartı kontrol edilip yükseltilmeli (edge-to-edge,
-   öngörülü geri hareketi, `onBackPressed` kullanımları).
+5. **Hedef API:** compileSdk/targetSdk 36. Edge-to-edge, öngörülü geri hareketi ve
+   `onBackPressed` davranışı gerçek cihazda ayrıca kontrol edilmeli.
 6. **Hicri kaydırma:** `HicriTarihKisa` biçimi ("2.6.1448" varsayıldı) doğrulanmadı.
    Dini günler Diyanet'in yayımladığı takvimle karşılaştırılmalı.
 7. **Widget:** alarm gecikirse Chronometer eksiye düşer; `updatePeriodMillis` 30 dk.
@@ -167,3 +170,17 @@ birleştirilmeden önce ikisinin de yeşil olması beklenir. Sürümler dosyanı
 - Dini içerikte uydurma yok; tartışmalı konular ya çıkarılır ya mezhep belirtilerek yazılır.
 - Başka uygulamalardan kod, görsel, ses kopyalanmaz.
 - Play meta veri politikası: başlık/simge/geliştirici adında "Reklamsız/Ücretsiz" geçmez.
+
+## 15 Kasım 2026 tamamlanan düzeltmeler
+
+- Şehir seçimi, vakit verisi, koordinatlar ve hesap ayarları aynı koruma altında tutarlı okunur.
+  Elle seçim sürerken otomatik konum işi seçimi geçersiz kılamaz; iptal/hata yaşam döngüsü
+  rezervasyonu serbest bırakır. Geç gelen eski yanıtlar reddedilir.
+- Alarm hesaplaması kilit dışında yapılır; kurma/iptal anında seçim ve veri sürümü yeniden
+  doğrulanır. Eski ya da daha erken başlayan iş yeni alarmı değiştiremez.
+- Konum yaş sınırı bütün dönüş yollarında uygulanır. Diyanet verisi bittiğinde ağ koşullu
+  WorkManager işi vakit alarmından bağımsız yenileme yapar.
+- Aynı tarih aralığındaki yeni vakitler içerikle anahtarlanan önbelleğe yansır. Ezan ve günlük
+  soru farklı bildirim kimlikleri kullanır.
+- Android birim testleri ve imzalı APK GitHub Actions üzerinde çalışır. Bu düzeltmeler birim
+  testleriyle sınandı; telefonda (konum, bildirim, ezan, widget) ayrıca denenmelidir.
