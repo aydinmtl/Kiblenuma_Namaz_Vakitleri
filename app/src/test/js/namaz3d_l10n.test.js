@@ -44,7 +44,7 @@ for (const language of ['tr', 'fr', 'en', 'de', 'es', '__proto__', '']) {
   for (const id of labels) assert.ok(document.getElementById(id).attrs['aria-label'], `${language}: ${id}`);
   const data = JSON.parse(vm.runInContext('JSON.stringify(LESSON)', ctx));
   const turkish = JSON.parse(vm.runInContext('JSON.stringify(LESSON_LANGUAGES.tr)', ctx));
-  for (const key of ['loading', 'webgl', 'engine', 'freeCamera', 'cinematicCamera', 'noRecording', 'videoReady', 'download', 'recording', 'source', 'rakat']) {
+  for (const key of ['loading', 'webgl', 'engine', 'lost', 'freeCamera', 'cinematicCamera', 'noRecording', 'videoReady', 'download', 'recording', 'source', 'rakat']) {
     assert.ok(data[key].trim(), `${language}: ${key}`);
     if (lang !== 'tr') assert.notEqual(data[key], turkish[key], `${language}: ${key} çevrilmeli`);
   }

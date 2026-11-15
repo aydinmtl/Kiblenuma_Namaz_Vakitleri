@@ -21,6 +21,9 @@ object AlarmScheduler {
     const val EXTRA_CLOCK = "clock"       // seçili yerin saati (gece yarısından itibaren saniye)
     const val EXTRA_DAY = "day"           // vaktin ait olduğu takvim satırı (epoch gün)
 
+    /** Reddedilen alarm kurma çağrısı en çok bu kadar kez yeniden denenir. */
+    private const val SCHEDULE_ATTEMPTS = 3
+
     private val publisher = Store.alarmPublisher()
 
     fun canExact(ctx: Context): Boolean {
@@ -39,9 +42,17 @@ object AlarmScheduler {
 
     fun schedule(ctx: Context, after: Instant = Instant.now()) {
         val app = ctx.applicationContext
-        DataRefresh.ensureScheduled(app)
+        // Arka plan işleri (veri yenileme, alarm bekçisi). Bunlar yardımcıdır: kurulamazlarsa
+        // alarmın kendisi yine de kurulmalı; bu yüzden hata burada yutulur.
+        try {
+            DataRefresh.ensureScheduled(app)
+        } catch (e: Exception) {
+        }
         val am = app.getSystemService(AlarmManager::class.java) ?: return
-        publisher.run(
+        // Hesap sürerken veri değişirse ya da daha yeni bir çağrı gelirse çağrı reddedilir.
+        // Eskiden öylece bırakılıyordu; artık taze veriyle yeniden denenir.
+        publisher.runUntilAccepted(
+            SCHEDULE_ATTEMPTS,
             capture = { Store.alarmSnapshot(app) },
             compute = { nextEvent(it, after) },
             publish = { publish(app, am, it) },

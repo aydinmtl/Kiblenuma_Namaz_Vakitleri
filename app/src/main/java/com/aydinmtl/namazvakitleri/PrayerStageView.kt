@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.webkit.JavascriptInterface
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -65,6 +66,31 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
     private var playMoves: List<Move> = emptyList()
     private var playDone: (() -> Unit)? = null
 
+    // ---- Bekçi: 3B sahne takılırsa oyun da takılmasın ----
+    // Oyun, canlandırma bitince sahnenin "bitti" demesini bekler. Sahne bunu hiç demezse
+    // (sayfa yüklenemedi, çizim durdu, JavaScript hatası) eskiden "Devam" düğmesi hiç çıkmıyordu.
+    // Beklenen süre fazlasıyla aşılırsa 2B çizime geçilir; o da aynı hareketleri oynatıp bitirir.
+    private var watchdogMs = 0L
+    private val watchdog = Runnable { if (flat == null && (playDone != null || !ready)) useFlat() }
+
+    private fun armWatchdog(ms: Long) {
+        watchdogMs = ms
+        main.removeCallbacks(watchdog)
+        main.postDelayed(watchdog, ms)
+    }
+
+    private fun disarmWatchdog() {
+        watchdogMs = 0L
+        main.removeCallbacks(watchdog)
+    }
+
+    private companion object {
+        const val LOAD_TIMEOUT_MS = 10_000L // sayfa bu sürede "hazır" demezse 2B çizime geç
+        const val INTRO_TIMEOUT_MS = 45_000L // seccade serme canlandırması için üst sınır
+        const val PLAY_MARGIN_MS = 15_000L // hareketlerin toplam süresine eklenen pay
+        const val PLAY_MARGIN_PER_MOVE_MS = 6_000L // her hareketin ara geçişleri için pay
+    }
+
     init {
         setBackgroundColor(context.getColor(R.color.bg))
         try {
@@ -90,6 +116,14 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         w.webViewClient = object : WebViewClient() {
             // Sayfadan başka bir adrese gidilmesine izin verme
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean = true
+
+            // Sayfayı çizen ayrı süreç çöktü ya da sistem onu kapattı (ör. bellek azaldı). Bu ele
+            // alınmazsa Android uygulamanın TAMAMINI kapatır. true: "ben hallettim"; ölü WebView
+            // atılır ve 2B çizimle devam edilir.
+            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                main.post { useFlat() }
+                return true
+            }
         }
         w.addJavascriptInterface(Bridge(), "Android")
         // Sahneye dokununca okuma hemen biter (sabırsız küçükler için)
@@ -100,6 +134,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         addView(w, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         web = w
         w.loadUrl("file:///android_asset/namazoyun3d/index.html")
+        armWatchdog(LOAD_TIMEOUT_MS)
     }
 
     /** Sayfadan gelen bildirimler. Arka plan iş parçacığında çağrılır; ana iş parçacığına aktarılır. */
@@ -107,6 +142,8 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         @JavascriptInterface
         fun hazir() = main.post {
             ready = true
+            // Yükleme bekçisi görevini bitirdi; süren bir canlandırma varsa onun bekçisi kalır.
+            if (playDone == null) disarmWatchdog()
             val w = web ?: return@post
             for (c in pending) w.evaluateJavascript(c, null)
             pending.clear()
@@ -127,6 +164,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         @JavascriptInterface
         fun bitti(id: Int) = main.post {
             if (id != playId) return@post
+            disarmWatchdog()
             lastPose = playMoves.lastOrNull()?.pose ?: lastPose
             val cb = playDone
             playDone = null
@@ -146,6 +184,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
     /** 3B çizim açılamadı: eski 2B çizime geç ve kalınan yerden devam et. */
     private fun useFlat() {
         if (flat != null) return
+        disarmWatchdog()
         web?.let { removeView(it); it.destroy() }
         web = null
         pending.clear()
@@ -173,6 +212,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         playDone = null
         playMoves = emptyList()
         playId++
+        if (ready) disarmWatchdog() // sayfa henüz yükleniyorsa yükleme bekçisi kalsın
         flat?.girl = girl && sceneNow != PrayerChapter.ABDEST
         flat?.show(poseName, sceneNow)
         js("N3.goster(${JSONObject.quote(poseName)}, ${JSONObject.quote(sceneNow.name)})")
@@ -194,11 +234,14 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         playMoves = list
         playDone = done
         val arr = JSONArray()
+        var totalMs = 0L
         for (m in list) {
             val o = JSONObject()
             o.put("pose", m.pose)
             // Ses kaydı olan okuma, kaydın uzunluğu kadar sürer; yoksa kelime sayısına göre
-            o.put("ms", m.recite?.let { reciteMs?.invoke(it) } ?: m.ms)
+            val ms = m.recite?.let { reciteMs?.invoke(it) } ?: m.ms
+            totalMs += ms
+            o.put("ms", ms)
             if (m.caption != null) o.put("caption", m.caption)
             if (m.water) o.put("water", true)
             m.recite?.let { r ->
@@ -209,6 +252,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         }
         val partJs = if (part == null) "null" else JSONObject.quote(part.name)
         js("N3.oynat($arr, ${JSONObject.quote(newScene.name)}, $partJs, $playId)")
+        armWatchdog(totalMs + PLAY_MARGIN_PER_MOVE_MS * list.size + PLAY_MARGIN_MS)
     }
 
     /**
@@ -231,6 +275,7 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         playMoves = emptyList()
         playDone = done
         js("N3.giris($playId, $fromAbdest)")
+        armWatchdog(INTRO_TIMEOUT_MS)
     }
 
     /** Okuma sürerken dokunulursa okumayı hemen bitirir (giriş canlandırmasında sonuna atlar). */
@@ -253,8 +298,16 @@ class PrayerStageView(context: Context, attrs: AttributeSet?) : FrameLayout(cont
     }
 
     /** Ekrandan çıkınca çizimi durdur (pil ve ısınma için), dönünce devam et. */
-    fun pause() { web?.onPause() }
-    fun resume() { web?.onResume() }
+    fun pause() {
+        web?.onPause()
+        // Ekran arkadayken sahne zaten çizmez; bekçi bunu "takıldı" sanmasın.
+        main.removeCallbacks(watchdog)
+    }
+
+    fun resume() {
+        web?.onResume()
+        if (watchdogMs > 0 && flat == null) main.postDelayed(watchdog, watchdogMs)
+    }
     fun destroy() {
         main.removeCallbacksAndMessages(null)
         web?.let { removeView(it); it.destroy() }

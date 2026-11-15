@@ -109,7 +109,7 @@ const LESSON_LANGUAGES = {
     title: 'Namaz Öğreniyorum', subtitle: '3B canlandırma · Hanefi', preparation: 'Hazırlık',
     labels: ['Zaman çizelgesi','Önceki adım','Oynat / durdur','Sonraki adım','Baştan oynat','Bilgi','Kamera kipi','Hız','Kalite','Video kaydet'],
     quality: ['Hızlı','Dengeli','Sinema'], loading: 'Stüdyo hazırlanıyor…', webgl: 'Bu cihaz WebGL2 desteklemiyor.',
-    engine: 'Çizim motoru başlatılamadı:', freeCamera: 'Serbest kamera: sürükleyerek çevir, iki parmakla yaklaş.', cinematicCamera: 'Sinematik kamera',
+    engine: 'Çizim motoru başlatılamadı:', lost: 'Çizim durdu. Bu ekranı kapatıp yeniden açın.', freeCamera: 'Serbest kamera: sürükleyerek çevir, iki parmakla yaklaş.', cinematicCamera: 'Sinematik kamera',
     noRecording: 'Bu tarayıcı video kaydını desteklemiyor.', videoReady: 'Video hazır.', download: 'İndir', recording: 'Kayıt başladı. Canlandırma bitince video hazırlanır.', source: 'Kaynak:',
     rakat: 'Bu canlandırma, hareketlerin sırasını tek rekat üzerinden gösterir. Namazlar en az iki rekattır; son oturuştan önce ikinci rekat da aynı şekilde kılınır.'
   },
@@ -117,7 +117,7 @@ const LESSON_LANGUAGES = {
     title: 'J’apprends la prière', subtitle: 'Animation 3D · École hanafite', preparation: 'Préparation',
     labels: ['Chronologie','Étape précédente','Lire / mettre en pause','Étape suivante','Recommencer','Informations','Mode caméra','Vitesse','Qualité','Enregistrer une vidéo'],
     quality: ['Rapide','Équilibrée','Cinéma'], loading: 'Préparation du studio…', webgl: 'Cet appareil ne prend pas en charge WebGL2.',
-    engine: 'Impossible de démarrer le moteur graphique :', freeCamera: 'Caméra libre : glissez pour tourner, pincez avec deux doigts pour zoomer.', cinematicCamera: 'Caméra cinématographique',
+    engine: 'Impossible de démarrer le moteur graphique :', lost: 'L’affichage s’est arrêté. Fermez cet écran puis rouvrez-le.', freeCamera: 'Caméra libre : glissez pour tourner, pincez avec deux doigts pour zoomer.', cinematicCamera: 'Caméra cinématographique',
     noRecording: 'Ce navigateur ne permet pas l’enregistrement vidéo.', videoReady: 'La vidéo est prête.', download: 'Télécharger', recording: 'Enregistrement lancé. La vidéo sera préparée à la fin de l’animation.', source: 'Source :',
     rakat: 'Cette animation montre l’ordre des mouvements sur une seule unité de prière (rakʿa). Les prières comprennent au moins deux unités ; accomplissez aussi la deuxième de la même façon avant l’assise finale.',
     intention: 'J’ai l’intention de prier pour Allah…',
@@ -139,7 +139,7 @@ const LESSON_LANGUAGES = {
     title: 'Learning to Pray', subtitle: '3D animation · Hanafi school', preparation: 'Preparation',
     labels: ['Timeline','Previous step','Play / pause','Next step','Restart','Information','Camera mode','Speed','Quality','Record video'],
     quality: ['Fast','Balanced','Cinema'], loading: 'Preparing the studio…', webgl: 'This device does not support WebGL2.',
-    engine: 'Could not start the rendering engine:', freeCamera: 'Free camera: drag to rotate, pinch with two fingers to zoom.', cinematicCamera: 'Cinematic camera',
+    engine: 'Could not start the rendering engine:', lost: 'Rendering stopped. Close this screen and open it again.', freeCamera: 'Free camera: drag to rotate, pinch with two fingers to zoom.', cinematicCamera: 'Cinematic camera',
     noRecording: 'This browser does not support video recording.', videoReady: 'Your video is ready.', download: 'Download', recording: 'Recording started. The video will be prepared when the animation ends.', source: 'Source:',
     rakat: 'This animation shows the order of movements using one prayer unit (rakʿah). Prayers have at least two units; perform the second unit in the same way before the final sitting.',
     intention: 'I intend to pray for Allah’s sake…',
@@ -161,7 +161,7 @@ const LESSON_LANGUAGES = {
     title: 'Beten lernen', subtitle: '3D-Animation · Hanafitische Rechtsschule', preparation: 'Vorbereitung',
     labels: ['Zeitleiste','Vorheriger Schritt','Abspielen / pausieren','Nächster Schritt','Neu starten','Informationen','Kameramodus','Geschwindigkeit','Qualität','Video aufnehmen'],
     quality: ['Schnell','Ausgewogen','Kino'], loading: 'Studio wird vorbereitet…', webgl: 'Dieses Gerät unterstützt WebGL2 nicht.',
-    engine: 'Die Grafik konnte nicht gestartet werden:', freeCamera: 'Freie Kamera: zum Drehen ziehen, mit zwei Fingern zoomen.', cinematicCamera: 'Filmische Kamera',
+    engine: 'Die Grafik konnte nicht gestartet werden:', lost: 'Die Darstellung wurde angehalten. Schließe diesen Bildschirm und öffne ihn erneut.', freeCamera: 'Freie Kamera: zum Drehen ziehen, mit zwei Fingern zoomen.', cinematicCamera: 'Filmische Kamera',
     noRecording: 'Dieser Browser unterstützt keine Videoaufnahme.', videoReady: 'Das Video ist fertig.', download: 'Herunterladen', recording: 'Aufnahme gestartet. Nach der Animation wird das Video vorbereitet.', source: 'Quelle:',
     rakat: 'Diese Animation zeigt die Reihenfolge der Bewegungen anhand einer Gebetseinheit (Rakʿa). Gebete haben mindestens zwei Einheiten; verrichte auch die zweite auf dieselbe Weise vor dem letzten Sitzen.',
     intention: 'Ich beabsichtige, für Allah zu beten…',
@@ -1414,6 +1414,14 @@ const gl=cv.getContext('webgl2',{antialias:false,alpha:false,preserveDrawingBuff
 const toastEl=document.getElementById('toast');
 function toast(html,ms){toastEl.innerHTML=html;toastEl.classList.add('on');if(ms)setTimeout(()=>toastEl.classList.remove('on'),ms);}
 if(!gl){document.getElementById('load').innerHTML='<div style="padding:24px;text-align:center">'+LESSON.webgl+'</div>';throw new Error('webgl2');}
+// Çizim bağlamı kaybolabilir (bellek azaldı, uygulama uzun süre arkada kaldı); sahne siyah kalırdı.
+// Sayfa bir kez kendiliğinden yeniden yüklenir (adresteki r=1 bunu işaretler); yine olursa yazı gösterilir.
+let LOST=false;
+cv.addEventListener('webglcontextlost',e=>{e.preventDefault();LOST=true;
+  const q=new URLSearchParams(location.search);
+  if(!q.has('r')){q.set('r','1');location.search='?'+q.toString();return;}
+  const l=document.getElementById('load');l.classList.remove('hide');
+  l.innerHTML='<div style="padding:24px;text-align:center">'+LESSON.lost+'</div>';});
 const floatOK=!!gl.getExtension('EXT_color_buffer_float');
 gl.getExtension('EXT_color_buffer_half_float');
 
@@ -1534,6 +1542,7 @@ let last=performance.now(),fpsAcc=0,fpsN=0,fpsShow=0,frameMs=16;
 function camBasis(p,t){const w=norm(sub(t,p));const u=norm(cross(w,[0,1,0]));const v=cross(u,w);return [u,v,w];}
 
 function render(now){
+  if(LOST) return; // çizim bağlamı kayboldu: döngü durur
   const dt=Math.min(0.1,(now-last)/1000);last=now;
   if(S.playing){S.t+=dt*S.speed;if(S.t>=DURATION){S.t=DURATION;setPlaying(false);if(S.recording)setTimeout(()=>rec&&rec.stop(),400);}}
   resize();

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -14,6 +15,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.PowerManager
 
 /**
  * Kullanıcının seçtiği ezan ses dosyasını çalar. Android, uzun süren ses çalmayı yalnızca
@@ -27,6 +29,39 @@ class AdhanService : Service() {
         private const val EXTRA_INDEX = "index" // hangi vakit (deneme çalışında yok)
         private const val EXTRA_AT = "at"       // vaktin zamanı (ms)
         private const val MAX_MS = 6 * 60_000L // güvenlik: en çok 6 dk
+
+        /**
+         * Uyanık tutma kilidi (işlemciyi uyutmaz; ekranı açmaz).
+         *
+         * Vakit alarmı telefonu yalnızca alarm alıcısı çalıştığı sürece uyanık tutar. Alıcı bitince,
+         * bu servis açılıp ses dosyası hazırlanana kadar telefon yeniden uyuyabilir; o zaman ezan
+         * ekran kapalıyken hiç başlamaz ya da gecikir. Kilit, ezan BAŞLATILIRKEN (alıcının içinde)
+         * alınır ve ezan bitince bırakılır. Süresi sınırlıdır: bir hata olsa da kendiliğinden düşer.
+         */
+        private var wakeLock: PowerManager.WakeLock? = null
+
+        @Synchronized
+        private fun acquireWakeLock(ctx: Context) {
+            if (wakeLock?.isHeld == true) return
+            try {
+                val pm = ctx.applicationContext.getSystemService(PowerManager::class.java) ?: return
+                wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Kiblenuma:ezan").apply {
+                    setReferenceCounted(false)
+                    acquire(MAX_MS + 30_000L)
+                }
+            } catch (e: Exception) {
+                // Kilit alınamazsa ezan yine denenir (ekran açıkken zaten sorun olmaz).
+            }
+        }
+
+        @Synchronized
+        private fun releaseWakeLock() {
+            try {
+                wakeLock?.let { if (it.isHeld) it.release() }
+            } catch (e: Exception) {
+            }
+            wakeLock = null
+        }
 
         /** Telefon sessiz/titreşimdeyse ve kullanıcı öyle istediyse çalma. */
         fun allowedNow(ctx: Context): Boolean {
@@ -56,13 +91,17 @@ class AdhanService : Service() {
         fun startTest(ctx: Context): Boolean =
             startIntent(ctx, Intent(ctx, AdhanService::class.java).putExtra(EXTRA_TITLE, Lang.str(ctx, R.string.adhan_test)))
 
-        private fun startIntent(ctx: Context, i: Intent): Boolean = try {
-            ctx.startForegroundService(i)
-            true
-        } catch (e: Exception) {
-            // Android 12+ arka plandan ön plan servisi başlatmayı bazı durumlarda reddeder
-            // (ForegroundServiceStartNotAllowedException). Çağıran taraf sesli bildirim gösterir.
-            false
+        private fun startIntent(ctx: Context, i: Intent): Boolean {
+            acquireWakeLock(ctx)
+            return try {
+                ctx.startForegroundService(i)
+                true
+            } catch (e: Exception) {
+                // Android 12+ arka plandan ön plan servisi başlatmayı bazı durumlarda reddeder
+                // (ForegroundServiceStartNotAllowedException). Çağıran taraf sesli bildirim gösterir.
+                releaseWakeLock()
+                false
+            }
         }
 
         fun stop(ctx: Context) {
@@ -75,6 +114,34 @@ class AdhanService : Service() {
 
     /** Çalınan vakit; ezan çalamazsa bu vakit için sesli bildirim gösterilir. Denemede null. */
     private var moment: Moment? = null
+
+    // ---- Ses odağı ----
+    // Ezan çalarken öteki uygulamaların sesi (müzik, video) durur. Ezan sürerken telefon çalarsa
+    // ya da başka bir uygulama sesi alırsa ezan kesilir; arama bitince kaldığı yerden sürdürülmez.
+    private var focusRequest: AudioFocusRequest? = null
+    private val focusListener = AudioManager.OnAudioFocusChangeListener { change ->
+        if (change == AudioManager.AUDIOFOCUS_LOSS || change == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) stopEverything()
+    }
+
+    /** Ses odağını ister. Verilmezse (ör. telefon görüşmesi sürüyor) false: ezan çalınmaz. */
+    private fun requestFocus(attrs: AudioAttributes): Boolean {
+        val am = getSystemService(AudioManager::class.java) ?: return true
+        val request = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+            .setAudioAttributes(attrs)
+            .setOnAudioFocusChangeListener(focusListener, handler)
+            .build()
+        focusRequest = request
+        return am.requestAudioFocus(request) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+    }
+
+    private fun abandonFocus() {
+        val request = focusRequest ?: return
+        focusRequest = null
+        try {
+            getSystemService(AudioManager::class.java)?.abandonAudioFocusRequest(request)
+        } catch (e: Exception) {
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -116,6 +183,7 @@ class AdhanService : Service() {
             }
         } catch (e: Exception) {
             soundFallback()
+            releaseWakeLock()
             stopSelf()
             return START_NOT_STICKY
         }
@@ -133,14 +201,19 @@ class AdhanService : Service() {
             return
         }
         player?.release()
+        val attrs = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build()
+        if (!requestFocus(attrs)) {
+            // Ses odağı verilmedi (ör. telefon görüşmesi sürüyor): ezan yerine vakit bildirimi.
+            soundFallback()
+            stopEverything()
+            return
+        }
         try {
             val p = MediaPlayer()
-            p.setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build(),
-            )
+            p.setAudioAttributes(attrs)
             p.setDataSource(this, uri)
             p.setOnPreparedListener { it.start() }
             p.setOnCompletionListener { stopEverything() }
@@ -172,6 +245,8 @@ class AdhanService : Service() {
         }
         player?.release()
         player = null
+        abandonFocus()
+        releaseWakeLock()
         if (Build.VERSION.SDK_INT >= 24) stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -180,6 +255,8 @@ class AdhanService : Service() {
         handler.removeCallbacksAndMessages(null)
         player?.release()
         player = null
+        abandonFocus()
+        releaseWakeLock()
         super.onDestroy()
     }
 }

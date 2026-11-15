@@ -26,6 +26,7 @@ const val MAGHRIB = 4
  * [instants] varsa alarm ve geri sayım her vaktin kendi gerçek anını kullanır.
  * [shiftMinutes] yalnızca kaynak açıklaması ve eski, saat dilimsiz kayıtlar içindir.
  * [phoneZone], [instants] değerlerinin [Moment.at] olarak gösterileceği saat dilimidir.
+ * [computed]: bu gün Diyanet listesinde YOK; liste bittiği için konumdan hesaplandı (bkz. PrayerTimeReader).
  */
 data class PrayerDay(
     val date: LocalDate,
@@ -35,6 +36,7 @@ data class PrayerDay(
     val shiftMinutes: Int = 0,
     val instants: List<Instant>? = null,
     val phoneZone: ZoneId? = null,
+    val computed: Boolean = false,
 )
 
 /**

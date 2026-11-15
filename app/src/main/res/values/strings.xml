@@ -88,6 +88,7 @@
     <string name="src_asr_hanafi"> · İkindi: Hanefi</string>
     <string name="src_fallback">\n⚠ Seçilen yöntem için yerin koordinatı bulunamadı; Diyanet gösteriliyor.</string>
     <string name="src_zone_note">\nSaatler seçilen yerin saatiyle. Alarm ve geri sayım telefonun saatine göre.</string>
+    <string name="src_list_ended">\n⚠ Diyanet listesi bitti ve yenilenemedi. Vakitler konumundan Diyanet ölçüleriyle hesaplanıyor; resmi listeden birkaç dakika farklı olabilir. İnternet gelince liste kendiliğinden yenilenir.</string>
 
     <!-- Otomatik konum adımları (AutoLocation) -->
     <string name="progress_city_name">Şehir adı bulunuyor…</string>
@@ -279,6 +280,7 @@
     <string name="holy_raghaib">Regaib Kandili</string>
     <string name="holy_fitr_day">Ramazan Bayramı %1$d. Gün</string>
     <string name="holy_adha_day">Kurban Bayramı %1$d. Gün</string>
+    <string name="ims_computed_note">≈ işaretli günler Diyanet listesinde yok: liste bittiği için konumdan hesaplandı.</string>
 
     <!-- Kıble -->
     <string name="qb_title">Kıble Pusulası</string>
@@ -364,6 +366,10 @@
     <string name="zk_target">Hedef</string>
     <string name="zk_target_row">Hedef: %1$s  ›</string>
     <string name="zk_rounds">Tamamlanan tur: %1$d  (toplam %2$d)</string>
+
+    <!-- 3B izleme (Namaz3dActivity) -->
+    <string name="n3d_unavailable">3B görünüm bu telefonda açılamadı.</string>
+    <string name="n3d_stopped">3B görünüm durdu. Yeniden açmak için dokun.</string>
 
     <!-- Learning labels -->
     <string name="learn_static_00">Geri</string>

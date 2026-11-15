@@ -243,7 +243,15 @@ class MainActivity : LangActivity() {
         checkingLocation = false
         if (isFinishing || isDestroyed) return
         when (r) {
-            is AutoLocation.Result.Discarded -> {}
+            is AutoLocation.Result.Discarded -> {
+                // Bu iş sürerken yer başka bir yoldan değişti (elle seçim ya da başka bir konum işi).
+                // Kayıtlı olan en yeni yerdir; hata değildir. Ekranı ona göre tazele.
+                if (Store.districtId(this) != null) {
+                    shownNext = null
+                    showTimes()
+                    updateStatus()
+                }
+            }
             is AutoLocation.Result.Changed -> {
                 locationNote = null
                 AutoLocation.lastFailAt = 0L

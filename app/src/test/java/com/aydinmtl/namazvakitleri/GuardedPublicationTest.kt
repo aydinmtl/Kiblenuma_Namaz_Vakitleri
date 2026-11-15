@@ -34,7 +34,7 @@ class GuardedPublicationTest {
         val old = Thread {
             try {
                 accepted.set(publisher.run(
-                    capture = { guard.capture { city to event } },
+                    capture = { guard.captureData { city to event } },
                     compute = { state ->
                         computed.countDown()
                         check(resume.await(5, TimeUnit.SECONDS))
@@ -47,10 +47,10 @@ class GuardedPublicationTest {
         old.start()
         try {
             assertTrue(computed.await(5, TimeUnit.SECONDS))
-            if (changeCity) guard.change { city = "B"; event = "new event" }
+            if (changeCity) guard.changePlace { city = "B"; event = "new event" }
             else assertTrue(guard.apply(guard.capture { city }.first) { event = "new event" })
             assertTrue(publisher.run(
-                capture = { guard.capture { city to event } },
+                capture = { guard.captureData { city to event } },
                 compute = { it.second },
                 publish = { installed = it },
             ))
@@ -71,10 +71,10 @@ class GuardedPublicationTest {
         val publisher = GuardedPublication(guard)
         var installed = "initial"
         val accepted = publisher.run(
-            capture = { guard.capture { "same data" } },
+            capture = { guard.captureData { "same data" } },
             compute = {
                 assertTrue(publisher.run(
-                    capture = { guard.capture { "same data" } },
+                    capture = { guard.captureData { "same data" } },
                     compute = { "later event" },
                     publish = { installed = it },
                 ))
@@ -84,5 +84,48 @@ class GuardedPublicationTest {
         )
         assertFalse(accepted)
         assertEquals("later event", installed)
+    }
+
+    @Test
+    fun rejectedPublicationIsRetriedWithFreshData() {
+        val guard = SelectionGuard()
+        val publisher = GuardedPublication(guard)
+        var value = "old"
+        var installed = "initial"
+        var computations = 0
+        val accepted = publisher.runUntilAccepted(
+            3,
+            capture = { guard.captureData { value } },
+            compute = { state ->
+                // İlk hesap sürerken veri değişir: o hesap reddedilir, yeniden deneme yeni veriyi görür.
+                if (computations++ == 0) guard.change { value = "new" }
+                "event for $state"
+            },
+            publish = { installed = it },
+        )
+        assertTrue(accepted)
+        assertEquals(2, computations)
+        assertEquals("event for new", installed)
+    }
+
+    @Test
+    fun retryStopsAtLimitAndLeavesInstalledAlarmUntouched() {
+        val guard = SelectionGuard()
+        val publisher = GuardedPublication(guard)
+        var installed = "initial"
+        var computations = 0
+        val accepted = publisher.runUntilAccepted(
+            3,
+            capture = { guard.captureData { "data" } },
+            compute = {
+                computations++
+                guard.change { } // veri her hesapta yeniden değişiyor
+                "stale event"
+            },
+            publish = { installed = it },
+        )
+        assertFalse(accepted)
+        assertEquals(3, computations)
+        assertEquals("initial", installed)
     }
 }

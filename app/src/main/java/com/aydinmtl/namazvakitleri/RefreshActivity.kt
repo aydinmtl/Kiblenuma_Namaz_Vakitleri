@@ -99,6 +99,7 @@ class RefreshActivity : LangActivity() {
         Thread {
             var note = initialNote
             var newPlace: String? = null
+            var samePlace = false
 
             if (loc != null && request != null) {
                 val r = try {
@@ -108,12 +109,11 @@ class RefreshActivity : LangActivity() {
                     else AutoLocation.Result.Discarded
                 }
                 when (r) {
-                    is AutoLocation.Result.Discarded -> {
-                        runOnUiThread { done(getString(R.string.loc_selection_cancelled), ok = false) }
-                        return@Thread
-                    }
+                    // Bu iş sürerken yer başka bir yoldan değişti (ör. ana ekranın konum işi bitti).
+                    // Hata değildir: aşağıda kayıtlı yerin vakitleri yenilenir.
+                    is AutoLocation.Result.Discarded -> {}
                     is AutoLocation.Result.Changed -> newPlace = r.label
-                    is AutoLocation.Result.Same -> {}
+                    is AutoLocation.Result.Same -> samePlace = true
                     is AutoLocation.Result.Failed -> note = getString(R.string.refresh_failed_last, r.reason)
                 }
             }
@@ -132,7 +132,7 @@ class RefreshActivity : LangActivity() {
                 append("\n📍 ").append(Store.placeName(app))
                 if (newPlace != null) {
                     append(getString(R.string.refresh_new_place))
-                } else if (loc != null && note == null) {
+                } else if (samePlace && note == null) {
                     append(getString(R.string.refresh_same_place))
                 }
                 if (note != null) append("\n").append(note)

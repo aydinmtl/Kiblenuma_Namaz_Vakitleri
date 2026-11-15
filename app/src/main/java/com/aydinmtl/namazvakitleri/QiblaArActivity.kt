@@ -41,6 +41,11 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
     private val remapped = FloatArray(9)
     private val ori = FloatArray(3)
 
+    /** Pusula ayarsız mı (sensör doğruluğu düşük)? Uyarı, doğruluk düzelene kadar ekranda kalır. */
+    private var lowAccuracy = false
+    private var directionHint: String? = null
+    private var showingWarning = false
+
     private val askCamera = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) startCamera() else tvInfo.text = getString(R.string.ar_cam_denied)
     }
@@ -162,16 +167,24 @@ class QiblaArActivity : ComponentActivity(), SensorEventListener {
         val off = ((q - azimuth + 540f) % 360f) - 180f
         overlay.offset = off
         overlay.invalidate()
-        tvInfo.text = when {
+        directionHint = when {
             abs(off) < 3f -> getString(R.string.ar_aligned)
             off > 0 -> getString(R.string.ar_right, off)
             else -> getString(R.string.ar_left, -off)
         }
+        showHint()
     }
 
     override fun onAccuracyChanged(s: Sensor?, accuracy: Int) {
-        if (accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
-            tvInfo.text = getString(R.string.qb_calibrate)
-        }
+        lowAccuracy = accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW
+        showHint()
+    }
+
+    /** Yön yazısı; pusula ayarsızsa üstünde kalibrasyon uyarısı kalır (bkz. QiblaActivity.showHint). */
+    private fun showHint() {
+        val text = Ui.compassHint(this, lowAccuracy, directionHint)
+            ?: if (showingWarning) "" else return
+        showingWarning = lowAccuracy
+        if (text.toString() != tvInfo.text.toString()) tvInfo.text = text
     }
 }

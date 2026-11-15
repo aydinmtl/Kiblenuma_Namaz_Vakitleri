@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Ezan çalarken telefonun işlemcisini uyanık tutmak için (ekranı açmaz); bkz. AdhanService -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
@@ -33,7 +35,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LocationActivity" android:exported="false" />
+        <!-- Ekran döndürülünce ülke/şehir/ilçe adımı ve süren kayıt kaybolmasın -->
+        <activity
+            android:name=".LocationActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+            android:exported="false" />
         <activity android:name=".ImsakiyeActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" />
         <activity android:name=".HolyDaysActivity" android:exported="false" />
@@ -44,7 +50,11 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="false" />
         <activity android:name=".ZikirActivity" android:exported="false" />
-        <activity android:name=".PrayerGameActivity" android:exported="false" />
+        <!-- Ekran döndürülünce oyun başlangıç ekranına dönmesin, 3B sahne baştan yüklenmesin -->
+        <activity
+            android:name=".PrayerGameActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+            android:exported="false" />
         <!-- 3B namaz canlandırması: döndürünce sahne baştan yüklenmesin -->
         <activity
             android:name=".Namaz3dActivity"
@@ -57,6 +67,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".RefreshActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:excludeFromRecents="true"
             android:exported="false"
             android:noHistory="true"

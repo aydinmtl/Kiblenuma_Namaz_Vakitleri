@@ -428,6 +428,12 @@
         "\nHeures dans le fuseau du lieu choisi. Alarmes et compte à rebours selon l'heure du téléphone.",
         "\nTimes are in the chosen place's time zone. Alarms and countdown follow the phone's clock.",
         "\nZeiten in der Zeitzone des gewählten Ortes. Alarme und Countdown nach der Uhr des Telefons."
+      ],
+      "src_list_ended": [
+        "\n⚠ Diyanet listesi bitti ve yenilenemedi. Vakitler konumundan Diyanet ölçüleriyle hesaplanıyor; resmi listeden birkaç dakika farklı olabilir. İnternet gelince liste kendiliğinden yenilenir.",
+        "\n⚠ La liste de la Diyanet est épuisée et n'a pas pu être mise à jour. Les horaires sont calculés à partir du lieu avec les paramètres de la Diyanet ; ils peuvent différer de quelques minutes de la liste officielle. La liste se mettra à jour dès que la connexion Internet reviendra.",
+        "\n⚠ The Diyanet list has run out and could not be updated. Times are calculated from the place with Diyanet parameters; they may differ from the official list by a few minutes. The list updates by itself once the internet is back.",
+        "\n⚠ Die Diyanet-Liste ist abgelaufen und konnte nicht aktualisiert werden. Die Zeiten werden aus dem Ort mit Diyanet-Parametern berechnet; sie können um einige Minuten von der offiziellen Liste abweichen. Die Liste aktualisiert sich von selbst, sobald wieder Internet da ist."
       ]
     }
   },
@@ -1459,6 +1465,12 @@
         "Aïd al-Adha, jour %1$d",
         "Eid al-Adha, day %1$d",
         "Opferfest (Eid al-Adha), Tag %1$d"
+      ],
+      "ims_computed_note": [
+        "≈ işaretli günler Diyanet listesinde yok: liste bittiği için konumdan hesaplandı.",
+        "Les jours marqués ≈ ne figurent pas dans la liste de la Diyanet : ils sont calculés à partir du lieu, la liste étant épuisée.",
+        "Days marked ≈ are not in the Diyanet list: they are calculated from the place because the list has run out.",
+        "Mit ≈ markierte Tage stehen nicht in der Diyanet-Liste: Sie sind aus dem Ort berechnet, weil die Liste abgelaufen ist."
       ]
     }
   },
@@ -1908,6 +1920,23 @@
         "Tours terminés : %1$d  (total %2$d)",
         "Rounds completed: %1$d  (total %2$d)",
         "Abgeschlossene Runden: %1$d  (gesamt %2$d)"
+      ]
+    }
+  },
+  {
+    "section": "3B izleme (Namaz3dActivity)",
+    "strings": {
+      "n3d_unavailable": [
+        "3B görünüm bu telefonda açılamadı.",
+        "La vue 3D n'a pas pu s'ouvrir sur ce téléphone.",
+        "The 3D view could not be opened on this phone.",
+        "Die 3D-Ansicht konnte auf diesem Telefon nicht geöffnet werden."
+      ],
+      "n3d_stopped": [
+        "3B görünüm durdu. Yeniden açmak için dokun.",
+        "La vue 3D s'est arrêtée. Touchez pour la rouvrir.",
+        "The 3D view stopped. Tap to open it again.",
+        "Die 3D-Ansicht wurde beendet. Tippe, um sie erneut zu öffnen."
       ]
     }
   },

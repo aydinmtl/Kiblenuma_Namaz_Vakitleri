@@ -84,6 +84,7 @@
     <string name="src_asr_hanafi"> · Asr: Hanafi</string>
     <string name="src_fallback">\n⚠ No coordinates for this place with the chosen method; showing Diyanet times.</string>
     <string name="src_zone_note">\nTimes are in the chosen place\'s time zone. Alarms and countdown follow the phone\'s clock.</string>
+    <string name="src_list_ended">\n⚠ The Diyanet list has run out and could not be updated. Times are calculated from the place with Diyanet parameters; they may differ from the official list by a few minutes. The list updates by itself once the internet is back.</string>
 
     <!-- Otomatik konum adımları (AutoLocation) -->
     <string name="progress_city_name">Finding the city name…</string>
@@ -275,6 +276,7 @@
     <string name="holy_raghaib">Night of Raghaib</string>
     <string name="holy_fitr_day">Eid al-Fitr, day %1$d</string>
     <string name="holy_adha_day">Eid al-Adha, day %1$d</string>
+    <string name="ims_computed_note">Days marked ≈ are not in the Diyanet list: they are calculated from the place because the list has run out.</string>
 
     <!-- Kıble -->
     <string name="qb_title">Qibla compass</string>
@@ -360,6 +362,10 @@
     <string name="zk_target">Target</string>
     <string name="zk_target_row">Target: %1$s  ›</string>
     <string name="zk_rounds">Rounds completed: %1$d  (total %2$d)</string>
+
+    <!-- 3B izleme (Namaz3dActivity) -->
+    <string name="n3d_unavailable">The 3D view could not be opened on this phone.</string>
+    <string name="n3d_stopped">The 3D view stopped. Tap to open it again.</string>
 
     <!-- Learning labels -->
     <string name="learn_static_00">Back</string>

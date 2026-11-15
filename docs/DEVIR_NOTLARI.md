@@ -47,7 +47,10 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `LocationHelper.kt` | Tek seferlik konum (fused/network/gps), zaman aşımlı |
 | `LocationConsent.kt` | Konum izni öncesi gerekçe penceresi |
 | `AlarmScheduler.kt` | Yalnızca SIRADAKİ olay için alarm (vakit girişi veya X dk önce hatırlatma) |
-| `Receivers.kt` | `PrayerAlarmReceiver` (bildirim, ezan, widget, sonraki alarm), `BootReceiver` |
+| `Receivers.kt` | `PrayerAlarmReceiver` (önce sonraki alarm, sonra bildirim, ezan, günün sorusu, widget; adımlar birbirinden bağımsız), `BootReceiver` |
+| `SelectionGuard.kt` | Yer seçimi ile arka plan işlerini sıralayan kilit: YER sayacı (yalnızca seçili yer değişince) ve VERİ sayacı (alarmı etkileyen her değişiklikte). `GuardedPublication`: alarm kurmayı korur ve reddedilen çağrıyı yeniden dener |
+| `DataRefresh.kt` | WorkManager işleri: vakit verisi yenileme (internet varken) ve saatlik alarm bekçisi (kopan alarm zincirini onarır) |
+| `NotificationIds.kt` | Bütün bildirim numaraları tek yerde |
 | `Notifications.kt` | 4 kanal: vakit, vakit (sessiz), hatırlatma, ezan |
 | `AdhanService.kt` | Kullanıcının seçtiği ses dosyasını ön plan servisiyle çalar |
 | `PrayerWidget.kt` | 4x2 ve 4x1 widget'lar (`PrayerWidgetSmall`), ↻ yenile düğmesi |
@@ -184,3 +187,29 @@ birleştirilmeden önce ikisinin de yeşil olması beklenir. Sürümler dosyanı
   soru farklı bildirim kimlikleri kullanır.
 - Android birim testleri ve imzalı APK GitHub Actions üzerinde çalışır. Bu düzeltmeler birim
   testleriyle sınandı; telefonda (konum, bildirim, ezan, widget) ayrıca denenmelidir.
+
+## Faz 2 düzeltmeleri (Kasım 2026): kararlılık
+
+Denetim raporundaki O1, O2, O3, O4, O5, O9 ve O13 maddeleri. Birim testleriyle sınandı;
+**telefonda denenmesi gerekenler** her maddede yazılıdır.
+
+- **O1 — Ayar değişikliği süren işi çöpe atmaz.** `SelectionGuard` iki sayaç tutar. Bildirim ayarı ya da
+  hesap yöntemi gibi bir değişiklik artık süren indirme/konum işini geçersiz kılmaz. `Store.refresh`,
+  seçili ilçe hâlâ indirilen ilçeyse listeyi yazar; `false` yalnızca gerçek başarısızlıktır. Yeni bir
+  `Store` ayarı eklerken: yeri değiştiriyorsa `selection.changePlace`, değiştirmiyorsa `selection.change`.
+- **O2 — Alarm zinciri.** Her seferinde tek alarm kurulduğu için zincirin kopmaması gerekir: alıcı önce
+  sıradaki alarmı kurar; reddedilen kurma çağrısı yeniden denenir; saatlik bekçi (`AlarmWatchdogWorker`)
+  kopan zinciri onarır. Alıcıya yeni bir iş eklerken `attempt { }` içine koy.
+- **O3 — Kıble kalibrasyon uyarısı** yön yazısının üstünde kalıcıdır (`Ui.compassHint`).
+  Telefonda: pusulayı bir mıknatısa yaklaştırıp uyarının çıktığını ve 8 çizince kalktığını gör.
+- **O4 — 3B sahneler.** Çizim süreci çökerse uygulama kapanmaz (`onRenderProcessGone`); oyun 2B çizime
+  geçer, 3B izleme "yeniden aç" yazısı gösterir. WebGL bağlamı kaybolursa ya da sahne takılırsa
+  (`PrayerStageView` bekçisi) yine 2B çizime geçilir. Bekçi süreleri `PrayerStageView` içindeki
+  sabitlerdedir; uzun bir canlandırma eklenirse gözden geçir.
+- **O5 — Ekran döndürme.** `LocationActivity`, `PrayerGameActivity` ve `RefreshActivity` döndürmede
+  yeniden kurulmaz (manifestte `configChanges`).
+- **O9 — Ezan.** Uyanık tutma kilidi (`WAKE_LOCK`) ve ses odağı. Telefonda: ekran kapalıyken vakit
+  girişi, ezan sırasında gelen arama, müzik çalarken ezan.
+- **O13 — Liste bitince hesapla devam.** `PrayerTimeReader.listContinuation`: Diyanet listesi yarını
+  kapsamıyorsa ve koordinat biliniyorsa devamı Diyanet ölçüleriyle hesaplanır (`PrayerDay.computed`);
+  kaynak satırı ve imsakiye bunu belirtir. Telefonda: uçak modunda tarihi bir ay ileri alıp bak.

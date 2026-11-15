@@ -84,6 +84,7 @@
     <string name="src_asr_hanafi"> · Asr : hanafite</string>
     <string name="src_fallback">\n⚠ Coordonnées du lieu introuvables pour la méthode choisie ; horaires de la Diyanet affichés.</string>
     <string name="src_zone_note">\nHeures dans le fuseau du lieu choisi. Alarmes et compte à rebours selon l\'heure du téléphone.</string>
+    <string name="src_list_ended">\n⚠ La liste de la Diyanet est épuisée et n\'a pas pu être mise à jour. Les horaires sont calculés à partir du lieu avec les paramètres de la Diyanet ; ils peuvent différer de quelques minutes de la liste officielle. La liste se mettra à jour dès que la connexion Internet reviendra.</string>
 
     <!-- Otomatik konum adımları (AutoLocation) -->
     <string name="progress_city_name">Recherche du nom de la ville…</string>
@@ -275,6 +276,7 @@
     <string name="holy_raghaib">Nuit des Raghaïb</string>
     <string name="holy_fitr_day">Aïd al-Fitr, jour %1$d</string>
     <string name="holy_adha_day">Aïd al-Adha, jour %1$d</string>
+    <string name="ims_computed_note">Les jours marqués ≈ ne figurent pas dans la liste de la Diyanet : ils sont calculés à partir du lieu, la liste étant épuisée.</string>
 
     <!-- Kıble -->
     <string name="qb_title">Boussole de la Qibla</string>
@@ -360,6 +362,10 @@
     <string name="zk_target">Objectif</string>
     <string name="zk_target_row">Objectif : %1$s  ›</string>
     <string name="zk_rounds">Tours terminés : %1$d  (total %2$d)</string>
+
+    <!-- 3B izleme (Namaz3dActivity) -->
+    <string name="n3d_unavailable">La vue 3D n\'a pas pu s\'ouvrir sur ce téléphone.</string>
+    <string name="n3d_stopped">La vue 3D s\'est arrêtée. Touchez pour la rouvrir.</string>
 
     <!-- Learning labels -->
     <string name="learn_static_00">Retour</string>
