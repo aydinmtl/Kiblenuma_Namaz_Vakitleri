@@ -29,6 +29,9 @@ object Diyanet {
     /** [nameEn]: servisin verdiği İngilizce ad (yoksa boş). Otomatik konum eşleştirmesinde kullanılır. */
     data class Place(val id: String, val name: String, val nameEn: String = "")
 
+    /** Sunucu 200 dışında bir cevap verdi. İleti ekrana basılmaz; bkz. Ui.errorText. */
+    class HttpError(val code: Int) : IOException("HTTP $code")
+
     @Volatile
     private var countriesCache: List<Place>? = null
 
@@ -113,7 +116,7 @@ object Diyanet {
         c.setRequestProperty("User-Agent", "Kiblenuma-Android/1.0")
         try {
             val code = c.responseCode
-            if (code != 200) throw IOException("Sunucu yanıtı: HTTP $code")
+            if (code != 200) throw HttpError(code)
             return c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
         } finally {
             c.disconnect()

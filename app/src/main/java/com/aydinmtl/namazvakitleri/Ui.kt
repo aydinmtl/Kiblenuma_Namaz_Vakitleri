@@ -8,6 +8,11 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.WindowInsets
+import java.io.IOException
+import org.json.JSONException
+
+/** Kullanıcıya olduğu gibi gösterilebilecek, seçili dilde yazılmış bir hata iletisi taşır. */
+class UserMessage(message: String) : Exception(message)
 
 object Ui {
     /**
@@ -27,6 +32,19 @@ object Ui {
             insets
         }
         root.requestApplyInsets()
+    }
+
+    /**
+     * Bir hatayı kullanıcıya gösterilecek kısa, seçili dildeki bir ifadeye çevirir.
+     * Java'nın teknik İngilizce iletileri ("Unable to resolve host…") ekrana basılmaz.
+     * İfade cümle içinde parantezle kullanılır: "Bağlantı hatası (internet bağlantısı yok)."
+     */
+    fun errorText(ctx: Context, e: Throwable): String = when (e) {
+        is UserMessage -> e.message ?: ctx.getString(R.string.err_unexpected)
+        is Diyanet.HttpError -> ctx.getString(R.string.err_server, e.code)
+        is JSONException -> ctx.getString(R.string.err_bad_response)
+        is IOException -> ctx.getString(R.string.err_offline) // adres çözülemedi, bağlantı kurulamadı, zaman aşımı
+        else -> ctx.getString(R.string.err_unexpected)
     }
 
     /**

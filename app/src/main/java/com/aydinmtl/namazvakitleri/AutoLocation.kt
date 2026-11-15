@@ -140,7 +140,7 @@ object AutoLocation {
     fun resolve(ctx: Context, loc: Location, request: Pair<Long, String?>, progress: (String) -> Unit = {}): Result {
         if (!Store.isPlaceRequestCurrent(request)) return Result.Discarded
         progress(Lang.str(ctx, R.string.progress_city_name))
-        val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(loc)
+        val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(ctx, loc)
 
         // ---- 1-3) Diyanet listesinde ara ----
         var found: Found? = null
@@ -325,7 +325,7 @@ object AutoLocation {
     }
 
     /** Telefonun hizmeti çalışmazsa OpenStreetMap (Nominatim) ile yer adı. */
-    private fun namesFromOpenStreetMap(loc: Location): Names? {
+    private fun namesFromOpenStreetMap(ctx: Context, loc: Location): Names? {
         val tr = nominatim(loc, "tr") ?: return null
         Thread.sleep(1100) // OpenStreetMap kuralı: saniyede en çok 1 istek
         val en = nominatim(loc, "en")
@@ -340,7 +340,7 @@ object AutoLocation {
             countries = listOfNotNull(tr.optString("country").ifBlank { null }, en?.optString("country")?.ifBlank { null }) + aliases(code),
             places = places,
             code = code,
-            shown = places.firstOrNull() ?: "Bulunduğun yer",
+            shown = places.firstOrNull() ?: Lang.str(ctx, R.string.here_place),
         )
     }
 

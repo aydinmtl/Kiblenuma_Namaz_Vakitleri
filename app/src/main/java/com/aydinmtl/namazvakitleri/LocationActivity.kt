@@ -114,7 +114,7 @@ class LocationActivity : LangActivity() {
                     filter()
                 }
             } catch (e: Exception) {
-                runOnUiThread { showError(getString(R.string.loc_conn_error, e.message ?: getString(R.string.unknown))) }
+                runOnUiThread { showError(getString(R.string.loc_conn_error, Ui.errorText(this, e))) }
             }
         }.start()
     }
@@ -160,7 +160,7 @@ class LocationActivity : LangActivity() {
         Thread {
             try {
                 val json = Diyanet.fetchTimes(district.id)
-                if (Diyanet.parseDays(json).isEmpty()) throw IllegalStateException(getString(R.string.loc_no_times))
+                if (Diyanet.parseDays(json).isEmpty()) throw UserMessage(getString(R.string.loc_no_times))
                 // Koordinat: hesaplama yöntemleri, kıble ve camiler için.
                 val c = selectedCity
                 val k = selectedCountry
@@ -201,7 +201,7 @@ class LocationActivity : LangActivity() {
                     if (manualRequest != request || isFinishing || isDestroyed) return@runOnUiThread
                     manualRequest = null
                     list.isEnabled = true
-                    showError(getString(R.string.loc_times_failed, e.message ?: getString(R.string.unknown)))
+                    showError(getString(R.string.loc_times_failed, Ui.errorText(this, e)))
                 }
             }
         }.start()
