@@ -29,8 +29,19 @@ object Store {
     private fun prefs(ctx: Context): SharedPreferences =
         ctx.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    /** Uygulamanın dili ("tr", "fr", "en", "de"); hiç seçilmediyse Türkçe. Bkz. Lang. */
-    fun language(ctx: Context): String = prefs(ctx).getString("language", "tr") ?: "tr"
+    /** Uygulamanın dili ("tr", "fr", "en", "de"). Seçilmediyse bkz. Lang.pick. */
+    fun language(ctx: Context): String {
+        prefs(ctx).getString("language", null)?.let { return it }
+        // Telefonun kendi dili (uygulamanın seçili dili değil)
+        val system = android.content.res.Resources.getSystem().configuration.locales[0].language
+        return Lang.pick(system, isExistingInstall(ctx))
+    }
+
+    /** Kullanıcı (ya da ilk açılış) dili kaydetti mi? */
+    fun languageChosen(ctx: Context): Boolean = prefs(ctx).contains("language")
+
+    /** Uygulama daha önce kullanılmış mı (konum açıklaması görülmüş ya da yer seçilmiş)? */
+    fun isExistingInstall(ctx: Context): Boolean = prefs(ctx).contains("locIntro") || prefs(ctx).contains("districtId")
     fun setLanguage(ctx: Context, code: String) {
         prefs(ctx).edit().putString("language", code).apply()
     }

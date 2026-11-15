@@ -1,6 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -140,6 +141,18 @@ class MainActivity : LangActivity() {
     /** Açılışta ne yapılacağına karar verir: izin açıklaması, konum kontrolü, vakitler. */
     private fun resumeFlow() {
         if (dialogOpen) return
+
+        // 0) Yeni kurulumda önce dil sorulur; yoksa sıradaki konum penceresi anlaşılmayan bir dilde
+        //    çıkabilir. Uygulamayı zaten kullananlara sorulmaz: dilleri olduğu gibi (Türkçe) kalır.
+        if (!Store.languageChosen(this)) {
+            if (Store.isExistingInstall(this)) {
+                Lang.set(this, Lang.code(this))
+            } else {
+                dialogOpen = true
+                askLanguage()
+                return
+            }
+        }
 
         // 1) İlk açılışta (ve bu güncellemeyle birlikte bir kez) konum izninin nedenini anlat.
         if (!Store.locationIntroShown(this)) {
@@ -306,6 +319,27 @@ class MainActivity : LangActivity() {
     }
 
     // ---------------- Dil ----------------
+
+    /**
+     * İlk açılışta dil seçimi. Telefonun dili (destekleniyorsa) önceden seçili gelir. Başlık dört
+     * dilde yazılıdır ve her dil kendi adıyla listelenir; böylece hangi dilde açılırsa açılsın anlaşılır.
+     */
+    private fun askLanguage() {
+        val current = Lang.code(this)
+        var chosen = current
+        val names = Lang.CODES.map { Lang.NATIVE_NAMES[it] ?: it }.toTypedArray()
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle(R.string.lang_pick_title)
+            .setSingleChoiceItems(names, Lang.CODES.indexOf(current)) { _, which -> chosen = Lang.CODES[which] }
+            .setCancelable(false)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                Lang.set(this, chosen)
+                dialogOpen = false
+                // Dil değiştiyse ekran yeni dille baştan kurulur; akış oradan sürer.
+                if (chosen != current) recreate() else resumeFlow()
+            }
+            .show()
+    }
 
     /**
      * Dil düğmesine dokununca açılan küçük liste: "TR · Türkçe", "FR · Français" …
