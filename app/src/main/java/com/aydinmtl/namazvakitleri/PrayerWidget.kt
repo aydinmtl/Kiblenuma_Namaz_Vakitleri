@@ -46,7 +46,7 @@ class PrayerWidget : AppWidgetProvider() {
 
             val days = Times.days(ctx)
             val next = Prayers.next(days, Instant.now())
-            v.setTextViewText(R.id.w_place, Store.placeName(ctx))
+            v.setTextViewText(R.id.w_place, Store.placeLabel(ctx))
 
             if (next == null) {
                 v.setTextViewText(R.id.w_next, res.getString(R.string.widget_open_app))

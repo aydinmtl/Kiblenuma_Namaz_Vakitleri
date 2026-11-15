@@ -200,6 +200,12 @@ class MainActivity : LangActivity() {
         AlarmScheduler.schedule(this)
         PrayerWidget.updateAll(this)
         maybeRefresh()
+        // Yer adı seçili dilde henüz bilinmiyorsa arka planda bulunur ("Cenevre" → "Genève").
+        PlaceLabels.ensure(this) {
+            if (isFinishing || isDestroyed) return@ensure
+            tvPlace.text = getString(R.string.place_label, Store.placeLabel(this))
+            PrayerWidget.updateAll(this)
+        }
     }
 
     // ---------------- Otomatik konum ----------------
@@ -268,7 +274,7 @@ class MainActivity : LangActivity() {
             is AutoLocation.Result.Changed -> {
                 locationNote = null
                 AutoLocation.lastFailAt = 0L
-                Toast.makeText(this, getString(R.string.loc_updated, r.label), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.loc_updated, Store.placeLabel(this)), Toast.LENGTH_LONG).show()
                 shownNext = null
                 showTimes()
                 // İlk kurulumda yer ancak şimdi bulundu: bildirim iznini şimdi sor.
@@ -388,7 +394,7 @@ class MainActivity : LangActivity() {
         val day = Prayers.day(days, today)
         shownDate = today
 
-        tvPlace.text = getString(R.string.place_label, Store.placeName(this))
+        tvPlace.text = getString(R.string.place_label, Store.placeLabel(this))
         tvDate.text = today.format(dateFormat)
         tvHijri.text = hijriText(day)
         for (i in 0..5) {

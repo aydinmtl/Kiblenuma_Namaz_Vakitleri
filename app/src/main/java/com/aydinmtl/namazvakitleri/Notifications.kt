@@ -69,7 +69,7 @@ object Notifications {
         if (!canPost(ctx)) return
         createChannel(ctx)
         val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
-        val place = Store.placeName(ctx)
+        val place = Store.placeLabel(ctx)
         val c = Lang.wrap(ctx)
         val name = Lang.prayerName(ctx, m.index)
         val n = Notification.Builder(ctx, if (silent) CHANNEL_SILENT else CHANNEL)

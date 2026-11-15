@@ -49,6 +49,39 @@ object Store {
     fun districtId(ctx: Context): String? = prefs(ctx).getString("districtId", null)
     fun placeName(ctx: Context): String = prefs(ctx).getString("placeName", "") ?: ""
 
+    /**
+     * Ekranda gösterilecek yer adı, seçili dilde. [placeName] Diyanet'in adlarıyla kurulmuş asıl
+     * etikettir ("Cenevre, İsviçre") ve Türkçede aynen gösterilir. Öteki dillerde:
+     *  - telefonun yer adı hizmeti adı bulduysa o gösterilir ("Genève, Suisse"; bkz. PlaceLabels),
+     *  - bulunmadıysa en azından ülke adı seçili dilde yazılır ("Cenevre, Suisse"; internet gerekmez).
+     */
+    fun placeLabel(ctx: Context): String {
+        val base = placeName(ctx)
+        val lang = Lang.code(ctx)
+        if (lang == "tr" || base.isEmpty()) return base
+        val p = prefs(ctx)
+        if (p.getString("placeLabelBase", null) == base) p.getString("placeLabel_$lang", null)?.let { return it }
+        return PlaceNames.withLocalCountry(
+            base, p.getString("placeCountryCode", null), p.getBoolean("placeSecondIsCountry", false), Lang.locale(ctx),
+        )
+    }
+
+    /** Seçili yerin [lang] dilindeki adı daha önce bulunup kaydedildi mi? */
+    fun hasPlaceLabel(ctx: Context, lang: String): Boolean {
+        val p = prefs(ctx)
+        return p.getString("placeLabelBase", null) == placeName(ctx) && p.contains("placeLabel_$lang")
+    }
+
+    /** [base] etiketli yerin [lang] dilindeki adını kaydeder; yer bu arada değiştiyse kaydetmez. */
+    fun setPlaceLabel(ctx: Context, base: String, lang: String, label: String) {
+        if (placeName(ctx) != base) return
+        val p = prefs(ctx)
+        val e = p.edit()
+        // Önceki yerin çevirileri artık geçersiz
+        if (p.getString("placeLabelBase", null) != base) for (l in Lang.CODES) e.remove("placeLabel_$l")
+        e.putString("placeLabelBase", base).putString("placeLabel_$lang", label).apply()
+    }
+
     /** Yalnızca görünen adı düzeltir (yer aynı kalır). Ör. eski sürümün yazdığı "Vernıer" -> "Vernier". */
     fun setPlaceName(ctx: Context, name: String) {
         prefs(ctx).edit().putString("placeName", name).apply()
@@ -309,10 +342,18 @@ object Store {
      * Yeri "konumdan hesaplanan yer" olarak kaydeder (Diyanet listesi yok).
      * Vakitler [point] koordinatından hesaplanır (bkz. Times.days).
      */
-    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) = selection.changePlace {
+    fun saveComputedLocation(
+        ctx: Context,
+        placeName: String,
+        point: Pair<Double, Double>,
+        countryCode: String? = null,
+        secondIsCountry: Boolean = false,
+    ) = selection.changePlace {
         prefs(ctx).edit()
             .putString("districtId", COMPUTED_ID)
             .putString("placeName", placeName)
+            .putString("placeCountryCode", countryCode)
+            .putBoolean("placeSecondIsCountry", secondIsCountry)
             .remove("times")
             .putString("placeLat", point.first.toString()).putString("placeLon", point.second.toString())
             .apply()
@@ -324,10 +365,24 @@ object Store {
         prefs(ctx).edit().putLong("computedRecheckAt", at).apply()
     }
 
-    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String, point: Pair<Double, Double>? = null) = selection.changePlace {
+    /**
+     * [countryCode]: yerin ISO ülke kodu (bilinmiyorsa null). [secondIsCountry]: [placeName] etiketinin
+     * son parçası ülke adı mı. İkisi, yer adını seçili dilde göstermek içindir (bkz. [placeLabel]).
+     */
+    fun saveLocation(
+        ctx: Context,
+        districtId: String,
+        placeName: String,
+        timesJson: String,
+        point: Pair<Double, Double>? = null,
+        countryCode: String? = null,
+        secondIsCountry: Boolean = false,
+    ) = selection.changePlace {
         prefs(ctx).edit()
             .putString("districtId", districtId)
             .putString("placeName", placeName)
+            .putString("placeCountryCode", countryCode)
+            .putBoolean("placeSecondIsCountry", secondIsCountry)
             .putString("times", timesJson)
             .putString("placeLat", point?.first?.toString())
             .putString("placeLon", point?.second?.toString())

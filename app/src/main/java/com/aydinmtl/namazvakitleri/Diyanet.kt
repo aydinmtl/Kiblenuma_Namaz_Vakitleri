@@ -75,6 +75,13 @@ object Diyanet {
         return if (second == null || norm(second) == norm(district.name)) district.name else "${district.name}, $second"
     }
 
+    /**
+     * [label] etiketinin son parçası ülke adı mı? Türkiye'de son parça ildir ("Kadıköy, İstanbul"),
+     * yurt dışında ülkedir ("Cenevre, İsviçre"). Ülke adını seçili dilde yazmak için gerekir.
+     */
+    fun labelEndsWithCountry(district: Place, country: Place?): Boolean =
+        country != null && norm(country.name) != "turkiye" && norm(country.name) != norm(district.name)
+
     /** Ham JSON döndürür; önbelleğe olduğu gibi yazılır. */
     fun fetchTimes(districtId: String): String = get("$BASE/vakitler/$districtId")
 

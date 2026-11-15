@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
+import java.text.Collator
 
 /** Ülke → Şehir → İlçe seçimi. Seçimden sonra 30 günlük vakitleri indirir. */
 class LocationActivity : LangActivity() {
@@ -87,12 +88,31 @@ class LocationActivity : LangActivity() {
 
     private fun showCities(c: Diyanet.Place) {
         stage = Stage.CITY
-        load(getString(R.string.loc_pick_city, c.name)) { Diyanet.cities(c.id) }
+        load(getString(R.string.loc_pick_city, displayName(c, Stage.COUNTRY))) { Diyanet.cities(c.id) }
     }
 
     private fun showDistricts(c: Diyanet.Place) {
         stage = Stage.DISTRICT
-        load(getString(R.string.loc_pick_district, c.name)) { Diyanet.districts(c.id) }
+        load(getString(R.string.loc_pick_district, displayName(c, Stage.CITY))) { Diyanet.districts(c.id) }
+    }
+
+    /**
+     * Listede görünen ad. Türkçede Diyanet'in adı aynen yazılır. Öteki dillerde ülke adları seçili
+     * dilde yazılır ("Almanya" yerine "Allemagne" / "Germany" / "Deutschland"); yoksa Fransızca
+     * kullanan biri ülkesini listede bulamaz. Şehir ve ilçe adları Diyanet'in verdiği gibidir
+     * (Diyanet bunları tek biçimde verir); seçimden sonra ekrandaki ad ayrıca çevrilir (PlaceLabels).
+     */
+    private fun displayName(p: Diyanet.Place, at: Stage = stage): String {
+        if (Lang.code(this) == "tr") return p.name
+        return when (at) {
+            Stage.COUNTRY ->
+                CountryNames.display(CountryNames.code(p.id), Lang.locale(this))
+                    ?: if (p.nameEn.isNotBlank()) titleCase(p.nameEn, turkish = false) else p.name
+            // Bazı ülkelerin tek "şehri" ülkenin kendisidir (Fransa → "Fransa"): o da ülke adıyla yazılır.
+            Stage.CITY ->
+                country?.takeIf { norm(it.name) == norm(p.name) }?.let { displayName(it, Stage.COUNTRY) } ?: p.name
+            Stage.DISTRICT -> p.name
+        }
     }
 
     private fun load(title: String, loader: () -> List<Diyanet.Place>) {
@@ -110,7 +130,13 @@ class LocationActivity : LangActivity() {
                 runOnUiThread {
                     if (isFinishing || stage != expected) return@runOnUiThread
                     progress.visibility = View.GONE
-                    all = result
+                    // Liste Türkçe adlara göre sıralı gelir; adlar başka dilde gösteriliyorsa ona göre sırala.
+                    all = if (Lang.code(this) == "tr") {
+                        result
+                    } else {
+                        val collator = Collator.getInstance(Lang.locale(this))
+                        result.sortedWith { a, b -> collator.compare(displayName(a, expected), displayName(b, expected)) }
+                    }
                     filter()
                 }
             } catch (e: Exception) {
@@ -130,9 +156,17 @@ class LocationActivity : LangActivity() {
         // norm() harfleri sadeleştirir: "kadikoy" yazınca "Kadıköy", "zurih" yazınca "Zürih" bulunur.
         val q = norm(etSearch.text.toString())
         shown.clear()
-        shown.addAll(if (q.isEmpty()) all else all.filter { norm(it.name).contains(q) })
+        // Görünen ada, Diyanet'in Türkçe adına ve İngilizce adına bakılır: "suisse", "isvicre" ve
+        // "switzerland" yazan da aynı ülkeyi bulur.
+        shown.addAll(
+            if (q.isEmpty()) {
+                all
+            } else {
+                all.filter { norm(displayName(it)).contains(q) || norm(it.name).contains(q) || norm(it.nameEn).contains(q) }
+            },
+        )
         adapter.clear()
-        adapter.addAll(shown.map { it.name })
+        adapter.addAll(shown.map { displayName(it) })
         adapter.notifyDataSetChanged()
     }
 
@@ -172,7 +206,10 @@ class LocationActivity : LangActivity() {
                 // Elle seçilen yer otomatik konum tarafından ezilmesin. Ama bu ekran otomatik konum
                 // başarısız olduğu için açıldıysa otomatik konum açık kalır (yolculukta yine çalışsın).
                 val accepted = Store.finishManualSelection(request) {
-                    Store.saveLocation(app, district.id, label, json, point)
+                    Store.saveLocation(
+                        app, district.id, label, json, point,
+                        CountryNames.code(k?.id), Diyanet.labelEndsWithCountry(district, k),
+                    )
                     if (!fromAutoFailure) Store.setAutoLocation(app, false)
                 }
                 if (!accepted) {

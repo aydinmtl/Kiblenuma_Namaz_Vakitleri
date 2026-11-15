@@ -21,7 +21,7 @@ class ImsakiyeActivity : LangActivity() {
         setContentView(R.layout.activity_imsakiye)
         Ui.fitSystemBars(this, findViewById(R.id.root))
 
-        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.ims_title, Store.placeName(this))
+        findViewById<TextView>(R.id.tvTitle).text = getString(R.string.ims_title, Store.placeLabel(this))
 
         // Tablo başlığındaki vakit adları (dar sütun: kısa adlar)
         val heads = intArrayOf(R.id.h0, R.id.h1, R.id.h2, R.id.h3, R.id.h4, R.id.h5)
