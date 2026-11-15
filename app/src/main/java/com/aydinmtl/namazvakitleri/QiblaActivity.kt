@@ -61,6 +61,11 @@ class QiblaActivity : LangActivity(), SensorEventListener {
     private val ori = FloatArray(3)
     private var locationListener: LocationListener? = null
 
+    /** Pusula ayarsız mı (sensör doğruluğu düşük)? Uyarı, doğruluk düzelene kadar ekranda kalır. */
+    private var lowAccuracy = false
+    private var directionHint: String? = null
+    private var showingWarning = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qibla)
@@ -196,17 +201,30 @@ class QiblaActivity : LangActivity(), SensorEventListener {
 
         val off = qv.offset()
         if (off != null && sensor != null) {
-            tvHint.text = when {
+            directionHint = when {
                 abs(off) < 3f -> getString(R.string.qb_aligned)
                 off > 0 -> getString(R.string.qb_turn_right, off)
                 else -> getString(R.string.qb_turn_left, -off)
             }
+            showHint()
         }
     }
 
     override fun onAccuracyChanged(s: Sensor?, accuracy: Int) {
-        if (accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
-            tvHint.text = getString(R.string.qb_calibrate)
-        }
+        lowAccuracy = accuracy <= SensorManager.SENSOR_STATUS_ACCURACY_LOW
+        showHint()
+    }
+
+    /**
+     * Yön yazısını yazar; pusula ayarsızsa üstüne kalibrasyon uyarısını koyar.
+     *
+     * Eskiden uyarı yön yazısıyla AYNI satıra yazılıyordu ve saniyede ~15 kez gelen sensör verisi
+     * onu hemen eziyordu: kullanıcı uyarıyı göremiyor, ayarsız pusulayla yanlış yöne dönebiliyordu.
+     */
+    private fun showHint() {
+        val text = Ui.compassHint(this, lowAccuracy, directionHint)
+            ?: if (showingWarning) "" else return // uyarı kalktı ve gösterilecek yön yok
+        showingWarning = lowAccuracy
+        if (text.toString() != tvHint.text.toString()) tvHint.text = text
     }
 }
