@@ -41,6 +41,11 @@
     </string-array>
     <string name="hijri_date">%1$d. %2$s %3$d n. H.</string>
     <string name="no_internet">Keine Internetverbindung.</string>
+    <string name="err_offline">keine Internetverbindung</string>
+    <string name="err_server">Serverfehler %1$d</string>
+    <string name="err_bad_response">unerwartete Serverantwort</string>
+    <string name="err_unexpected">unerwarteter Fehler</string>
+    <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Sprache: Deutsch. Zum Ändern tippen.</string>

@@ -45,6 +45,11 @@
     </string-array>
     <string name="hijri_date">%1$d %2$s %3$d</string>
     <string name="no_internet">İnternete bağlanılamadı.</string>
+    <string name="err_offline">internet bağlantısı yok</string>
+    <string name="err_server">sunucu hatası %1$d</string>
+    <string name="err_bad_response">sunucudan beklenmeyen yanıt</string>
+    <string name="err_unexpected">beklenmeyen hata</string>
+    <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Dil: Türkçe. Değiştirmek için dokun.</string>

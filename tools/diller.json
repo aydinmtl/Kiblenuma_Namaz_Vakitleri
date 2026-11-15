@@ -184,6 +184,36 @@
         "Connexion Internet impossible.",
         "Could not connect to the internet.",
         "Keine Internetverbindung."
+      ],
+      "err_offline": [
+        "internet bağlantısı yok",
+        "pas de connexion Internet",
+        "no internet connection",
+        "keine Internetverbindung"
+      ],
+      "err_server": [
+        "sunucu hatası %1$d",
+        "erreur du serveur %1$d",
+        "server error %1$d",
+        "Serverfehler %1$d"
+      ],
+      "err_bad_response": [
+        "sunucudan beklenmeyen yanıt",
+        "réponse inattendue du serveur",
+        "unexpected server response",
+        "unerwartete Serverantwort"
+      ],
+      "err_unexpected": [
+        "beklenmeyen hata",
+        "erreur inattendue",
+        "unexpected error",
+        "unerwarteter Fehler"
+      ],
+      "lang_pick_title": [
+        "Dil · Langue · Language · Sprache",
+        "Dil · Langue · Language · Sprache",
+        "Dil · Langue · Language · Sprache",
+        "Dil · Langue · Language · Sprache"
       ]
     }
   },
