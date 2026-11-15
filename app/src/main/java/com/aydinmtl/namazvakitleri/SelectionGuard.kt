@@ -125,4 +125,21 @@ internal class GuardedPublication(private val selection: SelectionGuard) {
         }
         return accepted
     }
+
+    /**
+     * [run] reddedilirse taze veriyle yeniden dener (en çok [attempts] kez).
+     * Reddin iki nedeni olabilir: hesap sürerken veri değişti ya da daha yeni bir çağrı geldi.
+     * İkisinde de yeniden okunan veri günceldir; son yayımlanan her zaman güncel hesaptır.
+     */
+    fun <S, T> runUntilAccepted(
+        attempts: Int,
+        capture: () -> Pair<Long, S>,
+        compute: (S) -> T,
+        publish: (T) -> Unit,
+    ): Boolean {
+        repeat(attempts) {
+            if (run(capture, compute, publish)) return true
+        }
+        return false
+    }
 }
