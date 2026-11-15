@@ -16,6 +16,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import java.time.Duration
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -32,7 +33,7 @@ class MainActivity : LangActivity() {
     private lateinit var tvStatus: TextView
     private val rowViews = ArrayList<View>()
 
-    private var shownNext: LocalDateTime? = null
+    private var shownNext: Instant? = null
     private var shownDate: LocalDate? = null
     private var refreshing = false
     private var checkingLocation = false
@@ -197,12 +198,18 @@ class MainActivity : LangActivity() {
             noPlaceFallback(getString(R.string.loc_service_off_reason))
             return
         }
+        val request = Store.automaticPlaceRequest(this) ?: return
         checkingLocation = true
         updateLocMode()
         // En çok 3 dakikalık kayıtlı konum kabul edilir (eskiden 10 dakikaydı). Yolda giderken
         // 10 dakika önceki konum eski şehri gösterebilir; daha eskiyse telefondan yenisi istenir.
         LocationHelper.current(this, maxAgeMs = 3 * 60_000L, timeoutMs = 10_000L) { loc ->
             if (isFinishing || isDestroyed) return@current
+            if (!Store.isPlaceRequestCurrent(request)) {
+                checkingLocation = false
+                updateLocMode()
+                return@current
+            }
             if (loc == null) {
                 checkingLocation = false
                 locationNote = getString(R.string.loc_unavailable_note)
@@ -219,12 +226,13 @@ class MainActivity : LangActivity() {
             val app = applicationContext
             Thread {
                 val result = try {
-                    AutoLocation.resolve(app, loc) { msg ->
+                    AutoLocation.resolve(app, loc, request) { msg ->
                         // İlk kurulumda hangi adımda olunduğunu göster
                         runOnUiThread { if (Store.districtId(app) == null) tvNextLabel.text = msg }
                     }
                 } catch (e: Exception) {
-                    AutoLocation.Result.Failed(Lang.str(app, R.string.no_internet))
+                    if (Store.isPlaceRequestCurrent(request)) AutoLocation.Result.Failed(Lang.str(app, R.string.no_internet))
+                    else AutoLocation.Result.Discarded
                 }
                 runOnUiThread { onLocationResult(result, loc) }
             }.start()
@@ -235,6 +243,7 @@ class MainActivity : LangActivity() {
         checkingLocation = false
         if (isFinishing || isDestroyed) return
         when (r) {
+            is AutoLocation.Result.Discarded -> {}
             is AutoLocation.Result.Changed -> {
                 locationNote = null
                 AutoLocation.lastFailAt = 0L
@@ -251,6 +260,7 @@ class MainActivity : LangActivity() {
                 // Yer aynı kalsa da adının yazımı düzeltilmiş olabilir: ekranı ve widget'ı tazele.
                 if (Store.districtId(this) != null) {
                     render()
+                    AlarmScheduler.schedule(this)
                     PrayerWidget.updateAll(this)
                 }
             }
@@ -351,16 +361,17 @@ class MainActivity : LangActivity() {
         if (now.toLocalDate() != shownDate) render()
 
         val days = Times.days(this)
-        val next = Prayers.next(days, now)
-        val current = Prayers.current(days, now)
+        val nowInstant = Instant.now()
+        val next = Prayers.next(days, nowInstant)
+        val current = Prayers.current(days, nowInstant)
 
         if (next == null) {
             tvCountdown.text = "--:--:--"
         } else {
             tvNextLabel.text = getString(R.string.next_label, Lang.prayerName(this, next.index))
-            tvCountdown.text = formatDuration(Duration.between(now, next.at).seconds + 1)
-            if (next.at != shownNext) {
-                shownNext = next.at
+            tvCountdown.text = formatDuration(Duration.between(nowInstant, next.instant).seconds + 1)
+            if (next.instant != shownNext) {
+                shownNext = next.instant
                 PrayerWidget.updateAll(this)
             }
         }

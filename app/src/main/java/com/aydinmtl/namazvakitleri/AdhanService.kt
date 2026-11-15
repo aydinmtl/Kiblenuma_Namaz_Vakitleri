@@ -14,8 +14,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import java.time.Instant
-import java.time.ZoneId
 
 /**
  * Kullanıcının seçtiği ezan ses dosyasını çalar. Android, uzun süren ses çalmayı yalnızca
@@ -28,7 +26,6 @@ class AdhanService : Service() {
         private const val EXTRA_TITLE = "title"
         private const val EXTRA_INDEX = "index" // hangi vakit (deneme çalışında yok)
         private const val EXTRA_AT = "at"       // vaktin zamanı (ms)
-        private const val NOTIF_ID = 300
         private const val MAX_MS = 6 * 60_000L // güvenlik: en çok 6 dk
 
         /** Telefon sessiz/titreşimdeyse ve kullanıcı öyle istediyse çalma. */
@@ -43,13 +40,15 @@ class AdhanService : Service() {
          * vakit bildirimini sesli gönderir.
          */
         fun start(ctx: Context, m: Moment): Boolean {
-            val atMs = m.at.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val atMs = m.instant.toEpochMilli()
             return startIntent(
                 ctx,
                 Intent(ctx, AdhanService::class.java)
                     .putExtra(EXTRA_TITLE, Lang.prayerName(ctx, m.index))
                     .putExtra(EXTRA_INDEX, m.index)
-                    .putExtra(EXTRA_AT, atMs),
+                    .putExtra(EXTRA_AT, atMs)
+                    .putExtra(AlarmScheduler.EXTRA_CLOCK, m.clock.toSecondOfDay())
+                    .putExtra(AlarmScheduler.EXTRA_DAY, m.day.toEpochDay()),
             )
         }
 
@@ -88,7 +87,9 @@ class AdhanService : Service() {
         val index = intent?.getIntExtra(EXTRA_INDEX, -1) ?: -1
         val atMs = intent?.getLongExtra(EXTRA_AT, 0L) ?: 0L
         moment = if (index in PRAYER_NAMES.indices) {
-            Moment(index, Instant.ofEpochMilli(atMs).atZone(ZoneId.systemDefault()).toLocalDateTime())
+            Moment.fromEpochMillis(index, atMs,
+                if (intent?.hasExtra(AlarmScheduler.EXTRA_CLOCK) == true) intent.getIntExtra(AlarmScheduler.EXTRA_CLOCK, -1) else null,
+                if (intent?.hasExtra(AlarmScheduler.EXTRA_DAY) == true) intent.getLongExtra(AlarmScheduler.EXTRA_DAY, 0L) else null)
         } else {
             null
         }
@@ -109,9 +110,9 @@ class AdhanService : Service() {
             .build()
         try {
             if (Build.VERSION.SDK_INT >= 29) {
-                startForeground(NOTIF_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+                startForeground(NotificationIds.ADHAN, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
             } else {
-                startForeground(NOTIF_ID, n)
+                startForeground(NotificationIds.ADHAN, n)
             }
         } catch (e: Exception) {
             soundFallback()

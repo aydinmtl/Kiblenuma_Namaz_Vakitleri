@@ -426,9 +426,15 @@ class SettingsActivity : LangActivity() {
             Toast.makeText(this, getString(R.string.set_service_off), Toast.LENGTH_LONG).show()
             return
         }
+        val request = Store.automaticPlaceRequest(this) ?: return
         locating = true
         tvCurrentPlace.text = getString(R.string.set_locating)
         LocationHelper.current(this, timeoutMs = 10_000L) { loc ->
+            if (!Store.isPlaceRequestCurrent(request)) {
+                locating = false
+                if (!isFinishing && !isDestroyed) bind()
+                return@current
+            }
             if (loc == null) {
                 locating = false
                 if (!isFinishing && !isDestroyed) {
@@ -440,11 +446,12 @@ class SettingsActivity : LangActivity() {
             val app = applicationContext
             Thread {
                 val r = try {
-                    AutoLocation.resolve(app, loc) { msg -> runOnUiThread { if (locating) tvCurrentPlace.text = getString(R.string.set_progress, msg) } }
+                    AutoLocation.resolve(app, loc, request) { msg -> runOnUiThread { if (locating) tvCurrentPlace.text = getString(R.string.set_progress, msg) } }
                 } catch (e: Exception) {
-                    AutoLocation.Result.Failed(getString(R.string.no_internet))
+                    if (Store.isPlaceRequestCurrent(request)) AutoLocation.Result.Failed(getString(R.string.no_internet))
+                    else AutoLocation.Result.Discarded
                 }
-                if (r !is AutoLocation.Result.Failed) {
+                if (r is AutoLocation.Result.Changed || r is AutoLocation.Result.Same) {
                     AutoLocation.lastFailAt = 0L
                     AlarmScheduler.schedule(app)
                     PrayerWidget.updateAll(app)
@@ -454,6 +461,7 @@ class SettingsActivity : LangActivity() {
                     if (isFinishing || isDestroyed) return@runOnUiThread
                     bind()
                     val text = when (r) {
+                        is AutoLocation.Result.Discarded -> return@runOnUiThread
                         is AutoLocation.Result.Changed -> getString(R.string.loc_updated, r.label)
                         is AutoLocation.Result.Same -> getString(R.string.set_loc_same, Store.placeName(this))
                         is AutoLocation.Result.Failed -> getString(R.string.set_loc_retry, r.reason)

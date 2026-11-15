@@ -70,6 +70,7 @@ object AutoLocation {
     sealed class Result {
         data class Changed(val label: String) : Result()
         object Same : Result()
+        object Discarded : Result()
         data class Failed(val reason: String) : Result()
     }
 
@@ -136,9 +137,8 @@ object AutoLocation {
      * Sonuç neredeyse her zaman Changed ya da Same olur. Failed yalnızca vakitlerin
      * hesaplanamadığı kutup bölgelerinde döner.
      */
-    fun resolve(ctx: Context, loc: Location, progress: (String) -> Unit = {}): Result {
-        val request = Store.placeRequest(ctx)
-        if (!Store.autoLocation(ctx)) return Result.Same
+    fun resolve(ctx: Context, loc: Location, request: Pair<Long, String?>, progress: (String) -> Unit = {}): Result {
+        if (!Store.isPlaceRequestCurrent(request)) return Result.Discarded
         progress(Lang.str(ctx, R.string.progress_city_name))
         val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(loc)
 
@@ -152,7 +152,7 @@ object AutoLocation {
                 val lists = Lists()
                 found = byName(ctx, lists, names, loc, progress)
                     ?: nearbyByName(ctx, lists, loc, progress)
-                if (found != null && found.district.id != Store.districtId(ctx)) {
+                if (found != null && found.district.id != request.second) {
                     progress(Lang.str(ctx, R.string.progress_downloading, found.district.name))
                     timesJson = Diyanet.fetchTimes(found.district.id)
                     if (Diyanet.parseDays(timesJson).isEmpty()) {
@@ -170,7 +170,7 @@ object AutoLocation {
         if (found != null) {
             val label = Diyanet.label(found.district, found.city, found.country)
             var result: Result = Result.Same
-            Store.applyPlaceRequest(request) {
+            val accepted = Store.applyPlaceRequest(request) {
                 Store.setNameRules(ctx, NAME_RULES)
                 if (found.district.id == Store.districtId(ctx)) {
                     Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
@@ -181,17 +181,18 @@ object AutoLocation {
                 }
                 Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
             }
-            return result
+            return if (accepted) result else Result.Discarded
         }
 
         // ---- 4) Diyanet'te yakın yer yok: konumdan hesapla ----
         progress(Lang.str(ctx, R.string.progress_computing))
         val today = LocalDate.now()
+        if (!Store.isPlaceRequestCurrent(request)) return Result.Discarded
         if (PrayerCalc.diyanetDay(today, loc.latitude, loc.longitude, ZoneId.systemDefault()) == null) {
             return Result.Failed(Lang.str(ctx, R.string.fail_no_sun))
         }
         var result: Result = Result.Same
-        Store.applyPlaceRequest(request) {
+        val accepted = Store.applyPlaceRequest(request) {
             Store.setComputedRecheckAt(
                 ctx,
                 System.currentTimeMillis() + if (hadError) COMPUTED_RECHECK_AFTER_ERROR_MS else COMPUTED_RECHECK_MS,
@@ -206,7 +207,7 @@ object AutoLocation {
             }
             Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
         }
-        return result
+        return if (accepted) result else Result.Discarded
     }
 
     /** Hesaplanan yerin ekranda görünen adı: "Ambilly, Fransa"; ad yoksa koordinat. */

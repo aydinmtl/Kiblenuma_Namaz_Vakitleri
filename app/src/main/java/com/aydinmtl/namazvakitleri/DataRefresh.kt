@@ -12,7 +12,7 @@ import androidx.work.WorkerParameters
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
-/** A persistent data job independent of the next prayer; survives exhausted offline data. */
+/** Sıradaki vakitten bağımsız kalıcı veri işi; çevrimdışıyken veri bitse de yeniden dener. */
 object DataRefresh {
     fun ensureScheduled(ctx: Context) {
         if (Store.districtId(ctx) == null) return
@@ -28,8 +28,8 @@ object DataRefresh {
 class PrayerDataWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
     override fun doWork(): Result {
         val ctx = applicationContext
-        // Do not use needsRefresh's foreground throttle here: retry must remain queued offline.
-        if (!RefreshPolicy.needsData(Store.districtId(ctx), Store.isComputed(ctx), Store.lastDay(ctx), LocalDate.now())) {
+        // Ön planın deneme aralığı burada uygulanmaz; ağ gelince yeniden denenmelidir.
+        if (!Store.prayerSnapshot(ctx).second.needsData(LocalDate.now())) {
             return Result.success()
         }
         if (!Store.refresh(ctx)) return Result.retry()

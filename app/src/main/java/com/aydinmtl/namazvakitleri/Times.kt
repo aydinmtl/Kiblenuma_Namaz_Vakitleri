@@ -12,43 +12,72 @@ import java.time.ZoneId
  *   Diyanet'in ölçüleriyle telefonda hesaplanır ve ekranda bunun hesap olduğu yazılır.
  */
 object Times {
-    private var cacheKey: String? = null
-    private var cache: List<PrayerDay> = emptyList()
-    private var alignedFor: String? = null
-    private var zoneKey: String? = null
-    private var zoneCache: List<PrayerDay> = emptyList()
+    private val reader = PrayerTimeReader()
 
     /** Seçilen yöntem hesaplanamıyorsa (yerin koordinatı yok) Diyanet'e düşülür. */
-    fun effectiveMethod(ctx: Context): CalcMethod {
-        val m = Store.method(ctx)
-        // Hesaplanan yerde koordinat her zaman vardır; seçilen yöntem aynen kullanılır.
-        if (Store.isComputed(ctx)) return m
-        return if (m != CalcMethod.DIYANET && Store.placePoint(ctx) == null) CalcMethod.DIYANET else m
-    }
+    fun effectiveMethod(ctx: Context): CalcMethod = Store.prayerSnapshot(ctx).second.effectiveMethod
 
-    fun isFallback(ctx: Context): Boolean = effectiveMethod(ctx) != Store.method(ctx)
+    fun isFallback(ctx: Context): Boolean {
+        val state = Store.prayerSnapshot(ctx).second
+        return state.effectiveMethod != state.method
+    }
 
     /** Ekranda gösterilecek kaynak satırı. */
     fun sourceLabel(ctx: Context): String {
-        val m = effectiveMethod(ctx)
-        if (m == CalcMethod.DIYANET && Store.isComputed(ctx)) {
+        val state = Store.prayerSnapshot(ctx).second
+        val m = state.effectiveMethod
+        if (m == CalcMethod.DIYANET && state.computed) {
             // Diyanet'in listesinde yakın yer yok: resmi liste değil, hesap olduğu açıkça yazılır.
             return Lang.str(ctx, R.string.src_computed)
         }
-        val asr = if (m != CalcMethod.DIYANET && Store.asrHanafi(ctx)) Lang.str(ctx, R.string.src_asr_hanafi) else ""
+        val asr = if (m != CalcMethod.DIYANET && state.hanafi) Lang.str(ctx, R.string.src_asr_hanafi) else ""
         // Seçilen yer başka bir saat dilimindeyse kullanıcıya söyle (bkz. PlaceZone)
-        val shift = Prayers.day(days(ctx), LocalDate.now())?.shiftMinutes ?: 0
+        val shift = Prayers.day(days(state), LocalDate.now())?.shiftMinutes ?: 0
         val zoneNote = if (shift == 0) "" else Lang.str(ctx, R.string.src_zone_note)
         return Lang.str(ctx, R.string.src_label, Lang.methodTitle(ctx, m)) + asr +
-            (if (isFallback(ctx)) Lang.str(ctx, R.string.src_fallback) else "") +
+            (if (state.effectiveMethod != state.method) Lang.str(ctx, R.string.src_fallback) else "") +
             zoneNote
     }
 
+    fun days(ctx: Context): List<PrayerDay> = days(Store.prayerSnapshot(ctx).second)
+
+    internal fun days(state: PrayerSnapshot): List<PrayerDay> = reader.days(state)
+}
+
+/** Kaynak JSON, koordinat çifti ve hesap ayarları aynı seçimden alınır. */
+internal data class PrayerSnapshot(
+    val districtId: String?,
+    val timesJson: String?,
+    val point: Pair<Double, Double>?,
+    val method: CalcMethod,
+    val hanafi: Boolean,
+) {
+    val computed: Boolean get() = districtId == Store.COMPUTED_ID
+    val effectiveMethod: CalcMethod
+        get() = if (!computed && method != CalcMethod.DIYANET && point == null) CalcMethod.DIYANET else method
+
+    fun needsData(today: LocalDate): Boolean =
+        RefreshPolicy.needsData(districtId, computed, diyanetDays().lastOrNull()?.date, today)
+
+    fun diyanetDays(): List<PrayerDay> = immutableDays(timesJson?.let(Diyanet::parseDays) ?: emptyList())
+}
+
+internal data class AlarmSnapshot(
+    val prayers: PrayerSnapshot,
+    val reminderMinutes: Int,
+    val notifyFor: List<Boolean>,
+)
+
+/** Kilit altında alınan değerlerden türetir; Store veya seçim kilidini geri çağırmaz. */
+internal class PrayerTimeReader(private val hijriFormat: (LocalDate) -> String = Hijri::format) {
+    private data class Key(val state: PrayerSnapshot, val today: LocalDate, val zone: ZoneId, val hijriOffset: Long)
+    private var cacheKey: Key? = null
+    private var cache: List<PrayerDay> = emptyList()
+    private var alignedFor: String? = null
+
     @Synchronized
-    fun days(ctx: Context): List<PrayerDay> {
-        val diyanet = Store.days(ctx)
-        // Hicri tarihleri Diyanet takvimiyle hizala.
-        val today = LocalDate.now()
+    fun days(state: PrayerSnapshot, today: LocalDate = LocalDate.now(), zone: ZoneId = ZoneId.systemDefault()): List<PrayerDay> {
+        val diyanet = state.diyanetDays()
         Prayers.day(diyanet, today)?.let {
             val alignKey = "$today|${it.hijriShort}"
             if (it.hijriShort.isNotEmpty() && alignKey != alignedFor) {
@@ -56,46 +85,31 @@ object Times {
                 alignedFor = alignKey
             }
         }
-
-        val m = effectiveMethod(ctx)
-        // Hesaplanan yer + Diyanet yöntemi: liste yok, Diyanet ölçüleriyle telefonda hesaplanır.
-        val computedDiyanet = m == CalcMethod.DIYANET && Store.isComputed(ctx)
-        if (m == CalcMethod.DIYANET && !computedDiyanet) return withPlaceZone(ctx, diyanet)
-
-        val point = Store.placePoint(ctx) ?: return diyanet
-        val zone = ZoneId.systemDefault()
-        val hanafi = Store.asrHanafi(ctx)
-        val key = "${m.id}|$computedDiyanet|$hanafi|${point.first}|${point.second}|$today|${zone.id}|${Hijri.offsetDays}"
+        val key = Key(state, today, zone, Hijri.offsetDays)
         if (key == cacheKey) return cache
-
-        val out = ArrayList<PrayerDay>()
-        for (i in -1..30) {
-            val date = today.plusDays(i.toLong())
-            val times = (
-                if (computedDiyanet) PrayerCalc.diyanetDay(date, point.first, point.second, zone)
-                else PrayerCalc.day(date, point.first, point.second, zone, m, if (hanafi) 2 else 1)
-                ) ?: continue
-            out.add(PrayerDay(date, times, Hijri.format(date)))
+        val m = state.effectiveMethod
+        val computedDiyanet = m == CalcMethod.DIYANET && state.computed
+        val point = state.point
+        val out = when {
+            m == CalcMethod.DIYANET && !computedDiyanet ->
+                if (point == null) diyanet else PlaceZone.apply(diyanet, point.second, zone)
+            point == null -> diyanet
+            else -> (-1..30).mapNotNull { i ->
+                val date = today.plusDays(i.toLong())
+                PrayerCalc.calculatedDay(date, point.first, point.second, zone, m,
+                    if (state.hanafi && !computedDiyanet) 2 else 1)?.copy(hijri = hijriFormat(date))
+            }
         }
-        cache = out
+        cache = immutableDays(out)
         cacheKey = key
-        return out
-    }
-
-    /**
-     * Diyanet saatleri yerin kendi saatidir. Seçilen yer başka bir saat dilimindeyse
-     * alarm ve geri sayım kaymasın diye her güne saat farkını yazar (bkz. PlaceZone).
-     * Yerin koordinatı bilinmiyorsa liste olduğu gibi kalır.
-     */
-    private fun withPlaceZone(ctx: Context, diyanet: List<PrayerDay>): List<PrayerDay> {
-        val point = Store.placePoint(ctx) ?: return diyanet
-        val zone = ZoneId.systemDefault()
-        val key = "${Store.districtId(ctx)}|${point.second}|${zone.id}|${diyanet.size}|" +
-            "${diyanet.firstOrNull()?.date}|${diyanet.lastOrNull()?.date}"
-        if (key == zoneKey) return zoneCache
-        val out = PlaceZone.apply(diyanet, point.second, zone)
-        zoneCache = out
-        zoneKey = key
-        return out
+        return cache
     }
 }
+
+private fun immutableDays(days: List<PrayerDay>): List<PrayerDay> =
+    java.util.Collections.unmodifiableList(days.map { day ->
+        day.copy(
+            times = java.util.Collections.unmodifiableList(ArrayList(day.times)),
+            instants = day.instants?.let { java.util.Collections.unmodifiableList(ArrayList(it)) },
+        )
+    })
