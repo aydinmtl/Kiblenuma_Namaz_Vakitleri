@@ -76,6 +76,7 @@
     <string name="notif_perm_off">⚠ Benachrichtigungen sind deaktiviert. Zum Aktivieren tippen.</string>
     <string name="exact_alarm_needed">⚠ Damit Benachrichtigungen pünktlich kommen, erlaube „Wecker und Erinnerungen“. Tippen.</string>
     <string name="loc_perm_denied">Standortberechtigung nicht erteilt. Du kannst deine Stadt von Hand wählen.</string>
+    <string name="loc_selection_cancelled">Auswahl abgebrochen. Bitte wähle den Ort erneut aus.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Quelle: aus deinem Standort berechnet (Diyanet-Parameter)\nDie Diyanet-Liste hat keinen Ort in der Nähe. Die Zeiten können um einige Minuten von der offiziellen Liste abweichen.</string>

@@ -80,6 +80,7 @@
     <string name="notif_perm_off">⚠ Bildirim izni kapalı. Açmak için dokun.</string>
     <string name="exact_alarm_needed">⚠ Bildirimlerin tam vaktinde gelmesi için \"Alarmlar ve hatırlatıcılar\" iznini ver. Dokun.</string>
     <string name="loc_perm_denied">Konum izni verilmedi. Şehrini elle seçebilirsin.</string>
+    <string name="loc_selection_cancelled">Seçim iptal edildi. Lütfen yeri yeniden seçin.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Kaynak: Konumundan hesaplandı (Diyanet ölçüleriyle)\nDiyanet\'in listesinde bu konuma yakın bir yer yok. Vakitler resmi listeden birkaç dakika farklı olabilir.</string>

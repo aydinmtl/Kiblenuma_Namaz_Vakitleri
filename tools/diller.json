@@ -387,6 +387,12 @@
         "Autorisation de position refusée. Vous pouvez choisir votre ville à la main.",
         "Location permission not granted. You can choose your city manually.",
         "Standortberechtigung nicht erteilt. Du kannst deine Stadt von Hand wählen."
+      ],
+      "loc_selection_cancelled": [
+        "Seçim iptal edildi. Lütfen yeri yeniden seçin.",
+        "La sélection a été annulée. Veuillez choisir à nouveau le lieu.",
+        "Selection canceled. Please choose the location again.",
+        "Auswahl abgebrochen. Bitte wähle den Ort erneut aus."
       ]
     }
   },

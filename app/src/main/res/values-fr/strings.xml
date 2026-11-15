@@ -76,6 +76,7 @@
     <string name="notif_perm_off">⚠ Les notifications sont désactivées. Touchez pour les activer.</string>
     <string name="exact_alarm_needed">⚠ Pour des notifications à l\'heure exacte, autorisez « Alarmes et rappels ». Touchez.</string>
     <string name="loc_perm_denied">Autorisation de position refusée. Vous pouvez choisir votre ville à la main.</string>
+    <string name="loc_selection_cancelled">La sélection a été annulée. Veuillez choisir à nouveau le lieu.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Source : calculé à partir de votre position (paramètres de la Diyanet)\nLa liste de la Diyanet n\'a pas de lieu proche de cette position. Les horaires peuvent différer de quelques minutes de la liste officielle.</string>

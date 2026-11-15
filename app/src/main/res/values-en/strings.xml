@@ -76,6 +76,7 @@
     <string name="notif_perm_off">⚠ Notification permission is off. Tap to turn it on.</string>
     <string name="exact_alarm_needed">⚠ For notifications at the exact time, allow \"Alarms &amp; reminders\". Tap.</string>
     <string name="loc_perm_denied">Location permission not granted. You can choose your city manually.</string>
+    <string name="loc_selection_cancelled">Selection canceled. Please choose the location again.</string>
 
     <!-- Vakit kaynağı satırı (Times.sourceLabel) -->
     <string name="src_computed">Source: calculated from your location (Diyanet parameters)\nDiyanet\'s list has no place near this location. Times may differ from the official list by a few minutes.</string>
