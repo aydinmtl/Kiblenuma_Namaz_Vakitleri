@@ -44,6 +44,22 @@ jobs:
           name: test-raporu
           path: app/build/reports/tests/
 
+      # Android Lint: çeviri, tasarım, manifest ve kod için hata taraması. Hata bulursa derleme durur.
+      - name: Android Lint
+        run: ./gradlew lintDebug --stacktrace
+
+      # Rapor her durumda saklanır: uyarıları okumak için de (PR sayfası -> Checks -> Artifacts).
+      - name: Lint raporunu sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-raporu
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+            app/build/reports/lint-results-debug.txt
+          if-no-files-found: ignore
+
       - name: APK'yı derle
         run: ./gradlew assembleRelease --stacktrace
 

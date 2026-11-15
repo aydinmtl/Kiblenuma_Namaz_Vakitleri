@@ -4,11 +4,11 @@
 <resources>
 
     <!-- Genel -->
-    <string name="app_name">Kıblenüma</string>
+    <string name="app_name" translatable="false">Kıblenüma</string>
     <string name="widget_desc">Sıradaki vakit, kalan süre ve günün 6 vakti</string>
     <string name="widget_small_desc">Tek satırda sıradaki vakit ve kalan süre</string>
-    <string name="widget_big_label">Kıblenüma (4x2)</string>
-    <string name="widget_small_label">Kıblenüma (4x1)</string>
+    <string name="widget_big_label" translatable="false">Kıblenüma (4x2)</string>
+    <string name="widget_small_label" translatable="false">Kıblenüma (4x1)</string>
     <string name="notify">Vakit bildirimleri</string>
     <string name="imsakiye">İmsakiye</string>
     <string name="qibla">Kıble</string>

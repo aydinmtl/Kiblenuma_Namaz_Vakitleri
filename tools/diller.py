@@ -59,13 +59,16 @@ for i, lang in enumerate(LANGS):
                     out.append("        <item>%s</item>" % esc(text))
                 out.append("    </string-array>")
             else:
-                if isinstance(val, str):  # her dilde aynı (ör. uygulama adı)
+                same = isinstance(val, str)  # her dilde aynı (ör. uygulama adı)
+                if same:
                     if lang != "tr":
                         continue
                     text = val
                 else:
                     text = val[i]
-                out.append('    <string name="%s"%s>%s</string>' % (key, fmt_attr(text), esc(text)))
+                # translatable="false": Lint bu yazı için öteki dillerde çeviri aramasın
+                extra = ' translatable="false"' if same else ""
+                out.append('    <string name="%s"%s%s>%s</string>' % (key, extra, fmt_attr(text), esc(text)))
     out.append("</resources>")
     open(os.path.join(RES, folder, "strings.xml"), "w", encoding="utf-8").write("\n".join(out) + "\n")
 print("ok")

@@ -65,9 +65,17 @@ android {
         jvmTarget = "17"
     }
 
+    // Android Lint: kodu ve kaynakları (çeviriler, tasarımlar, manifest) bilinen hata kalıplarına
+    // karşı tarar. CI'da "./gradlew lintDebug" ile çalışır (bkz. .github/workflows/build.yml).
     lint {
-        abortOnError = false
+        // Lint'in "hata" dediği bulgular derlemeyi durdurur; "uyarı"lar durdurmaz, raporda görünür.
+        abortOnError = true
+        warningsAsErrors = false
+        // Release derlemesinde ayrıca çalıştırma: aynı tarama CI'da ayrı bir adımdır.
         checkReleaseBuilds = false
+        htmlReport = true
+        xmlReport = true
+        textReport = true
     }
 
     testOptions {
