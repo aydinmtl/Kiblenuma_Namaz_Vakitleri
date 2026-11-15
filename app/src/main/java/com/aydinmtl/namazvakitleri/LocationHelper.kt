@@ -8,10 +8,10 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.SystemClock
 import android.os.CancellationSignal
+import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 
 /** Telefonun yaklaşık konumunu tek seferlik alır. */
 object LocationHelper {

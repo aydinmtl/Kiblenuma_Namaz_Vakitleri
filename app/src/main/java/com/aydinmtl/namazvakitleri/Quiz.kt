@@ -44,7 +44,7 @@ object QuizBank {
     private val cache = LocalizedQuizCache()
 
     fun assetName(language: String): String = when (language) {
-        "fr", "en", "de" -> "sorular_${language}.json"
+        "fr", "en", "de" -> "sorular_$language.json"
         else -> "sorular.json"
     }
 
