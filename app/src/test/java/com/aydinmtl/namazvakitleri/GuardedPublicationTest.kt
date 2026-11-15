@@ -11,10 +11,13 @@ import org.junit.Test
 class GuardedPublicationTest {
     @Test
     fun oldCityEventCannotReplaceNewCityAlarm() = stalePublication("A event", changeCity = true)
+
     @Test
     fun oldEmptyTimetableCannotCancelNewCityAlarm() = stalePublication(null, changeCity = true)
+
     @Test
     fun refreshedSameCityDataInvalidatesOldEvent() = stalePublication("A event", changeCity = false)
+
     @Test
     fun refreshedSameCityDataInvalidatesOldCancellation() = stalePublication(null, changeCity = false)
 

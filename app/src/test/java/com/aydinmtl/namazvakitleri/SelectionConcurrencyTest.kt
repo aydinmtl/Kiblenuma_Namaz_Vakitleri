@@ -65,6 +65,7 @@ class SelectionConcurrencyTest {
         assertTrue(guard.apply(refresh.first) {})
         assertFalse(guard.ifCurrent(oldAlarm.first) { fail("old data published") })
     }
+
     @Test
     fun releasingManualReservationDoesNotReviveEarlierLocationCallback() {
         val guard = SelectionGuard()
@@ -85,5 +86,4 @@ class SelectionConcurrencyTest {
         guard.change { }
         assertFalse(guard.ifCurrent(oldAlarm.first) { fail("old settings published") })
     }
-
 }

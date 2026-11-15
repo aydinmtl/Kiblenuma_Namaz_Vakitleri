@@ -75,6 +75,7 @@ class PlaceZoneTest {
         // Cenevre'de saat 11:00 iken sıradaki vakit artık ikindi olmalı (İstanbul'da 13:00)
         assertEquals(3, Prayers.next(days, LocalDateTime.of(d, LocalTime.of(11, 0)))!!.index)
     }
+
     @Test
     fun tokyo_each_prayer_uses_phone_offset_at_its_own_instant() {
         // Synthetic times, not a Diyanet timetable. Zurich changes to DST at 01:00 UTC.
@@ -120,5 +121,4 @@ class PlaceZoneTest {
         assertEquals(1, Prayers.current(listOf(day), Instant.parse("2026-10-25T01:10:00Z"))!!.index)
         assertEquals(1200L, Duration.between(before.instant, after.instant).seconds)
     }
-
 }

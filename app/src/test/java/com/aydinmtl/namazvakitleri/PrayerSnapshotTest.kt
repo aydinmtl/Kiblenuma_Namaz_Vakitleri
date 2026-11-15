@@ -86,6 +86,7 @@ class PrayerSnapshotTest {
         assertEquals(CalcMethod.DIYANET, newer.effectiveMethod)
         assertFalse(newer.hanafi)
     }
+
     @Test
     fun calculationsUseCapturedMethodHanafiSettingAndPointAfterSelectionChanges() {
         val guard = SelectionGuard()
@@ -120,5 +121,4 @@ class PrayerSnapshotTest {
         } catch (_: UnsupportedOperationException) { }
         assertEquals(Instant.parse("2026-03-28T19:30:00Z"), derived.single().instants!!.first())
     }
-
 }

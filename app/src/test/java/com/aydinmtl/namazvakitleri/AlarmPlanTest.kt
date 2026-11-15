@@ -86,6 +86,7 @@ class AlarmPlanTest {
         assertTrue(AlarmPlan.adhanInTime(at + 2 * min, at))
         assertFalse(AlarmPlan.adhanInTime(at + 20 * min, at))
     }
+
     @Test
     fun reminder_subtraction_and_event_order_cross_repeated_dst_hour() {
         val zone = ZoneId.of("Europe/Zurich")
@@ -98,5 +99,4 @@ class AlarmPlanTest {
         assertFalse(entry.reminder)
         assertEquals(Instant.parse("2026-10-25T01:10:00Z"), entry.fireInstant)
     }
-
 }

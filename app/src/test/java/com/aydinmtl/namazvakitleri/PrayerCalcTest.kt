@@ -168,6 +168,7 @@ class PrayerCalcTest {
         // Güneşin batmadığı yerde hesap yapılamaz; otomatik konum bunu kullanıcıya söyler.
         assertNull(PrayerCalc.diyanetDay(LocalDate.of(2026, 6, 21), 78.22, 15.65, ZoneId.of("Arctic/Longyearbyen")))
     }
+
     @Test
     fun computed_tokyo_keeps_utc_date_rollover_and_converts_each_dst_offset() {
         val date = LocalDate.of(2026, 3, 29)
@@ -183,5 +184,4 @@ class PrayerCalcTest {
         assertEquals(m.map { it.instant }.sorted(), m.map { it.instant })
         assertEquals(date, m[0].day)
     }
-
 }

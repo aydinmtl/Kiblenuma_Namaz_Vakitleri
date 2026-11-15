@@ -32,10 +32,8 @@ object AlarmPlan {
         remindMinutes: Int,
         remindFor: (Int) -> Boolean,
         after: LocalDateTime,
-    ): Event? {
-        return next(moments, remindMinutes, remindFor,
-            after.atZone(moments.firstOrNull()?.phoneZone ?: ZoneId.systemDefault()).toInstant())
-    }
+    ): Event? = next(moments, remindMinutes, remindFor,
+        after.atZone(moments.firstOrNull()?.phoneZone ?: ZoneId.systemDefault()).toInstant())
 
     fun next(
         moments: List<Moment>,
