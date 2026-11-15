@@ -66,7 +66,8 @@ object Store {
     // ---- Otomatik konum ----
 
     fun autoLocation(ctx: Context): Boolean = prefs(ctx).getBoolean("autoLocation", false)
-    fun setAutoLocation(ctx: Context, on: Boolean) = selection.change {
+    fun setAutoLocation(ctx: Context, on: Boolean) = selection.changePlace {
+        // Yer değişimi sayılır: otomatik konum kapatılırsa süren otomatik konum işi sonucunu yazamaz.
         // Açarken de kapatırken de eski "son otomatik nokta" silinir. Böylece otomatik konum
         // her açıldığında konum mutlaka yeniden kontrol edilir (eski kayıt yüzünden atlanmaz).
         prefs(ctx).edit()
@@ -297,7 +298,7 @@ object Store {
      * Yeri "konumdan hesaplanan yer" olarak kaydeder (Diyanet listesi yok).
      * Vakitler [point] koordinatından hesaplanır (bkz. Times.days).
      */
-    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) = selection.change {
+    fun saveComputedLocation(ctx: Context, placeName: String, point: Pair<Double, Double>) = selection.changePlace {
         prefs(ctx).edit()
             .putString("districtId", COMPUTED_ID)
             .putString("placeName", placeName)
@@ -312,7 +313,7 @@ object Store {
         prefs(ctx).edit().putLong("computedRecheckAt", at).apply()
     }
 
-    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String, point: Pair<Double, Double>? = null) = selection.change {
+    fun saveLocation(ctx: Context, districtId: String, placeName: String, timesJson: String, point: Pair<Double, Double>? = null) = selection.changePlace {
         prefs(ctx).edit()
             .putString("districtId", districtId)
             .putString("placeName", placeName)
@@ -323,7 +324,7 @@ object Store {
             .apply()
     }
 
-    internal fun prayerSnapshot(ctx: Context): Pair<Long, PrayerSnapshot> = selection.capture {
+    internal fun prayerSnapshot(ctx: Context): Pair<Long, PrayerSnapshot> = selection.captureData {
         val p = prefs(ctx)
         PrayerSnapshot(
             districtId = p.getString("districtId", null),
@@ -334,7 +335,7 @@ object Store {
         )
     }
 
-    internal fun alarmSnapshot(ctx: Context): Pair<Long, AlarmSnapshot> = selection.capture {
+    internal fun alarmSnapshot(ctx: Context): Pair<Long, AlarmSnapshot> = selection.captureData {
         AlarmSnapshot(
             prayerSnapshot(ctx).second,
             if (notificationsOn(ctx)) reminderMinutes(ctx) else 0,
@@ -353,10 +354,16 @@ object Store {
         return state.needsData(LocalDate.now())
     }
 
-    /** Vakitleri internetten yeniler. Ağ kullanır: arka planda çağır. */
+    /**
+     * Vakitleri internetten yeniler. Ağ kullanır: arka planda çağır.
+     *
+     * false yalnızca gerçek bir başarısızlıkta döner (internet yok, sunucu hatası, boş liste).
+     * İndirme sürerken başka bir ayar değişmiş olabilir; seçili ilçe hâlâ indirilen ilçeyse liste
+     * geçerlidir ve yazılır. İlçe bu arada değiştiyse liste atılır ama bu bir hata DEĞİLDİR: yeni
+     * seçim kendi vakitlerini zaten kaydetmiştir.
+     */
     fun refresh(ctx: Context): Boolean {
-        val request = placeRequest(ctx)
-        val id = request.second ?: return false
+        val id = districtId(ctx) ?: return false
         if (id == COMPUTED_ID) return true // hesaplanan yer: vakitler telefonda hesaplanır, indirme yok
         prefs(ctx).edit().putLong("lastAttempt", System.currentTimeMillis()).apply()
         return try {
@@ -364,9 +371,10 @@ object Store {
             if (Diyanet.parseDays(json).isEmpty()) {
                 false
             } else {
-                applyPlaceRequest(request) {
+                selection.changeIf({ districtId(ctx) == id }) {
                     prefs(ctx).edit().putString("times", json).apply()
                 }
+                true
             }
         } catch (e: Exception) {
             false

@@ -60,7 +60,7 @@ class SelectionConcurrencyTest {
     @Test
     fun successfulDataRefreshInvalidatesEarlierAlarmSnapshotEvenForSameCity() {
         val guard = SelectionGuard()
-        val oldAlarm = guard.capture { "A" }
+        val oldAlarm = guard.captureData { "A" }
         val refresh = guard.capture { "A" }
         assertTrue(guard.apply(refresh.first) {})
         assertFalse(guard.ifCurrent(oldAlarm.first) { fail("old data published") })
@@ -82,8 +82,19 @@ class SelectionConcurrencyTest {
     @Test
     fun changingSettingsInvalidatesPreviouslyCapturedAlarmData() {
         val guard = SelectionGuard()
-        val oldAlarm = guard.capture { "old method" }
+        val oldAlarm = guard.captureData { "old method" }
         guard.change { }
         assertFalse(guard.ifCurrent(oldAlarm.first) { fail("old settings published") })
+    }
+
+    @Test
+    fun turningAutomaticLocationOffDiscardsRunningAutomaticRequest() {
+        // Store.setAutoLocation bir yer değişimi sayılır (changePlace): kapatıldıktan sonra
+        // biten otomatik konum işi yeri değiştiremez.
+        val guard = SelectionGuard()
+        val running = guard.automatic { "A" }!!
+        guard.changePlace { }
+        assertFalse(guard.isCurrentRequest(running.first))
+        assertFalse(guard.apply(running.first) { fail("automatic result applied after it was turned off") })
     }
 }

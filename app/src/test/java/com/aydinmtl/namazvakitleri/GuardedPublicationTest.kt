@@ -34,7 +34,7 @@ class GuardedPublicationTest {
         val old = Thread {
             try {
                 accepted.set(publisher.run(
-                    capture = { guard.capture { city to event } },
+                    capture = { guard.captureData { city to event } },
                     compute = { state ->
                         computed.countDown()
                         check(resume.await(5, TimeUnit.SECONDS))
@@ -47,10 +47,10 @@ class GuardedPublicationTest {
         old.start()
         try {
             assertTrue(computed.await(5, TimeUnit.SECONDS))
-            if (changeCity) guard.change { city = "B"; event = "new event" }
+            if (changeCity) guard.changePlace { city = "B"; event = "new event" }
             else assertTrue(guard.apply(guard.capture { city }.first) { event = "new event" })
             assertTrue(publisher.run(
-                capture = { guard.capture { city to event } },
+                capture = { guard.captureData { city to event } },
                 compute = { it.second },
                 publish = { installed = it },
             ))
@@ -71,10 +71,10 @@ class GuardedPublicationTest {
         val publisher = GuardedPublication(guard)
         var installed = "initial"
         val accepted = publisher.run(
-            capture = { guard.capture { "same data" } },
+            capture = { guard.captureData { "same data" } },
             compute = {
                 assertTrue(publisher.run(
-                    capture = { guard.capture { "same data" } },
+                    capture = { guard.captureData { "same data" } },
                     compute = { "later event" },
                     publish = { installed = it },
                 ))
