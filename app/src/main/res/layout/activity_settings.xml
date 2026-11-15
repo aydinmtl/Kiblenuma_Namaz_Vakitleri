@@ -126,12 +126,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:baselineAligned="false"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnPickAdhan"
                     style="@style/Btn"
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="6dp"
                     android:layout_weight="1"
                     android:text="@string/set_adhan_pick" />
@@ -140,6 +142,7 @@
                     android:id="@+id/btnTestAdhan"
                     style="@style/Btn"
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
                     android:text="@string/listen" />

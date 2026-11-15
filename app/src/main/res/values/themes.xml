@@ -18,8 +18,16 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
+    <!-- Düğme. Yükseklik sabit DEĞİL: yazı uzunsa (Fransızca, Almanca) ya da telefonda büyük yazı
+         seçiliyse düğme iki satıra büyür; eskiden 52dp sabitti ve yazı kırpılıyordu. -->
     <style name="Btn">
-        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:gravity">center</item>
         <item name="android:background">@drawable/btn</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">16sp</item>

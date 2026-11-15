@@ -17,8 +17,13 @@
         <TextView
             android:id="@+id/w_next"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="26dp"
             android:layout_weight="1"
+            android:autoSizeMaxTextSize="18sp"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeStepGranularity="1sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/gold"
             android:textSize="18sp"
@@ -28,6 +33,7 @@
             android:id="@+id/w_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
             android:textColor="@color/text"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -47,6 +53,7 @@
         android:id="@+id/w_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/muted"
         android:textSize="12sp" />
