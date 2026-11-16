@@ -47,6 +47,9 @@
     <string name="err_unexpected">unerwarteter Fehler</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
     <string name="err_settings_screen">Dieser Bildschirm konnte nicht geöffnet werden. Öffne Einstellungen → Apps → Kıblenüma auf dem Telefon.</string>
+    <string name="date_full">EEEE, d. MMMM yyyy</string>
+    <string name="date_long">d. MMMM yyyy</string>
+    <string name="date_short">d. MMM EEE</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Sprache: Deutsch. Zum Ändern tippen.</string>

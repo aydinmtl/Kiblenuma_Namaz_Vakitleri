@@ -8,13 +8,12 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 /** Kayıtlı ~30 günün vakit tablosu. Bugünün satırı vurgulanır. */
 class ImsakiyeActivity : LangActivity() {
 
     private val cellIds = intArrayOf(R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4, R.id.c5)
-    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMM EEE", Lang.locale(this)) }
+    private val dateFormat by lazy { Lang.dateFormat(this, R.string.date_short) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

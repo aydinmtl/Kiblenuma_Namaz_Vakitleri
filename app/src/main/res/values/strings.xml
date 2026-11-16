@@ -51,6 +51,9 @@
     <string name="err_unexpected">beklenmeyen hata</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
     <string name="err_settings_screen">Ayar ekranı açılamadı. Telefonun Ayarlar → Uygulamalar → Kıblenüma sayfasından açabilirsin.</string>
+    <string name="date_full">d MMMM yyyy, EEEE</string>
+    <string name="date_long">d MMMM yyyy</string>
+    <string name="date_short">d MMM EEE</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Dil: Türkçe. Değiştirmek için dokun.</string>

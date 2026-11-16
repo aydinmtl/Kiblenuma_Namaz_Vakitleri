@@ -220,6 +220,24 @@
         "Impossible d'ouvrir cet écran. Ouvrez Paramètres → Applications → Kıblenüma sur le téléphone.",
         "Could not open this settings screen. Open Settings → Apps → Kıblenüma on your phone.",
         "Dieser Bildschirm konnte nicht geöffnet werden. Öffne Einstellungen → Apps → Kıblenüma auf dem Telefon."
+      ],
+      "date_full": [
+        "d MMMM yyyy, EEEE",
+        "EEEE d MMMM yyyy",
+        "EEEE, d MMMM yyyy",
+        "EEEE, d. MMMM yyyy"
+      ],
+      "date_long": [
+        "d MMMM yyyy",
+        "d MMMM yyyy",
+        "d MMMM yyyy",
+        "d. MMMM yyyy"
+      ],
+      "date_short": [
+        "d MMM EEE",
+        "d MMM EEE",
+        "d MMM EEE",
+        "d. MMM EEE"
       ]
     }
   },

@@ -47,6 +47,9 @@
     <string name="err_unexpected">unexpected error</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
     <string name="err_settings_screen">Could not open this settings screen. Open Settings → Apps → Kıblenüma on your phone.</string>
+    <string name="date_full">EEEE, d MMMM yyyy</string>
+    <string name="date_long">d MMMM yyyy</string>
+    <string name="date_short">d MMM EEE</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Language: English. Tap to change.</string>

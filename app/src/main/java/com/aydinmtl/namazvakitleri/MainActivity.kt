@@ -20,7 +20,6 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class MainActivity : LangActivity() {
 
@@ -44,8 +43,8 @@ class MainActivity : LangActivity() {
     /** Ekran önde mi? Saniyelik sayaç yalnızca ekran öndeyken çalışır. */
     private var foreground = false
 
-    // Tarih seçili dilde yazılır: "13 Kasım 2026, Cuma" / "13 novembre 2026, vendredi"
-    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
+    // Tarih seçili dilde ve o dilin kuralıyla yazılır: "13 Kasım 2026, Cuma" / "vendredi 13 novembre 2026"
+    private val dateFormat by lazy { Lang.dateFormat(this, R.string.date_full) }
 
     private val ticker = object : Runnable {
         override fun run() {

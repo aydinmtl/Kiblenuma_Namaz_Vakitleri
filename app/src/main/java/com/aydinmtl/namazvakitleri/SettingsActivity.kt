@@ -20,7 +20,6 @@ import android.widget.LinearLayout
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import java.time.format.DateTimeFormatter
 
 class SettingsActivity : LangActivity() {
 
@@ -228,7 +227,7 @@ class SettingsActivity : LangActivity() {
         } else if (last == null) {
             getString(R.string.set_data_none)
         } else {
-            getString(R.string.set_data_until, last.format(DateTimeFormatter.ofPattern("d MMMM yyyy", Lang.locale(this))))
+            getString(R.string.set_data_until, last.format(Lang.dateFormat(this, R.string.date_long)))
         }
         binding = false
     }

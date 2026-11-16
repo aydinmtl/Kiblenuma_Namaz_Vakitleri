@@ -7,13 +7,12 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 /** Önümüzdeki bir yılın dini günleri ve kandilleri. */
 class HolyDaysActivity : LangActivity() {
 
-    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
+    private val dateFormat by lazy { Lang.dateFormat(this, R.string.date_full) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
