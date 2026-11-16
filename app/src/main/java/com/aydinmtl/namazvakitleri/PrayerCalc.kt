@@ -147,10 +147,13 @@ object PrayerCalc {
     ): PrayerDay? {
         val raw = rawMinutes(date, lat, lon, ZoneOffset.UTC, method, asrFactor) ?: return null
         val instants = raw.mapIndexed { i, minute ->
-            val rounded = if (method == CalcMethod.DIYANET) {
-                val t = minute + DIYANET_TEMKIN[i]
-                if (i <= SUNRISE) floor(t).toLong() else ceil(t).toLong()
-            } else minute.roundToInt().toLong()
+            // Temkin süreleri yalnızca Diyanet ölçülerinde eklenir.
+            val t = if (method == CalcMethod.DIYANET) minute + DIYANET_TEMKIN[i] else minute
+            // Dakikaya yuvarlama her yöntemde ihtiyatlı yöne yapılır: imsak ve güneş aşağı (erken),
+            // öğle, ikindi, akşam ve yatsı yukarı (geç). En yakın dakikaya yuvarlanırsa imsak 30
+            // saniyeye kadar geç, akşam 30 saniyeye kadar erken yazılabilir; oruç için ikisi de
+            // yanlış yöndür.
+            val rounded = if (i <= SUNRISE) floor(t).toLong() else ceil(t).toLong()
             date.atStartOfDay().plusMinutes(rounded).toInstant(ZoneOffset.UTC)
         }
         return PrayerDay(date, instants.map { it.atZone(phone).toLocalTime() }, "",
