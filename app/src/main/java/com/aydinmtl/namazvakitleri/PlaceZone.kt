@@ -17,7 +17,8 @@ import kotlin.math.roundToInt
  *
  * Çözüm: Öğle vakti, güneşin en yükseğe çıktığı andan birkaç dakika sonradır (Diyanet'te ~5 dk).
  * Güneşin en yükseğe çıktığı anı yerin boylamından UTC olarak hesaplayabiliriz. Diyanet'in öğle
- * saati ile bu an arasındaki fark, yerin UTC farkını verir (15 dakikaya yuvarlanır).
+ * saati ile bu an arasındaki fark, yerin UTC farkını verir (gerçek bir saat dilimi farkına
+ * yuvarlanır: tam ya da yarım saat, birkaç yerde 45 dakika).
  * Yaz saati de kendiliğinden hesaba girer, çünkü Diyanet'in saatleri yaz saatine göre değişir.
  *
  * Android'e bağlı değil; bilgisayarda test edilir (bkz. PlaceZoneTest).
@@ -31,9 +32,21 @@ object PlaceZone {
     private const val TOLERANCE = 6.0
 
     /**
+     * Dünyadaki saat dilimleri UTC'den tam ya da yarım saat farklıdır. Çeyrek saatli olan yalnızca
+     * şunlardır (dakika): Nepal +5:45, Batı Avustralya'da Eucla +8:45, Chatham Adaları +12:45
+     * (yazın +13:45).
+     */
+    private val QUARTER_HOUR_OFFSETS = listOf(345, 525, 765, 825)
+
+    /**
      * Yerin o günkü UTC farkı (dakika; ör. İsviçre kışın +60, Türkiye +180).
      * [dhuhr]: Diyanet'in öğle saati, [lon]: yerin boylamı.
      * Hesap tutarsızsa (ör. yanlış koordinat) null.
+     *
+     * Fark yalnızca GERÇEKTEN var olan saat dilimi farklarına yuvarlanır. Eskiden her 15 dakikalık
+     * değer kabul ediliyordu; yer adından bulunan koordinat yanlışsa (aynı adlı başka bir yer)
+     * +1:15 gibi var olmayan bir fark "tutarlı" sayılıp alarmlar 15 dakika kayabiliyordu. Şimdi
+     * böyle bir sonuç reddedilir (null) ve yer, telefonla aynı saat diliminde sayılır.
      */
     fun offsetMinutes(date: LocalDate, dhuhr: LocalTime, lon: Double): Int? {
         val noonUtc = PrayerCalc.solarNoonUtc(date, lon) * 60.0
@@ -41,7 +54,8 @@ object PlaceZone {
         // Gün sınırını aşan durumlar için farkı -12..+14 saat aralığına getir
         while (diff < -12 * 60) diff += 24 * 60
         while (diff > 14 * 60) diff -= 24 * 60
-        val rounded = (diff / 15.0).roundToInt() * 15
+        val halfHour = (diff / 30.0).roundToInt() * 30
+        val rounded = (QUARTER_HOUR_OFFSETS + halfHour).minByOrNull { abs(diff - it) } ?: halfHour
         if (abs(diff - rounded) > TOLERANCE) return null
         return rounded
     }

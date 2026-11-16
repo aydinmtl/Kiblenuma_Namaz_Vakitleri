@@ -46,6 +46,20 @@ class PlaceZoneTest {
     }
 
     @Test
+    fun var_olmayan_ceyrek_saatlik_fark_reddedilir() {
+        // Öğle 12:39: fark +1:15 çıkar. Böyle bir saat dilimi yok (koordinat yanlış demektir) -> güvenilmez
+        assertNull(PlaceZone.offsetMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(12, 39), cenevreLon))
+    }
+
+    @Test
+    fun yarim_saatlik_ve_45_dakikalik_dilimler_taninir() {
+        // Katmandu (Nepal, UTC+5:45), 07.11.2026: güneş 11:47'de en yüksekte, öğle ~11:52
+        assertEquals(345, PlaceZone.offsetMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(11, 52), 85.32))
+        // Yeni Delhi (Hindistan, UTC+5:30), 07.11.2026: güneş 12:05'te en yüksekte, öğle ~12:10
+        assertEquals(330, PlaceZone.offsetMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(12, 10), 77.21))
+    }
+
+    @Test
     fun ayni_saat_diliminde_fark_yok() {
         assertEquals(0, PlaceZone.shiftMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(12, 24), cenevreLon, zurich))
         assertEquals(0, PlaceZone.shiftMinutes(LocalDate.of(2026, 11, 8), LocalTime.of(12, 53), istanbulLon, istanbulZone))
