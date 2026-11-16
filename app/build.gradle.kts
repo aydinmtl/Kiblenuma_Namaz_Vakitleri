@@ -26,14 +26,6 @@ android {
     }
 
     signingConfigs {
-        // Elden kurulum (APK) için sabit anahtar. Play Store'a çıkarken
-        // gizli tutulan ayrı bir "upload key" kullanılacak.
-        create("sideload") {
-            storeFile = file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
         if (usePlayUpload) {
             create("upload") {
                 storeFile = file(uploadKeystore!!)
@@ -47,12 +39,13 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            // Elden kurulan APK her zaman aynı "sideload" anahtarıyla imzalanır (güncellemeler
-            // üst üste kurulabilsin). Play'e gidecek AAB ise yükleme anahtarıyla imzalanır.
-            signingConfig = signingConfigs.getByName(if (usePlayUpload) "upload" else "sideload")
-        }
-        debug {
-            signingConfig = signingConfigs.getByName("sideload")
+            // Elden kurulan APK'nın GERÇEK imzası burada atılmaz: Gradle APK'yı yalnızca bu bilgisayara
+            // özgü deneme anahtarıyla ("debug") imzalar; GitHub Actions bu imzayı silip gizli anahtarla
+            // yeniden imzalar (bkz. .github/workflows/build.yml, "APK'yı gizli anahtarla imzala").
+            // Gizli anahtar depoda DEĞİL, GitHub Secrets'tadır. Bu yüzden başka bir bilgisayarda
+            // derlenen APK, telefondaki Kıblenüma'nın üzerine güncelleme olarak kurulamaz.
+            // Play'e gidecek AAB ise yükleme anahtarıyla imzalanır.
+            signingConfig = signingConfigs.getByName(if (usePlayUpload) "upload" else "debug")
         }
     }
 

@@ -26,7 +26,9 @@ Telefonda en son sürümün `Kiblenuma.apk` dosyasını indir ve kur
 # çıktı: app/build/outputs/apk/release/app-release.apk
 ```
 
-Android SDK gerekir (Android Studio ile gelir).
+Android SDK gerekir (Android Studio ile gelir). Böyle derlenen APK yalnızca denemek içindir:
+bilgisayarın kendi deneme anahtarıyla imzalanır ve **Releases** sayfasından kurulmuş
+Kıblenüma'nın üzerine güncelleme olarak kurulamaz (aşağıya bak).
 
 ## Proje yapısı
 
@@ -44,6 +46,11 @@ Android SDK gerekir (Android Studio ile gelir).
 
 ## İmza anahtarı hakkında
 
-`app/debug.keystore` yalnızca elden kurulan (sideload) APK'lar için sabit bir test anahtarıdır;
-böylece her yeni APK eskisinin üzerine güncelleme olarak kurulur.
-Play Store'a çıkarken gizli tutulan ayrı bir yükleme anahtarı kullanılacak.
+**Releases** sayfasındaki APK'lar gizli bir anahtarla imzalanır. Anahtar depoda değildir;
+GitHub Secrets'ta durur ve imzayı yalnızca GitHub Actions atar. Böylece başka birinin derlediği
+bir APK, telefondaki Kıblenüma'nın üzerine "güncelleme" olarak kurulamaz.
+
+v1.0.98 ve öncesi, depoda açık duran bir deneme anahtarıyla imzalanıyordu. Yeni sürümler eski
+kurulumun üzerine **veri silinmeden** kurulur (Android'in "imza döndürme" özelliği); ayrıntı
+`docs/DEVIR_NOTLARI.md` içinde, "İmza" başlığında.
+Play Store'a çıkarken ayrıca gizli tutulan bir yükleme anahtarı kullanılacak (`PLAY_STORE.md`).
