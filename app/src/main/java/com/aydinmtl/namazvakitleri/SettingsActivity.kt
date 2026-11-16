@@ -121,7 +121,7 @@ class SettingsActivity : LangActivity() {
             val i = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                 .putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
                 .putExtra(Settings.EXTRA_CHANNEL_ID, Notifications.CHANNEL)
-            startActivity(i)
+            Ui.openSystemScreen(this, i)
         }
         tvPermissions.setOnClickListener { openPermissionFix() }
 
@@ -369,9 +369,9 @@ class SettingsActivity : LangActivity() {
 
     private fun openPermissionFix() {
         if (!Notifications.canPost(this)) {
-            startActivity(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
+            Ui.openSystemScreen(this, Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName))
         } else if (Build.VERSION.SDK_INT >= 31 && !AlarmScheduler.canExact(this)) {
-            startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
+            Ui.openSystemScreen(this, Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
         }
     }
 
@@ -405,12 +405,30 @@ class SettingsActivity : LangActivity() {
         if (requestCode == LocationConsent.REQUEST_CODE) {
             val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
             Store.setAutoLocation(this, granted)
-            if (!granted) Toast.makeText(this, getString(R.string.set_loc_perm_denied), Toast.LENGTH_SHORT).show()
+            if (!granted) onLocationPermissionDenied()
             bind()
             if (granted) checkLocationNow()
             return
         }
         bind()
+    }
+
+    /**
+     * Konum izni verilmedi. Android, izin iki kez reddedilince (ya da "bir daha sorma" denince) izin
+     * penceresini artık göstermez; o zaman anahtarı açmak hiçbir şey yapmıyor gibi görünür. Bu
+     * durumda telefonun ayarlarındaki izin sayfasına götüren bir pencere açılır. Android hâlâ
+     * soracaksa (ilk ret) kısa bildirim yeter.
+     */
+    private fun onLocationPermissionDenied() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            Toast.makeText(this, getString(R.string.set_loc_perm_denied), Toast.LENGTH_SHORT).show()
+            return
+        }
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setMessage(R.string.set_loc_perm_blocked)
+            .setPositiveButton(R.string.set_open_phone_settings) { _, _ -> Ui.openSystemScreen(this, Ui.appSettingsIntent(this)) }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     /** Konum kontrolü sürüyor mu (aynı anda iki kez başlamasın). */

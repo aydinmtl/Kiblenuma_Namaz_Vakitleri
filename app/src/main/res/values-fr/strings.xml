@@ -46,6 +46,7 @@
     <string name="err_bad_response">réponse inattendue du serveur</string>
     <string name="err_unexpected">erreur inattendue</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
+    <string name="err_settings_screen">Impossible d\'ouvrir cet écran. Ouvrez Paramètres → Applications → Kıblenüma sur le téléphone.</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Langue : français. Touchez pour changer.</string>
@@ -242,6 +243,8 @@
     <string name="method_isha_minutes">%1$d min après le Maghrib</string>
     <string name="method_isha_angle">soleil à %1$s° sous l\'horizon</string>
     <string name="method_details">Fajr : soleil à %1$s° sous l\'horizon. Isha : %2$s.\n%3$s\nLes horaires sont calculés sur le téléphone par des formules astronomiques (sans Internet).</string>
+    <string name="set_loc_perm_blocked">Autorisation de position refusée. Si le téléphone ne la redemande plus, vous pouvez l\'accorder à Kıblenüma dans les paramètres du téléphone.</string>
+    <string name="set_open_phone_settings">Ouvrir les paramètres</string>
 
     <!-- Konum seçimi -->
     <string name="loc_auto_failed">Votre position n\'a pas pu être trouvée automatiquement : %1$s\nVous pouvez choisir votre ville à la main pour l\'instant.</string>

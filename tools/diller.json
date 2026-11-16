@@ -214,6 +214,12 @@
         "Dil · Langue · Language · Sprache",
         "Dil · Langue · Language · Sprache",
         "Dil · Langue · Language · Sprache"
+      ],
+      "err_settings_screen": [
+        "Ayar ekranı açılamadı. Telefonun Ayarlar → Uygulamalar → Kıblenüma sayfasından açabilirsin.",
+        "Impossible d'ouvrir cet écran. Ouvrez Paramètres → Applications → Kıblenüma sur le téléphone.",
+        "Could not open this settings screen. Open Settings → Apps → Kıblenüma on your phone.",
+        "Dieser Bildschirm konnte nicht geöffnet werden. Öffne Einstellungen → Apps → Kıblenüma auf dem Telefon."
       ]
     }
   },
@@ -1269,6 +1275,18 @@
         "Fajr : soleil à %1$s° sous l'horizon. Isha : %2$s.\n%3$s\nLes horaires sont calculés sur le téléphone par des formules astronomiques (sans Internet).",
         "Fajr: sun %1$s° below the horizon. Isha: %2$s.\n%3$s\nTimes are calculated on the phone with astronomical formulas (no internet needed).",
         "Fadschr: Sonne %1$s° unter dem Horizont. Ischa: %2$s.\n%3$s\nDie Zeiten werden auf dem Telefon mit astronomischen Formeln berechnet (ohne Internet)."
+      ],
+      "set_loc_perm_blocked": [
+        "Konum izni verilmedi. Telefon bu izni yeniden sormuyorsa, telefonun ayarlarından Kıblenüma'ya konum izni verebilirsin.",
+        "Autorisation de position refusée. Si le téléphone ne la redemande plus, vous pouvez l'accorder à Kıblenüma dans les paramètres du téléphone.",
+        "Location permission not granted. If the phone no longer asks, you can allow location for Kıblenüma in the phone's settings.",
+        "Standortberechtigung nicht erteilt. Wenn das Telefon nicht mehr fragt, kannst du Kıblenüma den Standort in den Einstellungen des Telefons erlauben."
+      ],
+      "set_open_phone_settings": [
+        "Telefon ayarlarını aç",
+        "Ouvrir les paramètres",
+        "Open phone settings",
+        "Telefon-Einstellungen öffnen"
       ]
     }
   },

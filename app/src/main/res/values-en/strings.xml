@@ -46,6 +46,7 @@
     <string name="err_bad_response">unexpected server response</string>
     <string name="err_unexpected">unexpected error</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
+    <string name="err_settings_screen">Could not open this settings screen. Open Settings → Apps → Kıblenüma on your phone.</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Language: English. Tap to change.</string>
@@ -240,6 +241,8 @@
     <string name="method_isha_minutes">%1$d min after Maghrib</string>
     <string name="method_isha_angle">sun %1$s° below the horizon</string>
     <string name="method_details">Fajr: sun %1$s° below the horizon. Isha: %2$s.\n%3$s\nTimes are calculated on the phone with astronomical formulas (no internet needed).</string>
+    <string name="set_loc_perm_blocked">Location permission not granted. If the phone no longer asks, you can allow location for Kıblenüma in the phone\'s settings.</string>
+    <string name="set_open_phone_settings">Open phone settings</string>
 
     <!-- Konum seçimi -->
     <string name="loc_auto_failed">Your location could not be found automatically: %1$s\nYou can choose your city manually for now.</string>

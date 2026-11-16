@@ -455,7 +455,8 @@ class MainActivity : LangActivity() {
             if (!Notifications.canPost(this)) {
                 lines.add(getString(R.string.notif_perm_off))
                 action = {
-                    startActivity(
+                    Ui.openSystemScreen(
+                        this,
                         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName),
                     )
                 }
@@ -463,7 +464,7 @@ class MainActivity : LangActivity() {
                 lines.add(getString(R.string.exact_alarm_needed))
                 action = {
                     if (Build.VERSION.SDK_INT >= 31) {
-                        startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
+                        Ui.openSystemScreen(this, Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
                     }
                 }
             }

@@ -2,12 +2,16 @@ package com.aydinmtl.namazvakitleri
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.WindowInsets
+import android.widget.Toast
 import java.io.IOException
 import org.json.JSONException
 
@@ -33,6 +37,30 @@ object Ui {
         }
         root.requestApplyInsets()
     }
+
+    /**
+     * Telefonun bir ayar ekranını açar (bildirim ayarları, "Alarmlar ve hatırlatıcılar" izni...).
+     * Bazı telefonlarda istenen ekran yoktur; Android o zaman hata fırlatır ve korunmayan çağrı
+     * uygulamayı kapatır. Burada önce istenen ekran, olmazsa uygulamanın genel ayar sayfası
+     * denenir; o da açılmazsa nereden açılacağını söyleyen bir ileti gösterilir.
+     */
+    fun openSystemScreen(activity: Activity, intent: Intent) {
+        try {
+            activity.startActivity(intent)
+            return
+        } catch (e: Exception) {
+            // İstenen ekran bu telefonda yok: aşağıda genel sayfa denenir.
+        }
+        try {
+            activity.startActivity(appSettingsIntent(activity))
+        } catch (e: Exception) {
+            Toast.makeText(activity, activity.getString(R.string.err_settings_screen), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /** Telefonun ayarlarında bu uygulamanın sayfası (izinler buradan verilir). */
+    fun appSettingsIntent(ctx: Context): Intent =
+        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${ctx.packageName}"))
 
     /**
      * Bir hatayı kullanıcıya gösterilecek kısa, seçili dildeki bir ifadeye çevirir.

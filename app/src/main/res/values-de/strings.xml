@@ -46,6 +46,7 @@
     <string name="err_bad_response">unerwartete Serverantwort</string>
     <string name="err_unexpected">unerwarteter Fehler</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
+    <string name="err_settings_screen">Dieser Bildschirm konnte nicht geöffnet werden. Öffne Einstellungen → Apps → Kıblenüma auf dem Telefon.</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Sprache: Deutsch. Zum Ändern tippen.</string>
@@ -240,6 +241,8 @@
     <string name="method_isha_minutes">%1$d Min. nach Maghrib</string>
     <string name="method_isha_angle">Sonne %1$s° unter dem Horizont</string>
     <string name="method_details">Fadschr: Sonne %1$s° unter dem Horizont. Ischa: %2$s.\n%3$s\nDie Zeiten werden auf dem Telefon mit astronomischen Formeln berechnet (ohne Internet).</string>
+    <string name="set_loc_perm_blocked">Standortberechtigung nicht erteilt. Wenn das Telefon nicht mehr fragt, kannst du Kıblenüma den Standort in den Einstellungen des Telefons erlauben.</string>
+    <string name="set_open_phone_settings">Telefon-Einstellungen öffnen</string>
 
     <!-- Konum seçimi -->
     <string name="loc_auto_failed">Dein Standort wurde nicht automatisch gefunden: %1$s\nDu kannst deine Stadt vorerst von Hand wählen.</string>
