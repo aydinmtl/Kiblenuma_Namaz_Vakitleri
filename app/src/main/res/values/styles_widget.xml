@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+      Widget yazıları. Sütunlar dardır ve widget'ın boyu sabittir; vakit adları ise dile göre uzar
+      ("Maghrib", "Fadschr", "Sunrise"). Bu yüzden yazılar "autoSize" ile sığdırılır: yazı en büyük
+      boyuttan başlar, sütuna sığana kadar küçülür ve hiçbir dilde kırpılmaz.
+      autoSize'ın çalışması için genişlik ve yükseklik belli olmalıdır ("wrap_content" olmaz);
+      bu yüzden yükseklikler sabit verilmiştir.
+    -->
     <style name="WCol">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -7,22 +14,30 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:orientation">vertical</item>
     </style>
-
     <style name="WName">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/muted</item>
         <item name="android:textSize">11sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:autoSizeMinTextSize">7sp</item>
+        <item name="android:autoSizeMaxTextSize">11sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
     </style>
-
     <style name="WTime">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:autoSizeMinTextSize">9sp</item>
+        <item name="android:autoSizeMaxTextSize">14sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
         <item name="android:text">--:--</item>
     </style>
     <!-- Küçük (4x1) widget sütunları -->
@@ -35,21 +50,29 @@
         <item name="android:orientation">vertical</item>
         <item name="android:paddingVertical">4dp</item>
     </style>
-
     <style name="WNameSmall">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">18dp</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">13sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:autoSizeMinTextSize">8sp</item>
+        <item name="android:autoSizeMaxTextSize">13sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
     </style>
-
     <style name="WTimeSmall">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:autoSizeMinTextSize">9sp</item>
+        <item name="android:autoSizeMaxTextSize">14sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
         <item name="android:text">--:--</item>
     </style>
 </resources>

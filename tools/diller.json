@@ -184,6 +184,36 @@
         "Connexion Internet impossible.",
         "Could not connect to the internet.",
         "Keine Internetverbindung."
+      ],
+      "err_offline": [
+        "internet bağlantısı yok",
+        "pas de connexion Internet",
+        "no internet connection",
+        "keine Internetverbindung"
+      ],
+      "err_server": [
+        "sunucu hatası %1$d",
+        "erreur du serveur %1$d",
+        "server error %1$d",
+        "Serverfehler %1$d"
+      ],
+      "err_bad_response": [
+        "sunucudan beklenmeyen yanıt",
+        "réponse inattendue du serveur",
+        "unexpected server response",
+        "unerwartete Serverantwort"
+      ],
+      "err_unexpected": [
+        "beklenmeyen hata",
+        "erreur inattendue",
+        "unexpected error",
+        "unerwarteter Fehler"
+      ],
+      "lang_pick_title": [
+        "Dil · Langue · Language · Sprache",
+        "Dil · Langue · Language · Sprache",
+        "Dil · Langue · Language · Sprache",
+        "Dil · Langue · Language · Sprache"
       ]
     }
   },
@@ -233,34 +263,22 @@
         "Dhikr-Zähler"
       ],
       "btn_quiz": [
-        "🌳  Aile Halkası · Bilgi Yarışması",
-        "🌳  Aile Halkası · Quiz en famille",
-        "🌳  Aile Halkası · Family quiz",
-        "🌳  Aile Halkası · Familienquiz"
+        "🌳  Bilgi Yarışması",
+        "🌳  Quiz",
+        "🌳  Quiz",
+        "🌳  Wissensquiz"
       ],
       "btn_prayer_game": [
-        "🕌  Namaz Öğreniyorum · Çocuklar için oyun",
-        "🕌  J'apprends la prière · Jeu pour enfants",
-        "🕌  Learning to pray · Game for children",
-        "🕌  Ich lerne beten · Spiel für Kinder"
+        "🕌  Namaz Öğreniyorum",
+        "🕌  J'apprends la prière",
+        "🕌  Learning to Pray",
+        "🕌  Beten lernen"
       ],
       "btn_namaz3d": [
         "🎬  Namazı 3B izle",
         "🎬  Voir la prière en 3D",
         "🎬  Watch the prayer in 3D",
         "🎬  Das Gebet in 3D ansehen"
-      ],
-      "btn_daily": [
-        "💡  Günün sorusu",
-        "💡  Question du jour",
-        "💡  Question of the day",
-        "💡  Frage des Tages"
-      ],
-      "btn_daily_done": [
-        "💡  Günün sorusu ✓",
-        "💡  Question du jour ✓",
-        "💡  Question of the day ✓",
-        "💡  Frage des Tages ✓"
       ],
       "place_label": [
         "📍 %1$s  ›",
@@ -659,18 +677,6 @@
         "Reminder before a prayer time begins.",
         "Erinnerung vor Beginn einer Gebetszeit."
       ],
-      "ch_daily": [
-        "Günün sorusu",
-        "Question du jour",
-        "Question of the day",
-        "Frage des Tages"
-      ],
-      "ch_daily_desc": [
-        "Aile Halkası: akşam vaktinde günün sorusu (sessiz).",
-        "Aile Halkası : la question du jour au Maghrib (silencieux).",
-        "Aile Halkası: question of the day at Maghrib (silent).",
-        "Aile Halkası: Frage des Tages zum Maghrib (lautlos)."
-      ],
       "ch_adhan": [
         "Ezan sesi",
         "Adhan",
@@ -703,6 +709,7 @@
           },
           "fr": {
             "one": "%1$s dans %2$d minute",
+            "many": "%1$s dans %2$d minutes",
             "other": "%1$s dans %2$d minutes"
           },
           "en": {
@@ -715,12 +722,6 @@
           }
         }
       },
-      "notif_daily_title": [
-        "🌳 Günün sorusu",
-        "🌳 Question du jour",
-        "🌳 Question of the day",
-        "🌳 Frage des Tages"
-      ],
       "adhan_test": [
         "Deneme",
         "Essai",
@@ -1008,6 +1009,7 @@
           },
           "fr": {
             "one": "%1$d minute avant",
+            "many": "%1$d minutes avant",
             "other": "%1$d minutes avant"
           },
           "en": {
@@ -1376,6 +1378,7 @@
           },
           "fr": {
             "one": "dans %1$d jour",
+            "many": "dans %1$d jours",
             "other": "dans %1$d jours"
           },
           "en": {
@@ -1867,6 +1870,7 @@
           },
           "fr": {
             "one": "Total : %1$d prière",
+            "many": "Total : %1$d prières",
             "other": "Total : %1$d prières"
           },
           "en": {
@@ -2050,12 +2054,6 @@
         "Jeu d'ablutions et de prière pour enfants",
         "Ablution and prayer game for children",
         "Waschungs- und Gebetsspiel für Kinder"
-      ],
-      "learn_static_18": [
-        "Akşam vakti girince günün sorusunu bildir",
-        "Notifier la question du jour à la prière du coucher du soleil",
-        "Notify me of the daily question at sunset prayer",
-        "Tagesfrage zum Abendgebet melden"
       ],
       "learn_static_19": [
         "Aile hedeflerimiz",
@@ -2248,10 +2246,10 @@
         }
       },
       "learn_option": [
-        "Şık %1$s: %2$s.",
-        "Réponse %1$s : %2$s.",
-        "Option %1$s: %2$s.",
-        "Antwort %1$s: %2$s."
+        "Şık %1$d: %2$s.",
+        "Réponse %1$d : %2$s.",
+        "Option %1$d: %2$s.",
+        "Antwort %1$d: %2$s."
       ],
       "learn_report_title": [
         "Aile Halkası: hatalı olabilecek sorular",
@@ -2289,10 +2287,10 @@
         "Möchtest du fortfahren?"
       ],
       "learn_ui_001": [
-        "%1$s · %2$s. soru / %3$s · %4$s doğru",
-        "%1$s · Question %2$s / %3$s · %4$s bonnes réponses",
-        "%1$s · Question %2$s / %3$s · %4$s correct",
-        "%1$s · Frage %2$s / %3$s · %4$s richtig"
+        "%1$s · %2$d. soru / %3$d · %4$d doğru",
+        "%1$s · Question %2$d / %3$d · %4$d bonnes réponses",
+        "%1$s · Question %2$d / %3$d · %4$d correct",
+        "%1$s · Frage %2$d / %3$d · %4$d richtig"
       ],
       "learn_ui_002": [
         "Devam et",
@@ -2313,34 +2311,22 @@
         "Abbrechen"
       ],
       "learn_ui_005": [
-        "Ağacımız: %1$s · toplam %2$s doğru",
-        "Notre arbre : %1$s · %2$s bonnes réponses au total",
-        "Our tree: %1$s · %2$s correct in total",
-        "Unser Baum: %1$s · insgesamt %2$s richtig"
+        "Ağacımız: %1$s · toplam %2$d doğru",
+        "Notre arbre : %1$s · %2$d bonnes réponses au total",
+        "Our tree: %1$s · %2$d correct in total",
+        "Unser Baum: %1$s · insgesamt %2$d richtig"
       ],
       "learn_ui_006": [
-        "\nSonraki aşamaya (%1$s) %2$s doğru kaldı",
-        "\nEncore %2$s bonnes réponses pour %1$s",
-        "\n%2$s more correct answers to reach %1$s",
-        "\nNoch %2$s richtige Antworten bis %1$s"
+        "\nSonraki aşamaya (%1$s) %2$d doğru kaldı",
+        "\nEncore %2$d bonnes réponses pour %1$s",
+        "\n%2$d more correct answers to reach %1$s",
+        "\nNoch %2$d richtige Antworten bis %1$s"
       ],
       "learn_ui_007": [
         "\nAğacımız en büyük haline ulaştı!",
         "\nNotre arbre a atteint sa taille maximale !",
         "\nOur tree is fully grown!",
         "\nUnser Baum ist ausgewachsen!"
-      ],
-      "learn_ui_008": [
-        "💡 Günün sorusu ✓ (bugün cevaplandı)",
-        "💡 Question du jour ✓ (déjà répondue)",
-        "💡 Daily question ✓ (answered today)",
-        "💡 Tagesfrage ✓ (heute beantwortet)"
-      ],
-      "learn_ui_009": [
-        "💡 Günün sorusu",
-        "💡 Question du jour",
-        "💡 Daily question",
-        "💡 Tagesfrage"
       ],
       "learn_ui_010": [
         "🔁 Yanlışlarımı tekrar et",
@@ -2379,10 +2365,10 @@
         "Eine Runde läuft noch"
       ],
       "learn_ui_016": [
-        "%1$s: %2$s. sorudasın. Ne yapalım?",
-        "%1$s : tu en es à la question %2$s. Que faire ?",
-        "%1$s: you are on question %2$s. What next?",
-        "%1$s: Du bist bei Frage %2$s. Wie weiter?"
+        "%1$s: %2$d. sorudasın. Ne yapalım?",
+        "%1$s : tu en es à la question %2$d. Que faire ?",
+        "%1$s: you are on question %2$d. What next?",
+        "%1$s: Du bist bei Frage %2$d. Wie weiter?"
       ],
       "learn_ui_017": [
         "Yeni %1$s turu",
@@ -2427,10 +2413,10 @@
         "Starten"
       ],
       "learn_ui_024": [
-        "%1$s · Soru %2$s / %3$s · ✓ %4$s",
-        "%1$s · Question %2$s / %3$s · ✓ %4$s",
-        "%1$s · Question %2$s / %3$s · ✓ %4$s",
-        "%1$s · Frage %2$s / %3$s · ✓ %4$s"
+        "%1$s · Soru %2$d / %3$d · ✓ %4$d",
+        "%1$s · Question %2$d / %3$d · ✓ %4$d",
+        "%1$s · Question %2$d / %3$d · ✓ %4$d",
+        "%1$s · Frage %2$d / %3$d · ✓ %4$d"
       ],
       "learn_ui_025": [
         "%1$s, doğru cevap",
@@ -2487,10 +2473,10 @@
         "Nächste Frage ›"
       ],
       "learn_ui_034": [
-        "%1$s · Soru %2$s / %3$s · ✓ %4$s",
-        "%1$s · Question %2$s / %3$s · ✓ %4$s",
-        "%1$s · Question %2$s / %3$s · ✓ %4$s",
-        "%1$s · Frage %2$s / %3$s · ✓ %4$s"
+        "%1$s · Soru %2$d / %3$d · ✓ %4$d",
+        "%1$s · Question %2$d / %3$d · ✓ %4$d",
+        "%1$s · Question %2$d / %3$d · ✓ %4$d",
+        "%1$s · Frage %2$d / %3$d · ✓ %4$d"
       ],
       "learn_ui_035": [
         "Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma'dan Türkçe sesi indirebilirsin.",
@@ -2509,30 +2495,6 @@
         "🔊 Lire",
         "🔊 Read aloud",
         "🔊 Vorlesen"
-      ],
-      "learn_ui_038": [
-        "\nKaynak: ",
-        "\nSource : ",
-        "\nSource: ",
-        "\nQuelle: "
-      ],
-      "learn_ui_039": [
-        "\n\n🌱 Ağacımıza +1",
-        "\n\n🌱 +1 pour notre arbre",
-        "\n\n🌱 +1 for our tree",
-        "\n\n🌱 +1 für unseren Baum"
-      ],
-      "learn_ui_040": [
-        "Günün sorusu",
-        "Question du jour",
-        "Daily question",
-        "Tagesfrage"
-      ],
-      "learn_ui_041": [
-        "Tamam",
-        "OK",
-        "OK",
-        "OK"
       ],
       "learn_ui_042": [
         "Ağaç sıfırlansın mı?",
@@ -2637,16 +2599,16 @@
         "Am Zug: %1$s"
       ],
       "learn_ui_059": [
-        "3 yıldızdan %1$s",
-        "%1$s étoiles sur 3",
-        "%1$s out of 3 stars",
-        "%1$s von 3 Sternen"
+        "3 yıldızdan %1$d",
+        "%1$d étoiles sur 3",
+        "%1$d out of 3 stars",
+        "%1$d von 3 Sternen"
       ],
       "learn_ui_060": [
-        "%1$s sorudan %2$s doğru",
-        "%2$s bonnes réponses sur %1$s",
-        "%2$s correct out of %1$s",
-        "%2$s von %1$s richtig"
+        "%1$d sorudan %2$d doğru",
+        "%2$d bonnes réponses sur %1$d",
+        "%2$d correct out of %1$d",
+        "%2$d von %1$d richtig"
       ],
       "learn_ui_061": [
         " doğru",
@@ -2745,10 +2707,10 @@
         "Bei welcher Baumstufe?"
       ],
       "learn_ui_077": [
-        "%1$s (%2$s doğru)",
-        "%1$s (%2$s bonnes réponses)",
-        "%1$s (%2$s correct)",
-        "%1$s (%2$s richtig)"
+        "%1$s (%2$d doğru)",
+        "%1$s (%2$d bonnes réponses)",
+        "%1$s (%2$d correct)",
+        "%1$s (%2$d richtig)"
       ],
       "learn_ui_078": [
         "Hedefi düzenle",
@@ -2787,22 +2749,22 @@
         "Aus: Der Text läuft ohne Ton weiter."
       ],
       "learn_ui_084": [
-        "Kaldığın yer: adım %1$s / %2$s",
-        "Reprendre à l'étape %1$s / %2$s",
-        "Resume at step %1$s / %2$s",
-        "Fortsetzen bei Schritt %1$s / %2$s"
+        "Kaldığın yer: adım %1$d / %2$d",
+        "Reprendre à l'étape %1$d / %2$d",
+        "Resume at step %1$d / %2$d",
+        "Fortsetzen bei Schritt %1$d / %2$d"
       ],
       "learn_ui_085": [
-        "%1$s adım",
-        "%1$s étapes",
-        "%1$s steps",
-        "%1$s Schritte"
+        "%1$d adım",
+        "%1$d étapes",
+        "%1$d steps",
+        "%1$d Schritte"
       ],
       "learn_ui_086": [
-        "Bu bölümde %1$s. adımda kalmıştın (%2$s adım). Nereden başlayalım?",
-        "Tu en étais à l'étape %1$s sur %2$s. Où commencer ?",
-        "You stopped at step %1$s of %2$s. Where shall we start?",
-        "Du warst bei Schritt %1$s von %2$s. Wo beginnen wir?"
+        "Bu bölümde %1$d. adımda kalmıştın (%2$d adım). Nereden başlayalım?",
+        "Tu en étais à l'étape %1$d sur %2$d. Où commencer ?",
+        "You stopped at step %1$d of %2$d. Where shall we start?",
+        "Du warst bei Schritt %1$d von %2$d. Wo beginnen wir?"
       ],
       "learn_ui_087": [
         "Kaldığım yerden devam et",
@@ -2817,10 +2779,10 @@
         "Von vorn beginnen"
       ],
       "learn_ui_089": [
-        "🏆 Namazı %1$s kez tamamladın",
-        "🏆 Tu as terminé la prière %1$s fois",
-        "🏆 You completed the prayer %1$s times",
-        "🏆 Du hast das Gebet %1$s-mal abgeschlossen"
+        "🏆 Namazı %1$d kez tamamladın",
+        "🏆 Tu as terminé la prière %1$d fois",
+        "🏆 You completed the prayer %1$d times",
+        "🏆 Du hast das Gebet %1$d-mal abgeschlossen"
       ],
       "learn_ui_090": [
         "%1$s %2$s · Hazırlık",
@@ -2835,10 +2797,10 @@
         "Wir legen den Gebetsteppich zur Qibla aus\n(zum Überspringen aufs Bild tippen)"
       ],
       "learn_ui_092": [
-        "%1$s %2$s · Adım %3$s / %4$s",
-        "%1$s %2$s · Étape %3$s / %4$s",
-        "%1$s %2$s · Step %3$s / %4$s",
-        "%1$s %2$s · Schritt %3$s / %4$s"
+        "%1$s %2$s · Adım %3$d / %4$d",
+        "%1$s %2$s · Étape %3$d / %4$d",
+        "%1$s %2$s · Step %3$d / %4$d",
+        "%1$s %2$s · Schritt %3$d / %4$d"
       ],
       "learn_ui_093": [
         "Devam ›",
@@ -2871,10 +2833,10 @@
         "%1$s, richtig"
       ],
       "learn_ui_098": [
-        "Adım %1$s · %2$s",
-        "Étape %1$s · %2$s",
-        "Step %1$s · %2$s",
-        "Schritt %1$s · %2$s"
+        "Adım %1$d · %2$s",
+        "Étape %1$d · %2$s",
+        "Step %1$d · %2$s",
+        "Schritt %1$d · %2$s"
       ],
       "learn_ui_099": [
         "✓ Aferin!\n%1$s",

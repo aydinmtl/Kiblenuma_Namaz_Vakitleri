@@ -108,7 +108,7 @@ class MosquesActivity : LangActivity() {
                 items.clear()
                 items.addAll(result)
                 adapter.notifyDataSetChanged()
-                val where = if (fromGps) getString(R.string.mq_where_gps) else getString(R.string.mq_where_place, Store.placeName(this))
+                val where = if (fromGps) getString(R.string.mq_where_gps) else getString(R.string.mq_where_place, Store.placeLabel(this))
                 tvSubtitle.text = if (result.isEmpty()) {
                     getString(R.string.mq_none, radiusKm)
                 } else {

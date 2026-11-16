@@ -7,3 +7,9 @@ local.properties
 .DS_Store
 captures/
 .kotlin/
+# İmza anahtarları depoya asla girmez (GitHub Secrets'ta durur; bkz. docs/DEVIR_NOTLARI.md, "İmza")
+*.jks
+*.keystore
+*.p12
+# Yardımcı araçların artıkları
+__pycache__/

@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+      İmsakiye tablosu: bir tarih sütunu ve altı dar vakit sütunu. Yazı tek satırda kalır ve
+      sığmazsa küçülür (autoSize); böylece "Maghrib" ya da "13 nov. ven." kelime ortasından bölünmez.
+      Yükseklik "sp" ile verilmiştir: telefonda büyük yazı seçiliyse satır da büyür.
+    -->
     <style name="ImsakiyeCell">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">20sp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">13sp</item>
         <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:autoSizeMinTextSize">8sp</item>
+        <item name="android:autoSizeMaxTextSize">13sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
     </style>
-
     <style name="ImsakiyeHead" parent="ImsakiyeCell">
         <item name="android:textColor">@color/gold</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">12sp</item>
+        <item name="android:autoSizeMaxTextSize">12sp</item>
     </style>
 </resources>

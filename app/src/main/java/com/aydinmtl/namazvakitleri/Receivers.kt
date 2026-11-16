@@ -33,16 +33,14 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
         val after = if (fire.isAfter(now)) fire else now
 
         // 1) ÖNCE sıradaki alarmı kur. Her seferinde yalnızca bir alarm kurulduğu için bu adım
-        //    atlanırsa bütün bildirimler durur. Bu yüzden bildirimden, ezandan ve günün
-        //    sorusundan önce yapılır; onlardaki bir hata zinciri koparamaz.
+        //    atlanırsa bütün bildirimler durur. Bu yüzden bildirimden ve ezandan önce
+        //    yapılır; onlardaki bir hata zinciri koparamaz.
         attempt("sıradaki alarm") { AlarmScheduler.schedule(app, after) }
 
         // 2) Vakit bildirimi / hatırlatma / ezan
         attempt("bildirim") { notifyPrayer(app, intent, index, atMs, fireMs, reminder) }
 
-        // 3) Aile Halkası: akşam vakti girince günün sorusu (açıksa ve bugün henüz cevaplanmadıysa)
-        attempt("günün sorusu") { notifyDailyQuestion(app, index, atMs, fireMs, reminder) }
-
+        // 3) Widget
         attempt("widget") { PrayerWidget.updateAll(app) }
 
         // 4) Vakit verisi azaldıysa yenilemeyi kuyruğa koy. Ağ isteği burada yapılmaz: alıcının
@@ -73,15 +71,6 @@ class PrayerAlarmReceiver : BroadcastReceiver() {
         // izni yoksa) bildirim SESLİ gönderilir; yoksa kullanıcı vakti hiç duymaz.
         val adhanStarted = playAdhan && AdhanService.start(app, m)
         Notifications.showPrayer(app, m, silent = adhanStarted)
-    }
-
-    private fun notifyDailyQuestion(app: Context, index: Int, atMs: Long, fireMs: Long, reminder: Boolean) {
-        if (index != MAGHRIB || reminder || !Store.dailyNotify(app)) return
-        if (!AlarmPlan.shouldNotify(false, System.currentTimeMillis(), fireMs, atMs)) return
-        val day = Moment.fromEpochMillis(index, atMs).at.toLocalDate()
-        if (Store.dailyDoneDate(app) == day.toString()) return
-        val id = QuizDeck.dailyId(QuizBank.all(app).map { it.id }, day)
-        QuizBank.byId(app, id ?: "")?.let { Notifications.showDailyQuestion(app, it.text) }
     }
 }
 

@@ -4,11 +4,11 @@
 <resources>
 
     <!-- Genel -->
-    <string name="app_name">Kıblenüma</string>
+    <string name="app_name" translatable="false">Kıblenüma</string>
     <string name="widget_desc">Sıradaki vakit, kalan süre ve günün 6 vakti</string>
     <string name="widget_small_desc">Tek satırda sıradaki vakit ve kalan süre</string>
-    <string name="widget_big_label">Kıblenüma (4x2)</string>
-    <string name="widget_small_label">Kıblenüma (4x1)</string>
+    <string name="widget_big_label" translatable="false">Kıblenüma (4x2)</string>
+    <string name="widget_small_label" translatable="false">Kıblenüma (4x1)</string>
     <string name="notify">Vakit bildirimleri</string>
     <string name="imsakiye">İmsakiye</string>
     <string name="qibla">Kıble</string>
@@ -45,6 +45,11 @@
     </string-array>
     <string name="hijri_date">%1$d %2$s %3$d</string>
     <string name="no_internet">İnternete bağlanılamadı.</string>
+    <string name="err_offline">internet bağlantısı yok</string>
+    <string name="err_server">sunucu hatası %1$d</string>
+    <string name="err_bad_response">sunucudan beklenmeyen yanıt</string>
+    <string name="err_unexpected">beklenmeyen hata</string>
+    <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Dil: Türkçe. Değiştirmek için dokun.</string>
@@ -54,11 +59,9 @@
     <string name="btn_holy_days">Dini Günler</string>
     <string name="btn_kaza">Kaza Çetelesi</string>
     <string name="btn_zikir">Zikirmatik</string>
-    <string name="btn_quiz">🌳  Aile Halkası · Bilgi Yarışması</string>
-    <string name="btn_prayer_game">🕌  Namaz Öğreniyorum · Çocuklar için oyun</string>
+    <string name="btn_quiz">🌳  Bilgi Yarışması</string>
+    <string name="btn_prayer_game">🕌  Namaz Öğreniyorum</string>
     <string name="btn_namaz3d">🎬  Namazı 3B izle</string>
-    <string name="btn_daily">💡  Günün sorusu</string>
-    <string name="btn_daily_done">💡  Günün sorusu ✓</string>
     <string name="place_label">📍 %1$s  ›</string>
     <string name="place_searching">📍 Konum aranıyor…</string>
     <string name="place_finding">Bulunduğun yer bulunuyor…</string>
@@ -131,8 +134,6 @@
     <string name="ch_silent_desc">Ezan sesi çalarken gösterilen sessiz vakit bildirimi.</string>
     <string name="ch_reminder">Vakit hatırlatması</string>
     <string name="ch_reminder_desc">Vakit girmeden önce hatırlatma.</string>
-    <string name="ch_daily">Günün sorusu</string>
-    <string name="ch_daily_desc">Aile Halkası: akşam vaktinde günün sorusu (sessiz).</string>
     <string name="ch_adhan">Ezan sesi</string>
     <string name="ch_adhan_desc">Ezan çalarken durdurma düğmesi.</string>
     <string name="notif_prayer_title">%1$s vakti</string>
@@ -141,7 +142,6 @@
         <item quantity="one">%1$s vaktine %2$d dakika kaldı</item>
         <item quantity="other">%1$s vaktine %2$d dakika kaldı</item>
     </plurals>
-    <string name="notif_daily_title">🌳 Günün sorusu</string>
     <string name="adhan_test">Deneme</string>
     <string name="adhan_default">Ezan</string>
     <string name="adhan_playing">%1$s · Ezan okunuyor</string>
@@ -390,7 +390,6 @@
     <string name="learn_static_15">Bilgi Yarışması</string>
     <string name="learn_static_16">İslam dini hakkında</string>
     <string name="learn_static_17">Çocuklar için abdest ve namaz oyunu</string>
-    <string name="learn_static_18">Akşam vakti girince günün sorusunu bildir</string>
     <string name="learn_static_19">Aile hedeflerimiz</string>
     <string name="learn_static_20">+ Hedef ekle</string>
     <string name="learn_static_21">Ağacı sıfırla</string>
@@ -429,7 +428,7 @@
         <item>Abdest</item>
         <item>Namaz</item>
     </string-array>
-    <string name="learn_option">Şık %1$s: %2$s.</string>
+    <string name="learn_option">Şık %1$d: %2$s.</string>
     <string name="learn_report_title">Aile Halkası: hatalı olabilecek sorular</string>
     <string name="learn_report_missing">(soru artık bankada yok)</string>
     <string name="learn_report_answer">Cevap: %1$s</string>
@@ -437,22 +436,20 @@
 
     <!-- Learning UI -->
     <string name="learn_ui_000">Kaldığın yerden devam etmek ister misin?</string>
-    <string name="learn_ui_001">%1$s · %2$s. soru / %3$s · %4$s doğru</string>
+    <string name="learn_ui_001">%1$s · %2$d. soru / %3$d · %4$d doğru</string>
     <string name="learn_ui_002">Devam et</string>
     <string name="learn_ui_003">Yeni tur</string>
     <string name="learn_ui_004">Vazgeç</string>
-    <string name="learn_ui_005">Ağacımız: %1$s · toplam %2$s doğru</string>
-    <string name="learn_ui_006">\nSonraki aşamaya (%1$s) %2$s doğru kaldı</string>
+    <string name="learn_ui_005">Ağacımız: %1$s · toplam %2$d doğru</string>
+    <string name="learn_ui_006">\nSonraki aşamaya (%1$s) %2$d doğru kaldı</string>
     <string name="learn_ui_007">\nAğacımız en büyük haline ulaştı!</string>
-    <string name="learn_ui_008">💡 Günün sorusu ✓ (bugün cevaplandı)</string>
-    <string name="learn_ui_009">💡 Günün sorusu</string>
     <string name="learn_ui_010">🔁 Yanlışlarımı tekrar et</string>
     <string name="learn_ui_011">⚑ İşaretlediğim sorular</string>
     <string name="learn_ui_012">▶ Devam</string>
     <string name="learn_ui_013">%1$s seviye. %2$s.</string>
     <string name="learn_ui_014"> Yarım kalan tur var.</string>
     <string name="learn_ui_015">Yarım kalan tur var</string>
-    <string name="learn_ui_016">%1$s: %2$s. sorudasın. Ne yapalım?</string>
+    <string name="learn_ui_016">%1$s: %2$d. sorudasın. Ne yapalım?</string>
     <string name="learn_ui_017">Yeni %1$s turu</string>
     <string name="learn_ui_018">Yanlışları tekrar</string>
     <string name="learn_ui_019">%1$s seviye</string>
@@ -460,7 +457,7 @@
     <string name="learn_ui_021">Adları virgülle ayır; sorular sırayla gelir. Tek kişi oynuyorsan boş bırak.</string>
     <string name="learn_ui_022">Kimler oynuyor?</string>
     <string name="learn_ui_023">Başla</string>
-    <string name="learn_ui_024">%1$s · Soru %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_024">%1$s · Soru %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_025">%1$s, doğru cevap</string>
     <string name="learn_ui_026">%1$s, senin cevabın, yanlış</string>
     <string name="learn_ui_027">✓ Doğru!</string>
@@ -470,14 +467,10 @@
     <string name="learn_ui_031">\n(Bu soruyu daha önce bilmiştiniz; ağaç yalnızca yeni bilgiyle büyür.)</string>
     <string name="learn_ui_032">Sonucu gör ›</string>
     <string name="learn_ui_033">Sıradaki soru ›</string>
-    <string name="learn_ui_034">%1$s · Soru %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_034">%1$s · Soru %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_035">Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma\'dan Türkçe sesi indirebilirsin.</string>
     <string name="learn_ui_036">Kapat</string>
     <string name="learn_ui_037">🔊 Oku</string>
-    <string name="learn_ui_038">\nKaynak: </string>
-    <string name="learn_ui_039">\n\n🌱 Ağacımıza +1</string>
-    <string name="learn_ui_040">Günün sorusu</string>
-    <string name="learn_ui_041">Tamam</string>
     <string name="learn_ui_042">Ağaç sıfırlansın mı?</string>
     <string name="learn_ui_043">Ağacımız tohuma döner ve bütün sorular ağacı yeniden büyütebilir. </string>
     <string name="learn_ui_044">Hedefler ve yanlışlar listesi silinmez. Bu işlem geri alınamaz.</string>
@@ -495,8 +488,8 @@
     <string name="learn_ui_056">Bütün işaretler silinsin mi?</string>
     <string name="learn_ui_057">Sil</string>
     <string name="learn_ui_058">Sıra: %1$s</string>
-    <string name="learn_ui_059">3 yıldızdan %1$s</string>
-    <string name="learn_ui_060">%1$s sorudan %2$s doğru</string>
+    <string name="learn_ui_059">3 yıldızdan %1$d</string>
+    <string name="learn_ui_060">%1$d sorudan %2$d doğru</string>
     <string name="learn_ui_061"> doğru</string>
     <string name="learn_ui_062">\n\nYanlış bildiklerin \"Yanlışlarımı tekrar et\" bölümünde seni bekliyor.</string>
     <string name="learn_ui_063">Yanlışları yeniden tekrar et</string>
@@ -513,28 +506,28 @@
     <string name="learn_ui_074">Düzenlemek ya da silmek için hedefe basılı tut.</string>
     <string name="learn_ui_075">Ör: Birlikte dondurma yemeye gidiyoruz</string>
     <string name="learn_ui_076">Ağacımız hangi aşamaya gelince?</string>
-    <string name="learn_ui_077">%1$s (%2$s doğru)</string>
+    <string name="learn_ui_077">%1$s (%2$d doğru)</string>
     <string name="learn_ui_078">Hedefi düzenle</string>
     <string name="learn_ui_079">Yeni aile hedefi</string>
     <string name="learn_ui_080">Kaydet</string>
     <string name="learn_ui_081">Ekle</string>
     <string name="learn_ui_082">Açık: dualar ve sureler sesli okunur.</string>
     <string name="learn_ui_083">Kapalı: ses yok, yalnızca yazı ilerler.</string>
-    <string name="learn_ui_084">Kaldığın yer: adım %1$s / %2$s</string>
-    <string name="learn_ui_085">%1$s adım</string>
-    <string name="learn_ui_086">Bu bölümde %1$s. adımda kalmıştın (%2$s adım). Nereden başlayalım?</string>
+    <string name="learn_ui_084">Kaldığın yer: adım %1$d / %2$d</string>
+    <string name="learn_ui_085">%1$d adım</string>
+    <string name="learn_ui_086">Bu bölümde %1$d. adımda kalmıştın (%2$d adım). Nereden başlayalım?</string>
     <string name="learn_ui_087">Kaldığım yerden devam et</string>
     <string name="learn_ui_088">Baştan başla</string>
-    <string name="learn_ui_089">🏆 Namazı %1$s kez tamamladın</string>
+    <string name="learn_ui_089">🏆 Namazı %1$d kez tamamladın</string>
     <string name="learn_ui_090">%1$s %2$s · Hazırlık</string>
     <string name="learn_ui_091">Seccademizi kıbleye doğru seriyoruz\n(geçmek için resme dokun)</string>
-    <string name="learn_ui_092">%1$s %2$s · Adım %3$s / %4$s</string>
+    <string name="learn_ui_092">%1$s %2$s · Adım %3$d / %4$d</string>
     <string name="learn_ui_093">Devam ›</string>
     <string name="learn_ui_094">%1$s, yanlış</string>
     <string name="learn_ui_095">Neredeyse! Altın çerçeveli şıkka bir bak. 🙂</string>
     <string name="learn_ui_096">Olmadı, bir daha dene. Sen yaparsın! 💪</string>
     <string name="learn_ui_097">%1$s, doğru</string>
-    <string name="learn_ui_098">Adım %1$s · %2$s</string>
+    <string name="learn_ui_098">Adım %1$d · %2$s</string>
     <string name="learn_ui_099">✓ Aferin!\n%1$s</string>
     <string name="learn_ui_100">\nKaynak: %1$s</string>
     <string name="learn_ui_101">\n\nAbdestimiz tamam! Namaza geçelim mi?</string>

@@ -41,6 +41,11 @@
     </string-array>
     <string name="hijri_date">%1$d. %2$s %3$d n. H.</string>
     <string name="no_internet">Keine Internetverbindung.</string>
+    <string name="err_offline">keine Internetverbindung</string>
+    <string name="err_server">Serverfehler %1$d</string>
+    <string name="err_bad_response">unerwartete Serverantwort</string>
+    <string name="err_unexpected">unerwarteter Fehler</string>
+    <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Sprache: Deutsch. Zum Ändern tippen.</string>
@@ -50,11 +55,9 @@
     <string name="btn_holy_days">Religiöse Tage</string>
     <string name="btn_kaza">Verpasste Gebete</string>
     <string name="btn_zikir">Dhikr-Zähler</string>
-    <string name="btn_quiz">🌳  Aile Halkası · Familienquiz</string>
-    <string name="btn_prayer_game">🕌  Ich lerne beten · Spiel für Kinder</string>
+    <string name="btn_quiz">🌳  Wissensquiz</string>
+    <string name="btn_prayer_game">🕌  Beten lernen</string>
     <string name="btn_namaz3d">🎬  Das Gebet in 3D ansehen</string>
-    <string name="btn_daily">💡  Frage des Tages</string>
-    <string name="btn_daily_done">💡  Frage des Tages ✓</string>
     <string name="place_label">📍 %1$s  ›</string>
     <string name="place_searching">📍 Standort wird gesucht…</string>
     <string name="place_finding">Dein Ort wird ermittelt…</string>
@@ -127,8 +130,6 @@
     <string name="ch_silent_desc">Stille Benachrichtigung, während der Adhan läuft.</string>
     <string name="ch_reminder">Gebetserinnerung</string>
     <string name="ch_reminder_desc">Erinnerung vor Beginn einer Gebetszeit.</string>
-    <string name="ch_daily">Frage des Tages</string>
-    <string name="ch_daily_desc">Aile Halkası: Frage des Tages zum Maghrib (lautlos).</string>
     <string name="ch_adhan">Adhan</string>
     <string name="ch_adhan_desc">Stopp-Taste, während der Adhan läuft.</string>
     <string name="notif_prayer_title">Zeit für %1$s</string>
@@ -137,7 +138,6 @@
         <item quantity="one">Noch %2$d Minute bis %1$s</item>
         <item quantity="other">Noch %2$d Minuten bis %1$s</item>
     </plurals>
-    <string name="notif_daily_title">🌳 Frage des Tages</string>
     <string name="adhan_test">Test</string>
     <string name="adhan_default">Adhan</string>
     <string name="adhan_playing">%1$s · Adhan läuft</string>
@@ -386,7 +386,6 @@
     <string name="learn_static_15">Wissensquiz</string>
     <string name="learn_static_16">Über den Islam</string>
     <string name="learn_static_17">Waschungs- und Gebetsspiel für Kinder</string>
-    <string name="learn_static_18">Tagesfrage zum Abendgebet melden</string>
     <string name="learn_static_19">Unsere Familienziele</string>
     <string name="learn_static_20">+ Ziel hinzufügen</string>
     <string name="learn_static_21">Baum zurücksetzen</string>
@@ -425,7 +424,7 @@
         <item>Waschung</item>
         <item>Gebet</item>
     </string-array>
-    <string name="learn_option">Antwort %1$s: %2$s.</string>
+    <string name="learn_option">Antwort %1$d: %2$s.</string>
     <string name="learn_report_title">Familienkreis: möglicherweise fehlerhafte Fragen</string>
     <string name="learn_report_missing">(Frage nicht mehr im Katalog)</string>
     <string name="learn_report_answer">Antwort: %1$s</string>
@@ -433,22 +432,20 @@
 
     <!-- Learning UI -->
     <string name="learn_ui_000">Möchtest du fortfahren?</string>
-    <string name="learn_ui_001">%1$s · Frage %2$s / %3$s · %4$s richtig</string>
+    <string name="learn_ui_001">%1$s · Frage %2$d / %3$d · %4$d richtig</string>
     <string name="learn_ui_002">Fortfahren</string>
     <string name="learn_ui_003">Neue Runde</string>
     <string name="learn_ui_004">Abbrechen</string>
-    <string name="learn_ui_005">Unser Baum: %1$s · insgesamt %2$s richtig</string>
-    <string name="learn_ui_006">\nNoch %2$s richtige Antworten bis %1$s</string>
+    <string name="learn_ui_005">Unser Baum: %1$s · insgesamt %2$d richtig</string>
+    <string name="learn_ui_006">\nNoch %2$d richtige Antworten bis %1$s</string>
     <string name="learn_ui_007">\nUnser Baum ist ausgewachsen!</string>
-    <string name="learn_ui_008">💡 Tagesfrage ✓ (heute beantwortet)</string>
-    <string name="learn_ui_009">💡 Tagesfrage</string>
     <string name="learn_ui_010">🔁 Meine Fehler wiederholen</string>
     <string name="learn_ui_011">⚑ Meine markierten Fragen</string>
     <string name="learn_ui_012">▶ Weiter</string>
     <string name="learn_ui_013">Stufe %1$s. %2$s.</string>
     <string name="learn_ui_014"> Eine Runde läuft noch.</string>
     <string name="learn_ui_015">Eine Runde läuft noch</string>
-    <string name="learn_ui_016">%1$s: Du bist bei Frage %2$s. Wie weiter?</string>
+    <string name="learn_ui_016">%1$s: Du bist bei Frage %2$d. Wie weiter?</string>
     <string name="learn_ui_017">Neue Runde: %1$s</string>
     <string name="learn_ui_018">Fehler wiederholen</string>
     <string name="learn_ui_019">Stufe %1$s</string>
@@ -456,7 +453,7 @@
     <string name="learn_ui_021">Namen durch Kommas trennen; alle sind abwechselnd dran. Für eine Person leer lassen.</string>
     <string name="learn_ui_022">Wer spielt mit?</string>
     <string name="learn_ui_023">Starten</string>
-    <string name="learn_ui_024">%1$s · Frage %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_024">%1$s · Frage %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_025">%1$s, richtige Antwort</string>
     <string name="learn_ui_026">%1$s, deine Antwort, falsch</string>
     <string name="learn_ui_027">✓ Richtig!</string>
@@ -466,14 +463,10 @@
     <string name="learn_ui_031">\n(Diese Antwort kanntest du schon; der Baum wächst durch neues Wissen.)</string>
     <string name="learn_ui_032">Ergebnis ansehen ›</string>
     <string name="learn_ui_033">Nächste Frage ›</string>
-    <string name="learn_ui_034">%1$s · Frage %2$s / %3$s · ✓ %4$s</string>
+    <string name="learn_ui_034">%1$s · Frage %2$d / %3$d · ✓ %4$d</string>
     <string name="learn_ui_035">Die Stimme für die gewählte Sprache fehlt. Installiere sie in den Text-zu-Sprache-Einstellungen des Telefons.</string>
     <string name="learn_ui_036">Schließen</string>
     <string name="learn_ui_037">🔊 Vorlesen</string>
-    <string name="learn_ui_038">\nQuelle: </string>
-    <string name="learn_ui_039">\n\n🌱 +1 für unseren Baum</string>
-    <string name="learn_ui_040">Tagesfrage</string>
-    <string name="learn_ui_041">OK</string>
     <string name="learn_ui_042">Baum zurücksetzen?</string>
     <string name="learn_ui_043">Unser Baum wird wieder zum Samen und alle Fragen können ihn erneut wachsen lassen. </string>
     <string name="learn_ui_044">Ziele und Fehlerliste bleiben erhalten. Dies kann nicht rückgängig gemacht werden.</string>
@@ -491,8 +484,8 @@
     <string name="learn_ui_056">Alle Markierungen löschen?</string>
     <string name="learn_ui_057">Löschen</string>
     <string name="learn_ui_058">Am Zug: %1$s</string>
-    <string name="learn_ui_059">%1$s von 3 Sternen</string>
-    <string name="learn_ui_060">%2$s von %1$s richtig</string>
+    <string name="learn_ui_059">%1$d von 3 Sternen</string>
+    <string name="learn_ui_060">%2$d von %1$d richtig</string>
     <string name="learn_ui_061"> richtig</string>
     <string name="learn_ui_062">\n\nDeine Fehler warten unter „Meine Fehler wiederholen“ auf dich.</string>
     <string name="learn_ui_063">Fehler erneut wiederholen</string>
@@ -509,28 +502,28 @@
     <string name="learn_ui_074">Halte ein Ziel gedrückt, um es zu bearbeiten oder zu löschen.</string>
     <string name="learn_ui_075">Z. B. Zusammen Eis essen gehen</string>
     <string name="learn_ui_076">Bei welcher Baumstufe?</string>
-    <string name="learn_ui_077">%1$s (%2$s richtig)</string>
+    <string name="learn_ui_077">%1$s (%2$d richtig)</string>
     <string name="learn_ui_078">Ziel bearbeiten</string>
     <string name="learn_ui_079">Neues Familienziel</string>
     <string name="learn_ui_080">Speichern</string>
     <string name="learn_ui_081">Hinzufügen</string>
     <string name="learn_ui_082">Ein: Bittgebete und Suren werden vorgelesen.</string>
     <string name="learn_ui_083">Aus: Der Text läuft ohne Ton weiter.</string>
-    <string name="learn_ui_084">Fortsetzen bei Schritt %1$s / %2$s</string>
-    <string name="learn_ui_085">%1$s Schritte</string>
-    <string name="learn_ui_086">Du warst bei Schritt %1$s von %2$s. Wo beginnen wir?</string>
+    <string name="learn_ui_084">Fortsetzen bei Schritt %1$d / %2$d</string>
+    <string name="learn_ui_085">%1$d Schritte</string>
+    <string name="learn_ui_086">Du warst bei Schritt %1$d von %2$d. Wo beginnen wir?</string>
     <string name="learn_ui_087">Fortsetzen</string>
     <string name="learn_ui_088">Von vorn beginnen</string>
-    <string name="learn_ui_089">🏆 Du hast das Gebet %1$s-mal abgeschlossen</string>
+    <string name="learn_ui_089">🏆 Du hast das Gebet %1$d-mal abgeschlossen</string>
     <string name="learn_ui_090">%1$s %2$s · Vorbereitung</string>
     <string name="learn_ui_091">Wir legen den Gebetsteppich zur Qibla aus\n(zum Überspringen aufs Bild tippen)</string>
-    <string name="learn_ui_092">%1$s %2$s · Schritt %3$s / %4$s</string>
+    <string name="learn_ui_092">%1$s %2$s · Schritt %3$d / %4$d</string>
     <string name="learn_ui_093">Weiter ›</string>
     <string name="learn_ui_094">%1$s, falsch</string>
     <string name="learn_ui_095">Fast! Schau dir die Antwort mit dem goldenen Rahmen an. 🙂</string>
     <string name="learn_ui_096">Versuch es noch einmal. Du schaffst das! 💪</string>
     <string name="learn_ui_097">%1$s, richtig</string>
-    <string name="learn_ui_098">Schritt %1$s · %2$s</string>
+    <string name="learn_ui_098">Schritt %1$d · %2$s</string>
     <string name="learn_ui_099">✓ Gut gemacht!\n%1$s</string>
     <string name="learn_ui_100">\nQuelle: %1$s</string>
     <string name="learn_ui_101">\n\nUnsere Waschung ist fertig! Wollen wir beten?</string>

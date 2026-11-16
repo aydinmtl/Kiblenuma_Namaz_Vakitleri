@@ -22,8 +22,8 @@ Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. 
 | Araçlar | AGP 8.7.3, Kotlin 2.0.21, Gradle 8.14.3 (wrapper depoda) |
 | Paket | namespace `com.aydinmtl.namazvakitleri`, applicationId `com.aydinmtl.kiblenuma` |
 | Derleme | `.github/workflows/build.yml`: her PR'da ve `main`'e her push'ta birim testleri + `assembleRelease`, APK "artifact" olarak indirilebilir. Yalnızca `main` push'unda GitHub Release `v1.0.<run>` (`Kiblenuma.apk`) |
-| İmza | `app/debug.keystore` yalnızca elden kurulum içindir; Play için ayrı upload key gerekecek |
-| Lint | `abortOnError=false`, `checkReleaseBuilds=false` (bilinçli olarak gevşek; sıkılaştırılabilir) |
+| İmza | Elden kurulan APK'yı GitHub Actions gizli anahtarla imzalar (anahtar GitHub Secrets'ta, depoda yok). Ayrıntı aşağıda, "İmza" başlığında. Play için ayrı upload key gerekecek |
+| Lint | Android Lint her derlemede çalışır (`./gradlew lintDebug`); "hata" bulursa derleme durur, "uyarı"lar raporda kalır. Rapor: PR sayfası → Checks → Artifacts → `lint-raporu` |
 | Test | `app/src/test/`: JVM birim testleri (`./gradlew testDebugUnitTest`), yalnızca JUnit + org.json (test için) |
 | Kod denetimi | `.github/workflows/denetim.yml`: her PR'da ve `main`'e her push'ta **ktlint** (Kotlin kod düzeni, kurallar `.editorconfig`'te) ve **gitleaks** (şifre/anahtar sızıntısı taraması, bütün geçmiş dahil). İkisi de yalnızca GitHub Actions'ta çalışır; Gradle'a, uygulamaya ve APK'ya hiçbir şey eklemez. Ayrıntı aşağıda |
 
@@ -47,7 +47,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `LocationHelper.kt` | Tek seferlik konum (fused/network/gps), zaman aşımlı |
 | `LocationConsent.kt` | Konum izni öncesi gerekçe penceresi |
 | `AlarmScheduler.kt` | Yalnızca SIRADAKİ olay için alarm (vakit girişi veya X dk önce hatırlatma) |
-| `Receivers.kt` | `PrayerAlarmReceiver` (önce sonraki alarm, sonra bildirim, ezan, günün sorusu, widget; adımlar birbirinden bağımsız), `BootReceiver` |
+| `Receivers.kt` | `PrayerAlarmReceiver` (önce sonraki alarm, sonra bildirim, ezan, widget; adımlar birbirinden bağımsız), `BootReceiver` |
 | `SelectionGuard.kt` | Yer seçimi ile arka plan işlerini sıralayan kilit: YER sayacı (yalnızca seçili yer değişince) ve VERİ sayacı (alarmı etkileyen her değişiklikte). `GuardedPublication`: alarm kurmayı korur ve reddedilen çağrıyı yeniden dener |
 | `DataRefresh.kt` | WorkManager işleri: vakit verisi yenileme (internet varken) ve saatlik alarm bekçisi (kopan alarm zincirini onarır) |
 | `NotificationIds.kt` | Bütün bildirim numaraları tek yerde |
@@ -126,8 +126,41 @@ birleştirilmeden önce ikisinin de yeşil olması beklenir. Sürümler dosyanı
   commit geçmişinden silmeye çalışmadan önce o şifreyi/anahtarı geçersiz kıl ve yenisini üret**;
   bir kez GitHub'a çıkan sır sızmış sayılır. Play yükleme anahtarı ve şifreleri yalnızca GitHub
   Secrets'ta durmalı, depoya hiçbir zaman dosya olarak konmamalı.
-- `app/debug.keystore` (şifresi `android`) bir sır **değildir**: yalnızca elden kurulan APK'yı
-  imzalayan, herkese açık deneme anahtarıdır. Play anahtarıyla ilgisi yoktur.
+- Eski deneme anahtarı (`app/debug.keystore`, şifresi `android`) depodan kaldırıldı ama geçmiş
+  commit'lerde durur ve herkese açıktır; sır sayılmaz, gitleaks de onu sır olarak işaretlemez.
+  Güvenlik artık ona dayanmaz (bkz. "İmza").
+
+## İmza (elden kurulan APK)
+
+**Sorun neydi?** v1.0.98'e kadar APK, depoda açık duran deneme anahtarıyla imzalanıyordu. Android,
+bir uygulamanın üzerine yalnızca aynı anahtarla imzalı APK'yı güncelleme olarak kurar. Anahtar
+herkese açık olunca, kötü niyetli biri sahte bir "güncelleme" hazırlayıp yüklü uygulamanın
+verilerini okuyabilirdi.
+
+**Şimdi nasıl?**
+
+- Yeni bir gizli anahtar var (RSA 4096, sertifika adı `CN=Kiblenuma`, takma ad `kiblenuma`).
+  Yalnızca iki yerde durur: GitHub Secrets (`SIDELOAD_KEYSTORE_BASE64`, `SIDELOAD_STORE_PASSWORD`)
+  ve Aydın'ın bilgisayarındaki `~/Kiblenuma-anahtar/` klasörü (yedek). **Bu klasör kaybolursa ve
+  GitHub'daki gizli değişken de silinirse bir daha güncelleme çıkarılamaz**; klasör ayrıca güvenli
+  bir yere (ör. şifre yöneticisi, şifreli USB) yedeklenmeli. GitHub, gizli değişkeni geri okutmaz.
+- Gradle gerçek imzayı atmaz. `assembleRelease` APK'yı o bilgisayara özgü deneme anahtarıyla
+  imzalar; `.github/workflows/build.yml` içindeki "APK'yı gizli anahtarla imzala" adımı bu imzayı
+  silip `apksigner` ile yeniden imzalar ve sonucu denetler (yanlış anahtar çıkarsa derleme durur).
+- **İmza döndürme:** eski kurulumların veri kaybetmeden güncellenebilmesi için APK iki anahtarla
+  imzalanır. `app/signing/sideload-lineage.bin` (sır değildir, her APK'nın içinde de vardır) eski
+  anahtarın "yerimi bu anahtara bıraktım" beyanıdır.
+  - Android 9 ve üstü yeni anahtarı kullanır; eski kurulumun üzerine güncelleme olarak kurar.
+    Geçişten sonra yalnızca eski anahtarla imzalı bir APK'yı güncelleme olarak kabul etmez
+    (belgede eski anahtarın "geri dönme" yetkisi kapalıdır).
+  - Android 8.0 ve 8.1 imza döndürmeyi bilmez; onlar için eski anahtarın imzası da APK'da durur
+    (`OLD_SIDELOAD_KEYSTORE_BASE64`). Bu sürümlerde eski zayıflık sürer. Tamamen kapatmanın yolu
+    en düşük sürümü Android 9'a (minSdk 28) çıkarmaktır; bu, sahibinin kararıdır.
+- Başka birinin deposundan gelen PR'lar gizli anahtarı göremez; onların APK'sı deneme anahtarıyla
+  kalır (uyarı yazar). `main`'de anahtar yoksa derleme durur, APK yayınlanmaz.
+- Anahtarı değiştirmek gerekirse (sızarsa): yeni anahtar üret, `apksigner rotate --in
+  sideload-lineage.bin ...` ile belgeye ekle, Secrets'ı ve iş akışındaki parmak izini güncelle.
+  Android 9+ kurulumlar yine veri kaybetmeden güncellenir.
 
 ## Bilinen sorunlar ve şüpheler (öncelik sırasıyla)
 
@@ -213,3 +246,41 @@ Denetim raporundaki O1, O2, O3, O4, O5, O9 ve O13 maddeleri. Birim testleriyle s
 - **O13 — Liste bitince hesapla devam.** `PrayerTimeReader.listContinuation`: Diyanet listesi yarını
   kapsamıyorsa ve koordinat biliniyorsa devamı Diyanet ölçüleriyle hesaplanır (`PrayerDay.computed`);
   kaynak satırı ve imsakiye bunu belirtir. Telefonda: uçak modunda tarihi bir ay ileri alıp bak.
+
+## Faz 3 düzeltmeleri (Kasım 2026): diller, taşmalar, imza, altyapı
+
+Denetim raporundaki O6, O7, O8, O10, O11, O12, O14, sonradan eklenen O15 ve sahibinin ana ekran
+istekleri (O16). **Telefonda denenmesi gerekenler** her maddede yazılıdır.
+
+- **O6 — İlk açılış dili.** Yeni kurulumda dil telefonun diline göre seçilir (dört dilden biri
+  değilse İngilizce) ve ilk pencere dil seçimidir (`Lang.pick`). Eski kullanıcıya dil sorulmaz.
+  Telefonda: uygulamanın verisini silmeden güncelle (dil sorulmamalı); ayrı bir telefonda ya da
+  veriyi silip ilk açılışı dene.
+- **O7 — Kalan Türkçe metinler.** Hata iletileri `Ui.errorText` ile seçili dilde kısa ifadeye
+  çevrilir; Java'nın teknik iletisi ekrana basılmaz. Kullanıcıya gösterilecek yeni bir hata
+  yazarken `UserMessage` kullan. Telefonda: uçak modunda yer seçimini aç.
+- **O8 — Taşmalar.** Widget ve imsakiye yazıları sığacak kadar küçülür (autoSize); düğmeler
+  sabit 52dp değil **en az** 52dp'dir, yazı iki satıra inince büyür. Yeni düğmede sabit yükseklik
+  verme. Telefonda: dört dilde ve telefonun büyük yazı ayarında widget, imsakiye, ana ekran.
+- **O10 — İmza anahtarı.** Yukarıda, "İmza" başlığında. Telefonda: yeni APK'yı eski kurulumun
+  **üzerine** kur (silmeden); kaza, zikir ve yarışma verileri durmalı. Kurulum reddedilirse
+  uygulamayı SİLME, haber ver.
+- **O11 — Gizlilik.** Camiler araması yalnızca iki Overpass sunucusunu kullanır; `maps.mail.ru`
+  çıkarıldı. `allowBackup` açık kalır; gizlilik metni bunu anlatır. Yeni bir sunucu eklenirse
+  `docs/GIZLILIK_POLITIKASI.md` ve `PLAY_STORE.md` içindeki veri güvenliği cevabı da güncellenir.
+- **O12 — WorkManager kalıyor (sahibinin kararı, 15.11.2026).** Vakit verisi yenileme ve saatlik
+  alarm bekçisi (`DataRefresh.kt`) ona dayanır. Karşılığında APK biraz büyür ve birleştirilen
+  manifestle `ACCESS_NETWORK_STATE` izni gelir (internet var mı diye bakmak için; istediği öteki
+  izinleri uygulama zaten kullanıyor). Kişisel veri toplamaz. Başka yeni bağımlılık yine önce sahibine sorulur.
+- **O14 — Android Lint** derlemede ve CI'da açık. İlk çalışmadaki 159 hata giderildi; kalan
+  uyarılar Faz 4'te (temizlik) ele alınacak.
+- **O15 — Yer adları seçili dilde.** Ülke adı telefonun sözlüğünden (`CountryNames`), şehir adı
+  telefonun yer adı hizmetinden (`PlaceLabels`, önbellekli). Gösterim için `Store.placeLabel`;
+  asıl kayıt (`Store.placeName`) Diyanet adlarıyla kalır. Telefonda: dili değiştirip ana ekran,
+  widget ve bildirimdeki yer adına bak.
+- **O16 — Ana ekran.** Düğmeler "Bilgi Yarışması" ve "Namaz Öğreniyorum" yazar (seçili dilde;
+  "Aile Halkası" ve "Çocuklar için oyun" ekleri kalktı). "Namazı 3B izle" düğmesi Namaz
+  Öğreniyorum ekranının içindedir. **"Günün sorusu" bütünüyle kaldırıldı** (düğmeler, akşam
+  bildirimi, kanal, soru seçimi, ayar kayıtları); eski kurulumdaki bildirim kanalı
+  `Notifications.createChannel` içinde silinir. Yarışma sayfasının başlığı "Aile Halkası" olarak
+  durur.

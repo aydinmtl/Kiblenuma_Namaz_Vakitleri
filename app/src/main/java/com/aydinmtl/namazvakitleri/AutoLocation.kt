@@ -140,7 +140,7 @@ object AutoLocation {
     fun resolve(ctx: Context, loc: Location, request: Pair<Long, String?>, progress: (String) -> Unit = {}): Result {
         if (!Store.isPlaceRequestCurrent(request)) return Result.Discarded
         progress(Lang.str(ctx, R.string.progress_city_name))
-        val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(loc)
+        val names = namesFromGeocoder(ctx, loc.latitude, loc.longitude) ?: namesFromOpenStreetMap(ctx, loc)
 
         // ---- 1-3) Diyanet listesinde ara ----
         var found: Found? = null
@@ -176,7 +176,10 @@ object AutoLocation {
                     Store.savePlacePoint(ctx, Pair(loc.latitude, loc.longitude))
                     if (label != Store.placeName(ctx)) Store.setPlaceName(ctx, label)
                 } else {
-                    Store.saveLocation(ctx, found.district.id, label, timesJson ?: "", Pair(loc.latitude, loc.longitude))
+                    Store.saveLocation(
+                        ctx, found.district.id, label, timesJson ?: "", Pair(loc.latitude, loc.longitude),
+                        CountryNames.code(found.country.id), Diyanet.labelEndsWithCountry(found.district, found.country),
+                    )
                     result = Result.Changed(label)
                 }
                 Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
@@ -200,9 +203,9 @@ object AutoLocation {
             val old = Store.placePoint(ctx)
             if (!(Store.isComputed(ctx) && old != null &&
                     GeoMath.distanceKm(old.first, old.second, loc.latitude, loc.longitude) <= COMPUTED_SAME_KM)) {
-                val label = computedLabel(ctx, names, loc)
+                val (label, endsWithCountry) = computedLabel(ctx, names, loc)
                 if (!hadError) Store.setNameRules(ctx, NAME_RULES)
-                Store.saveComputedLocation(ctx, label, Pair(loc.latitude, loc.longitude))
+                Store.saveComputedLocation(ctx, label, Pair(loc.latitude, loc.longitude), names?.code, endsWithCountry)
                 result = Result.Changed(label)
             }
             Store.saveAutoPoint(ctx, loc.latitude, loc.longitude)
@@ -210,13 +213,16 @@ object AutoLocation {
         return if (accepted) result else Result.Discarded
     }
 
-    /** Hesaplanan yerin ekranda görünen adı: "Ambilly, Fransa"; ad yoksa koordinat. */
-    private fun computedLabel(ctx: Context, names: Names?, loc: Location): String {
+    /**
+     * Hesaplanan yerin asıl adı: "Ambilly, Fransa"; ad yoksa koordinat.
+     * İkinci değer: adın son parçası ülke adı mı (seçili dilde yazılabilsin diye; bkz. Store.placeLabel).
+     */
+    private fun computedLabel(ctx: Context, names: Names?, loc: Location): Pair<String, Boolean> {
         val place = names?.places?.firstOrNull { it.isNotBlank() }
         val country = names?.countries?.firstOrNull { it.isNotBlank() }
         val parts = listOfNotNull(place, country).distinctBy { norm(it) }
-        if (parts.isNotEmpty()) return parts.joinToString(", ")
-        return Lang.str(ctx, R.string.your_location_coords, loc.latitude, loc.longitude)
+        if (parts.isNotEmpty()) return Pair(parts.joinToString(", "), place != null && country != null && parts.size == 2)
+        return Pair(Lang.str(ctx, R.string.your_location_coords, loc.latitude, loc.longitude), false)
     }
 
     // ---------------- Diyanet listesinde arama ----------------
@@ -325,7 +331,7 @@ object AutoLocation {
     }
 
     /** Telefonun hizmeti çalışmazsa OpenStreetMap (Nominatim) ile yer adı. */
-    private fun namesFromOpenStreetMap(loc: Location): Names? {
+    private fun namesFromOpenStreetMap(ctx: Context, loc: Location): Names? {
         val tr = nominatim(loc, "tr") ?: return null
         Thread.sleep(1100) // OpenStreetMap kuralı: saniyede en çok 1 istek
         val en = nominatim(loc, "en")
@@ -340,7 +346,7 @@ object AutoLocation {
             countries = listOfNotNull(tr.optString("country").ifBlank { null }, en?.optString("country")?.ifBlank { null }) + aliases(code),
             places = places,
             code = code,
-            shown = places.firstOrNull() ?: "Bulunduğun yer",
+            shown = places.firstOrNull() ?: Lang.str(ctx, R.string.here_place),
         )
     }
 

@@ -14,7 +14,7 @@ import java.util.Locale
  * Biz telefonun dilini değil, kullanıcının uygulamada seçtiği dili kullanmak istiyoruz;
  * bu yüzden her ekranı açarken Configuration'a seçilen dili koyuyoruz ([wrap]).
  *
- * Seçim yapılmamışsa uygulama eskisi gibi Türkçe açılır.
+ * Seçim yapılmamışsa dil [Lang.pick] ile belirlenir: yeni kurulumda telefonun dili, eski kurulumda Türkçe.
  */
 object Lang {
     /** Seçicide görünen sıra. */
@@ -27,6 +27,19 @@ object Lang {
         "en" to "English",
         "de" to "Deutsch",
     )
+
+    /**
+     * Kullanıcı henüz dil seçmediyse hangi dil kullanılır:
+     *  - uygulama zaten kullanılıyorsa ([existingInstall]) Türkçe: eski sürümler hep Türkçe açılıyordu,
+     *    güncellemeyle birlikte dil kendiliğinden değişmesin;
+     *  - yeni kurulumda telefonun dili desteklenen dillerden biriyse o;
+     *  - değilse İngilizce.
+     */
+    fun pick(systemLanguage: String, existingInstall: Boolean): String = when {
+        existingInstall -> "tr"
+        systemLanguage in CODES -> systemLanguage
+        else -> "en"
+    }
 
     /** Seçili dilin kodu: "tr", "fr", "en" ya da "de". */
     fun code(ctx: Context): String = Store.language(ctx).takeIf { it in CODES } ?: "tr"

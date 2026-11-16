@@ -178,7 +178,7 @@ class SettingsActivity : LangActivity() {
     /** Ekrandaki tüm değerleri kayıtlı ayarlardan doldurur. */
     private fun bind() {
         binding = true
-        if (!locating) tvCurrentPlace.text = getString(R.string.set_place, Store.placeName(this).ifEmpty { getString(R.string.set_no_place) })
+        if (!locating) tvCurrentPlace.text = getString(R.string.set_place, Store.placeLabel(this).ifEmpty { getString(R.string.set_no_place) })
         swAuto.isChecked = Store.autoLocation(this) && LocationHelper.hasPermission(this)
 
         val m = Store.method(this)
@@ -462,8 +462,8 @@ class SettingsActivity : LangActivity() {
                     bind()
                     val text = when (r) {
                         is AutoLocation.Result.Discarded -> return@runOnUiThread
-                        is AutoLocation.Result.Changed -> getString(R.string.loc_updated, r.label)
-                        is AutoLocation.Result.Same -> getString(R.string.set_loc_same, Store.placeName(this))
+                        is AutoLocation.Result.Changed -> getString(R.string.loc_updated, Store.placeLabel(this))
+                        is AutoLocation.Result.Same -> getString(R.string.set_loc_same, Store.placeLabel(this))
                         is AutoLocation.Result.Failed -> getString(R.string.set_loc_retry, r.reason)
                     }
                     Toast.makeText(this, text, Toast.LENGTH_LONG).show()

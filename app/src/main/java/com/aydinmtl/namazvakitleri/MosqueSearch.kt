@@ -28,11 +28,16 @@ object MosqueSearch {
     /**
      * Birbirinin yedeği olan ücretsiz Overpass sunucuları. Biri yoğunsa ("429" ya da "504")
      * sıradakine geçilir. Eskiden yalnızca ilki vardı; o meşgulken liste hiç gelmiyordu.
+     *
+     * Arama, kullanıcının yaklaşık konumunu bu sunuculara gönderir. Bu yüzden liste bilinçli
+     * olarak kısadır ve gizlilik metninde (docs/GIZLILIK_POLITIKASI.md) adlarıyla yazılıdır:
+     * buraya sunucu eklerken ya da çıkarırken o metni de güncelle.
+     *  - overpass-api.de: OpenStreetMap'in ana Overpass sunucusu (FOSSGIS e.V.)
+     *  - overpass.private.coffee: gönüllü bir derneğin işlettiği yedek
      */
     val SERVERS = listOf(
         "https://overpass-api.de/api/interpreter",
         "https://overpass.private.coffee/api/interpreter",
-        "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
     )
 
     /**

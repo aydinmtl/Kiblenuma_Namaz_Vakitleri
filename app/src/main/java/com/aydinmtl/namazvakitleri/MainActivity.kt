@@ -1,6 +1,7 @@
 package com.aydinmtl.namazvakitleri
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -112,23 +113,10 @@ class MainActivity : LangActivity() {
         findViewById<Button>(R.id.btnPrayerGame).setOnClickListener {
             startActivity(Intent(this, PrayerGameActivity::class.java))
         }
-        findViewById<Button>(R.id.btnNamaz3d).setOnClickListener {
-            startActivity(Intent(this, Namaz3dActivity::class.java))
-        }
-        findViewById<Button>(R.id.btnDaily).setOnClickListener {
-            startActivity(Intent(this, QuizActivity::class.java).putExtra(QuizActivity.EXTRA_DAILY, true))
-        }
-    }
-
-    /** "Günün sorusu" düğmesi: bugün cevaplandıysa ✓ işareti. */
-    private fun updateDailyButton() {
-        val done = Store.dailyDoneDate(this) == LocalDate.now().toString()
-        findViewById<Button>(R.id.btnDaily).setText(if (done) R.string.btn_daily_done else R.string.btn_daily)
     }
 
     override fun onResume() {
         super.onResume()
-        updateDailyButton()
         resumeFlow()
     }
 
@@ -140,6 +128,18 @@ class MainActivity : LangActivity() {
     /** Açılışta ne yapılacağına karar verir: izin açıklaması, konum kontrolü, vakitler. */
     private fun resumeFlow() {
         if (dialogOpen) return
+
+        // 0) Yeni kurulumda önce dil sorulur; yoksa sıradaki konum penceresi anlaşılmayan bir dilde
+        //    çıkabilir. Uygulamayı zaten kullananlara sorulmaz: dilleri olduğu gibi (Türkçe) kalır.
+        if (!Store.languageChosen(this)) {
+            if (Store.isExistingInstall(this)) {
+                Lang.set(this, Lang.code(this))
+            } else {
+                dialogOpen = true
+                askLanguage()
+                return
+            }
+        }
 
         // 1) İlk açılışta (ve bu güncellemeyle birlikte bir kez) konum izninin nedenini anlat.
         if (!Store.locationIntroShown(this)) {
@@ -187,6 +187,12 @@ class MainActivity : LangActivity() {
         AlarmScheduler.schedule(this)
         PrayerWidget.updateAll(this)
         maybeRefresh()
+        // Yer adı seçili dilde henüz bilinmiyorsa arka planda bulunur ("Cenevre" → "Genève").
+        PlaceLabels.ensure(this) {
+            if (isFinishing || isDestroyed) return@ensure
+            tvPlace.text = getString(R.string.place_label, Store.placeLabel(this))
+            PrayerWidget.updateAll(this)
+        }
     }
 
     // ---------------- Otomatik konum ----------------
@@ -255,7 +261,7 @@ class MainActivity : LangActivity() {
             is AutoLocation.Result.Changed -> {
                 locationNote = null
                 AutoLocation.lastFailAt = 0L
-                Toast.makeText(this, getString(R.string.loc_updated, r.label), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.loc_updated, Store.placeLabel(this)), Toast.LENGTH_LONG).show()
                 shownNext = null
                 showTimes()
                 // İlk kurulumda yer ancak şimdi bulundu: bildirim iznini şimdi sor.
@@ -308,6 +314,27 @@ class MainActivity : LangActivity() {
     // ---------------- Dil ----------------
 
     /**
+     * İlk açılışta dil seçimi. Telefonun dili (destekleniyorsa) önceden seçili gelir. Başlık dört
+     * dilde yazılıdır ve her dil kendi adıyla listelenir; böylece hangi dilde açılırsa açılsın anlaşılır.
+     */
+    private fun askLanguage() {
+        val current = Lang.code(this)
+        var chosen = current
+        val names = Lang.CODES.map { Lang.NATIVE_NAMES[it] ?: it }.toTypedArray()
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle(R.string.lang_pick_title)
+            .setSingleChoiceItems(names, Lang.CODES.indexOf(current)) { _, which -> chosen = Lang.CODES[which] }
+            .setCancelable(false)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                Lang.set(this, chosen)
+                dialogOpen = false
+                // Dil değiştiyse ekran yeni dille baştan kurulur; akış oradan sürer.
+                if (chosen != current) recreate() else resumeFlow()
+            }
+            .show()
+    }
+
+    /**
      * Dil düğmesine dokununca açılan küçük liste: "TR · Türkçe", "FR · Français" …
      * Seçili dilin yanında işaret durur. Başka bir dil seçilince ayar kaydedilir ve ekran
      * yeni dille baştan kurulur (recreate). Widget ve bildirim kanallarının adları da yenilenir.
@@ -354,7 +381,7 @@ class MainActivity : LangActivity() {
         val day = Prayers.day(days, today)
         shownDate = today
 
-        tvPlace.text = getString(R.string.place_label, Store.placeName(this))
+        tvPlace.text = getString(R.string.place_label, Store.placeLabel(this))
         tvDate.text = today.format(dateFormat)
         tvHijri.text = hijriText(day)
         for (i in 0..5) {

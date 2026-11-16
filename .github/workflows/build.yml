@@ -44,11 +44,92 @@ jobs:
           name: test-raporu
           path: app/build/reports/tests/
 
+      # Android Lint: çeviri, tasarım, manifest ve kod için hata taraması. Hata bulursa derleme durur.
+      - name: Android Lint
+        run: ./gradlew lintDebug --stacktrace
+
+      # Rapor her durumda saklanır: uyarıları okumak için de (PR sayfası -> Checks -> Artifacts).
+      - name: Lint raporunu sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-raporu
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+            app/build/reports/lint-results-debug.txt
+          if-no-files-found: ignore
+
       - name: APK'yı derle
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: APK'yı adlandır
-        run: cp app/build/outputs/apk/release/app-release.apk Kiblenuma.apk
+      # Elden kurulan APK'nın imzası. Gradle'ın attığı deneme imzası silinir, yerine gizli anahtarın
+      # imzası gelir. Anahtar ve şifresi GitHub Secrets'tadır (depoda yok).
+      #
+      # İki anahtar birden kullanılır ("imza döndürme"):
+      # - Android 9 ve üstü yeni, gizli anahtarı tanır. APK'nın içindeki geçiş belgesi
+      #   (app/signing/sideload-lineage.bin) "eski anahtar yerini bu anahtara bıraktı" der; böylece
+      #   eski anahtarla imzalı kurulumun üzerine veri silinmeden güncelleme yapılır. Geçişten sonra
+      #   yalnızca eski (herkese açık) anahtarla imzalı bir APK güncelleme olarak kabul edilmez.
+      # - Android 8.0 / 8.1 imza döndürmeyi bilmez; bu sürümler için eski anahtarın imzası da durur.
+      - name: APK'yı gizli anahtarla imzala
+        env:
+          SIDELOAD_KEYSTORE_BASE64: ${{ secrets.SIDELOAD_KEYSTORE_BASE64 }}
+          SIDELOAD_STORE_PASSWORD: ${{ secrets.SIDELOAD_STORE_PASSWORD }}
+          OLD_SIDELOAD_KEYSTORE_BASE64: ${{ secrets.OLD_SIDELOAD_KEYSTORE_BASE64 }}
+          # Anahtarların herkese açık parmak izleri (sertifika SHA-256). Yanlış anahtarla imzalanmış
+          # bir APK telefondakinin üzerine kurulamaz; bu yüzden imzadan sonra denetlenir.
+          NEW_CERT_SHA256: 14527777954aeb106b39f3ef0d457a11ec813c128b46ac2b203bba5b03157a0b
+          OLD_CERT_SHA256: 56e989c8753f3b4be62fd925f6178185c0f05508ed5c8605a1c178d320a17ea9
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/release/app-release.apk
+          if [ -z "$SIDELOAD_KEYSTORE_BASE64" ]; then
+            # Başka birinin deposundan gelen PR'lar gizli anahtarı göremez. O APK yalnızca denemek
+            # içindir. main'de ise anahtarsız APK asla yayınlanmamalı: derleme durur.
+            if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+              echo "::error::İmza anahtarı (SIDELOAD_KEYSTORE_BASE64) tanımlı değil; APK yayınlanamaz."
+              exit 1
+            fi
+            echo "::warning::İmza anahtarı tanımlı değil. Bu APK deneme anahtarıyla imzalı; yüklü uygulamanın üzerine kurulamaz."
+            cp "$APK" Kiblenuma.apk
+            exit 0
+          fi
+          BT="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          KEYS="$RUNNER_TEMP/imza"
+          mkdir -p "$KEYS"
+          trap 'rm -rf "$KEYS"' EXIT
+          echo "$SIDELOAD_KEYSTORE_BASE64" | base64 --decode > "$KEYS/yeni.jks"
+          echo "$OLD_SIDELOAD_KEYSTORE_BASE64" | base64 --decode > "$KEYS/eski.jks"
+          "$BT/apksigner" sign \
+            --ks "$KEYS/eski.jks" --ks-key-alias androiddebugkey --ks-pass pass:android \
+            --next-signer \
+            --ks "$KEYS/yeni.jks" --ks-key-alias kiblenuma --ks-pass env:SIDELOAD_STORE_PASSWORD \
+            --lineage app/signing/sideload-lineage.bin \
+            --rotation-min-sdk-version 28 \
+            --out Kiblenuma.apk "$APK"
+          echo "İmzalama aracı: $BT"
+          "$BT/zipalign" -c 4 Kiblenuma.apk || { echo "::error::İmzalı APK'nın hizalaması bozuk."; exit 1; }
+          # Denetim: verilen Android sürümünde (API) beklenen anahtar görünmeli, başkası görünmemeli.
+          check() {
+            local api="$1" expected="$2" out certs
+            out="$("$BT/apksigner" verify --print-certs --min-sdk-version "$api" --max-sdk-version "$api" Kiblenuma.apk 2>&1)" || {
+              echo "$out"
+              echo "::error::API $api için imza doğrulanamadı."
+              exit 1
+            }
+            certs="$(echo "$out" | grep -i "certificate SHA-256 digest" || true)"
+            if [ "$(echo "$certs" | grep -c .)" != "1" ] || ! echo "$certs" | grep -q "$expected"; then
+              echo "$out"
+              echo "::error::API $api: beklenen anahtar $expected değil."
+              exit 1
+            fi
+            echo "API $api: $certs"
+          }
+          check 26 "$OLD_CERT_SHA256"
+          check 28 "$NEW_CERT_SHA256"
+          check 36 "$NEW_CERT_SHA256"
+          echo "İmza doğrulandı: Android 9+ yeni anahtar, Android 8 eski anahtar."
 
       # PR'larda da APK indirilebilir: PR sayfası -> Checks -> "APK derle" -> Artifacts.
       - uses: actions/upload-artifact@v4

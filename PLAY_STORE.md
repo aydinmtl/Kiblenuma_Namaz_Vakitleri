@@ -68,7 +68,6 @@ Not: Kıblenüma bağımsız bir uygulamadır; Diyanet İşleri Başkanlığı'n
 Ailece oynanan İslami bilgi yarışması. Kolay, orta ve zor seviyeler; sırayla oynama;
 yanlışları tekrar etme. İlk kez doğru bilinen her soru aile ağacını büyütür. Ağaç
 büyüdükçe birlikte koyduğunuz hedeflere (ör. "Meyveli ağaç olunca piknik") ulaşırsınız.
-• Her gün bir "Günün sorusu"
 • Soruları ve şıkları sesli okuma
 • Kaynağı belirtilen sorularda ayet ya da hadis numarası
 • Hatalı bulduğun soruyu işaretleyip paylaşabilme
@@ -87,7 +86,7 @@ edilmeli. Dürüst beyan şöyle:
 |---|---|
 | Uygulama gerekli kullanıcı verisi türlerinden herhangi birini topluyor ya da paylaşıyor mu? | **Evet** |
 | Toplanan veriler aktarım sırasında şifreleniyor mu? | **Evet** (bütün istekler HTTPS) |
-| Kullanıcıların verilerinin silinmesini istemesi için bir yol sağlıyor musunuz? | Sunucuda veri tutulmuyor. "Uygulamayı silince her şey silinir" diye açıklanır. |
+| Kullanıcıların verilerinin silinmesini istemesi için bir yol sağlıyor musunuz? | Sunucuda veri tutulmuyor. Veriler telefonda durur (kullanıcı açtıysa Android'in kendi yedeğinde de); "uygulamayı silince telefondaki veriler silinir" diye açıklanır. |
 | Veri türü | **Konum → Yaklaşık konum** |
 | Toplanıyor mu / paylaşılıyor mu? | **Toplanıyor**, paylaşılmıyor (hizmet sağlayıcıya gönderim "paylaşım" sayılmaz) |
 | Geçici olarak mı işleniyor? | **Evet** (saklanmıyor, yalnızca o istek için kullanılıyor) |

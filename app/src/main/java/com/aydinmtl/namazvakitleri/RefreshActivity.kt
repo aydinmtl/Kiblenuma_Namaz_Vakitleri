@@ -129,7 +129,7 @@ class RefreshActivity : LangActivity() {
 
             val text = buildString {
                 append(getString(if (ok) R.string.refresh_ok else R.string.refresh_fail))
-                append("\n📍 ").append(Store.placeName(app))
+                append("\n📍 ").append(Store.placeLabel(app))
                 if (newPlace != null) {
                     append(getString(R.string.refresh_new_place))
                 } else if (samePlace && note == null) {

@@ -170,17 +170,6 @@ object QuizDeck {
         return Pair(round, refill.toSet())
     }
 
-    /**
-     * Günün sorusu: aynı gün herkes (ve gün boyu her açılışta) aynı soruyu görür.
-     * Sorular her yıl için sabit bir karışık sıraya dizilir; yılın kaçıncı günüyse o soru seçilir.
-     * Böylece arka arkaya günlerde aynı konudan soru gelmez ve bir yıl içinde tekrar az olur.
-     */
-    fun dailyId(allIds: List<String>, date: java.time.LocalDate): String? {
-        if (allIds.isEmpty()) return null
-        val order = allIds.sorted().shuffled(Random(date.year))
-        return order[(date.dayOfYear - 1) % order.size]
-    }
-
     /** Oyuncu adlarını "Annem, Babam ,Zeynep" gibi bir yazıdan ayırır (en çok 8 kişi). */
     fun parsePlayers(text: String): List<String> =
         text.split(',', '\n').map { it.trim() }.filter { it.isNotEmpty() }.distinct().take(8)

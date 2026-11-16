@@ -17,6 +17,10 @@
     <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
     <uses-feature android:name="android.hardware.location" android:required="false" />
 
+    <!-- allowBackup: kullanıcı telefonunda Android yedeklemesini açtıysa uygulamanın verileri
+         (seçili yer, kaza ve zikir sayıları, yarışma ilerlemesi) kendi Google hesabındaki şifreli
+         yedeğe girer ve yeni telefona geri yüklenir. Bu, gizlilik metninde yazılıdır
+         (docs/GIZLILIK_POLITIKASI.md, "Telefonda saklananlar"); ikisini birlikte değiştir. -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

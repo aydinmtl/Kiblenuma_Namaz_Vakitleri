@@ -46,13 +46,15 @@ class PrayerWidget : AppWidgetProvider() {
 
             val days = Times.days(ctx)
             val next = Prayers.next(days, Instant.now())
-            v.setTextViewText(R.id.w_place, Store.placeName(ctx))
+            v.setTextViewText(R.id.w_place, Store.placeLabel(ctx))
 
             if (next == null) {
                 v.setTextViewText(R.id.w_next, res.getString(R.string.widget_open_app))
                 v.setViewVisibility(R.id.w_countdown, View.GONE)
             } else {
-                val nextName = Lang.prayerName(ctx, next.index)
+                // Widget dardır: kısa adlar kullanılır ("Sonnenaufgang" yerine "Sonne", "Lever du soleil"
+                // yerine "Soleil"); yoksa başlık ve geri sayım cümlesi sığmaz.
+                val nextName = shortNames[next.index]
                 v.setTextViewText(R.id.w_next, "$nextName ${next.clock.format(HHMM)}")
                 val targetMs = next.instant.toEpochMilli()
                 val base = SystemClock.elapsedRealtime() + (targetMs - System.currentTimeMillis())

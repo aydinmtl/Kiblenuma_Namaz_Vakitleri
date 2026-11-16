@@ -158,26 +158,6 @@
                     android:textSize="34sp" />
             </LinearLayout>
 
-            <!-- Her gün bir soru -->
-            <Button
-                android:id="@+id/btnDailyHome"
-                style="@style/Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:minHeight="52dp"
-                android:text="@string/learn_ui_009" />
-
-            <CheckBox
-                android:id="@+id/cbDaily"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:buttonTint="@color/gold"
-                android:text="@string/learn_static_18"
-                android:textColor="@color/muted"
-                android:textSize="14sp" />
-
             <TextView style="@style/SectionHead" android:text="@string/learn_static_19" />
 
             <LinearLayout
