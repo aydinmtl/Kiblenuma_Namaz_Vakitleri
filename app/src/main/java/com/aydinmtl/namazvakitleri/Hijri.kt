@@ -43,13 +43,48 @@ object Hijri {
      * gün kaydırmasını bulur.
      */
     fun alignWithDiyanet(date: LocalDate, diyanetShort: String) {
-        val m = Regex("(\\d{1,2})\\D(\\d{1,2})\\D(\\d{4})").find(diyanetShort) ?: return
-        val target = HDate(m.groupValues[3].toInt(), m.groupValues[2].toInt(), m.groupValues[1].toInt())
+        val target = parseShort(diyanetShort) ?: return
         // Denemeler ortak değişkeni değiştirmeden yapılır; yalnızca bulunan sonuç bir kez yazılır.
         // (Eskiden döngüde geçici olarak değiştiriliyordu; aynı anda tarih okuyan başka bir
         // iş parçacığı bir an yanlış gün görebiliyordu.)
-        val k = longArrayOf(0, 1, -1, 2, -2).firstOrNull { ofShifted(date, it) == target } ?: return
+        val k = SHIFTS.firstOrNull { ofShifted(date, it) == target } ?: return
         offsetDays = k
+    }
+
+    /** Denenen gün kaydırmaları: önce fark yok, sonra ±1, ±2. */
+    private val SHIFTS = listOf(0L, 1L, -1L, 2L, -2L)
+
+    /** Diyanet'in kısa Hicri tarihini ("2.6.1448": gün.ay.yıl) ayrıştırır. Biçim tanınmazsa null. */
+    fun parseShort(diyanetShort: String): HDate? {
+        val m = Regex("(\\d{1,2})\\D(\\d{1,2})\\D(\\d{4})").find(diyanetShort) ?: return null
+        val h = HDate(m.groupValues[3].toInt(), m.groupValues[2].toInt(), m.groupValues[1].toInt())
+        return h.takeIf { it.month in 1..12 && it.day in 1..30 }
+    }
+
+    /**
+     * Dini günler listesi için Hicri tarih kaynağı.
+     *
+     * Eskiden bütün yıl, BUGÜNKÜ gün farkıyla kaydırılmış hesap takvimiyle bulunuyordu. Oysa
+     * Diyanet'in indirilen listesi her günün resmi Hicri tarihini de taşır. Artık:
+     *  - listenin kapsadığı günlerde (yaklaşık 30 gün) Diyanet'in KENDİ Hicri tarihi kullanılır;
+     *    yakın tarihli kandil ve bayramlar resmi takvimle bire bir aynı çıkar,
+     *  - listenin dışındaki günlerde hesap takvimi, listenin o güne en yakın ucundaki farkla
+     *    kaydırılır (ileri tarihler için listenin SON günü). Bunlar yine 1 gün sapabilir; ay
+     *    başları hilale göre ilan edildiği için önceden kesin bilinemez.
+     *
+     * [days]: gösterilen vakit listesi (Diyanet günleri [PrayerDay.hijriShort] taşır).
+     * [calendar]: (tarih, gün kaydırması) → Hicri tarih. Uygulamada Android'in takvimi; testlerde
+     * dışarıdan verilir.
+     */
+    fun aligned(days: List<PrayerDay>, calendar: (LocalDate, Long) -> HDate = ::ofShifted): (LocalDate) -> HDate {
+        val official = days.mapNotNull { d -> parseShort(d.hijriShort)?.let { d.date to it } }
+        if (official.isEmpty()) return { date -> calendar(date, offsetDays) }
+        val byDate = official.toMap()
+        val first = official.first()
+        val last = official.last()
+        val shiftBefore = SHIFTS.firstOrNull { calendar(first.first, it) == first.second } ?: offsetDays
+        val shiftAfter = SHIFTS.firstOrNull { calendar(last.first, it) == last.second } ?: offsetDays
+        return { date -> byDate[date] ?: calendar(date, if (date.isBefore(first.first)) shiftBefore else shiftAfter) }
     }
 
     // ---------------- Dini günler ----------------
