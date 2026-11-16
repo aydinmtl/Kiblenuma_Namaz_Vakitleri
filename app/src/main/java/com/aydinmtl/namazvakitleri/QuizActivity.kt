@@ -7,7 +7,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -59,12 +58,11 @@ class QuizActivity : LangActivity() {
     private var currentQuestion: Question? = null
     private lateinit var btnSpeak: TextView
 
-    // Sesli okuma: telefonun kendi metin okuma motoru (ek kütüphane yok). İlk kullanımda açılır.
+    // Sesli okuma (bkz. Speaker): telefonun kendi metin okuma motoru. İlk kullanımda açılır.
     private val learning by lazy { LearningText(this) }
-
-    private var tts: TextToSpeech? = null
-    private var ttsReady = false
-    private var pendingSpeech: String? = null
+    private val speaker by lazy {
+        Speaker(this, "quiz") { Toast.makeText(this, getString(R.string.learn_ui_035), Toast.LENGTH_LONG).show() }
+    }
 
     private var session: QuizSession? = null
 
@@ -131,9 +129,14 @@ class QuizActivity : LangActivity() {
         showHome()
     }
 
+    // Ekrandan çıkınca (başka uygulamaya geçiş, ekranın kapanması) okuma sussun.
+    override fun onPause() {
+        speaker.stop()
+        super.onPause()
+    }
+
     override fun onDestroy() {
-        tts?.shutdown()
-        tts = null
+        speaker.shutdown()
         super.onDestroy()
     }
 
@@ -209,7 +212,7 @@ class QuizActivity : LangActivity() {
 
     /** Seviye seçim ekranı: üç seviye kartı, varsa "Yanlışlarımı tekrar et" ve işaretli sorular. */
     private fun showLevels() {
-        tts?.stop()
+        speaker.stop()
         showPane(levelPane)
         buildLevelCards()
 
@@ -411,7 +414,7 @@ class QuizActivity : LangActivity() {
         }
         answered = false
         currentQuestion = q
-        tts?.stop()
+        speaker.stop()
         btnFlag.visibility = View.GONE
         showTurn(s)
         tvProgress.text = getString(R.string.learn_ui_024, title(s), s.index + 1, s.order.size, s.score)
@@ -550,32 +553,7 @@ class QuizActivity : LangActivity() {
         speak(text)
     }
 
-    private fun speak(text: String) {
-        val engine = tts
-        if (engine != null && ttsReady) {
-            engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "quiz")
-            return
-        }
-        pendingSpeech = text
-        if (engine != null) return // motor hâlâ açılıyor; hazır olunca okunur
-        tts = TextToSpeech(this) init@{ status ->
-            val t = tts ?: return@init
-            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Lang.locale(this)) else TextToSpeech.LANG_NOT_SUPPORTED
-            if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.learn_ui_035),
-                    Toast.LENGTH_LONG,
-                ).show()
-                t.shutdown()
-                tts = null
-                return@init
-            }
-            ttsReady = true
-            pendingSpeech?.let { t.speak(it, TextToSpeech.QUEUE_FLUSH, null, "quiz") }
-            pendingSpeech = null
-        }
-    }
+    private fun speak(text: String) = speaker.speak(text)
 
     // ---------------- Ağacı sıfırla ----------------
 
@@ -667,7 +645,7 @@ class QuizActivity : LangActivity() {
     private fun showResult(s: QuizSession) {
         Store.saveQuizSession(this, null)
         lastResult = s
-        tts?.stop()
+        speaker.stop()
         showPane(resultPane)
         val total = s.order.size
         val stars = QuizResult.stars(s.score, total)
