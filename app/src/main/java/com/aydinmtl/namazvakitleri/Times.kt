@@ -63,7 +63,30 @@ internal data class PrayerSnapshot(
     fun needsData(today: LocalDate): Boolean =
         RefreshPolicy.needsData(districtId, computed, diyanetDays().lastOrNull()?.date, today)
 
-    fun diyanetDays(): List<PrayerDay> = immutableDays(timesJson?.let(Diyanet::parseDays) ?: emptyList())
+    fun diyanetDays(): List<PrayerDay> = ParsedDiyanet.of(timesJson)
+}
+
+/**
+ * Son ayrıştırılan Diyanet listesi.
+ *
+ * Kayıtlı liste 30 günlük bir JSON yazısıdır. Ana ekran her saniye, widget ve alarm da her
+ * güncellemede vakitleri ister; yazı her seferinde baştan ayrıştırılırsa aynı iş boşuna tekrarlanır.
+ * Yazı değişmediği sürece (yeni liste indirilene ya da yer değişene kadar) önceki sonuç kullanılır.
+ * Sonuç değiştirilemez bir listedir; çağıranlar onu bozamaz.
+ */
+private object ParsedDiyanet {
+    private var json: String? = null
+    private var days: List<PrayerDay> = emptyList()
+
+    @Synchronized
+    fun of(timesJson: String?): List<PrayerDay> {
+        if (timesJson == null) return emptyList()
+        if (timesJson != json) {
+            days = immutableDays(Diyanet.parseDays(timesJson))
+            json = timesJson
+        }
+        return days
+    }
 }
 
 internal data class AlarmSnapshot(
