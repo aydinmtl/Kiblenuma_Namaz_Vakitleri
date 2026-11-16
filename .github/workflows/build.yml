@@ -108,12 +108,27 @@ jobs:
             --lineage app/signing/sideload-lineage.bin \
             --rotation-min-sdk-version 28 \
             --out Kiblenuma.apk "$APK"
-          "$BT/zipalign" -c 4 Kiblenuma.apk
-          # Denetim: Android 8'de eski, Android 9+ 'da yeni anahtar görünmeli.
-          cert() { "$BT/apksigner" verify --print-certs --min-sdk-version "$1" --max-sdk-version "$1" Kiblenuma.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p'; }
-          test "$(cert 26)" = "$OLD_CERT_SHA256"
-          test "$(cert 28)" = "$NEW_CERT_SHA256"
-          test "$(cert 36)" = "$NEW_CERT_SHA256"
+          echo "İmzalama aracı: $BT"
+          "$BT/zipalign" -c 4 Kiblenuma.apk || { echo "::error::İmzalı APK'nın hizalaması bozuk."; exit 1; }
+          # Denetim: verilen Android sürümünde (API) beklenen anahtar görünmeli, başkası görünmemeli.
+          check() {
+            local api="$1" expected="$2" out certs
+            out="$("$BT/apksigner" verify --print-certs --min-sdk-version "$api" --max-sdk-version "$api" Kiblenuma.apk 2>&1)" || {
+              echo "$out"
+              echo "::error::API $api için imza doğrulanamadı."
+              exit 1
+            }
+            certs="$(echo "$out" | grep -i "certificate SHA-256 digest" || true)"
+            if [ "$(echo "$certs" | grep -c .)" != "1" ] || ! echo "$certs" | grep -q "$expected"; then
+              echo "$out"
+              echo "::error::API $api: beklenen anahtar $expected değil."
+              exit 1
+            fi
+            echo "API $api: $certs"
+          }
+          check 26 "$OLD_CERT_SHA256"
+          check 28 "$NEW_CERT_SHA256"
+          check 36 "$NEW_CERT_SHA256"
           echo "İmza doğrulandı: Android 9+ yeni anahtar, Android 8 eski anahtar."
 
       # PR'larda da APK indirilebilir: PR sayfası -> Checks -> "APK derle" -> Artifacts.
