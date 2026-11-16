@@ -110,8 +110,14 @@ class PrayerCalcTest {
         for (m in methods) for ((p, zone) in places) {
             var d = LocalDate.of(2026, 1, 1)
             while (d.year == 2026) {
-                val t = day(d, p.first, p.second, zone, m, 1)!!
-                assertAscending(t)
+                // Sıra, saat yazısına değil vakitlerin gerçek anlarına bakılarak denetlenir: yazın
+                // Cenevre'de yatsı tam gece yarısına (00:00) yuvarlanabilir; saat olarak akşamdan
+                // "küçük" görünür ama gerçekte ondan sonradır.
+                val day = PrayerCalc.calculatedDay(d, p.first, p.second, zone, m, 1)!!
+                val instants = day.instants!!
+                for (i in 1..5) {
+                    assertTrue("Vakitler sıralı değil: $m $d ${day.times}", instants[i].isAfter(instants[i - 1]))
+                }
                 d = d.plusDays(7)
             }
         }
