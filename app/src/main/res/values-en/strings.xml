@@ -72,7 +72,7 @@
     <string name="loc_service_off_note">Phone location is off; using the last chosen place.</string>
     <string name="loc_service_off_reason">phone location is off.</string>
     <string name="loc_unavailable_note">Could not get location; using the last chosen place.</string>
-    <string name="loc_no_report_reason">the phone did not report a location (within 10 s).</string>
+    <string name="loc_no_report_reason">the phone did not report a location.</string>
     <string name="loc_updated">Location updated: %1$s</string>
     <string name="loc_failed_last_chosen">%1$s Using the last chosen place.</string>
     <string name="locmode_need_perm">⚠ Automatic location needs permission. Tap to open settings.</string>

@@ -365,10 +365,10 @@
         "Standort nicht verfügbar; der zuletzt gewählte Ort wird verwendet."
       ],
       "loc_no_report_reason": [
-        "telefon konumu bildirmedi (10 sn içinde).",
-        "le téléphone n'a pas donné de position (en 10 s).",
-        "the phone did not report a location (within 10 s).",
-        "das Telefon hat keinen Standort gemeldet (innerhalb von 10 s)."
+        "telefon konumu bildirmedi.",
+        "le téléphone n'a pas donné de position.",
+        "the phone did not report a location.",
+        "das Telefon hat keinen Standort gemeldet."
       ],
       "loc_updated": [
         "Konum güncellendi: %1$s",

@@ -76,7 +76,7 @@
     <string name="loc_service_off_note">Telefonun konum servisi kapalı; son seçilen yer kullanılıyor.</string>
     <string name="loc_service_off_reason">telefonun konum servisi kapalı.</string>
     <string name="loc_unavailable_note">Konum alınamadı; son seçilen yer kullanılıyor.</string>
-    <string name="loc_no_report_reason">telefon konumu bildirmedi (10 sn içinde).</string>
+    <string name="loc_no_report_reason">telefon konumu bildirmedi.</string>
     <string name="loc_updated">Konum güncellendi: %1$s</string>
     <string name="loc_failed_last_chosen">%1$s Son seçilen yer kullanılıyor.</string>
     <string name="locmode_need_perm">⚠ Otomatik konum için izin gerekli. Ayarlar\'a gitmek için dokun.</string>

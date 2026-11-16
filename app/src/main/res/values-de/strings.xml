@@ -72,7 +72,7 @@
     <string name="loc_service_off_note">Die Standortfunktion des Telefons ist aus; der zuletzt gewählte Ort wird verwendet.</string>
     <string name="loc_service_off_reason">die Standortfunktion des Telefons ist aus.</string>
     <string name="loc_unavailable_note">Standort nicht verfügbar; der zuletzt gewählte Ort wird verwendet.</string>
-    <string name="loc_no_report_reason">das Telefon hat keinen Standort gemeldet (innerhalb von 10 s).</string>
+    <string name="loc_no_report_reason">das Telefon hat keinen Standort gemeldet.</string>
     <string name="loc_updated">Standort aktualisiert: %1$s</string>
     <string name="loc_failed_last_chosen">%1$s Der zuletzt gewählte Ort wird verwendet.</string>
     <string name="locmode_need_perm">⚠ Automatischer Standort braucht eine Berechtigung. Zum Öffnen der Einstellungen tippen.</string>
