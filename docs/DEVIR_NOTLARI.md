@@ -47,7 +47,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `LocationHelper.kt` | Tek seferlik konum (fused/network/gps), zaman aşımlı |
 | `LocationConsent.kt` | Konum izni öncesi gerekçe penceresi |
 | `AlarmScheduler.kt` | Yalnızca SIRADAKİ olay için alarm (vakit girişi veya X dk önce hatırlatma) |
-| `Receivers.kt` | `PrayerAlarmReceiver` (önce sonraki alarm, sonra bildirim, ezan, günün sorusu, widget; adımlar birbirinden bağımsız), `BootReceiver` |
+| `Receivers.kt` | `PrayerAlarmReceiver` (önce sonraki alarm, sonra bildirim, ezan, widget; adımlar birbirinden bağımsız), `BootReceiver` |
 | `SelectionGuard.kt` | Yer seçimi ile arka plan işlerini sıralayan kilit: YER sayacı (yalnızca seçili yer değişince) ve VERİ sayacı (alarmı etkileyen her değişiklikte). `GuardedPublication`: alarm kurmayı korur ve reddedilen çağrıyı yeniden dener |
 | `DataRefresh.kt` | WorkManager işleri: vakit verisi yenileme (internet varken) ve saatlik alarm bekçisi (kopan alarm zincirini onarır) |
 | `NotificationIds.kt` | Bütün bildirim numaraları tek yerde |

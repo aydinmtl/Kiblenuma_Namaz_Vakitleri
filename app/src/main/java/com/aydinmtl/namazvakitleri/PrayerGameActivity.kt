@@ -3,6 +3,7 @@ package com.aydinmtl.namazvakitleri
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -31,7 +32,8 @@ import android.window.OnBackInvokedDispatcher
  * Yanlış cevapta ceza yok: figür başını sallar, çocuk tekrar dener; iki yanlıştan sonra doğru
  * şık altın çerçeveyle belli olur. Selamla namaz biter, konfeti yağar.
  *
- * Başlangıç ekranında Abdest ve Namaz ayrı düğmelerdir. Her bölümde kalınan adım ayrı kaydedilir;
+ * Başlangıç ekranında Abdest ve Namaz ayrı düğmelerdir; altlarındaki "Namazı 3B izle" düğmesi
+ * izleme ekranını (Namaz3dActivity) açar. Her bölümde kalınan adım ayrı kaydedilir;
  * yarım kalmış bölüme basınca "kaldığın yerden mi, baştan mı" diye sorulur. Namaz, çocuğun
  * seccadesini serdiği kısa bir canlandırmayla başlar. Abdest bitince "Namaza geçelim mi?" diye sorulur.
  * Adımlar ve sorular PrayerGame.kt'de; 3B sahne PrayerStageView.kt ve assets/namazoyun3d/ içindedir
@@ -154,6 +156,10 @@ class PrayerGameActivity : LangActivity() {
         findViewById<View>(R.id.btnBack).setOnClickListener { goBack() }
         findViewById<View>(R.id.btnAbdest).setOnClickListener { openChapter(PrayerChapter.ABDEST) }
         findViewById<View>(R.id.btnNamaz).setOnClickListener { openChapter(PrayerChapter.NAMAZ) }
+        // "Namazı 3B izle": soru sormadan, namazın hareketlerini baştan sona gösteren ayrı ekran
+        findViewById<View>(R.id.btnNamaz3d).setOnClickListener {
+            startActivity(Intent(this, Namaz3dActivity::class.java))
+        }
         btnNext.setOnClickListener {
             // Abdestin son adımından sonra "Namaza geçelim mi?" sorulur; evet denince namaz başlar
             if (index + 1 == PrayerGame.NAMAZ_START) startGame(PrayerGame.NAMAZ_START, fromAbdest = true)

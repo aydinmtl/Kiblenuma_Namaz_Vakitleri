@@ -68,7 +68,6 @@ Not: Kıblenüma bağımsız bir uygulamadır; Diyanet İşleri Başkanlığı'n
 Ailece oynanan İslami bilgi yarışması. Kolay, orta ve zor seviyeler; sırayla oynama;
 yanlışları tekrar etme. İlk kez doğru bilinen her soru aile ağacını büyütür. Ağaç
 büyüdükçe birlikte koyduğunuz hedeflere (ör. "Meyveli ağaç olunca piknik") ulaşırsınız.
-• Her gün bir "Günün sorusu"
 • Soruları ve şıkları sesli okuma
 • Kaynağı belirtilen sorularda ayet ya da hadis numarası
 • Hatalı bulduğun soruyu işaretleyip paylaşabilme

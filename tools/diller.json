@@ -263,34 +263,22 @@
         "Dhikr-Zähler"
       ],
       "btn_quiz": [
-        "🌳  Aile Halkası · Bilgi Yarışması",
-        "🌳  Aile Halkası · Quiz en famille",
-        "🌳  Aile Halkası · Family quiz",
-        "🌳  Aile Halkası · Familienquiz"
+        "🌳  Bilgi Yarışması",
+        "🌳  Quiz",
+        "🌳  Quiz",
+        "🌳  Wissensquiz"
       ],
       "btn_prayer_game": [
-        "🕌  Namaz Öğreniyorum · Çocuklar için oyun",
-        "🕌  J'apprends la prière · Jeu pour enfants",
-        "🕌  Learning to pray · Game for children",
-        "🕌  Ich lerne beten · Spiel für Kinder"
+        "🕌  Namaz Öğreniyorum",
+        "🕌  J'apprends la prière",
+        "🕌  Learning to Pray",
+        "🕌  Beten lernen"
       ],
       "btn_namaz3d": [
         "🎬  Namazı 3B izle",
         "🎬  Voir la prière en 3D",
         "🎬  Watch the prayer in 3D",
         "🎬  Das Gebet in 3D ansehen"
-      ],
-      "btn_daily": [
-        "💡  Günün sorusu",
-        "💡  Question du jour",
-        "💡  Question of the day",
-        "💡  Frage des Tages"
-      ],
-      "btn_daily_done": [
-        "💡  Günün sorusu ✓",
-        "💡  Question du jour ✓",
-        "💡  Question of the day ✓",
-        "💡  Frage des Tages ✓"
       ],
       "place_label": [
         "📍 %1$s  ›",
@@ -689,18 +677,6 @@
         "Reminder before a prayer time begins.",
         "Erinnerung vor Beginn einer Gebetszeit."
       ],
-      "ch_daily": [
-        "Günün sorusu",
-        "Question du jour",
-        "Question of the day",
-        "Frage des Tages"
-      ],
-      "ch_daily_desc": [
-        "Aile Halkası: akşam vaktinde günün sorusu (sessiz).",
-        "Aile Halkası : la question du jour au Maghrib (silencieux).",
-        "Aile Halkası: question of the day at Maghrib (silent).",
-        "Aile Halkası: Frage des Tages zum Maghrib (lautlos)."
-      ],
       "ch_adhan": [
         "Ezan sesi",
         "Adhan",
@@ -746,12 +722,6 @@
           }
         }
       },
-      "notif_daily_title": [
-        "🌳 Günün sorusu",
-        "🌳 Question du jour",
-        "🌳 Question of the day",
-        "🌳 Frage des Tages"
-      ],
       "adhan_test": [
         "Deneme",
         "Essai",
@@ -2085,12 +2055,6 @@
         "Ablution and prayer game for children",
         "Waschungs- und Gebetsspiel für Kinder"
       ],
-      "learn_static_18": [
-        "Akşam vakti girince günün sorusunu bildir",
-        "Notifier la question du jour à la prière du coucher du soleil",
-        "Notify me of the daily question at sunset prayer",
-        "Tagesfrage zum Abendgebet melden"
-      ],
       "learn_static_19": [
         "Aile hedeflerimiz",
         "Nos objectifs familiaux",
@@ -2364,18 +2328,6 @@
         "\nOur tree is fully grown!",
         "\nUnser Baum ist ausgewachsen!"
       ],
-      "learn_ui_008": [
-        "💡 Günün sorusu ✓ (bugün cevaplandı)",
-        "💡 Question du jour ✓ (déjà répondue)",
-        "💡 Daily question ✓ (answered today)",
-        "💡 Tagesfrage ✓ (heute beantwortet)"
-      ],
-      "learn_ui_009": [
-        "💡 Günün sorusu",
-        "💡 Question du jour",
-        "💡 Daily question",
-        "💡 Tagesfrage"
-      ],
       "learn_ui_010": [
         "🔁 Yanlışlarımı tekrar et",
         "🔁 Revoir mes erreurs",
@@ -2543,30 +2495,6 @@
         "🔊 Lire",
         "🔊 Read aloud",
         "🔊 Vorlesen"
-      ],
-      "learn_ui_038": [
-        "\nKaynak: ",
-        "\nSource : ",
-        "\nSource: ",
-        "\nQuelle: "
-      ],
-      "learn_ui_039": [
-        "\n\n🌱 Ağacımıza +1",
-        "\n\n🌱 +1 pour notre arbre",
-        "\n\n🌱 +1 for our tree",
-        "\n\n🌱 +1 für unseren Baum"
-      ],
-      "learn_ui_040": [
-        "Günün sorusu",
-        "Question du jour",
-        "Daily question",
-        "Tagesfrage"
-      ],
-      "learn_ui_041": [
-        "Tamam",
-        "OK",
-        "OK",
-        "OK"
       ],
       "learn_ui_042": [
         "Ağaç sıfırlansın mı?",

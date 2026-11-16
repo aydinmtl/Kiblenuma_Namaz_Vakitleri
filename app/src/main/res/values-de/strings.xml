@@ -55,11 +55,9 @@
     <string name="btn_holy_days">Religiöse Tage</string>
     <string name="btn_kaza">Verpasste Gebete</string>
     <string name="btn_zikir">Dhikr-Zähler</string>
-    <string name="btn_quiz">🌳  Aile Halkası · Familienquiz</string>
-    <string name="btn_prayer_game">🕌  Ich lerne beten · Spiel für Kinder</string>
+    <string name="btn_quiz">🌳  Wissensquiz</string>
+    <string name="btn_prayer_game">🕌  Beten lernen</string>
     <string name="btn_namaz3d">🎬  Das Gebet in 3D ansehen</string>
-    <string name="btn_daily">💡  Frage des Tages</string>
-    <string name="btn_daily_done">💡  Frage des Tages ✓</string>
     <string name="place_label">📍 %1$s  ›</string>
     <string name="place_searching">📍 Standort wird gesucht…</string>
     <string name="place_finding">Dein Ort wird ermittelt…</string>
@@ -132,8 +130,6 @@
     <string name="ch_silent_desc">Stille Benachrichtigung, während der Adhan läuft.</string>
     <string name="ch_reminder">Gebetserinnerung</string>
     <string name="ch_reminder_desc">Erinnerung vor Beginn einer Gebetszeit.</string>
-    <string name="ch_daily">Frage des Tages</string>
-    <string name="ch_daily_desc">Aile Halkası: Frage des Tages zum Maghrib (lautlos).</string>
     <string name="ch_adhan">Adhan</string>
     <string name="ch_adhan_desc">Stopp-Taste, während der Adhan läuft.</string>
     <string name="notif_prayer_title">Zeit für %1$s</string>
@@ -142,7 +138,6 @@
         <item quantity="one">Noch %2$d Minute bis %1$s</item>
         <item quantity="other">Noch %2$d Minuten bis %1$s</item>
     </plurals>
-    <string name="notif_daily_title">🌳 Frage des Tages</string>
     <string name="adhan_test">Test</string>
     <string name="adhan_default">Adhan</string>
     <string name="adhan_playing">%1$s · Adhan läuft</string>
@@ -391,7 +386,6 @@
     <string name="learn_static_15">Wissensquiz</string>
     <string name="learn_static_16">Über den Islam</string>
     <string name="learn_static_17">Waschungs- und Gebetsspiel für Kinder</string>
-    <string name="learn_static_18">Tagesfrage zum Abendgebet melden</string>
     <string name="learn_static_19">Unsere Familienziele</string>
     <string name="learn_static_20">+ Ziel hinzufügen</string>
     <string name="learn_static_21">Baum zurücksetzen</string>
@@ -445,8 +439,6 @@
     <string name="learn_ui_005">Unser Baum: %1$s · insgesamt %2$d richtig</string>
     <string name="learn_ui_006">\nNoch %2$d richtige Antworten bis %1$s</string>
     <string name="learn_ui_007">\nUnser Baum ist ausgewachsen!</string>
-    <string name="learn_ui_008">💡 Tagesfrage ✓ (heute beantwortet)</string>
-    <string name="learn_ui_009">💡 Tagesfrage</string>
     <string name="learn_ui_010">🔁 Meine Fehler wiederholen</string>
     <string name="learn_ui_011">⚑ Meine markierten Fragen</string>
     <string name="learn_ui_012">▶ Weiter</string>
@@ -475,10 +467,6 @@
     <string name="learn_ui_035">Die Stimme für die gewählte Sprache fehlt. Installiere sie in den Text-zu-Sprache-Einstellungen des Telefons.</string>
     <string name="learn_ui_036">Schließen</string>
     <string name="learn_ui_037">🔊 Vorlesen</string>
-    <string name="learn_ui_038">\nQuelle: </string>
-    <string name="learn_ui_039">\n\n🌱 +1 für unseren Baum</string>
-    <string name="learn_ui_040">Tagesfrage</string>
-    <string name="learn_ui_041">OK</string>
     <string name="learn_ui_042">Baum zurücksetzen?</string>
     <string name="learn_ui_043">Unser Baum wird wieder zum Samen und alle Fragen können ihn erneut wachsen lassen. </string>
     <string name="learn_ui_044">Ziele und Fehlerliste bleiben erhalten. Dies kann nicht rückgängig gemacht werden.</string>

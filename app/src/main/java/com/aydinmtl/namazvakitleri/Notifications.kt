@@ -15,7 +15,9 @@ object Notifications {
     const val CHANNEL_SILENT = "vakit_sessiz" // ezan çalacaksa bildirim sessiz olur
     const val CHANNEL_REMINDER = "hatirlatma" // vakitten önce hatırlatma
     const val CHANNEL_ADHAN = "ezan"          // ezan çalarken görünen "Durdur" bildirimi
-    const val CHANNEL_DAILY = "gunun_sorusu"  // Aile Halkası: günün sorusu (sessiz)
+
+    /** Kaldırılan "günün sorusu" özelliğinin kanalı. Eski kurulumlarda kalmasın diye silinir. */
+    private const val REMOVED_CHANNEL_DAILY = "gunun_sorusu"
 
     /**
      * Bildirim kanallarını kurar. Kanal zaten varsa yeniden "kurmak" yalnızca adını ve
@@ -42,17 +44,13 @@ object Notifications {
             },
         )
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL_DAILY, c.getString(R.string.ch_daily), NotificationManager.IMPORTANCE_LOW).apply {
-                description = c.getString(R.string.ch_daily_desc)
-                setSound(null, null)
-            },
-        )
-        nm.createNotificationChannel(
             NotificationChannel(CHANNEL_ADHAN, c.getString(R.string.ch_adhan), NotificationManager.IMPORTANCE_LOW).apply {
                 description = c.getString(R.string.ch_adhan_desc)
                 setSound(null, null)
             },
         )
+        // Eski sürümden kalan kanal (varsa) ve içindeki bildirim silinir; kanal yoksa bir şey olmaz.
+        nm.deleteNotificationChannel(REMOVED_CHANNEL_DAILY)
     }
 
     fun canPost(ctx: Context): Boolean =
@@ -103,28 +101,5 @@ object Notifications {
             .setTimeoutAfter(minutes * 60_000L)
             .build()
         nm.notify(NotificationIds.reminder(m.index), n)
-    }
-
-    /** Aile Halkası "günün sorusu" bildirimi; dokununca soru açılır. */
-    fun showDailyQuestion(ctx: Context, questionText: String) {
-        if (!canPost(ctx)) return
-        createChannel(ctx)
-        val nm = ctx.getSystemService(NotificationManager::class.java) ?: return
-        val open = PendingIntent.getActivity(
-            ctx, 3,
-            Intent(ctx, QuizActivity::class.java)
-                .putExtra(QuizActivity.EXTRA_DAILY, true)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
-        val n = Notification.Builder(ctx, CHANNEL_DAILY)
-            .setSmallIcon(R.drawable.ic_stat_hilal)
-            .setContentTitle(Lang.str(ctx, R.string.notif_daily_title))
-            .setContentText(questionText)
-            .setStyle(Notification.BigTextStyle().bigText(questionText))
-            .setContentIntent(open)
-            .setAutoCancel(true)
-            .build()
-        nm.notify(NotificationIds.DAILY, n)
     }
 }

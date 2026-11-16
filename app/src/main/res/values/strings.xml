@@ -59,11 +59,9 @@
     <string name="btn_holy_days">Dini Günler</string>
     <string name="btn_kaza">Kaza Çetelesi</string>
     <string name="btn_zikir">Zikirmatik</string>
-    <string name="btn_quiz">🌳  Aile Halkası · Bilgi Yarışması</string>
-    <string name="btn_prayer_game">🕌  Namaz Öğreniyorum · Çocuklar için oyun</string>
+    <string name="btn_quiz">🌳  Bilgi Yarışması</string>
+    <string name="btn_prayer_game">🕌  Namaz Öğreniyorum</string>
     <string name="btn_namaz3d">🎬  Namazı 3B izle</string>
-    <string name="btn_daily">💡  Günün sorusu</string>
-    <string name="btn_daily_done">💡  Günün sorusu ✓</string>
     <string name="place_label">📍 %1$s  ›</string>
     <string name="place_searching">📍 Konum aranıyor…</string>
     <string name="place_finding">Bulunduğun yer bulunuyor…</string>
@@ -136,8 +134,6 @@
     <string name="ch_silent_desc">Ezan sesi çalarken gösterilen sessiz vakit bildirimi.</string>
     <string name="ch_reminder">Vakit hatırlatması</string>
     <string name="ch_reminder_desc">Vakit girmeden önce hatırlatma.</string>
-    <string name="ch_daily">Günün sorusu</string>
-    <string name="ch_daily_desc">Aile Halkası: akşam vaktinde günün sorusu (sessiz).</string>
     <string name="ch_adhan">Ezan sesi</string>
     <string name="ch_adhan_desc">Ezan çalarken durdurma düğmesi.</string>
     <string name="notif_prayer_title">%1$s vakti</string>
@@ -146,7 +142,6 @@
         <item quantity="one">%1$s vaktine %2$d dakika kaldı</item>
         <item quantity="other">%1$s vaktine %2$d dakika kaldı</item>
     </plurals>
-    <string name="notif_daily_title">🌳 Günün sorusu</string>
     <string name="adhan_test">Deneme</string>
     <string name="adhan_default">Ezan</string>
     <string name="adhan_playing">%1$s · Ezan okunuyor</string>
@@ -395,7 +390,6 @@
     <string name="learn_static_15">Bilgi Yarışması</string>
     <string name="learn_static_16">İslam dini hakkında</string>
     <string name="learn_static_17">Çocuklar için abdest ve namaz oyunu</string>
-    <string name="learn_static_18">Akşam vakti girince günün sorusunu bildir</string>
     <string name="learn_static_19">Aile hedeflerimiz</string>
     <string name="learn_static_20">+ Hedef ekle</string>
     <string name="learn_static_21">Ağacı sıfırla</string>
@@ -449,8 +443,6 @@
     <string name="learn_ui_005">Ağacımız: %1$s · toplam %2$d doğru</string>
     <string name="learn_ui_006">\nSonraki aşamaya (%1$s) %2$d doğru kaldı</string>
     <string name="learn_ui_007">\nAğacımız en büyük haline ulaştı!</string>
-    <string name="learn_ui_008">💡 Günün sorusu ✓ (bugün cevaplandı)</string>
-    <string name="learn_ui_009">💡 Günün sorusu</string>
     <string name="learn_ui_010">🔁 Yanlışlarımı tekrar et</string>
     <string name="learn_ui_011">⚑ İşaretlediğim sorular</string>
     <string name="learn_ui_012">▶ Devam</string>
@@ -479,10 +471,6 @@
     <string name="learn_ui_035">Telefonda Türkçe ses bulunamadı. Ayarlar → Erişilebilirlik → Metin okuma\'dan Türkçe sesi indirebilirsin.</string>
     <string name="learn_ui_036">Kapat</string>
     <string name="learn_ui_037">🔊 Oku</string>
-    <string name="learn_ui_038">\nKaynak: </string>
-    <string name="learn_ui_039">\n\n🌱 Ağacımıza +1</string>
-    <string name="learn_ui_040">Günün sorusu</string>
-    <string name="learn_ui_041">Tamam</string>
     <string name="learn_ui_042">Ağaç sıfırlansın mı?</string>
     <string name="learn_ui_043">Ağacımız tohuma döner ve bütün sorular ağacı yeniden büyütebilir. </string>
     <string name="learn_ui_044">Hedefler ve yanlışlar listesi silinmez. Bu işlem geri alınamaz.</string>

@@ -113,23 +113,10 @@ class MainActivity : LangActivity() {
         findViewById<Button>(R.id.btnPrayerGame).setOnClickListener {
             startActivity(Intent(this, PrayerGameActivity::class.java))
         }
-        findViewById<Button>(R.id.btnNamaz3d).setOnClickListener {
-            startActivity(Intent(this, Namaz3dActivity::class.java))
-        }
-        findViewById<Button>(R.id.btnDaily).setOnClickListener {
-            startActivity(Intent(this, QuizActivity::class.java).putExtra(QuizActivity.EXTRA_DAILY, true))
-        }
-    }
-
-    /** "Günün sorusu" düğmesi: bugün cevaplandıysa ✓ işareti. */
-    private fun updateDailyButton() {
-        val done = Store.dailyDoneDate(this) == LocalDate.now().toString()
-        findViewById<Button>(R.id.btnDaily).setText(if (done) R.string.btn_daily_done else R.string.btn_daily)
     }
 
     override fun onResume() {
         super.onResume()
-        updateDailyButton()
         resumeFlow()
     }
 

@@ -31,14 +31,10 @@ class NotificationMomentTest {
     }
 
     @Test
-    fun adhan_stop_does_not_remove_daily_question() {
-        // Model NotificationManager's untagged-ID replacement/removal behavior.
-        val posted = mutableMapOf(NotificationIds.ADHAN to "adhan", NotificationIds.DAILY to "question")
-        posted.remove(NotificationIds.ADHAN)
-        assertEquals("question", posted[NotificationIds.DAILY])
+    fun notification_ids_do_not_collide() {
+        // Kanallar bildirim kimliklerini ayırmaz: ezan bildirimi hiçbir vakit/hatırlatma bildirimini silmemeli.
         val prayerAndReminders = PRAYER_NAMES.indices.flatMap { listOf(NotificationIds.prayer(it), NotificationIds.reminder(it)) }
         assertFalse(NotificationIds.ADHAN in prayerAndReminders)
-        assertFalse(NotificationIds.DAILY in prayerAndReminders)
         assertEquals(12, prayerAndReminders.toSet().size)
     }
 }

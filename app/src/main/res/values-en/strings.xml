@@ -55,11 +55,9 @@
     <string name="btn_holy_days">Religious days</string>
     <string name="btn_kaza">Missed prayers</string>
     <string name="btn_zikir">Dhikr counter</string>
-    <string name="btn_quiz">🌳  Aile Halkası · Family quiz</string>
-    <string name="btn_prayer_game">🕌  Learning to pray · Game for children</string>
+    <string name="btn_quiz">🌳  Quiz</string>
+    <string name="btn_prayer_game">🕌  Learning to Pray</string>
     <string name="btn_namaz3d">🎬  Watch the prayer in 3D</string>
-    <string name="btn_daily">💡  Question of the day</string>
-    <string name="btn_daily_done">💡  Question of the day ✓</string>
     <string name="place_label">📍 %1$s  ›</string>
     <string name="place_searching">📍 Finding your location…</string>
     <string name="place_finding">Finding where you are…</string>
@@ -132,8 +130,6 @@
     <string name="ch_silent_desc">Silent notification shown while the adhan plays.</string>
     <string name="ch_reminder">Prayer reminder</string>
     <string name="ch_reminder_desc">Reminder before a prayer time begins.</string>
-    <string name="ch_daily">Question of the day</string>
-    <string name="ch_daily_desc">Aile Halkası: question of the day at Maghrib (silent).</string>
     <string name="ch_adhan">Adhan</string>
     <string name="ch_adhan_desc">Stop button while the adhan plays.</string>
     <string name="notif_prayer_title">%1$s time</string>
@@ -142,7 +138,6 @@
         <item quantity="one">%2$d minute until %1$s</item>
         <item quantity="other">%2$d minutes until %1$s</item>
     </plurals>
-    <string name="notif_daily_title">🌳 Question of the day</string>
     <string name="adhan_test">Test</string>
     <string name="adhan_default">Adhan</string>
     <string name="adhan_playing">%1$s · Adhan playing</string>
@@ -391,7 +386,6 @@
     <string name="learn_static_15">Quiz</string>
     <string name="learn_static_16">About Islam</string>
     <string name="learn_static_17">Ablution and prayer game for children</string>
-    <string name="learn_static_18">Notify me of the daily question at sunset prayer</string>
     <string name="learn_static_19">Our family goals</string>
     <string name="learn_static_20">+ Add a goal</string>
     <string name="learn_static_21">Reset tree</string>
@@ -445,8 +439,6 @@
     <string name="learn_ui_005">Our tree: %1$s · %2$d correct in total</string>
     <string name="learn_ui_006">\n%2$d more correct answers to reach %1$s</string>
     <string name="learn_ui_007">\nOur tree is fully grown!</string>
-    <string name="learn_ui_008">💡 Daily question ✓ (answered today)</string>
-    <string name="learn_ui_009">💡 Daily question</string>
     <string name="learn_ui_010">🔁 Review my mistakes</string>
     <string name="learn_ui_011">⚑ My flagged questions</string>
     <string name="learn_ui_012">▶ Continue</string>
@@ -475,10 +467,6 @@
     <string name="learn_ui_035">The selected language voice is unavailable. Install it in your phone\'s text-to-speech settings.</string>
     <string name="learn_ui_036">Close</string>
     <string name="learn_ui_037">🔊 Read aloud</string>
-    <string name="learn_ui_038">\nSource: </string>
-    <string name="learn_ui_039">\n\n🌱 +1 for our tree</string>
-    <string name="learn_ui_040">Daily question</string>
-    <string name="learn_ui_041">OK</string>
     <string name="learn_ui_042">Reset the tree?</string>
     <string name="learn_ui_043">Our tree returns to a seed and every question can help it grow again. </string>
     <string name="learn_ui_044">Goals and the mistakes list are kept. This cannot be undone.</string>

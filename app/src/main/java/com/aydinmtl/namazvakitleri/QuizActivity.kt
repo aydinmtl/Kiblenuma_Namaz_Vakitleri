@@ -15,7 +15,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -23,7 +22,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedDispatcher
-import java.time.LocalDate
 
 /**
  * Aile Halkası: bilgi yarışması.
@@ -36,7 +34,6 @@ import java.time.LocalDate
  * - İstenildiği an kapatılabilir; tekrar girince "kaldığın yerden devam" sorulur.
  * - Bir soru İLK KEZ doğru bilinince aile ağacı büyür; ağaç aşamalarına aile hedefleri bağlanabilir.
  * - Yanlış bilinen sorular "Yanlışlarımı tekrar et" turunda yeniden sorulur.
- * - Her gün bir "günün sorusu" (ana ekrandan ya da akşam bildiriminden açılır).
  * - getString(R.string.learn_ui_037): soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
  */
 class QuizActivity : LangActivity() {
@@ -61,7 +58,6 @@ class QuizActivity : LangActivity() {
     private lateinit var btnFlags: Button
     private var currentQuestion: Question? = null
     private lateinit var btnSpeak: TextView
-    private lateinit var cbDaily: CheckBox
 
     // Sesli okuma: telefonun kendi metin okuma motoru (ek kütüphane yok). İlk kullanımda açılır.
     private val learning by lazy { LearningText(this) }
@@ -69,11 +65,6 @@ class QuizActivity : LangActivity() {
     private var tts: TextToSpeech? = null
     private var ttsReady = false
     private var pendingSpeech: String? = null
-
-    companion object {
-        /** true ise ekran "günün sorusu" ile açılır (ana ekrandaki düğme ya da bildirim). */
-        const val EXTRA_DAILY = "daily"
-    }
 
     private var session: QuizSession? = null
 
@@ -114,7 +105,6 @@ class QuizActivity : LangActivity() {
         btnFlag = findViewById(R.id.btnFlag)
         btnFlags = findViewById(R.id.btnFlags)
         btnSpeak = findViewById(R.id.btnSpeak)
-        cbDaily = findViewById(R.id.cbDaily)
 
         findViewById<View>(R.id.menuQuiz).setOnClickListener { showLevels() }
         findViewById<View>(R.id.menuPrayer).setOnClickListener {
@@ -136,22 +126,9 @@ class QuizActivity : LangActivity() {
         btnFlag.setOnClickListener { currentQuestion?.let { flagQuestion(it) } }
         btnFlags.setOnClickListener { showFlags() }
         btnSpeak.setOnClickListener { speakCurrent() }
-        findViewById<View>(R.id.btnDailyHome).setOnClickListener { showDaily() }
         findViewById<View>(R.id.btnResetTree).setOnClickListener { askResetTree() }
-        cbDaily.isChecked = Store.dailyNotify(this)
-        cbDaily.setOnCheckedChangeListener { _, on -> Store.setDailyNotify(this, on) }
 
         showHome()
-        if (intent?.getBooleanExtra(EXTRA_DAILY, false) == true) {
-            askedResume = true // günün sorusu için açıldıysa "devam et" sorusu araya girmesin
-            showDaily()
-        }
-    }
-
-    // Ekran zaten açıkken bildirime dokunulursa buraya gelir.
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        if (intent.getBooleanExtra(EXTRA_DAILY, false)) showDaily()
     }
 
     override fun onDestroy() {
@@ -226,9 +203,6 @@ class QuizActivity : LangActivity() {
         tvTree.text = getString(R.string.learn_ui_005, learning.tree(stage), points) +
             if (next != null) getString(R.string.learn_ui_006, learning.tree(stage + 1), next) else getString(R.string.learn_ui_007)
         renderGoals(stage)
-
-        val dailyDone = Store.dailyDoneDate(this) == LocalDate.now().toString()
-        findViewById<Button>(R.id.btnDailyHome).text = if (dailyDone) getString(R.string.learn_ui_008) else getString(R.string.learn_ui_009)
     }
 
     // ---------------- Seviye seçimi ----------------
@@ -601,78 +575,6 @@ class QuizActivity : LangActivity() {
             pendingSpeech?.let { t.speak(it, TextToSpeech.QUEUE_FLUSH, null, "quiz") }
             pendingSpeech = null
         }
-    }
-
-    // ---------------- Günün sorusu ----------------
-
-    /** Bugünün sorusunu açar. Cevap verilince sonuç ve açıklama gösterilir; ilk kez bilinirse ağaç büyür. */
-    private fun showDaily() {
-        val today = LocalDate.now()
-        val id = QuizDeck.dailyId(QuizBank.all(this).map { it.id }, today) ?: return
-        val q = QuizBank.byId(this, id) ?: return
-        val opts = q.options.shuffled()
-        val dp = resources.displayMetrics.density
-
-        // Soru metni ve şıklar tek bir pencerede
-        val box = LinearLayout(this)
-        box.orientation = LinearLayout.VERTICAL
-        box.setPadding((20 * dp).toInt(), (8 * dp).toInt(), (20 * dp).toInt(), 0)
-        val tvQ = TextView(this)
-        tvQ.text = q.text
-        tvQ.textSize = 18f
-        tvQ.setTextColor(getColor(R.color.text))
-        box.addView(tvQ)
-
-        val dialog = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle(getString(R.string.learn_ui_009))
-            .setView(box)
-            .setNegativeButton(getString(R.string.learn_ui_036), null)
-            .setNeutralButton(getString(R.string.learn_ui_037), null) // tıklanınca pencere kapanmasın diye aşağıda bağlanıyor
-            .create()
-        for (opt in opts) {
-            val b = Button(this)
-            b.text = opt
-            b.isAllCaps = false
-            b.textSize = 16f
-            b.setTextColor(getColor(R.color.text))
-            b.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            b.setBackgroundResource(R.drawable.opt_normal)
-            b.stateListAnimator = null
-            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            lp.topMargin = (8 * dp).toInt()
-            b.layoutParams = lp
-            b.setOnClickListener {
-                dialog.dismiss()
-                answerDaily(q, opt, today)
-            }
-            box.addView(b)
-        }
-        dialog.setOnShowListener {
-            dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.setOnClickListener { speak(learning.question(q.text, opts)) }
-        }
-        dialog.setOnDismissListener { tts?.stop() }
-        dialog.show()
-    }
-
-    private fun answerDaily(q: Question, chosen: String, today: LocalDate) {
-        val ok = chosen == q.correct
-        val oldStage = FamilyTree.stageIndex(Store.treePoints(this))
-        val firstTime = ok && Store.markSolved(this, q.id)
-        Store.setWrong(this, q.id, !ok)
-        Store.setDailyDone(this, today)
-        val msg = StringBuilder(if (ok) getString(R.string.learn_ui_027) else getString(R.string.learn_ui_028, q.correct))
-        if (q.info.isNotEmpty()) msg.append("\n\n").append(q.info)
-        if (q.source.isNotEmpty()) msg.append(getString(R.string.learn_ui_038)).append(learning.source(q.source))
-        if (firstTime) msg.append(getString(R.string.learn_ui_039))
-        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle(getString(R.string.learn_ui_040))
-            .setMessage(msg.toString())
-            .setPositiveButton(getString(R.string.learn_ui_041)) { _, _ ->
-                val newStage = FamilyTree.stageIndex(Store.treePoints(this))
-                if (newStage > oldStage) celebrate(newStage)
-            }
-            .show()
-        showHome()
     }
 
     // ---------------- Ağacı sıfırla ----------------
