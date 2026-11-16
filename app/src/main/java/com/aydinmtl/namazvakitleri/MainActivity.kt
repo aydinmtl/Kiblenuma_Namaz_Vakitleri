@@ -41,6 +41,9 @@ class MainActivity : LangActivity() {
     private var locationNote: String? = null
     private var dialogOpen = false
 
+    /** Ekran önde mi? Saniyelik sayaç yalnızca ekran öndeyken çalışır. */
+    private var foreground = false
+
     // Tarih seçili dilde yazılır: "13 Kasım 2026, Cuma" / "13 novembre 2026, vendredi"
     private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
 
@@ -117,11 +120,13 @@ class MainActivity : LangActivity() {
 
     override fun onResume() {
         super.onResume()
+        foreground = true
         resumeFlow()
     }
 
     override fun onPause() {
         super.onPause()
+        foreground = false
         handler.removeCallbacks(ticker)
     }
 
@@ -183,7 +188,9 @@ class MainActivity : LangActivity() {
     private fun showTimes() {
         render()
         handler.removeCallbacks(ticker)
-        handler.post(ticker)
+        // Konum sonucu ekran arkadayken de gelebilir. O zaman sayaç başlatılmaz (boşuna her saniye
+        // çalışmasın); ekran öne gelince onResume bu fonksiyonu yeniden çağırır.
+        if (foreground) handler.post(ticker)
         AlarmScheduler.schedule(this)
         PrayerWidget.updateAll(this)
         maybeRefresh()
