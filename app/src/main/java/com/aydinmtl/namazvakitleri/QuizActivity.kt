@@ -33,7 +33,7 @@ import android.window.OnBackInvokedDispatcher
  * - İstenildiği an kapatılabilir; tekrar girince "kaldığın yerden devam" sorulur.
  * - Bir soru İLK KEZ doğru bilinince aile ağacı büyür; ağaç aşamalarına aile hedefleri bağlanabilir.
  * - Yanlış bilinen sorular "Yanlışlarımı tekrar et" turunda yeniden sorulur.
- * - getString(R.string.learn_ui_037): soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
+ * - "🔊 Oku": soru ve şıklar telefonun kendi sesiyle, seçili dilde okunur (okuma bilmeyen küçükler için).
  */
 class QuizActivity : LangActivity() {
 
@@ -66,7 +66,7 @@ class QuizActivity : LangActivity() {
 
     private var session: QuizSession? = null
 
-    /** Sonuç ekranında gösterilen, biten tur (getString(R.string.learn_ui_003) aynı seviyeden başlasın diye). */
+    /** Sonuç ekranında gösterilen, biten tur ("Yeni tur" aynı seviyeden başlasın diye). */
     private var lastResult: QuizSession? = null
     private val dp: Float by lazy { resources.displayMetrics.density }
     private var answered = false
@@ -221,7 +221,7 @@ class QuizActivity : LangActivity() {
         btnReview.visibility = if (wrong > 0) View.VISIBLE else View.GONE
         btnReview.text = getString(R.string.learn_ui_010)
 
-        // getString(R.string.learn_ui_049) diye işaretlenmiş soru varsa listesini gösteren düğme
+        // "Bu soruda hata var" diye işaretlenmiş soru varsa listesini gösteren düğme
         val flags = Store.quizFlags(this).size
         btnFlags.visibility = if (flags > 0) View.VISIBLE else View.GONE
         btnFlags.text = getString(R.string.learn_ui_011)
@@ -330,7 +330,7 @@ class QuizActivity : LangActivity() {
         }
     }
 
-    /** Tur başlığı: "Kolay seviye" ya da getString(R.string.learn_ui_018). */
+    /** Tur başlığı: "Kolay seviye" ya da "Yanlışları tekrar". */
     private fun title(s: QuizSession): String = if (s.review) getString(R.string.learn_ui_018) else getString(R.string.learn_ui_019, learning.level(s.level))
 
     /** Yanlış listesindeki ve hâlâ soru bankasında olan sorular. */
@@ -342,7 +342,7 @@ class QuizActivity : LangActivity() {
     // ---------------- Yarışma ----------------
 
     /**
-     * getString(R.string.learn_ui_022) penceresi. Adlar virgülle ayrılır; boş bırakılırsa tek kişi oynar.
+     * "Kimler oynuyor?" penceresi. Adlar virgülle ayrılır; boş bırakılırsa tek kişi oynar.
      * Bir önceki yarışmanın adları hazır gelir.
      */
     private fun askPlayersThen(onReady: (List<String>) -> Unit) {
@@ -572,7 +572,7 @@ class QuizActivity : LangActivity() {
             .show()
     }
 
-    // ---------------- getString(R.string.learn_ui_049) ----------------
+    // ---------------- "Bu soruda hata var" ----------------
 
     private fun updateFlagButton(q: Question) {
         btnFlag.text = if (q.id in Store.quizFlags(this)) getString(R.string.learn_ui_046) else getString(R.string.learn_ui_047)

@@ -108,18 +108,6 @@ class PlaceZoneTest {
     }
 
     @Test
-    fun zone_cache_recomputes_corrected_times_with_unchanged_dates_and_size() {
-        val d = LocalDate.of(2026, 11, 8)
-        val times = listOf("06:09", "07:36", "12:53", "15:34", "18:00", "19:21").map(LocalTime::parse)
-        val cache = PlaceZoneCache()
-        cache.apply(listOf(PrayerDay(d, times, "")), istanbulLon, zurich)
-        val corrected = times.toMutableList().apply { this[0] = LocalTime.of(6, 10) }
-        val result = cache.apply(listOf(PrayerDay(d, corrected, "")), istanbulLon, zurich)
-        assertEquals(LocalTime.of(6, 10), Prayers.moments(result).first { it.index == 0 }.clock)
-        assertEquals(Instant.parse("2026-11-08T03:10:00Z"), Prayers.moments(result).first { it.index == 0 }.instant)
-    }
-
-    @Test
     fun actual_instant_distinguishes_repeated_phone_hour() {
         val before = Moment.fromEpochMillis(0, Instant.parse("2026-10-25T00:50:00Z").toEpochMilli(),
             phone = zurich)

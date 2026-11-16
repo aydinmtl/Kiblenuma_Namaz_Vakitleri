@@ -15,9 +15,6 @@ import java.time.ZoneOffset
 object Times {
     private val reader = PrayerTimeReader()
 
-    /** Seçilen yöntem hesaplanamıyorsa (yerin koordinatı yok) Diyanet'e düşülür. */
-    fun effectiveMethod(ctx: Context): CalcMethod = Store.prayerSnapshot(ctx).second.effectiveMethod
-
     fun isFallback(ctx: Context): Boolean {
         val state = Store.prayerSnapshot(ctx).second
         return state.effectiveMethod != state.method
@@ -57,6 +54,8 @@ internal data class PrayerSnapshot(
     val hanafi: Boolean,
 ) {
     val computed: Boolean get() = districtId == Store.COMPUTED_ID
+
+    /** Seçilen yöntem hesaplanamıyorsa (yerin koordinatı yok) Diyanet'e düşülür. */
     val effectiveMethod: CalcMethod
         get() = if (!computed && method != CalcMethod.DIYANET && point == null) CalcMethod.DIYANET else method
 

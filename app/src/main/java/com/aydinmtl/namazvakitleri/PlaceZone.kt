@@ -85,21 +85,3 @@ object PlaceZone {
             d.copy(shiftMinutes = shiftMinutes(d.date, dhuhr, lon, phone), instants = instants, phoneZone = phone)
         }
 }
-
-/** Türetilmiş verinin anahtarı tarih aralığı değil, bütün kaynak içeriğidir. */
-internal class PlaceZoneCache {
-    private var source: List<PrayerDay>? = null
-    private var longitude: Double? = null
-    private var zone: ZoneId? = null
-    private var result: List<PrayerDay> = emptyList()
-
-    fun apply(days: List<PrayerDay>, lon: Double, phone: ZoneId): List<PrayerDay> {
-        if (source == days && longitude == lon && zone == phone) return result
-        // Bir çağıran listeyi sonradan değiştirirse de yeni içeriği fark et.
-        source = days.map { it.copy(times = it.times.toList(), instants = it.instants?.toList()) }
-        longitude = lon
-        zone = phone
-        result = PlaceZone.apply(days, lon, phone)
-        return result
-    }
-}
