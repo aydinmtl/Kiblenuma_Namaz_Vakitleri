@@ -7,25 +7,25 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 /** Önümüzdeki bir yılın dini günleri ve kandilleri. */
 class HolyDaysActivity : LangActivity() {
 
-    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
+    private val dateFormat by lazy { Lang.dateFormat(this, R.string.date_full) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list)
         Ui.fitSystemBars(this, findViewById(R.id.root))
 
-        Times.days(this) // Hicri tarihi Diyanet takvimiyle hizalar
+        // Diyanet listesinin kapsadığı günlerde resmi Hicri tarih, dışında hizalanmış hesap (bkz. Hijri.aligned)
+        val hijriOf = Hijri.aligned(Times.days(this))
         val today = LocalDate.now()
-        val items = Hijri.holyDays(today)
+        val items = Hijri.holyDays(today, hijriOf = hijriOf)
 
         findViewById<TextView>(R.id.tvTitle).text = getString(R.string.hd_title)
-        findViewById<TextView>(R.id.tvSubtitle).text = getString(R.string.hd_info, Lang.hijriDate(this, Hijri.of(today)))
+        findViewById<TextView>(R.id.tvSubtitle).text = getString(R.string.hd_info, Lang.hijriDate(this, hijriOf(today)))
 
         findViewById<ListView>(R.id.list).adapter = object : BaseAdapter() {
             override fun getCount() = items.size

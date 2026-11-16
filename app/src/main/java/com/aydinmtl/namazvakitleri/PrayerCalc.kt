@@ -12,7 +12,6 @@ import kotlin.math.atan2
 import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.floor
-import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.tan
 
@@ -46,16 +45,6 @@ enum class CalcMethod(
         "Singapur, Malezya, Endonezya."),
     UOIF("uoif", "Fransa İslam Teşkilatları Birliği (UOIF)", 12.0, 12.0, null,
         "Fransa'daki bazı camiler.");
-
-    /** Ayarlar'da gösterilen kısa açıklama. */
-    fun details(): String {
-        if (this == DIYANET) return where
-        val isha = if (ishaMinutes != null) "akşamdan $ishaMinutes dk sonra" else "güneş ufkun ${fmt(ishaAngle!!)}° altında"
-        return "İmsak: güneş ufkun ${fmt(fajr)}° altında. Yatsı: $isha.\n$where\n" +
-            "Vakitler telefonda astronomik formüllerle hesaplanır (internet gerekmez)."
-    }
-
-    private fun fmt(d: Double) = if (d == floor(d)) d.toInt().toString() else d.toString().replace('.', ',')
 
     companion object {
         fun byId(id: String?): CalcMethod = values().firstOrNull { it.id == id } ?: DIYANET
@@ -94,17 +83,6 @@ object PrayerCalc {
     fun solarNoonUtc(date: LocalDate, lon: Double): Double {
         val jd = date.toEpochDay() + 2440587.5 + 0.5 - lon / 360.0
         return fixHour(12.0 - sun(jd).second - lon / 15.0)
-    }
-
-    /**
-     * Bir günün 6 vakti: İmsak, Güneş, Öğle, İkindi, Akşam, Yatsı.
-     * Güneşin hiç doğmadığı/batmadığı kutup bölgelerinde null döner.
-     * [asrFactor]: 1 = standart (Şafii, Maliki, Hanbeli ve Diyanet), 2 = Hanefi (asr-ı sani).
-     */
-    fun day(date: LocalDate, lat: Double, lon: Double, zone: ZoneId, method: CalcMethod, asrFactor: Int): List<LocalTime>? {
-        // Saat 24'ü geçen vakit (ör. 24:20) 00:20 olarak yazılır. Hangi güne ait olduğunu
-        // Prayers.dayMoments sıralamaya bakarak bulur (akşamdan önce görünen yatsı = ertesi gün).
-        return rawMinutes(date, lat, lon, zone, method, asrFactor)?.map { toClock(it.roundToInt()) }
     }
 
     /**
@@ -147,10 +125,13 @@ object PrayerCalc {
     ): PrayerDay? {
         val raw = rawMinutes(date, lat, lon, ZoneOffset.UTC, method, asrFactor) ?: return null
         val instants = raw.mapIndexed { i, minute ->
-            val rounded = if (method == CalcMethod.DIYANET) {
-                val t = minute + DIYANET_TEMKIN[i]
-                if (i <= SUNRISE) floor(t).toLong() else ceil(t).toLong()
-            } else minute.roundToInt().toLong()
+            // Temkin süreleri yalnızca Diyanet ölçülerinde eklenir.
+            val t = if (method == CalcMethod.DIYANET) minute + DIYANET_TEMKIN[i] else minute
+            // Dakikaya yuvarlama her yöntemde ihtiyatlı yöne yapılır: imsak ve güneş aşağı (erken),
+            // öğle, ikindi, akşam ve yatsı yukarı (geç). En yakın dakikaya yuvarlanırsa imsak 30
+            // saniyeye kadar geç, akşam 30 saniyeye kadar erken yazılabilir; oruç için ikisi de
+            // yanlış yöndür.
+            val rounded = if (i <= SUNRISE) floor(t).toLong() else ceil(t).toLong()
             date.atStartOfDay().plusMinutes(rounded).toInstant(ZoneOffset.UTC)
         }
         return PrayerDay(date, instants.map { it.atZone(phone).toLocalTime() }, "",

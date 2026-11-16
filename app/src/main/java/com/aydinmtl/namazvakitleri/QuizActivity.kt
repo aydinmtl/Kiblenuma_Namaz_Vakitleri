@@ -7,7 +7,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
@@ -34,7 +33,7 @@ import android.window.OnBackInvokedDispatcher
  * - İstenildiği an kapatılabilir; tekrar girince "kaldığın yerden devam" sorulur.
  * - Bir soru İLK KEZ doğru bilinince aile ağacı büyür; ağaç aşamalarına aile hedefleri bağlanabilir.
  * - Yanlış bilinen sorular "Yanlışlarımı tekrar et" turunda yeniden sorulur.
- * - getString(R.string.learn_ui_037): soru ve şıklar telefonun kendi Türkçe sesiyle okunur (okuma bilmeyen küçükler için).
+ * - "🔊 Oku": soru ve şıklar telefonun kendi sesiyle, seçili dilde okunur (okuma bilmeyen küçükler için).
  */
 class QuizActivity : LangActivity() {
 
@@ -59,16 +58,15 @@ class QuizActivity : LangActivity() {
     private var currentQuestion: Question? = null
     private lateinit var btnSpeak: TextView
 
-    // Sesli okuma: telefonun kendi metin okuma motoru (ek kütüphane yok). İlk kullanımda açılır.
+    // Sesli okuma (bkz. Speaker): telefonun kendi metin okuma motoru. İlk kullanımda açılır.
     private val learning by lazy { LearningText(this) }
-
-    private var tts: TextToSpeech? = null
-    private var ttsReady = false
-    private var pendingSpeech: String? = null
+    private val speaker by lazy {
+        Speaker(this, "quiz") { Toast.makeText(this, getString(R.string.learn_ui_035), Toast.LENGTH_LONG).show() }
+    }
 
     private var session: QuizSession? = null
 
-    /** Sonuç ekranında gösterilen, biten tur (getString(R.string.learn_ui_003) aynı seviyeden başlasın diye). */
+    /** Sonuç ekranında gösterilen, biten tur ("Yeni tur" aynı seviyeden başlasın diye). */
     private var lastResult: QuizSession? = null
     private val dp: Float by lazy { resources.displayMetrics.density }
     private var answered = false
@@ -131,9 +129,14 @@ class QuizActivity : LangActivity() {
         showHome()
     }
 
+    // Ekrandan çıkınca (başka uygulamaya geçiş, ekranın kapanması) okuma sussun.
+    override fun onPause() {
+        speaker.stop()
+        super.onPause()
+    }
+
     override fun onDestroy() {
-        tts?.shutdown()
-        tts = null
+        speaker.shutdown()
         super.onDestroy()
     }
 
@@ -209,7 +212,7 @@ class QuizActivity : LangActivity() {
 
     /** Seviye seçim ekranı: üç seviye kartı, varsa "Yanlışlarımı tekrar et" ve işaretli sorular. */
     private fun showLevels() {
-        tts?.stop()
+        speaker.stop()
         showPane(levelPane)
         buildLevelCards()
 
@@ -218,7 +221,7 @@ class QuizActivity : LangActivity() {
         btnReview.visibility = if (wrong > 0) View.VISIBLE else View.GONE
         btnReview.text = getString(R.string.learn_ui_010)
 
-        // getString(R.string.learn_ui_049) diye işaretlenmiş soru varsa listesini gösteren düğme
+        // "Bu soruda hata var" diye işaretlenmiş soru varsa listesini gösteren düğme
         val flags = Store.quizFlags(this).size
         btnFlags.visibility = if (flags > 0) View.VISIBLE else View.GONE
         btnFlags.text = getString(R.string.learn_ui_011)
@@ -327,7 +330,7 @@ class QuizActivity : LangActivity() {
         }
     }
 
-    /** Tur başlığı: "Kolay seviye" ya da getString(R.string.learn_ui_018). */
+    /** Tur başlığı: "Kolay seviye" ya da "Yanlışları tekrar". */
     private fun title(s: QuizSession): String = if (s.review) getString(R.string.learn_ui_018) else getString(R.string.learn_ui_019, learning.level(s.level))
 
     /** Yanlış listesindeki ve hâlâ soru bankasında olan sorular. */
@@ -339,7 +342,7 @@ class QuizActivity : LangActivity() {
     // ---------------- Yarışma ----------------
 
     /**
-     * getString(R.string.learn_ui_022) penceresi. Adlar virgülle ayrılır; boş bırakılırsa tek kişi oynar.
+     * "Kimler oynuyor?" penceresi. Adlar virgülle ayrılır; boş bırakılırsa tek kişi oynar.
      * Bir önceki yarışmanın adları hazır gelir.
      */
     private fun askPlayersThen(onReady: (List<String>) -> Unit) {
@@ -411,7 +414,7 @@ class QuizActivity : LangActivity() {
         }
         answered = false
         currentQuestion = q
-        tts?.stop()
+        speaker.stop()
         btnFlag.visibility = View.GONE
         showTurn(s)
         tvProgress.text = getString(R.string.learn_ui_024, title(s), s.index + 1, s.order.size, s.score)
@@ -550,32 +553,7 @@ class QuizActivity : LangActivity() {
         speak(text)
     }
 
-    private fun speak(text: String) {
-        val engine = tts
-        if (engine != null && ttsReady) {
-            engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "quiz")
-            return
-        }
-        pendingSpeech = text
-        if (engine != null) return // motor hâlâ açılıyor; hazır olunca okunur
-        tts = TextToSpeech(this) init@{ status ->
-            val t = tts ?: return@init
-            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Lang.locale(this)) else TextToSpeech.LANG_NOT_SUPPORTED
-            if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.learn_ui_035),
-                    Toast.LENGTH_LONG,
-                ).show()
-                t.shutdown()
-                tts = null
-                return@init
-            }
-            ttsReady = true
-            pendingSpeech?.let { t.speak(it, TextToSpeech.QUEUE_FLUSH, null, "quiz") }
-            pendingSpeech = null
-        }
-    }
+    private fun speak(text: String) = speaker.speak(text)
 
     // ---------------- Ağacı sıfırla ----------------
 
@@ -594,7 +572,7 @@ class QuizActivity : LangActivity() {
             .show()
     }
 
-    // ---------------- getString(R.string.learn_ui_049) ----------------
+    // ---------------- "Bu soruda hata var" ----------------
 
     private fun updateFlagButton(q: Question) {
         btnFlag.text = if (q.id in Store.quizFlags(this)) getString(R.string.learn_ui_046) else getString(R.string.learn_ui_047)
@@ -667,7 +645,7 @@ class QuizActivity : LangActivity() {
     private fun showResult(s: QuizSession) {
         Store.saveQuizSession(this, null)
         lastResult = s
-        tts?.stop()
+        speaker.stop()
         showPane(resultPane)
         val total = s.order.size
         val stars = QuizResult.stars(s.score, total)

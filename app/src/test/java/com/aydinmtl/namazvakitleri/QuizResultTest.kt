@@ -17,8 +17,7 @@ class QuizResultTest {
     }
 
     @Test
-    fun herYildizIcinSimgeVeBaslikVar() {
+    fun herYildizIcinSimgeVar() {
         assertEquals(4, QuizResult.EMOJI.size)
-        assertEquals(4, QuizResult.TITLE.size)
     }
 }

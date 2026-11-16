@@ -13,3 +13,6 @@ captures/
 *.p12
 # Yardımcı araçların artıkları
 __pycache__/
+# Yapay zekâ yardımcılarının çalışma notları (depoya girmez)
+.superpowers/
+docs/superpowers/

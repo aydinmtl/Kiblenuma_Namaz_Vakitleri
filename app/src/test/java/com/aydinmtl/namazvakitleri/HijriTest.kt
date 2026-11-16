@@ -77,4 +77,47 @@ class HijriTest {
         assertEquals(3, list.count { it.name.startsWith("Ramazan Bayramı") && it.name.endsWith("Gün") && it.date.year == 2026 })
         assertEquals(4, list.count { it.name.startsWith("Kurban Bayramı") && it.name.endsWith("Gün") && it.date.year == 2026 })
     }
+
+    // ---- Diyanet listesiyle hizalama (Hijri.aligned) ----
+
+    /** Test takvimi: Java'nın Ümmü'l-Kurâ takvimi, istenen gün kadar kaydırılmış. */
+    private val shifted: (LocalDate, Long) -> Hijri.HDate = { d, shift -> umalqura(d.plusDays(shift)) }
+
+    /** Diyanet'in takvimi hesap takviminden 1 gün ileride olan beş günlük bir liste. */
+    private fun listOneDayAhead(start: LocalDate): List<PrayerDay> = (0L..4L).map { i ->
+        val d = start.plusDays(i)
+        val h = umalqura(d.plusDays(1))
+        PrayerDay(d, emptyList(), "", "${h.day}.${h.month}.${h.year}")
+    }
+
+    @Test
+    fun listedeki_gunlerde_Diyanetin_kendi_hicri_tarihi_kullanilir() {
+        val start = LocalDate.of(2026, 11, 10)
+        val hijriOf = Hijri.aligned(listOneDayAhead(start), shifted)
+        assertEquals(umalqura(start.plusDays(3)), hijriOf(start.plusDays(2)))
+    }
+
+    @Test
+    fun liste_disindaki_gunler_en_yakin_uctaki_farkla_kaydirilir() {
+        val start = LocalDate.of(2026, 11, 10)
+        val hijriOf = Hijri.aligned(listOneDayAhead(start), shifted)
+        // Listeden sonra: son günün farkı (+1)
+        assertEquals(umalqura(start.plusDays(41)), hijriOf(start.plusDays(40)))
+        // Listeden önce: ilk günün farkı (+1)
+        assertEquals(umalqura(start.minusDays(4)), hijriOf(start.minusDays(5)))
+    }
+
+    @Test
+    fun liste_yoksa_hesap_takvimi_kullanilir() {
+        Hijri.offsetDays = 0
+        val d = LocalDate.of(2026, 11, 10)
+        assertEquals(umalqura(d), Hijri.aligned(emptyList(), shifted)(d))
+    }
+
+    @Test
+    fun kisa_hicri_tarih_ayristirilir() {
+        assertEquals(Hijri.HDate(1448, 6, 2), Hijri.parseShort("2.6.1448"))
+        assertEquals(null, Hijri.parseShort(""))
+        assertEquals(null, Hijri.parseShort("2.13.1448"))
+    }
 }

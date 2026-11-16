@@ -20,7 +20,6 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class MainActivity : LangActivity() {
 
@@ -41,8 +40,11 @@ class MainActivity : LangActivity() {
     private var locationNote: String? = null
     private var dialogOpen = false
 
-    // Tarih seçili dilde yazılır: "13 Kasım 2026, Cuma" / "13 novembre 2026, vendredi"
-    private val dateFormat by lazy { DateTimeFormatter.ofPattern("d MMMM yyyy, EEEE", Lang.locale(this)) }
+    /** Ekran önde mi? Saniyelik sayaç yalnızca ekran öndeyken çalışır. */
+    private var foreground = false
+
+    // Tarih seçili dilde ve o dilin kuralıyla yazılır: "13 Kasım 2026, Cuma" / "vendredi 13 novembre 2026"
+    private val dateFormat by lazy { Lang.dateFormat(this, R.string.date_full) }
 
     private val ticker = object : Runnable {
         override fun run() {
@@ -117,11 +119,13 @@ class MainActivity : LangActivity() {
 
     override fun onResume() {
         super.onResume()
+        foreground = true
         resumeFlow()
     }
 
     override fun onPause() {
         super.onPause()
+        foreground = false
         handler.removeCallbacks(ticker)
     }
 
@@ -183,7 +187,9 @@ class MainActivity : LangActivity() {
     private fun showTimes() {
         render()
         handler.removeCallbacks(ticker)
-        handler.post(ticker)
+        // Konum sonucu ekran arkadayken de gelebilir. O zaman sayaç başlatılmaz (boşuna her saniye
+        // çalışmasın); ekran öne gelince onResume bu fonksiyonu yeniden çağırır.
+        if (foreground) handler.post(ticker)
         AlarmScheduler.schedule(this)
         PrayerWidget.updateAll(this)
         maybeRefresh()
@@ -448,7 +454,8 @@ class MainActivity : LangActivity() {
             if (!Notifications.canPost(this)) {
                 lines.add(getString(R.string.notif_perm_off))
                 action = {
-                    startActivity(
+                    Ui.openSystemScreen(
+                        this,
                         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, packageName),
                     )
                 }
@@ -456,7 +463,7 @@ class MainActivity : LangActivity() {
                 lines.add(getString(R.string.exact_alarm_needed))
                 action = {
                     if (Build.VERSION.SDK_INT >= 31) {
-                        startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
+                        Ui.openSystemScreen(this, Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
                     }
                 }
             }

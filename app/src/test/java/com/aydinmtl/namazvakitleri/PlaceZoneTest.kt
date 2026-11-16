@@ -46,6 +46,20 @@ class PlaceZoneTest {
     }
 
     @Test
+    fun var_olmayan_ceyrek_saatlik_fark_reddedilir() {
+        // Öğle 12:39: fark +1:15 çıkar. Böyle bir saat dilimi yok (koordinat yanlış demektir) -> güvenilmez
+        assertNull(PlaceZone.offsetMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(12, 39), cenevreLon))
+    }
+
+    @Test
+    fun yarim_saatlik_ve_45_dakikalik_dilimler_taninir() {
+        // Katmandu (Nepal, UTC+5:45), 07.11.2026: güneş 11:47'de en yüksekte, öğle ~11:52
+        assertEquals(345, PlaceZone.offsetMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(11, 52), 85.32))
+        // Yeni Delhi (Hindistan, UTC+5:30), 07.11.2026: güneş 12:05'te en yüksekte, öğle ~12:10
+        assertEquals(330, PlaceZone.offsetMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(12, 10), 77.21))
+    }
+
+    @Test
     fun ayni_saat_diliminde_fark_yok() {
         assertEquals(0, PlaceZone.shiftMinutes(LocalDate.of(2026, 11, 7), LocalTime.of(12, 24), cenevreLon, zurich))
         assertEquals(0, PlaceZone.shiftMinutes(LocalDate.of(2026, 11, 8), LocalTime.of(12, 53), istanbulLon, istanbulZone))
@@ -91,18 +105,6 @@ class PlaceZoneTest {
         assertEquals(d, fajr.day)
         assertEquals(Prayers.next(PlaceZone.apply(listOf(PrayerDay(d, times, "")), 139.6917, zurich),
             Instant.parse("2026-03-28T19:29:00Z")), fajr)
-    }
-
-    @Test
-    fun zone_cache_recomputes_corrected_times_with_unchanged_dates_and_size() {
-        val d = LocalDate.of(2026, 11, 8)
-        val times = listOf("06:09", "07:36", "12:53", "15:34", "18:00", "19:21").map(LocalTime::parse)
-        val cache = PlaceZoneCache()
-        cache.apply(listOf(PrayerDay(d, times, "")), istanbulLon, zurich)
-        val corrected = times.toMutableList().apply { this[0] = LocalTime.of(6, 10) }
-        val result = cache.apply(listOf(PrayerDay(d, corrected, "")), istanbulLon, zurich)
-        assertEquals(LocalTime.of(6, 10), Prayers.moments(result).first { it.index == 0 }.clock)
-        assertEquals(Instant.parse("2026-11-08T03:10:00Z"), Prayers.moments(result).first { it.index == 0 }.instant)
     }
 
     @Test

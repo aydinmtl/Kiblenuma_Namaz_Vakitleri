@@ -1,6 +1,9 @@
 package com.aydinmtl.namazvakitleri
 
 import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.xml.parsers.DocumentBuilderFactory
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -44,6 +47,24 @@ class LangResourcesTest {
     }
 
     private fun placeholders(s: String): Set<String> = placeholder.findAll(s).map { it.value }.toSet()
+
+    /** Tarih kalıpları (date_full, date_long, date_short) her dilde geçerli olmalı; bozuk kalıp ekranı çökertir. */
+    @Test
+    fun datePatternsFormatInEveryLanguage() {
+        val date = LocalDate.of(2026, 11, 15)
+        val languages = listOf("values" to "tr-TR", "values-fr" to "fr", "values-en" to "en", "values-de" to "de")
+        for ((folder, tag) in languages) {
+            val strings = read(folder)
+            for (name in listOf("date_full", "date_long", "date_short")) {
+                val pattern = strings.getValue("string:$name").texts[0]
+                val text = date.format(DateTimeFormatter.ofPattern(pattern, Locale.forLanguageTag(tag)))
+                assertTrue("$folder $name: \"$text\"", text.contains("15"))
+            }
+        }
+        // Almancada gün sayısından sonra nokta konur.
+        val german = read("values-de").getValue("string:date_full").texts[0]
+        assertEquals("Sonntag, 15. November 2026", date.format(DateTimeFormatter.ofPattern(german, Locale.GERMAN)))
+    }
 
     @Test
     fun translationsMatchTurkish() {

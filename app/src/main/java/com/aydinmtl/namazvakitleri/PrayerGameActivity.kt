@@ -7,7 +7,6 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -65,9 +64,9 @@ class PrayerGameActivity : LangActivity() {
     // Sesli okuma (okuma bilmeyen küçükler için): telefonun seçili dildeki sesi
     private val learning by lazy { LearningText(this) }
 
-    private var tts: TextToSpeech? = null
-    private var ttsReady = false
-    private var pendingSpeech: String? = null
+    private val speaker by lazy {
+        Speaker(this, "prayer") { Toast.makeText(this, getString(R.string.learn_ui_035), Toast.LENGTH_LONG).show() }
+    }
 
     // Duaların, surelerin ve tekbirin uygulamayla gelen ses kayıtları (dosya yoksa sessiz geçer)
     private lateinit var voice: PrayerVoice
@@ -180,10 +179,7 @@ class PrayerGameActivity : LangActivity() {
     override fun onDestroy() {
         figure.destroy()
         voice.stop()
-        stopSpeech()
-        ttsReady = false
-        tts?.shutdown()
-        tts = null
+        speaker.shutdown()
         super.onDestroy()
     }
 
@@ -543,40 +539,11 @@ class PrayerGameActivity : LangActivity() {
         speak(text)
     }
 
-    /** Atlanan okuma, motor geç açılsa bile yeniden başlamamalı. */
-    private fun stopSpeech() {
-        pendingSpeech = null
-        tts?.stop()
-    }
+    /** Atlanan okuma, motor geç açılsa bile yeniden başlamamalı (bkz. Speaker.stop). */
+    private fun stopSpeech() = speaker.stop()
 
     private fun speak(text: String) {
         voice.stop() // soru okunurken dua kaydı üstüne binmesin
-        val engine = tts
-        if (engine != null && ttsReady) {
-            pendingSpeech = null
-            engine.speak(text, TextToSpeech.QUEUE_FLUSH, null, "prayer")
-            return
-        }
-        pendingSpeech = text
-        if (engine != null) return // motor hâlâ açılıyor; hazır olunca okunur
-        tts = TextToSpeech(this) init@{ status ->
-            val t = tts ?: return@init
-            val lang = if (status == TextToSpeech.SUCCESS) t.setLanguage(Lang.locale(this)) else TextToSpeech.LANG_NOT_SUPPORTED
-            if (lang == TextToSpeech.LANG_MISSING_DATA || lang == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.learn_ui_035),
-                    Toast.LENGTH_LONG,
-                ).show()
-                pendingSpeech = null
-                ttsReady = false
-                t.shutdown()
-                tts = null
-                return@init
-            }
-            ttsReady = true
-            pendingSpeech?.let { t.speak(it, TextToSpeech.QUEUE_FLUSH, null, "prayer") }
-            pendingSpeech = null
-        }
+        speaker.speak(text)
     }
 }

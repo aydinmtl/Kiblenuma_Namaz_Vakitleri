@@ -61,6 +61,9 @@ class QiblaActivity : LangActivity(), SensorEventListener {
     private val ori = FloatArray(3)
     private var locationListener: LocationListener? = null
 
+    /** Konum beklenirken ekran arkaya geçtiyse dinleme bırakılır; ekran dönünce yeniden istenir. */
+    private var locateOnResume = false
+
     /** Pusula ayarsız mı (sensör doğruluğu düşük)? Uyarı, doğruluk düzelene kadar ekranda kalır. */
     private var lowAccuracy = false
     private var directionHint: String? = null
@@ -105,11 +108,20 @@ class QiblaActivity : LangActivity(), SensorEventListener {
     override fun onResume() {
         super.onResume()
         sensor?.let { sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
+        if (locateOnResume) {
+            locateOnResume = false
+            locate()
+        }
     }
 
     override fun onPause() {
         super.onPause()
         sm.unregisterListener(this)
+        // Konum henüz gelmediyse ekran arkadayken telefonun konum donanımı açık kalmasın.
+        if (locationListener != null) {
+            stopLocationUpdates()
+            locateOnResume = true
+        }
     }
 
     override fun onDestroy() {

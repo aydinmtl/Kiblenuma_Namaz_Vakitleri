@@ -7,6 +7,7 @@ import java.time.LocalDate
 /** Seçilen yer, ayarlar ve 30 günlük vakit önbelleği (SharedPreferences). */
 object Store {
     private const val PREFS = "namaz"
+    private const val ZIKIR_PREFS = "zikir"
     private const val MIN_RETRY_MS = 15 * 60 * 1000L        // başarısız denemeden sonra 15 dk bekle
 
     private val selection = SelectionGuard()
@@ -305,11 +306,33 @@ object Store {
         prefs(ctx).edit().putInt("kaza_$i", maxOf(0, n)).apply()
     }
 
-    fun zikirCount(ctx: Context): Int = prefs(ctx).getInt("zikirCount", 0)
-    fun zikirTarget(ctx: Context): Int = prefs(ctx).getInt("zikirTarget", 33)
-    fun zikirRounds(ctx: Context): Int = prefs(ctx).getInt("zikirRounds", 0)
+    /**
+     * Zikirmatik kendi küçük dosyasında durur. Android bir ayar dosyasını her değişiklikte BAŞTAN
+     * yazar; sayaç ana dosyada dururken her dokunuşta 30 günlük vakit listesi de yeniden
+     * yazılıyordu. Ayrı dosyada her dokunuş yalnızca üç sayı yazar.
+     */
+    private fun zikirPrefs(ctx: Context): SharedPreferences {
+        val z = ctx.applicationContext.getSharedPreferences(ZIKIR_PREFS, Context.MODE_PRIVATE)
+        if (!z.contains("zikirTarget")) {
+            // İlk kullanım: eski sürümün ana dosyadaki sayaçlarını buraya taşı (yoksa varsayılanlar).
+            val old = prefs(ctx)
+            z.edit()
+                .putInt("zikirCount", old.getInt("zikirCount", 0))
+                .putInt("zikirTarget", old.getInt("zikirTarget", 33))
+                .putInt("zikirRounds", old.getInt("zikirRounds", 0))
+                .apply()
+            if (old.contains("zikirCount") || old.contains("zikirTarget") || old.contains("zikirRounds")) {
+                old.edit().remove("zikirCount").remove("zikirTarget").remove("zikirRounds").apply()
+            }
+        }
+        return z
+    }
+
+    fun zikirCount(ctx: Context): Int = zikirPrefs(ctx).getInt("zikirCount", 0)
+    fun zikirTarget(ctx: Context): Int = zikirPrefs(ctx).getInt("zikirTarget", 33)
+    fun zikirRounds(ctx: Context): Int = zikirPrefs(ctx).getInt("zikirRounds", 0)
     fun saveZikir(ctx: Context, count: Int, target: Int, rounds: Int) {
-        prefs(ctx).edit().putInt("zikirCount", count).putInt("zikirTarget", target).putInt("zikirRounds", rounds).apply()
+        zikirPrefs(ctx).edit().putInt("zikirCount", count).putInt("zikirTarget", target).putInt("zikirRounds", rounds).apply()
     }
 
     fun askedNotificationPermission(ctx: Context): Boolean = prefs(ctx).getBoolean("askedNotif", false)

@@ -42,14 +42,10 @@ class QuizBankTest {
     }
 
     @Test
-    fun isaretler_json_ve_rapor() {
+    fun isaretler_json() {
         val flags = mapOf("o039" to "Not denemesi", "yok999" to "")
         val back = QuizFlags.fromJson(QuizFlags.toJson(flags))
         assertEquals(flags, back)
-        val r = QuizFlags.report(back, bank)
-        assertTrue(r.contains("[o039]"))
-        assertTrue(r.contains("Not: Not denemesi"))
-        assertTrue(r.contains("(soru artık bankada yok)"))
         assertFalse(QuizFlags.fromJson("bozuk{").isNotEmpty())
     }
 }

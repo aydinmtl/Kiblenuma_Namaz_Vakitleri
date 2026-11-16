@@ -50,6 +50,10 @@
     <string name="err_bad_response">sunucudan beklenmeyen yanıt</string>
     <string name="err_unexpected">beklenmeyen hata</string>
     <string name="lang_pick_title">Dil · Langue · Language · Sprache</string>
+    <string name="err_settings_screen">Ayar ekranı açılamadı. Telefonun Ayarlar → Uygulamalar → Kıblenüma sayfasından açabilirsin.</string>
+    <string name="date_full">d MMMM yyyy, EEEE</string>
+    <string name="date_long">d MMMM yyyy</string>
+    <string name="date_short">d MMM EEE</string>
 
     <!-- Ana ekran -->
     <string name="lang_button_desc">Dil: Türkçe. Değiştirmek için dokun.</string>
@@ -244,6 +248,8 @@
     <string name="method_isha_minutes">akşamdan %1$d dk sonra</string>
     <string name="method_isha_angle">güneş ufkun %1$s° altında</string>
     <string name="method_details">İmsak: güneş ufkun %1$s° altında. Yatsı: %2$s.\n%3$s\nVakitler telefonda astronomik formüllerle hesaplanır (internet gerekmez).</string>
+    <string name="set_loc_perm_blocked">Konum izni verilmedi. Telefon bu izni yeniden sormuyorsa, telefonun ayarlarından Kıblenüma\'ya konum izni verebilirsin.</string>
+    <string name="set_open_phone_settings">Telefon ayarlarını aç</string>
 
     <!-- Konum seçimi -->
     <string name="loc_auto_failed">Konumun otomatik bulunamadı: %1$s\nŞimdilik şehrini elle seçebilirsin.</string>

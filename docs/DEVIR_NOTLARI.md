@@ -19,7 +19,7 @@ Bu dosya projeye yeni katılan geliştirici (insan ya da yapay zekâ) içindir. 
 | Dil / UI | Kotlin, platform View'ları (XML layout). Compose YOK. |
 | Bağımlılıklar | `androidx.activity`, CameraX (AR kıble) ve WorkManager (vakit verisi yenileme). |
 | SDK | minSdk 26, compileSdk/targetSdk 36 |
-| Araçlar | AGP 8.7.3, Kotlin 2.0.21, Gradle 8.14.3 (wrapper depoda) |
+| Araçlar | AGP 8.11.1, Kotlin 2.0.21, Gradle 8.14.3 (wrapper depoda) |
 | Paket | namespace `com.aydinmtl.namazvakitleri`, applicationId `com.aydinmtl.kiblenuma` |
 | Derleme | `.github/workflows/build.yml`: her PR'da ve `main`'e her push'ta birim testleri + `assembleRelease`, APK "artifact" olarak indirilebilir. Yalnızca `main` push'unda GitHub Release `v1.0.<run>` (`Kiblenuma.apk`) |
 | İmza | Elden kurulan APK'yı GitHub Actions gizli anahtarla imzalar (anahtar GitHub Secrets'ta, depoda yok). Ayrıntı aşağıda, "İmza" başlığında. Play için ayrı upload key gerekecek |
@@ -38,9 +38,9 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `Model.kt` | `PrayerDay`, `Moment`, `Prayers` (sıradaki/şu anki vakit), `norm()` (isim sadeleştirme), biçimlendirme |
 | `Diyanet.kt` | ezanvakti.emushaf.net: ülke/şehir/ilçe listeleri, 30 günlük vakit JSON'u, `label()` |
 | `Store.kt` | SharedPreferences: yer, ayarlar, Diyanet önbelleği, yarışma oturumu, ağaç puanı, hedefler, kaza, zikir |
-| `Times.kt` | **Vakitlerin tek kaynağı.** Diyanet seçiliyse indirilen liste, değilse `PrayerCalc` ile hesap |
+| `Times.kt` | **Vakitlerin tek kaynağı.** Diyanet seçiliyse indirilen liste, değilse `PrayerCalc` ile hesap. Kayıtlı liste değişmedikçe yeniden ayrıştırılmaz (`ParsedDiyanet`) |
 | `PrayerCalc.kt` | `CalcMethod` (Diyanet, MWL, ISNA, Mısır, Ümmü'l-Kurâ, Karaçi, Kuveyt, Katar, Singapur, UOIF) + astronomik hesap |
-| `Hijri.kt` | ICU Ümmü'l-Kurâ takvimi, Diyanet'e göre gün kaydırma, dini günler listesi |
+| `Hijri.kt` | ICU Ümmü'l-Kurâ takvimi, Diyanet'e göre gün kaydırma, dini günler listesi. Dini günlerde Diyanet listesinin kapsadığı günler için Diyanet'in kendi Hicri tarihi kullanılır (`Hijri.aligned`) |
 | `PlaceMatch.kt` | Yer adlarını Diyanet listesiyle eşleştirme (saf mantık, testli) |
 | `AutoLocation.kt` | Otomatik konum. Sırayla: 1) yer adını Diyanet listesinde ara, 2) çevredeki yerleşimlerin adlarını ara (2-24 km halkalar, ülke sınırına bakmaz), 3) kısa listelerde en yakın yer (Geocoder ile ileri arama, önbellekli), 4) hiçbiri olmazsa vakitleri konumdan hesapla ("hesaplanan yer", `Store.COMPUTED_ID`). Geocoder yoksa Nominatim |
 | `GeoMath.kt` | Mesafe ve "şu yöne şu kadar git" hesabı (saf mantık, testli) |
@@ -67,6 +67,7 @@ erişilemiyor; bunları kullanan kod telefonda denenmeli.
 | `Quiz.kt`, `QuizActivity.kt`, `TreeView.kt` | Aile Halkası: bilgi yarışması, oturum kaydı, aile ağacı, aile hedefleri |
 | `PrayerGame.kt`, `PrayerGameActivity.kt` | Namaz Öğreniyorum: çocuklar için soru cevap oyunu (abdest + sabah namazının farzı), adımlar ve okunan dualar. Başlangıç ekranında Abdest ve Namaz ayrı düğmelerdir; kalınan adım bölüm bölüm kaydedilir (`Store.prayerStep(ctx, bölüm)`), yarım kalan bölümde "devam mı, baştan mı" diye sorulur. Abdesti hep Ahmet alır, Zeynep seçiliyken Abdest düğmesi kapalıdır. Abdest bitince "Namaza geçelim mi?" sorulur |
 | `PrayerStageView.kt` + `assets/namazoyun3d/` | Oyunun 3B sahnesi: kodla üretilen çocuk figürü (Ahmet/Zeynep), abdesthane ve namaz odası. WebView + WebGL2; hazır model, doku ya da kütüphane yok. `motor.js` çizim, `karakter.js` figür ve iskelet, `duruslar.js` duruşlar ve geçiş yolları, `sahne.js` sahneler, `oyun.js` oyunla köprü. Namaz, çocuğun rulo seccadeyi getirip serdiği giriş canlandırmasıyla başlar (`PrayerStageView.intro`, `N3.giris`, `duruslar.js` içinde `girisKur`); seccade ayrı bir örgüdür ve şerit şerit açılır |
+| `Speaker.kt` | Soru ve şıkları telefonun metin okuma motoruyla seçili dilde okur; Bilgi Yarışması ve Namaz Öğreniyorum ortak kullanır |
 | `PrayerVoice.kt` | Oyundaki sesli okuma: `res/raw/ses_*.mp3` kayıtlarını çalar; dosya yoksa sessiz geçer. Dosya adları ve metinler: `docs/SES_DOSYALARI.md` |
 | `PrayerFigure.kt`, `PrayerFigureView.kt` | Eski 2B çizim; yalnızca 3B açılamayan cihazlarda yedek olarak kullanılır |
 
@@ -194,7 +195,8 @@ verilerini okuyabilirdi.
 8. **Kilit ekranı:** `RefreshActivity` `setShowWhenLocked(true)` kullanıyor; kilit ekranı widget'ından
    açılınca kilit sorulup sorulmadığı denenmedi.
 9. **AR kıble:** kamera yatay görüş açısı 62° varsayıldı; `CameraCharacteristics`'ten okunabilir.
-10. **Ana ekran her saniye** `Times.days()` + `Prayers.moments()` çağırıyor; gereksiz iş.
+10. **Ana ekran her saniye** `Times.days()` + `Prayers.moments()` çağırıyor. Liste artık önbellekten gelir
+    (JSON yeniden ayrıştırılmaz); kalan iş ~190 vaktin sıralanmasıdır, ölçülebilir yükü küçüktür.
 11. ~~Birim testi yok.~~ Yapıldı: `app/src/test/`. Hata taraması sonuçları: `docs/HATA_TARAMASI.md`.
 12. **Soru içeriği** bir hoca tarafından kontrol edilmedi; Play'den önce şart.
 
@@ -284,3 +286,44 @@ istekleri (O16). **Telefonda denenmesi gerekenler** her maddede yazılıdır.
   bildirimi, kanal, soru seçimi, ayar kayıtları); eski kurulumdaki bildirim kanalı
   `Notifications.createChannel` içinde silinir. Yarışma sayfasının başlığı "Aile Halkası" olarak
   durur.
+
+## Faz 4 düzeltmeleri (Kasım 2026): performans, temizlik, küçük davranışlar
+
+Denetim raporundaki D1–D14. Birim testleriyle sınananlar belirtildi; **telefonda denenmesi
+gerekenler** her maddede yazılıdır.
+
+- **D1 — Vakit listesi önbelleği.** Kayıtlı Diyanet listesi (JSON) değişmedikçe yeniden
+  ayrıştırılmaz (`ParsedDiyanet`, `Times.kt`).
+- **D2 — Zikirmatik kendi dosyasında.** Sayaç `zikir` adlı ayrı ayar dosyasında durur; her dokunuş
+  artık 30 günlük vakit listesini diske yeniden yazdırmaz. Eski sayaç ilk açılışta taşınır.
+  Telefonda: güncellemeden sonra zikir sayısı ve hedefi duruyor mu?
+- **D3 — 3B izleme duraklatılınca çizmez.** `assets/namaz3d/index.html`: duraklatılmışken sahne
+  değişmediyse kare atlanır (`lastSig`); bilgi kutusu yalnızca adım değişince yazılır. Sahneye
+  zamanla değişen yeni bir şey eklenirse imzaya (`sig`) da eklenmeli. Telefonda: duraklat, kamerayı
+  sürükle, süre çubuğunu oynat, başka uygulamaya geçip dön; görüntü donuk ya da siyah kalmamalı.
+- **D4 — Ana ekran sayacı** yalnızca ekran öndeyken çalışır (`foreground`).
+- **D5 — Kıble ekranı** arkaya geçince konum dinlemeyi bırakır, dönünce yeniden ister.
+- **D6 — Ölü kod.** Hiç çağrılmayan ve yalnızca testlerin kullandığı kod silindi; testler
+  uygulamanın gerçek yolunu (`PrayerCalc.calculatedDay`) sınıyor. **Yapılmadı:** `learn_ui_000…108`
+  adlarının yeniden adlandırılması (davranışı değiştirmeyen çok büyük bir değişiklik) ve kaynak
+  künyesi çevirisinin (`LearningText.source`) yeniden yazılması; ikisi de çalışıyor, yalnızca
+  okunaklı değil. Eski 2B çizim, 3B açılamayan telefonlar için yedek olarak duruyor.
+- **D7 — Sesli okuma** (`Speaker.kt`). Telefonda metin okuma motoru yoksa artık ileti çıkar;
+  yarışmada ekrandan çıkınca okuma susar. Telefonda: "🔊 Oku"ya basıp ana ekrana dön.
+- **D8 — Ayar ekranları.** Telefonun ayar ekranını açan her çağrı `Ui.openSystemScreen` kullanır
+  (ekran yoksa çökmez, uygulamanın genel ayar sayfasına düşer). Konum izni kalıcı reddedilmişse
+  Ayarlar'da telefonun izin sayfasına götüren pencere çıkar. Yeni bir sistem ekranı açarken
+  doğrudan `startActivity` kullanma.
+- **D9 — Tarih biçimi** dil kaynaklarındadır (`date_full`, `date_long`, `date_short`;
+  `Lang.dateFormat`). Kodda sabit tarih kalıbı yazma. Testli (`LangResourcesTest`).
+- **D10 — Tasarımlarda Türkçe varsayılan yazı yok**; widget ve imsakiyede vakit adlarını kod yazar.
+- **D11 — Yuvarlama.** Hesaplanan vakitler her yöntemde ihtiyatlı yöne yuvarlanır: imsak ve güneş
+  aşağı, öğle–yatsı yukarı (en çok 1 dakika etkiler).
+- **D12 — Yerin saat farkı** yalnızca gerçek saat dilimi farklarına yuvarlanır (tam/yarım saat ve
+  dört çeyrek saatli dilim); var olmayan bir fark çıkarsa koordinata güvenilmez. Testli.
+  Raporda geçen "mesafe denetimi" yapılmadı: karşılaştıracak ikinci bir bağımsız konum yok.
+- **D13 — Dini günler.** Diyanet listesinin kapsadığı günlerde Diyanet'in kendi Hicri tarihi,
+  dışında listenin en yakın ucuna göre hizalanmış hesap kullanılır (`Hijri.aligned`). İleri
+  tarihler yine 1 gün sapabilir; ekrandaki uyarı duruyor. Testli.
+- **D14 — Artıklar.** Yardımcı araçların çalışma klasörleri `.gitignore`'da; belgelerdeki araç
+  sürümleri güncel.

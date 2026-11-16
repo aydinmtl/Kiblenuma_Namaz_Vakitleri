@@ -233,26 +233,9 @@ object QuizFlags {
     }
 
     fun toJson(flags: Map<String, String>): String = JSONObject(flags).toString()
-
-    /** Paylaşılacak metin: her işaretli soru için kimlik, soru, verilen cevap ve not. */
-    fun report(flags: Map<String, String>, bank: List<Question>): String {
-        val sb = StringBuilder("Aile Halkası: hatalı olabilecek sorular\n")
-        for ((id, note) in flags.toSortedMap()) {
-            val q = bank.firstOrNull { it.id == id }
-            sb.append("\n[").append(id).append("] ")
-            if (q == null) {
-                sb.append("(soru artık bankada yok)")
-            } else {
-                sb.append(q.text).append("\nCevap: ").append(q.correct)
-            }
-            if (note.isNotBlank()) sb.append("\nNot: ").append(note.trim())
-            sb.append("\n")
-        }
-        return sb.toString()
-    }
 }
 
-/** Sesli okuma (telefonun kendi Türkçe sesi) için metni hazırlar. */
+/** Sesli okuma için metni hazırlar. Soru ve şıkların okunacak hâli LearningText.question'dadır. */
 object QuizSpeech {
     /** ✓, ✗, 🌱, ⚑ gibi işaretleri atar; ses motoru bunları "onay işareti" diye okumasın. */
     fun clean(text: String): String =
@@ -260,16 +243,6 @@ object QuizSpeech {
             .replace(Regex("[ \\t]+"), " ")
             .lines().joinToString("\n") { it.trim() }
             .trim()
-
-    /** Soru ve şıklar: "Soru? Birinci şık: Mekke. İkinci şık: Medine. ..." */
-    fun question(text: String, options: List<String>): String {
-        val names = listOf("Birinci", "İkinci", "Üçüncü", "Dördüncü", "Beşinci", "Altıncı")
-        val sb = StringBuilder(clean(text))
-        options.forEachIndexed { i, o ->
-            sb.append("\n").append(names.getOrElse(i) { "${i + 1}." }).append(" şık: ").append(clean(o)).append(".")
-        }
-        return sb.toString()
-    }
 }
 
 /** Tur sonucu ekranı: kaç yıldız verileceği ve ona göre simge/başlık. */
@@ -286,7 +259,6 @@ object QuizResult {
         }
     }
 
-    /** Yıldız sayısına göre (0..3) büyük simge ve başlık. */
+    /** Yıldız sayısına göre (0..3) büyük simge. Başlık seçili dilde LearningText.result'tan gelir. */
     val EMOJI = listOf("📖", "👍", "🌟", "🏆")
-    val TITLE = listOf("Birlikte tekrar edelim", "Güzel başlangıç!", "Çok güzel!", "Maşallah!")
 }

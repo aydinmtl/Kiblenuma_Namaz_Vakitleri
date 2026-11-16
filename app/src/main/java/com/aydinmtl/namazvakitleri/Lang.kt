@@ -3,6 +3,7 @@ package com.aydinmtl.namazvakitleri
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
@@ -73,6 +74,14 @@ object Lang {
 
     /** Seçili dilde tek bir yazı. Ekransız yerler (bildirim, widget, konum) için kısayol. */
     fun str(ctx: Context, id: Int, vararg args: Any): String = wrap(ctx).getString(id, *args)
+
+    /**
+     * Seçili dilin tarih biçimi. Kalıplar kaynaklarda durur, çünkü her dilin yazım kuralı ayrıdır:
+     * [R.string.date_full] "15 Kasım 2026, Pazar" / "Sonntag, 15. November 2026" (Almancada gün
+     * noktalıdır), [R.string.date_long] gün adı olmadan, [R.string.date_short] imsakiyedeki kısa hâl.
+     */
+    fun dateFormat(ctx: Context, patternId: Int): DateTimeFormatter =
+        DateTimeFormatter.ofPattern(str(ctx, patternId), locale(ctx))
 
     /** Hicri tarih seçili dilde: "5 Cemaziyelevvel 1448" / "5 Jumada al-Ula 1448 AH". */
     fun hijriDate(ctx: Context, h: Hijri.HDate): String {

@@ -1517,16 +1517,24 @@ $('bRec').onclick=()=>{
   toast(LESSON.recording,2200);
 };
 
+// Ekrandaki yazılar. Başlık, adım düğmeleri ve bilgi kutusu yalnızca ADIM değişince yeniden
+// yazılır (eskiden her karede, saniyede 30-60 kez yazılıyordu); süre yazısı saniyede bir değişir.
+let uiStep=-1,uiSeek=-1,uiTime='';
 function updateUI(){
   const st=stepAt(S.t);const s=STEPS[st];
-  $('capT').textContent=s.t;
+  if(st!==uiStep){
+    uiStep=st;
+    $('capT').textContent=s.t;
+    [...chips.children].forEach((c,i)=>c.classList.toggle('on',i===st));
+    $('info').innerHTML=`<b>${s.t}</b><br>${s.info}<div class="src">${LESSON.source} ${s.src}</div>${s.note?`<div class="note">${s.note}</div>`:''}<div class="note">${NOTE_RAKAT}</div>`;
+  }
   const u=(S.t-STEP_START[st])/(stepEnd(st)-STEP_START[st]);
   let r='';s.rec.forEach(([at,txt])=>{if(u>=at) r=txt;});
   if($('capR').textContent!==r) $('capR').textContent=r;
-  [...chips.children].forEach((c,i)=>c.classList.toggle('on',i===st));
-  $('info').innerHTML=`<b>${s.t}</b><br>${s.info}<div class="src">${LESSON.source} ${s.src}</div>${s.note?`<div class="note">${s.note}</div>`:''}<div class="note">${NOTE_RAKAT}</div>`;
-  $('seek').value=Math.round(S.t/DURATION*1000);
-  $('time').textContent=fmt(S.t)+' / '+fmt(DURATION);
+  const seek=Math.round(S.t/DURATION*1000);
+  if(seek!==uiSeek){uiSeek=seek;$('seek').value=seek;}
+  const time=fmt(S.t)+' / '+fmt(DURATION);
+  if(time!==uiTime){uiTime=time;$('time').textContent=time;}
 }
 
 /* =====================================================================
@@ -1539,6 +1547,11 @@ function resize(){
   if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
 }
 let last=performance.now(),fpsAcc=0,fpsN=0,fpsShow=0,frameMs=16;
+// Son çizilen karenin "imzası": an, kamera, kalite ve boyut. Duraklatılmışken imza değişmediyse
+// kare yeniden çizilmez (bkz. render); son kare ekranda kalır, telefon boşuna ısınmaz.
+let lastSig='';
+// Ekran arkadan öne gelince bir kez yeniden çiz (tarayıcı eski görüntüyü atmış olabilir).
+document.addEventListener('visibilitychange',()=>{lastSig='';});
 function camBasis(p,t){const w=norm(sub(t,p));const u=norm(cross(w,[0,1,0]));const v=cross(u,w);return [u,v,w];}
 
 function render(now){
@@ -1557,6 +1570,14 @@ function render(now){
   }
   const W=Math.max(64,Math.round(cv.width*S.scale)),H=Math.max(64,Math.round(cv.height*S.scale));
   if(W!==fbW||H!==fbH) makeTarget(W,H);
+
+  // Duraklatılmışken hiçbir şey değişmediyse (an, serbest kamera, kalite, boyut) çizimi atla.
+  // Duraklatınca çözünürlük bir kez yükselir ve o net kare ekranda kalır.
+  const o=S.orbit;
+  const sig=[S.t,S.q,S.free?o.yaw+','+o.pitch+','+o.dist:'',W,H,cv.width,cv.height].join('|');
+  const still=!S.playing&&!S.recording&&!MANUAL&&sig===lastSig;
+  lastSig=sig;
+  if(still){updateUI();requestAnimationFrame(render);return;}
 
   const pose=poseAt(S.t);
   solve(pose,now/1000);

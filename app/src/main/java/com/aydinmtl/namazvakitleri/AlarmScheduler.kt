@@ -33,8 +33,6 @@ object AlarmScheduler {
     }
 
     /** [after] anından sonraki ilk olay. Kurallar AlarmPlan.next içinde. */
-    fun nextEvent(ctx: Context, after: Instant): AlarmPlan.Event? = nextEvent(Store.alarmSnapshot(ctx).second, after)
-
     private fun nextEvent(state: AlarmSnapshot, after: Instant): AlarmPlan.Event? = AlarmPlan.next(
         Prayers.moments(Times.days(state.prayers)), state.reminderMinutes,
         remindFor = { state.notifyFor[it] }, after = after,
