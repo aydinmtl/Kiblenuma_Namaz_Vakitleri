@@ -327,3 +327,25 @@ gerekenler** her maddede yazılıdır.
   tarihler yine 1 gün sapabilir; ekrandaki uyarı duruyor. Testli.
 - **D14 — Artıklar.** Yardımcı araçların çalışma klasörleri `.gitignore`'da; belgelerdeki araç
   sürümleri güncel.
+
+## Otomatik konum: "Konum alınamadı" yazısı (16 Kasım 2026, v1.0.109 sonrası)
+
+**Belirti:** uygulama açılınca önce "kontrol ediliyor…", sonra "Konum alınamadı; son seçilen yer
+kullanılıyor" yazıyordu (özellikle yeni kurulumdan sonraki ilk açılışta ve kapalı yerde).
+
+**Neden:** v1.0.95'ten beri `LocationHelper.current`, süresinde yeni konum gelmezse telefonun
+kayıtlı son konumunu da yaş sınırına (ana ekranda 3 dakika) vuruyor ve reddediyordu; bekleme de
+yalnızca 10 saniyeydi. Uygulama yalnızca yaklaşık konum izni ister; Android bu izinle konumu en çok
+10 dakikada bir yeniler. Yani telefonun elinde birkaç dakikalık geçerli bir konum varken uygulama
+"alınamadı" diyordu.
+
+**Şimdi:** (`LocationHelper.current`)
+1. Yaş sınırından yeni kayıt varsa hemen kullanılır (değişmedi).
+2. Yoksa yeni konum istenir; ana ekranda 20 sn beklenir (vakitler ekranda olduğu için beklemek
+   bir şeyi engellemez).
+3. Yeni konum gelmezse en çok 10 dakikalık kayıtlı konuma dönülür (`FALLBACK_MAX_AGE_MS`). Daha
+   eskisi kullanılmaz: yolculukta eski şehri gösterebilir, o zaman uyarı doğrudur.
+4. Yine alınamazsa ana ekran 20 sn sonra bir kez daha dener (`retryLocation`).
+
+Telefonda: uygulamayı kapalı yerde aç; birkaç saniye "kontrol ediliyor…" yazıp "Otomatik konum
+açık"a dönmeli. Uçak modunda (konum hiç alınamazken) uyarının yine çıktığını gör.

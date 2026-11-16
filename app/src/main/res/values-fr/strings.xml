@@ -72,7 +72,7 @@
     <string name="loc_service_off_note">La localisation du téléphone est désactivée ; le dernier lieu choisi est utilisé.</string>
     <string name="loc_service_off_reason">la localisation du téléphone est désactivée.</string>
     <string name="loc_unavailable_note">Position introuvable ; le dernier lieu choisi est utilisé.</string>
-    <string name="loc_no_report_reason">le téléphone n\'a pas donné de position (en 10 s).</string>
+    <string name="loc_no_report_reason">le téléphone n\'a pas donné de position.</string>
     <string name="loc_updated">Position mise à jour : %1$s</string>
     <string name="loc_failed_last_chosen">%1$s Le dernier lieu choisi est utilisé.</string>
     <string name="locmode_need_perm">⚠ La position automatique demande une autorisation. Touchez pour ouvrir les paramètres.</string>

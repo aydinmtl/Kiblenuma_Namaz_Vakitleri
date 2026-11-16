@@ -26,13 +26,28 @@ object LocationHelper {
     }
 
     /**
+     * Yeni konum gelmezse kabul edilen en eski kayıtlı konum (10 dakika).
+     *
+     * Uygulama yalnızca YAKLAŞIK konum izni ister. Android bu izinle konumu zaten en çok 10 dakikada
+     * bir yeniler; telefonun elindeki "son konum" çoğu zaman birkaç dakikalıktır. Yeni bir konum
+     * süresinde gelmediğinde bu kayıt reddedilirse (bir ara öyleydi) kapalı yerde sık sık
+     * "Konum alınamadı" yazısı çıkar. 10 dakikadan eski kayıt ise kullanılmaz: yolculukta eski
+     * şehri gösterebilir, o zaman "alınamadı" demek daha doğrudur.
+     */
+    private const val FALLBACK_MAX_AGE_MS = 10 * 60_000L
+
+    /**
      * Konumu [callback] ile ana iş parçacığında verir (bulunamazsa null).
-     * [maxAgeMs]'den yeni kayıtlı bir konum varsa onu hemen kullanır.
+     *
+     * 1) [maxAgeMs]'den yeni kayıtlı bir konum varsa onu hemen kullanır.
+     * 2) Yoksa telefondan yeni bir konum ister ve en çok [timeoutMs] bekler.
+     * 3) Yeni konum gelmezse, [fallbackMaxAgeMs]'den eski olmayan en yeni kayıtlı konuma döner.
      */
     fun current(
         ctx: Context,
         maxAgeMs: Long = 10 * 60_000L,
         timeoutMs: Long = 20_000L,
+        fallbackMaxAgeMs: Long = maxOf(maxAgeMs, FALLBACK_MAX_AGE_MS),
         callback: (Location?) -> Unit,
     ) {
         val lm = ctx.getSystemService(LocationManager::class.java)
@@ -40,12 +55,12 @@ object LocationHelper {
             callback(null)
             return
         }
-        fun fresh(l: Location?): Location? = l?.takeIf {
-            LocationFreshness.accepts(SystemClock.elapsedRealtimeNanos(), it.elapsedRealtimeNanos, maxAgeMs)
+        fun notOlderThan(l: Location?, ageMs: Long): Location? = l?.takeIf {
+            LocationFreshness.accepts(SystemClock.elapsedRealtimeNanos(), it.elapsedRealtimeNanos, ageMs)
         }
         val last = lastKnown(lm)
-        if (fresh(last) != null) {
-            callback(fresh(last))
+        notOlderThan(last, maxAgeMs)?.let {
+            callback(it)
             return
         }
         val provider = when {
@@ -57,7 +72,7 @@ object LocationHelper {
             else -> null
         }
         if (provider == null) {
-            callback(fresh(last))
+            callback(notOlderThan(last, fallbackMaxAgeMs))
             return
         }
 
@@ -71,7 +86,9 @@ object LocationHelper {
                 handler.removeCallbacksAndMessages(null)
                 cancellation.cancel()
                 listener?.let { lm.removeUpdates(it) }
-                callback(fresh(l) ?: fresh(last))
+                // Yeni konum geldiyse o; gelmediyse beklerken başka bir yoldan güncellenmiş olabilecek
+                // kayıtlı konum (yeniden okunur). İkisi de çok eskiyse null.
+                callback(notOlderThan(l, fallbackMaxAgeMs) ?: notOlderThan(lastKnown(lm) ?: last, fallbackMaxAgeMs))
             }
         }
         // Süre dolarsa vazgeç; varsa son bilinen konum kullanılır.

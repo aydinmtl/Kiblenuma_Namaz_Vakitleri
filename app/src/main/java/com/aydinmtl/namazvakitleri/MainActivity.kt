@@ -23,6 +23,14 @@ import java.time.LocalDateTime
 
 class MainActivity : LangActivity() {
 
+    private companion object {
+        /** Otomatik konum denetiminde telefondan yeni konum için en çok bekleme. */
+        const val LOCATION_WAIT_MS = 20_000L
+
+        /** Konum alınamadıysa ikinci denemeye kadar beklenen süre. */
+        const val LOCATION_RETRY_MS = 20_000L
+    }
+
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var tvPlace: TextView
     private lateinit var tvLocMode: TextView
@@ -42,6 +50,15 @@ class MainActivity : LangActivity() {
 
     /** Ekran önde mi? Saniyelik sayaç yalnızca ekran öndeyken çalışır. */
     private var foreground = false
+
+    /**
+     * Konum alınamadıysa ekran öndeyken bir kez daha denenir: telefonun konum servisi ilk istekte
+     * geç uyanabilir (ör. uygulama yeni kurulduğunda), ikinci istek çoğu zaman hemen sonuç verir.
+     */
+    private var locationRetried = false
+    private val retryLocation = Runnable {
+        if (foreground && Store.autoLocation(this) && LocationHelper.hasPermission(this)) checkLocation()
+    }
 
     // Tarih seçili dilde ve o dilin kuralıyla yazılır: "13 Kasım 2026, Cuma" / "vendredi 13 novembre 2026"
     private val dateFormat by lazy { Lang.dateFormat(this, R.string.date_full) }
@@ -120,6 +137,7 @@ class MainActivity : LangActivity() {
     override fun onResume() {
         super.onResume()
         foreground = true
+        locationRetried = false
         resumeFlow()
     }
 
@@ -127,6 +145,7 @@ class MainActivity : LangActivity() {
         super.onPause()
         foreground = false
         handler.removeCallbacks(ticker)
+        handler.removeCallbacks(retryLocation)
     }
 
     /** Açılışta ne yapılacağına karar verir: izin açıklaması, konum kontrolü, vakitler. */
@@ -213,9 +232,11 @@ class MainActivity : LangActivity() {
         val request = Store.automaticPlaceRequest(this) ?: return
         checkingLocation = true
         updateLocMode()
-        // En çok 3 dakikalık kayıtlı konum kabul edilir (eskiden 10 dakikaydı). Yolda giderken
-        // 10 dakika önceki konum eski şehri gösterebilir; daha eskiyse telefondan yenisi istenir.
-        LocationHelper.current(this, maxAgeMs = 3 * 60_000L, timeoutMs = 10_000L) { loc ->
+        // 3 dakikadan yeni kayıtlı konum varsa hemen kullanılır; yoksa telefondan yenisi istenir
+        // (yolda giderken eski kayıt eski şehri gösterebilir). Vakitler bu sırada ekranda olduğu
+        // için beklemek bir şey engellemez: 20 sn beklenir. Yeni konum gelmezse en çok 10 dakikalık
+        // kayıtlı konuma dönülür (bkz. LocationHelper.current).
+        LocationHelper.current(this, maxAgeMs = 3 * 60_000L, timeoutMs = LOCATION_WAIT_MS) { loc ->
             if (isFinishing || isDestroyed) return@current
             if (!Store.isPlaceRequestCurrent(request)) {
                 checkingLocation = false
@@ -227,6 +248,11 @@ class MainActivity : LangActivity() {
                 locationNote = getString(R.string.loc_unavailable_note)
                 updateLocMode()
                 noPlaceFallback(getString(R.string.loc_no_report_reason))
+                // Yer zaten seçiliyse biraz sonra bir kez daha dene; başarılı olursa uyarı kalkar.
+                if (!locationRetried && Store.districtId(this) != null) {
+                    locationRetried = true
+                    handler.postDelayed(retryLocation, LOCATION_RETRY_MS)
+                }
                 return@current
             }
             if (!AutoLocation.needsCheck(this, loc)) {
